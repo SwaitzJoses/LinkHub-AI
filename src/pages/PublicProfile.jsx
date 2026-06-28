@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import WhatsAppLeadForm from "../components/WhatsAppLeadForm";
-
-
+import "../styles/PublicProfile.css";
 
 function PublicProfile() {
   const { username } = useParams();
-console.log("URL username:", username);
+
   const [profile, setProfile] = useState(null);
   const [links, setLinks] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [openCategory, setOpenCategory] = useState(null);
 
   useEffect(() => {
     loadProfile();
@@ -20,7 +21,7 @@ console.log("URL username:", username);
       .from("profiles")
       .select("*")
       .eq("username", username)
-      .maybeSingle();;
+      .maybeSingle();
 
     if (error) {
       console.log(error);
@@ -30,151 +31,271 @@ console.log("URL username:", username);
     setProfile(data);
 
     if (data) {
-      // Record profile view
       let visitorId = localStorage.getItem("visitor_id");
 
-if (!visitorId) {
-  visitorId = crypto.randomUUID();
-  localStorage.setItem("visitor_id", visitorId);
-}
+      if (!visitorId) {
+        visitorId = crypto.randomUUID();
+        localStorage.setItem("visitor_id", visitorId);
+      }
 
-await supabase.from("profile_views").insert({
-  profile_id: profile.id,
-  visitor_id: visitorId,
-});
-      // Load custom links
-      const { data: linksData, error: linksError } =
-        await supabase
-          .from("links")
-          .select("*")
-          .eq("profile_id", data.id)
-          .order("created_at");
+      await supabase.from("profile_views").insert({
+        profile_id: data.id,
+        visitor_id: visitorId,
+      });
 
-      console.log("linksData:", linksData);
-      console.log("linksError:", linksError);
+      const { data: linksData } = await supabase
+        .from("links")
+        .select("*")
+        .eq("profile_id", data.id)
+        .order("created_at");
 
       setLinks(linksData || []);
+
+      const { data: productsData } = await supabase
+        .from("products")
+        .select("*")
+        .eq("user_id", data.id)
+        .order("created_at", { ascending: false });
+
+      setProducts(productsData || []);
     }
   };
 
+  const groupedProducts = products.reduce((acc, product) => {
+    const category = product.category || "Products";
+
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+
+    acc[category].push(product);
+    return acc;
+  }, {});
+
   if (!profile) {
     return (
-      <div style={{ padding: "40px" }}>
-        <h2>User not found</h2>
+      <div className="public-profile">
+        <h2 style={{ color: "white" }}>Loading...</h2>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        maxWidth: "600px",
-        margin: "auto",
-      }}
-    >
-      {profile.logo_url && (
-        <img
-          src={profile.logo_url}
-          alt="Logo"
-          width="150"
-          style={{
-            borderRadius: "20px",
-            marginBottom: "20px",
-          }}
-        />
-      )}
+    <div className="public-profile">
+      <div className="hero-card">
+        {profile.logo_url && (
+          <img
+            src={profile.logo_url}
+            alt="Logo"
+            className="logo"
+          />
+        )}
 
-      <h1>{profile.business_name}</h1>
+        <h1 className="profile-name">
+          {profile.business_name}
+        </h1>
 
-      <p>{profile.bio}</p>
-
-      {profile.website && (
-        <p>
-          🌐{" "}
-          <a
-            href={profile.website}
-            target="_blank"
-            rel="noreferrer"
-            onClick={async () => {
-              await supabase.from("link_clicks").insert({
-                profile_id: profile.id,
-                link_title: "Website",
-              });
-            }}
-          >
-            {profile.website}
-          </a>
+        <p className="profile-bio">
+          {profile.bio}
         </p>
-      )}
 
+        <div className="hero-stats">
+          <div>
+            <h3>{Object.keys(groupedProducts).length}</h3>
+            <p>Categories</p>
+          </div>
+
+          <div>
+            <h3>{products.length}</h3>
+            <p>Products</p>
+          </div>
+
+          <div>
+            <h3>24/7</h3>
+            <p>Support</p>
+          </div>
+        </div>
+
+        <div className="contact-links">
+          {profile.website && (
+            <a
+              href={profile.website}
+              target="_blank"
+              rel="noreferrer"
+            >
+              🌐 Website
+            </a>
+          )}
+
+          {profile.instagram && (
+            <a
+              href={`https://instagram.com/${profile.instagram}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              📷 Instagram
+            </a>
+          )}
+
+          {profile.whatsapp && (
+            <a
+              href={`https://wa.me/${profile.whatsapp}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              💬 WhatsApp
+            </a>
+          )}
+        </div>
+      </div>
+
+      
+
+      <div className="consultation-card">
+        <div className="consultation-icon">
+          📞
+        </div>
+
+        <h2 className="consultation-title">
+          Free Consultation
+        </h2>
+
+        <p>Get in Touch</p>
+
+        <WhatsAppLeadForm
+          profileId={profile.id}
+          whatsapp={profile.whatsapp}
+        />
+      </div>
+
+      <div className="products-section">
+        {!openCategory &&
+          Object.keys(groupedProducts).length > 0 && (
+            <>
+              <h2 className="category-title">
+                 Browse Categories
+              </h2>
+
+              <div className="category-grid">
+                {Object.entries(groupedProducts).map(
+                  ([category, items]) => (
+                    <div
+                      key={category}
+                      className="category-card"
+                      onClick={() =>
+                        setOpenCategory(category)
+                      }
+                    >
+                      <img
+                        src={
+                          items[0]?.image_url ||
+                          "https://placehold.co/400x300"
+                        }
+                        alt={category}
+                        className="category-image"
+                      />
+
+                      <div className="category-name">
+                        {category}
+
+                        <div className="category-count">
+                          {items.length} Products
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </>
+          )}
+
+        {openCategory && (
+          <>
+            <button
+              className="back-button"
+              onClick={() =>
+                setOpenCategory(null)
+              }
+            >
+              ← Back to Categories
+            </button>
+
+            <h2 className="category-title">
+              {openCategory}
+            </h2>
+
+            <div className="products-grid">
+              {groupedProducts[
+                openCategory
+              ]?.map((p) => (
+                <div
+                  key={p.id}
+                  className="product-card"
+                >
+                  {p.image_url && (
+                    <img
+                      src={p.image_url}
+                      alt={p.name}
+                      className="product-image"
+                    />
+                  )}
+
+                  <div className="product-body">
+                    <h3>{p.name}</h3>
+
+                    <p className="product-description">
+                      {p.description}
+                    </p>
+
+                    <h3>₹{p.price}</h3>
+
+                    {profile.whatsapp && (
+                      <a
+                        href={`https://wa.me/${profile.whatsapp}?text=Hi, I want to order ${p.name}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <button className="whatsapp-button">
+                          Order on WhatsApp
+                        </button>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="links-section">
+        {links.map((link) => (
+          <button
+            key={link.id}
+            className="link-button premium-link"
+            onClick={() =>
+              window.open(link.url, "_blank")
+            }
+          >
+            {link.title}
+          </button>
+        ))}
+      </div>
+
+      <footer className="profile-footer">
+        Powered by LinkHub AI 🚀
+      </footer>
 
       {profile.whatsapp && (
-        <p>
-          📱{" "}
-          <a
-            href={`https://wa.me/${profile.whatsapp}`}
-            target="_blank"
-            rel="noreferrer"
-            onClick={async () => {
-              await supabase.from("link_clicks").insert({
-                profile_id: profile.id,
-                link_title: "WhatsApp",
-              });
-            }}
-          >
-            {profile.whatsapp}
-          </a>
-        </p>
-      )}
-
-      {profile.instagram && (
-        <p>
-          📷{" "}
-          <a
-            href={`https://instagram.com/${profile.instagram}`}
-            target="_blank"
-            rel="noreferrer"
-            onClick={async () => {
-              await supabase.from("link_clicks").insert({
-                profile_id: profile.id,
-                link_title: "Instagram",
-              });
-            }}
-          >
-            @{profile.instagram}
-          </a>
-        </p>
-      )}
-
-      <br />
-<WhatsAppLeadForm 
- profileId={profile.id}
-  whatsapp={profile.whatsapp}/>
-      {links.map((link) => (
-        <button
-          key={link.id}
-          style={{
-            width: "100%",
-            padding: "14px",
-            marginBottom: "10px",
-            borderRadius: "12px",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
-          onClick={async () => {
-            await supabase.from("link_clicks").insert({
-              profile_id: profile.id,
-              link_title: link.title,
-            });
-
-            window.open(link.url, "_blank");
-          }}
+        <a
+          href={`https://wa.me/${profile.whatsapp}`}
+          className="floating-whatsapp"
+          target="_blank"
+          rel="noreferrer"
         >
-          {link.title}
-        </button>
-      ))}
+          💬
+        </a>
+      )}
     </div>
   );
 }

@@ -36,7 +36,7 @@ if (error) {
 };
   return (
     <div className="card">
-      <h2>📲 Free Consultation</h2>
+    
 
       <input
         type="text"

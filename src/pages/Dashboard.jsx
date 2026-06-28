@@ -3,6 +3,8 @@ import { supabase } from "../lib/supabase";
 import "./Dashboard.css";
 import DailyViewsChart from "../components/DailyViewsChart";
 import LeadsTable from "../components/LeadsTable";
+import ProductCatalog from "../components/ProductCatalog";
+import AnnouncementBroadcast from "../components/AnnouncementBroadcast";
 
 function Dashboard() {
   const [username, setUsername] = useState("");
@@ -30,6 +32,7 @@ const [clickAnalytics, setClickAnalytics] = useState([]);
 const [todayViews, setTodayViews] = useState(0);
 const [weekViews, setWeekViews] = useState(0);
 const [chartData, setChartData] = useState([]);
+const [profile, setProfile] = useState({});
 
 
 // useEffect(() => {
@@ -398,11 +401,60 @@ const topLinks = clickAnalytics.filter(
   ([_, count]) => count === maxClicks
 );
 
+  
   return (
-    <div
-      className="dashboard"
-    >
-      <div className="card">
+  <div className="app-layout">
+    <aside className="sidebar">
+      <div className="sidebar-logo">
+        🔗 LinkHub AI
+      </div>
+
+   <nav className="sidebar-nav">
+  <a href="#dashboard" className="active">
+    🏠 Dashboard
+  </a>
+
+  <a href="#profile">
+    👤 Profile
+  </a>
+
+  <a href="#products">
+    🛍 Products
+  </a>
+
+  <a href="#links">
+    🔗 Links
+  </a>
+
+  <a href="#leads">
+    👥 Leads
+  </a>
+
+  <a href="#analytics">
+    📈 Analytics
+  </a>
+</nav>
+      {/* <div className="upgrade-card">
+        <h3>LinkHub Pro 🚀</h3>
+        <p>Grow your business with AI.</p>
+      </div> */}
+    </aside>
+
+    <main className="main-content">
+      <header className="topbar">
+        <div>
+          <h1>
+            Welcome back, {businessName || "Business"} 👋
+          </h1>
+
+          <p>
+            You have {leads.length} leads and {todayViews} views today.
+          </p>
+        </div>
+      </header>
+
+        <div className="dashboard">
+  <div id="dashboard" className="card">
   <h1> LinkHub Dashboard</h1>
 
   <div className="stats">
@@ -449,7 +501,11 @@ const topLinks = clickAnalytics.filter(
 
   
 </div>
-<DailyViewsChart data={chartData} />
+
+<div id="analytics">
+  <DailyViewsChart data={chartData} />
+
+
   <div className="analytics-grid">
     {clickAnalytics.map(([title, count]) => (
       <div key={title} className="analytics-card">
@@ -458,9 +514,10 @@ const topLinks = clickAnalytics.filter(
       </div>
     ))}
   </div>
+  </div>
 </div>  
 </div>
-<div className="card">
+<div id="profile" className="card">
   <h2>Profile</h2>
       <input
         type="text"
@@ -543,7 +600,9 @@ const topLinks = clickAnalytics.filter(
         type="file"
         onChange={(e) => setLogo(e.target.files[0])}
       />
-
+<div id="products">
+  <ProductCatalog />
+</div>
       <br /><br />
 
       <button onClick={handleSave}>
@@ -579,8 +638,8 @@ const topLinks = clickAnalytics.filter(
 </button>
 </div>
      
-<div className="card"> 
-      <h2>🔗 Custom Links</h2>
+<div id="links" className="card">
+  <h2>🔗 Custom Links</h2>
 
       <input
         type="text"
@@ -609,7 +668,7 @@ const topLinks = clickAnalytics.filter(
 <br /><br />
 
 {links.map((link) => (
- <div key={link.id} className="card">
+<div key={link.id} className="link-card">
   {editingId === link.id ? (
   <>
     <input
@@ -661,9 +720,10 @@ const topLinks = clickAnalytics.filter(
 {" "}
 
 <button
-  onClick={() => deleteLink(link.id)}
+  className="delete-btn"
+  onClick={() => deleteProduct(product.id)}
 >
-  Delete
+  🗑 Delete
 </button>
   </div>
 ))}
@@ -671,14 +731,34 @@ const topLinks = clickAnalytics.filter(
 <br />
 
 </div>
-<LeadsTable leads={leads}/>
-<div className="card">
-  <button onClick={handleLogout}>
-    Logout
-  </button>
+ 
+<div id="leads">
+  <LeadsTable leads={leads} />
 </div>
 
+{/* <AnnouncementBroadcast
+  leads={leads}
+  profile={profile}
+/> */}
+
+<br />
+
+<footer className="footer">
+  <button
+    className="logout-btn"
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+
+  <p>
+    © 2026 LinkHub AI · Built with ❤️ by Swaitz
+  </p>
+</footer>
+
       
+</div>
+      </main>
     </div>
   );
 }
