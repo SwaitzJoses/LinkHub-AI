@@ -21,7 +21,8 @@ function Login() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "0 400px", color: "#ffffff", fontFamily: "Inter, sans-serif"
+     }}>
       <h1>Login</h1>
 
       <form onSubmit={handleLogin}>

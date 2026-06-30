@@ -5,6 +5,11 @@ import DailyViewsChart from "../components/DailyViewsChart";
 import LeadsTable from "../components/LeadsTable";
 import ProductCatalog from "../components/ProductCatalog";
 import AnnouncementBroadcast from "../components/AnnouncementBroadcast";
+ import { Menu, X } from "lucide-react";
+ import { useNavigate } from "react-router-dom";
+
+
+
 
 function Dashboard() {
   const [username, setUsername] = useState("");
@@ -33,6 +38,11 @@ const [todayViews, setTodayViews] = useState(0);
 const [weekViews, setWeekViews] = useState(0);
 const [chartData, setChartData] = useState([]);
 const [profile, setProfile] = useState({});
+const [menuOpen, setMenuOpen] = useState(false);
+
+
+const navigate = useNavigate();
+
 
 
 // useEffect(() => {
@@ -405,8 +415,16 @@ const topLinks = clickAnalytics.filter(
   return (
   <div className="app-layout">
     
-    
-    <aside className="sidebar">
+<button
+  className="menu-btn"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  {menuOpen ? <X size={24} /> : <Menu size={24} />}
+</button>
+
+<aside className={`sidebar ${menuOpen ? "open" : ""}`}>
+
+   
       <div className="sidebar-logo">
         🔗 LinkHub AI
       </div>
@@ -440,7 +458,23 @@ const topLinks = clickAnalytics.filter(
         <h3>LinkHub Pro 🚀</h3>
         <p>Grow your business with AI.</p>
       </div> */}
-    </aside>
+
+
+
+</aside>
+
+
+
+
+   {menuOpen && (
+  <div
+    className="overlay"
+    onClick={() => setMenuOpen(false)}
+  />
+)}   
+    
+
+
 
     <main className="main-content">
       <header className="topbar">
@@ -606,7 +640,19 @@ const topLinks = clickAnalytics.filter(
   <ProductCatalog />
 </div>
       <br /><br />
+<button onClick={() => navigate("/poster-generator")}>
+  ✨ AI Poster Generator
+</button>
 
+<br /><br />
+
+<button onClick={() => navigate("/my-posters")}>
+  🎨 My Posters
+</button>
+
+
+
+ <br /><br />
       <button onClick={handleSave}>
         Save Profile
       </button>
@@ -722,8 +768,8 @@ const topLinks = clickAnalytics.filter(
 {" "}
 
 <button
-  className="delete-btn"
-  onClick={() => deleteProduct(product.id)}
+   className="delete-btn"
+  onClick={() => deleteLink(link.id)}
 >
   🗑 Delete
 </button>
@@ -752,13 +798,13 @@ const topLinks = clickAnalytics.filter(
   >
     Logout
   </button>
-
+ <br /><br />
   <p>
-    © 2026 LinkHub AI · Built with ❤️ by Swaitz
+    © 2026 LinkHub AI · PIXELLENCE
   </p>
 </footer>
 
-      
+    
 </div>
       </main>
     </div>

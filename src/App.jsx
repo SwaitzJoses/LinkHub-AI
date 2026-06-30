@@ -7,6 +7,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import PublicProfile from "./pages/PublicProfile";
+import AIPoster from "./pages/AIPoster";
+import PosterGenerator from "./pages/PosterGenerator";
+import MyPosters from "./pages/MyPosters";
 
 function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -55,7 +58,18 @@ function App() {
     path="/:username"
     element={<PublicProfile />}
   />
-  
+<Route
+  path="/ai-poster"
+  element={<AIPoster />}
+/>
+
+
+<Route path="/poster-generator" element={<PosterGenerator />} />
+
+<Route
+  path="/my-posters"
+  element={<MyPosters />}
+/>
 </Routes>
 
 

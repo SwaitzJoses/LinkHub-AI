@@ -169,12 +169,12 @@ console.log("IMAGE:", imageUrl);
           setProductImage(e.target.files[0])
         }
       />
-
+<br /><br />
       <button onClick={saveProduct}>
         Add Product
       </button>
 
-     <hr />
+    <br /><br />
 
 <h3>My Products</h3>
 

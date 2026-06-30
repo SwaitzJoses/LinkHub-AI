@@ -42,7 +42,8 @@ function Signup() {
 };
 
   return (
-    <div>
+    <div style={{ padding: "0 400px", color: "#ffffff", fontFamily: "Inter, sans-serif"
+     }}>
       <h1>Sign Up</h1>
 
       <form onSubmit={handleSignup}>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/LeadsTable.css";
 
 function LeadsTable({ leads = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,64 +97,87 @@ function LeadsTable({ leads = [] }) {
             </thead>
 
             <tbody>
-              {currentLeads.map((lead) => (
-                <tr key={lead.id}>
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderBottom: "1px solid #f1f5f9",
-                    }}
-                  >
-                    {lead.name}
-                  </td>
+  {currentLeads.map((lead) => (
+    <>
+      <tr key={lead.id} className="lead-row">
+        <td
+          style={{
+            padding: "12px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+        >
+          {lead.name}
+        </td>
 
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderBottom: "1px solid #f1f5f9",
-                    }}
-                  >
-                    {lead.phone}
-                  </td>
+        <td
+          style={{
+            padding: "12px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+        >
+          {lead.phone}
+        </td>
 
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderBottom: "1px solid #f1f5f9",
-                    }}
-                  >
-                    {new Date(
-                      lead.created_at
-                    ).toLocaleDateString()}
-                  </td>
+        <td
+          style={{
+            padding: "12px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+        >
+          {new Date(
+            lead.created_at
+          ).toLocaleDateString()}
+        </td>
 
-                  <td
-                    style={{
-                      padding: "12px",
-                      borderBottom: "1px solid #f1f5f9",
-                    }}
-                  >
-                    <button
-                      onClick={() => {
-                        const message =
-                          `Hi ${lead.name}, ` +
-                          `thank you for contacting us. ` +
-                          `How can we help you today?`;
+        <td
+          style={{
+            padding: "12px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+          className="desktop-action"
+        >
+          <button
+            className="whatsapp-btn"
+            onClick={() => {
+              const message =
+                `Hi ${lead.name}, thank you for contacting us. How can we help you today?`;
 
-                        window.open(
-                          `https://wa.me/91${lead.phone}?text=${encodeURIComponent(
-                            message
-                          )}`,
-                          "_blank"
-                        );
-                      }}
-                    >
-                      📲 WhatsApp
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+              window.open(
+                `https://wa.me/91${lead.phone}?text=${encodeURIComponent(
+                  message
+                )}`,
+                "_blank"
+              );
+            }}
+          >
+            📲 WhatsApp
+          </button>
+        </td>
+      </tr>
+
+      <tr className="mobile-action">
+        <td colSpan="4">
+          <button
+            className="whatsapp-btn"
+            onClick={() => {
+              const message =
+                `Hi ${lead.name}, thank you for contacting us. How can we help you today?`;
+
+              window.open(
+                `https://wa.me/91${lead.phone}?text=${encodeURIComponent(
+                  message
+                )}`,
+                "_blank"
+              );
+            }}
+          >
+            📲 WhatsApp
+          </button>
+        </td>
+      </tr>
+    </>
+  ))}
+</tbody>
           </table>
 
           {totalPages > 1 && (

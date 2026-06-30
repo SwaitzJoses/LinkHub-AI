@@ -1,0 +1,85 @@
+.poster-page {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.poster-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.poster-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.poster-subtitle {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.upload-input {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.image-preview {
+  width: 100%;
+  max-width: 350px;
+  border-radius: 15px;
+  margin: 20px auto;
+  display: block;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-box {
+  width: 100%;
+  min-height: 140px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  resize: vertical;
+  font-size: 1rem;
+  margin-top: 20px;
+  outline: none;
+}
+
+.prompt-box:focus {
+  border-color: #6366f1;
+}
+
+.generate-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 25px;
+  border: none;
+  border-radius: 15px;
+  background: #6366f1;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  background: #4f46e5;
+}
+
+@media (max-width: 768px) {
+  .poster-card {
+    padding: 20px;
+  }
+
+  .poster-title {
+    font-size: 1.5rem;
+  }
+
+  .prompt-box {
+    min-height: 120px;
+  }
+}

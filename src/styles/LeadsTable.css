@@ -1,0 +1,32 @@
+@media (max-width: 768px) {
+  .whatsapp-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
+
+.mobile-action {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-action {
+    display: none;
+  }
+
+  .mobile-action {
+    display: table-row;
+  }
+
+  .mobile-action td {
+    padding: 10px 12px 20px;
+  }
+
+  .whatsapp-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+  }
+}

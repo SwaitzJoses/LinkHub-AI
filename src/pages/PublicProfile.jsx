@@ -80,6 +80,23 @@ function PublicProfile() {
     );
   }
 
+
+
+  const handleLinkClick = async (link) => {
+  const { error } = await supabase
+    .from("link_clicks")
+    .insert({
+      profile_id: profile.id,
+      link_title: link.title,
+    });
+
+  if (error) {
+    console.log("Click tracking error:", error);
+  }
+
+  window.open(link.url, "_blank");
+};
+
   return (
     <div className="public-profile">
       <div className="hero-card">
@@ -269,21 +286,19 @@ function PublicProfile() {
       </div>
 
       <div className="links-section">
-        {links.map((link) => (
-          <button
-            key={link.id}
-            className="link-button premium-link"
-            onClick={() =>
-              window.open(link.url, "_blank")
-            }
-          >
-            {link.title}
-          </button>
-        ))}
-      </div>
+  {links.map((link) => (
+    <button
+      key={link.id}
+      className="link-button premium-link"
+      onClick={() => handleLinkClick(link)}
+    >
+      {link.title}
+    </button>
+  ))}
+</div>
 
       <footer className="profile-footer">
-        Powered by LinkHub AI 🚀
+        Powered by LinkHub AI
       </footer>
 
       {profile.whatsapp && (
