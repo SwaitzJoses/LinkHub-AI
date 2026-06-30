@@ -124,7 +124,7 @@ Requirements:
 
         const response =
           await fetch(
-            "http://localhost:3001/generate-poster",
+            "https://linkhub-ai.onrender.com/generate-poster",
             {
               method: "POST",
               headers: {
