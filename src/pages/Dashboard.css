@@ -766,3 +766,67 @@ textarea {
     align-self: stretch;
   }
 }
+
+.ai-poster-btn{
+    background: linear-gradient(135deg,#ff6b6b,#ff8e53,#ffcc33);
+    color:white;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    padding:14px 18px;
+    width:100%;
+    
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 8px 20px rgba(255,107,107,.35);
+}
+
+.ai-poster-btn:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 12px 28px rgba(255,107,107,.5);
+}
+
+.action-buttons{
+    display:flex;
+    display: block;
+    gap:15px;
+    margin:25px 0;
+    width:100%;
+}
+
+.action-buttons button{
+    flex:1;
+    min-width:180px;
+    height:55px;
+
+    border:none;
+    border-radius:14px;
+
+    font-size:16px;
+    font-weight:600;
+
+    cursor:pointer;
+    transition:.25s;
+
+    width:100%;
+}
+
+.ai-sidebar{
+    background: linear-gradient(135deg,#ff5f6d,#ffc371);
+    color: white !important;
+    font-weight: 700;
+    border-radius: 12px;
+    margin: 10px 15px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 20px rgba(255,120,80,.35);
+    transition: all .3s ease;
+   
+    list-style: none;
+
+}
+
+.ai-sidebar:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(255,120,80,.5);
+}
+

@@ -453,6 +453,13 @@ const topLinks = clickAnalytics.filter(
   <a href="#analytics">
     📈 Analytics
   </a>
+
+  <li
+  onClick={() => navigate("/poster-generator")}
+  className="sidebar-item ai-sidebar"
+>
+  🎨 Poster Generator
+</li>
 </nav>
       {/* <div className="upgrade-card">
         <h3>LinkHub Pro 🚀</h3>
@@ -640,8 +647,14 @@ const topLinks = clickAnalytics.filter(
   <ProductCatalog />
 </div>
       <br /><br />
-<button onClick={() => navigate("/poster-generator")}>
-  ✨ AI Poster Generator
+
+      <div className="action-buttons">
+        
+<button
+  className="sidebar-btn ai-poster-btn"
+  onClick={() => navigate("/ai-poster")}
+>
+  🎨 AI Image Generator
 </button>
 
 <br /><br />
@@ -685,7 +698,7 @@ const topLinks = clickAnalytics.filter(
   📋 Copy Link
 </button>
 </div>
-     
+     </div>
 <div id="links" className="card">
   <h2>🔗 Custom Links</h2>
 

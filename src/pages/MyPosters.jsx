@@ -97,7 +97,7 @@ function MyPosters() {
         style={{
           display: "grid",
           gridTemplateColumns:
-            "repeat(auto-fill,minmax(250px,1fr))",
+              "repeat(auto-fit,minmax(350px,1fr))",
           gap: "20px",
           marginTop: "30px",
         }}

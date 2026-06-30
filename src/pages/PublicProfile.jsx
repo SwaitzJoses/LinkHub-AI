@@ -82,19 +82,23 @@ function PublicProfile() {
 
 
 
-  const handleLinkClick = async (link) => {
+
+
+const trackClick = async (title, url) => {
   const { error } = await supabase
     .from("link_clicks")
-    .insert({
-      profile_id: profile.id,
-      link_title: link.title,
-    });
+    .insert([
+      {
+        profile_id: profile.id,
+        link_title: title,
+      },
+    ]);
 
   if (error) {
-    console.log("Click tracking error:", error);
+    console.log("Tracking Error:", error);
   }
 
-  window.open(link.url, "_blank");
+  window.open(url, "_blank");
 };
 
   return (
@@ -134,36 +138,45 @@ function PublicProfile() {
         </div>
 
         <div className="contact-links">
-          {profile.website && (
-            <a
-              href={profile.website}
-              target="_blank"
-              rel="noreferrer"
-            >
-              🌐 Website
-            </a>
-          )}
+  {profile.website && (
+    <button
+      className="contact-btn"
+      onClick={() =>
+        trackClick("Website", profile.website)
+      }
+    >
+      🌐 Website
+    </button>
+  )}
 
-          {profile.instagram && (
-            <a
-              href={`https://instagram.com/${profile.instagram}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              📷 Instagram
-            </a>
-          )}
+  {profile.instagram && (
+    <button
+      className="contact-btn"
+      onClick={() =>
+        trackClick(
+          "Instagram",
+          `https://instagram.com/${profile.instagram}`
+        )
+      }
+    >
+      📷 Instagram
+    </button>
+  )}
 
-          {profile.whatsapp && (
-            <a
-              href={`https://wa.me/${profile.whatsapp}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              💬 WhatsApp
-            </a>
-          )}
-        </div>
+  {profile.whatsapp && (
+    <button
+      className="contact-btn"
+      onClick={() =>
+        trackClick(
+          "WhatsApp",
+          `https://wa.me/${profile.whatsapp}`
+        )
+      }
+    >
+      💬 WhatsApp
+    </button>
+  )}
+</div>
       </div>
 
       
@@ -267,15 +280,17 @@ function PublicProfile() {
                     <h3>₹{p.price}</h3>
 
                     {profile.whatsapp && (
-                      <a
-                        href={`https://wa.me/${profile.whatsapp}?text=Hi, I want to order ${p.name}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <button className="whatsapp-button">
-                          Order on WhatsApp
-                        </button>
-                      </a>
+                    <button
+  className="whatsapp-button"
+  onClick={() =>
+    trackClick(
+      "WhatsApp",
+      `https://wa.me/${profile.whatsapp}?text=Hi, I want to order ${p.name}`
+    )
+  }
+>
+  Order on WhatsApp
+</button>
                     )}
                   </div>
                 </div>
@@ -302,14 +317,17 @@ function PublicProfile() {
       </footer>
 
       {profile.whatsapp && (
-        <a
-          href={`https://wa.me/${profile.whatsapp}`}
-          className="floating-whatsapp"
-          target="_blank"
-          rel="noreferrer"
-        >
-          💬
-        </a>
+       <button
+  className="floating-whatsapp"
+  onClick={() =>
+    trackClick(
+      "WhatsApp",
+      `https://wa.me/${profile.whatsapp}`
+    )
+  }
+>
+  💬
+</button>
       )}
     </div>
   );
