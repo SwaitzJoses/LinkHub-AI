@@ -652,7 +652,7 @@ const topLinks = clickAnalytics.filter(
         
 <button
   className="sidebar-btn ai-poster-btn"
-  onClick={() => navigate("/ai-poster")}
+  onClick={() => navigate("/poster-generator")}
 >
   🎨 AI Image Generator
 </button>
