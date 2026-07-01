@@ -10,6 +10,7 @@ import PublicProfile from "./pages/PublicProfile";
 import AIPoster from "./pages/AIPoster";
 import PosterGenerator from "./pages/PosterGenerator";
 import MyPosters from "./pages/MyPosters";
+import EmmaAI from "./pages/EmmaAI";
 
 function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
