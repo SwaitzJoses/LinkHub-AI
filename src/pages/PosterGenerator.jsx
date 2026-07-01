@@ -211,7 +211,7 @@ Requirements:
 
         const response =
           await fetch(
-            "http://localhost:3001/edit-poster",
+            "https://linkhub-ai.onrender.com/edit-poster",
             {
               method: "POST",
               body: formData,
