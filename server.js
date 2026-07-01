@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import { toFile } from "openai/uploads";
 import multer from "multer";
-import fs from "fs";
-import path from "path";
 
 dotenv.config();
 
@@ -13,37 +11,17 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-const PORT = process.env.PORT || 3001;
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Create uploads folder if it doesn't exist
-const uploadDir = path.join(process.cwd(), "uploads");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
 // ======================
-// Multer Storage
+// Multer Memory Storage
 // ======================
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-  cb(null, uploadDir);
-},
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      Date.now() +
-        "-" +
-        file.originalname
-    );
-  },
-});
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     const allowed = [
       "image/jpeg",
@@ -51,16 +29,10 @@ const upload = multer({
       "image/webp",
     ];
 
-    if (
-      allowed.includes(file.mimetype)
-    ) {
+    if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(
-        new Error(
-          `Unsupported file type: ${file.mimetype}`
-        )
-      );
+      cb(new Error(`Unsupported file type: ${file.mimetype}`));
     }
   },
 });
@@ -68,115 +40,85 @@ const upload = multer({
 // ======================
 // Test Route
 // ======================
+
 app.get("/", (req, res) => {
-  res.send(
-    "🚀 LinkHub AI Server Running"
-  );
+  res.send("🚀 LinkHub AI Server Running");
 });
 
 // ======================
 // Generate Poster
 // ======================
-app.post(
-  "/generate-poster",
-  async (req, res) => {
-    try {
-      const { prompt } = req.body;
 
-      console.log("Generating:");
-      console.log(prompt);
+app.post("/generate-poster", async (req, res) => {
+  try {
+    const { prompt } = req.body;
 
-      const result =
-        await openai.images.generate({
-          model: "gpt-image-1",
-          prompt,
-          size: "1024x1536",
-        });
+    console.log("Generating poster...");
 
-      res.json(result);
-    } catch (err) {
-      console.error(err);
+    const result = await openai.images.generate({
+      model: "gpt-image-1",
+      prompt,
+      size: "1024x1536",
+    });
 
-      res.status(500).json({
-        error: err.message,
-      });
-    }
+    res.json(result);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
   }
-);
+});
 
 // ======================
 // Edit Poster
 // ======================
+
 app.post(
   "/edit-poster",
   upload.single("image"),
   async (req, res) => {
     try {
-      console.log("Uploaded File:");
-      console.log(req.file);
 
       if (!req.file) {
         return res.status(400).json({
-          error: "No image uploaded.",
+          error: "No image uploaded",
         });
       }
 
-      console.log(
-        "Mimetype:",
-        req.file.mimetype
+      const prompt = req.body.prompt;
+
+      console.log("Editing image...");
+      console.log(req.file.originalname);
+
+      const image = await toFile(
+        req.file.buffer,
+        req.file.originalname,
+        {
+          type: req.file.mimetype,
+        }
       );
 
-      const prompt =
-        req.body.prompt;
-
-      const image =
-        await toFile(
-          fs.createReadStream(
-            req.file.path
-          ),
-          req.file.originalname,
-          {
-            type:
-              req.file.mimetype,
-          }
-        );
-
-      const result =
-        await openai.images.edit({
-          model: "gpt-image-1",
-          image,
-          prompt,
-          size: "1024x1024",
-        });
-
-      if (
-        fs.existsSync(
-          req.file.path
-        )
-      ) {
-        fs.unlinkSync(
-          req.file.path
-        );
-      }
+      const result = await openai.images.edit({
+        model: "gpt-image-1",
+        image,
+        prompt,
+        size: "1024x1024",
+      });
 
       res.json(result);
-    } catch (err) {
-      console.error(err);
 
-      if (
-        req.file &&
-        fs.existsSync(
-          req.file.path
-        )
-      ) {
-        fs.unlinkSync(
-          req.file.path
-        );
-      }
+    } catch (err) {
+
+      console.error(err);
 
       res.status(500).json({
         error: err.message,
       });
+
     }
   }
 );
@@ -184,6 +126,9 @@ app.post(
 // ======================
 // Start Server
 // ======================
+
+const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
