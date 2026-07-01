@@ -5,6 +5,7 @@ import OpenAI from "openai";
 import { toFile } from "openai/uploads";
 import multer from "multer";
 import fs from "fs";
+import path from "path";
 
 dotenv.config();
 
@@ -17,13 +18,20 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Create uploads folder if it doesn't exist
+const uploadDir = path.join(process.cwd(), "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // ======================
 // Multer Storage
 // ======================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
+  cb(null, uploadDir);
+},
   filename: function (req, file, cb) {
     cb(
       null,
