@@ -460,6 +460,12 @@ const topLinks = clickAnalytics.filter(
 >
   🎨 Poster Generator
 </li>
+
+<Link to="/emma-ai">
+  🤖 Emma AI
+</Link>
+
+
 </nav>
       {/* <div className="upgrade-card">
         <h3>LinkHub Pro 🚀</h3>

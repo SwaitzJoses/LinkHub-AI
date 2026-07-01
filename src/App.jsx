@@ -70,6 +70,10 @@ function App() {
   path="/my-posters"
   element={<MyPosters />}
 />
+
+<Route path="/emma-ai" element={<EmmaAI />} />
+
+
 </Routes>
 
 
