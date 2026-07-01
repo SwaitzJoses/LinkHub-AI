@@ -126,7 +126,40 @@ app.post(
 // ======================
 // Start Server
 // ======================
+app.post("/emma", async (req, res) => {
+  try {
+    const { prompt } = req.body;
 
+    const response = await openai.responses.create({
+      model: "gpt-5",
+      input: `
+You are Emma, the AI Marketing Assistant inside LinkHub.
+
+Help business owners with:
+- Marketing ideas
+- Posters
+- Instagram captions
+- WhatsApp campaigns
+- Sales advice
+- Festival offers
+
+User:
+${prompt}
+      `,
+    });
+
+    res.json({
+      reply: response.output_text,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      reply: "Sorry, something went wrong."
+    });
+  }
+});
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {

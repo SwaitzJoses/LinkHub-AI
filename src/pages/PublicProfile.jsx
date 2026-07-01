@@ -187,7 +187,7 @@ const trackClick = async (title, url) => {
         </div>
 
         <h2 className="consultation-title">
-          Free Consultation
+          Contact
         </h2>
 
         <p>Get in Touch</p>

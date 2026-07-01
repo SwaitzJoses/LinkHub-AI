@@ -813,7 +813,7 @@ textarea {
 
 .ai-sidebar{
     background: linear-gradient(135deg,#ff5f6d,#ffc371);
-    color: white !important;
+    color: white ;
     font-weight: 700;
     border-radius: 12px;
     margin: 10px 15px;

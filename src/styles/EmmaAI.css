@@ -1,0 +1,692 @@
+/* ======================================================
+   EMMA AI v7
+   PART 1
+====================================================== */
+
+:root{
+
+    --bg:#0b1220;
+    --panel:#111827;
+    --panel2:#1b263b;
+
+    --primary:#3b82f6;
+    --primary2:#6366f1;
+
+    --text:#ffffff;
+    --muted:#94a3b8;
+
+    --border:rgba(255,255,255,.08);
+
+    --radius:20px;
+
+    --transition:.25s ease;
+
+}
+
+/* ====================================================== */
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+body{
+
+    font-family:Inter,sans-serif;
+
+    /* background:var(--bg); */
+
+    color:var(--text);
+    
+}
+
+/* ====================================================== */
+
+.emma-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:
+    radial-gradient(circle at top right,
+    rgba(59,130,246,.08),
+    transparent 28%),
+    radial-gradient(circle at bottom left,
+    rgba(99,102,241,.08),
+    transparent 30%),
+    var(--bg);
+
+}
+
+/* ======================================================
+   HEADER
+====================================================== */
+
+.emma-header{
+
+    height:72px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 30px;
+
+    border-bottom:1px solid var(--border);
+    margin:20px;
+
+
+}
+
+.header-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+/* ====================================================== */
+
+.back-button{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:0 18px;
+
+    height:50px;
+
+    border-radius:50px;
+
+    background:#182235;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.back-button:hover{
+
+    background:#2563eb;
+
+}
+
+.back-button span{
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+/* ====================================================== */
+
+.header-left h1{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.header-left p{
+
+    color:var(--muted);
+
+    margin-top:4px;
+
+    font-size:14px;
+
+}
+
+/* ====================================================== */
+
+.online-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    background:var(--panel2);
+
+    font-size:14px;
+
+}
+
+.online-status span{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    box-shadow:
+    0 0 12px #22c55e;
+
+}
+
+/* ======================================================
+   WORKSPACE
+====================================================== */
+
+.workspace{
+
+    width:min(1050px,95%);
+
+    margin:18px auto;
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* ======================================================
+   CHAT
+====================================================== */
+
+.conversation{
+
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    /* height:520px; */
+
+    overflow-y:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+/* ====================================================== */
+
+.conversation::-webkit-scrollbar{
+
+    width:7px;
+
+}
+
+.conversation::-webkit-scrollbar-thumb{
+
+    background:#334155;
+
+    border-radius:30px;
+
+}
+
+/* ======================================================
+   MESSAGE
+====================================================== */
+
+.message{
+
+    max-width:620px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    line-height:1.8;
+
+    animation:fade .25s;
+
+}
+
+.message p{
+
+    margin-bottom:6px;
+
+}
+
+.message p:last-child{
+
+    margin-bottom:0;
+
+}
+
+/* ====================================================== */
+
+.message.emma{
+
+    background:#1e293b;
+
+    align-self:center;
+
+    text-align:left;
+
+    border:1px solid rgba(255,255,255,.05);
+
+}
+
+.message.user{
+
+    background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary2)
+    );
+
+    align-self:flex-end;
+
+    color:white;
+
+}
+
+/* ====================================================== */
+
+.message-title{
+
+    color:#60a5fa;
+
+    text-transform:uppercase;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+    margin-bottom:10px;
+
+    font-weight:700;
+
+}
+
+
+/* ======================================================
+   SUGGESTION CHIPS
+====================================================== */
+
+.chips{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-top:6px;
+
+}
+
+.chip{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:#0f172a;
+
+    border:1px solid var(--border);
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+    font-size:14px;
+
+}
+
+.chip svg{
+
+    font-size:17px;
+
+}
+
+.chip:hover{
+
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+    );
+
+    transform:translateY(-2px);
+
+}
+
+/* ======================================================
+   COMPOSER
+====================================================== */
+
+.composer{
+
+    margin-top:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:10px 14px;
+
+}
+
+/* ====================================================== */
+
+.attach-button{
+
+    /* width:46px; */
+
+    height:46px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#182235;
+
+    color:var(--muted);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.attach-button svg{
+
+    width:20px;
+
+    height:20px;
+
+}
+
+.attach-button:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+/* ====================================================== */
+
+.composer input{
+
+    /* flex:1; */
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:16px;
+
+    padding-left:8px;
+
+}
+
+.composer input::placeholder{
+
+    color:var(--muted);
+
+}
+
+/* ====================================================== */
+
+.send-button{
+
+    
+
+    height:46px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+    );
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.send-button svg{
+
+    width:20px;
+
+    height:20px;
+
+}
+
+.send-button:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+
+.emma-footer{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin:18px 0 28px;
+
+}
+
+/* ======================================================
+   ANIMATION
+====================================================== */
+
+@keyframes fade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+
+@media(max-width:900px){
+
+.emma-header{
+
+padding:0 18px;
+
+}
+
+.header-left{
+
+gap:12px;
+
+}
+
+.header-left h1{
+
+font-size:22px;
+
+}
+
+.header-left p{
+
+font-size:13px;
+
+}
+
+.online-status{
+
+padding:8px 14px;
+
+font-size:13px;
+
+}
+
+.workspace{
+
+width:96%;
+
+margin:16px auto;
+
+}
+
+.conversation{
+
+/* height:420px; */
+
+padding:18px;
+
+}
+
+.message{
+
+max-width:100%;
+
+}
+
+.chips{
+
+gap:10px;
+
+}
+
+.chip{
+
+padding:10px 14px;
+
+font-size:13px;
+
+}
+
+.composer{
+
+padding:10px;
+
+gap:10px;
+
+}
+
+.attach-button,
+.send-button{
+
+width:102px;
+
+height:42px;
+
+}
+
+.attach-button svg,
+.send-button svg{
+
+width:18px;
+
+height:18px;
+
+}
+
+.composer input{
+
+font-size:15px;
+
+}
+
+.emma-footer{
+
+padding:0 12px;
+
+font-size:12px;
+
+}
+
+}
+

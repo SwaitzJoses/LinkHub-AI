@@ -50,6 +50,7 @@ function LeadsTable({ leads = [] }) {
             style={{
               width: "100%",
               borderCollapse: "collapse",
+              color: "#333",
             }}
           >
             <thead>

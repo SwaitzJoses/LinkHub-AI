@@ -1,0 +1,147 @@
+.emma-chat{
+
+    background:#1d2437;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:28px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.30);
+
+}
+
+.emma-chat-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.emma-chat-header h2{
+
+    color:white;
+
+    margin:0;
+
+    font-size:30px;
+
+}
+
+.emma-chat-header p{
+
+    color:#bfc8dc;
+
+    margin-top:8px;
+
+}
+
+.online{
+
+    color:#00d26a;
+
+    font-weight:600;
+
+}
+
+.emma-input{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+.emma-input input{
+
+    flex:1;
+
+    background:#111827;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:14px;
+
+    padding:16px;
+
+    color:white;
+
+    font-size:16px;
+
+    outline:none;
+
+}
+
+.emma-input input::placeholder{
+
+    color:#8f9bb3;
+
+}
+
+.emma-input button{
+
+    width:56px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#6c63ff;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.emma-input button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.emma-suggestions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-top:22px;
+
+}
+
+.emma-suggestions button{
+
+    border:none;
+
+    background:#27314b;
+
+    color:white;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.emma-suggestions button:hover{
+
+    background:#6c63ff;
+
+}
