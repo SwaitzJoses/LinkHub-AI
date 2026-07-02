@@ -4,6 +4,7 @@ import "./Dashboard.css";
 import DailyViewsChart from "../components/DailyViewsChart";
 import LeadsTable from "../components/LeadsTable";
 import ProductCatalog from "../components/ProductCatalog";
+import EmmaCard from "../components/EmmaCard";
 import AnnouncementBroadcast from "../components/AnnouncementBroadcast";
  import { Menu, X } from "lucide-react";
 import {
@@ -505,6 +506,10 @@ const topLinks = clickAnalytics.filter(
           </p>
         </div>
       </header>
+
+      <EmmaCard />
+
+      
 
         <div className="dashboard">
   <div id="dashboard" className="card">

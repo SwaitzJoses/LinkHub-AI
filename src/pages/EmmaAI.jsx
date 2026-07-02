@@ -1,6 +1,8 @@
 import "../styles/EmmaAI.css";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import ProductSelector from "../components/ProductSelector";
 
 import {
   FiArrowLeft,
@@ -29,6 +31,7 @@ function EmmaAI() {
   const [uploadPreview, setUploadPreview] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
 
   const [messages, setMessages] = useState([
     {
@@ -38,6 +41,7 @@ function EmmaAI() {
         "Hi Swaitz 👋\n\nI'm Emma.\n\nYour AI Marketing Assistant.\n\nAsk me anything about marketing, posters, captions, WhatsApp campaigns or growing your business.",
     },
   ]);
+  const [showProducts, setShowProducts] = useState(false);
 
   useEffect(() => {
 
@@ -87,6 +91,27 @@ function EmmaAI() {
 
   ];
 
+useEffect(() => {
+  fetchProducts();
+}, []);
+
+async function fetchProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*");
+
+  console.log("Products:", data);
+  console.log("Error:", error);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setProducts(data);
+}
+
+
   function useSuggestion(prompt) {
 
     setInput(prompt);
@@ -129,6 +154,38 @@ function EmmaAI() {
     if (!input.trim() && !selectedFile) return;
 
     const prompt = input;
+    // If user wants to create a poster,
+// show products instead of calling GPT.
+
+if (
+  prompt.toLowerCase().includes("poster")
+) {
+
+  setMessages((prev) => [
+
+    ...prev,
+
+    {
+      id: Date.now(),
+      role: "user",
+      text: prompt,
+    },
+
+    {
+      id: Date.now() + 1,
+      role: "emma",
+      text: "Which product would you like to promote today?",
+    }
+
+  ]);
+
+  setShowProducts(true);
+
+setInput("");
+
+return;
+
+}
 
     const thinkingId = Date.now();
 
@@ -224,6 +281,78 @@ function EmmaAI() {
 
   }
 
+  async function promoteProduct(product) {
+
+  setShowProducts(false);
+
+  const prompt = `
+Create a premium advertising poster.
+
+Business Product:
+${product.name}
+
+Price:
+₹${product.price}
+
+Category:
+${product.category}
+
+Description:
+${product.description}
+
+Style:
+Luxury
+Modern
+Professional
+Eye-catching
+Instagram Quality
+
+`;
+
+  setMessages(prev => [
+
+    ...prev,
+
+    {
+      id: Date.now(),
+      role: "user",
+      text: `Promote ${product.name}`,
+    },
+
+    {
+      id: Date.now() + 1,
+      role: "emma",
+      text: "🎨 Creating your premium poster...",
+    }
+
+  ]);
+
+try {
+
+  const response = await fetch(
+    "http://localhost:3001/generate-poster",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+
+} catch (err) {
+
+  console.error(err);
+
+}
+}
+
     return (
     <div className="emma-page">
 
@@ -318,6 +447,42 @@ function EmmaAI() {
             ))}
 
           </div>
+
+
+{/* <div style={{ marginTop: "20px" }}>
+  <h3>Products Loaded</h3>
+
+  {products.map((product) => (
+  <div
+    key={product.id}
+    style={{
+      padding: "12px",
+      marginBottom: "10px",
+      background: "#1b2438",
+      borderRadius: "12px",
+      color: "#fff",
+    }}
+  >
+    <strong>{product.name}</strong>
+
+    <br />
+
+    ₹ {product.price}
+
+    <br />
+
+    {product.category}
+  </div>
+))}
+</div> */}
+
+
+{showProducts && (
+  <ProductSelector
+  products={products}
+  onSelect={promoteProduct}
+/>
+)}
 
           <div ref={bottomRef}></div>
 
