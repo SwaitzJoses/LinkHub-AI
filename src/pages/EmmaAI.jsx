@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ProductSelector from "../components/ProductSelector";
+import EmmaInsightCard from "../components/EmmaInsightCard";
+import { getEmmaInsight } from "../utils/EmmaInsights";
 
 import {
   FiArrowLeft,
@@ -32,6 +34,8 @@ function EmmaAI() {
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const [pageViews, setPageViews] = useState(0);
+  const [productViews, setProductViews] = useState(0);
 
   const [messages, setMessages] = useState([
     {
@@ -42,6 +46,7 @@ function EmmaAI() {
     },
   ]);
   const [showProducts, setShowProducts] = useState(false);
+  const [insight, setInsight] = useState("");
 
   useEffect(() => {
 
@@ -93,22 +98,72 @@ function EmmaAI() {
 
 useEffect(() => {
   fetchProducts();
+  fetchPageViews();
+  fetchProductViews();
+
+  
+ 
 }, []);
 
+
+useEffect(() => {
+
+  const result = getEmmaInsight({
+    pageViews,
+    yesterdayPageViews: 50,
+    productViews,
+    leads: 0,
+    products: products.length,
+  });
+
+  setInsight(result.insight);
+
+}, [pageViews, productViews, products]);
+
+
+async function fetchPageViews() {
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { count, error } = await supabase
+    .from("visitor_events")
+    .select("*", { count: "exact", head: true })
+    .eq("profile_id", user.id)
+    .eq("event_type", "PAGE_VIEW");
+
+setPageViews(count || 0);
+
+console.log("Page Views:", count);
+  console.log(error);
+
+}
+async function fetchProductViews() {
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { count, error } = await supabase
+    .from("visitor_events")
+    .select("*", { count: "exact", head: true })
+    .eq("profile_id", user.id)
+    .eq("event_type", "PRODUCT_VIEW");
+
+  setProductViews(count || 0);
+
+  console.log("Product Views:", count);
+  console.log(error);
+
+}
+
 async function fetchProducts() {
+
   const { data, error } = await supabase
     .from("products")
     .select("*");
 
-  console.log("Products:", data);
-  console.log("Error:", error);
-
-  if (error) {
-    console.log(error);
-    return;
-  }
+  if (error) return;
 
   setProducts(data);
+
 }
 
 
@@ -449,32 +504,7 @@ try {
           </div>
 
 
-{/* <div style={{ marginTop: "20px" }}>
-  <h3>Products Loaded</h3>
 
-  {products.map((product) => (
-  <div
-    key={product.id}
-    style={{
-      padding: "12px",
-      marginBottom: "10px",
-      background: "#1b2438",
-      borderRadius: "12px",
-      color: "#fff",
-    }}
-  >
-    <strong>{product.name}</strong>
-
-    <br />
-
-    ₹ {product.price}
-
-    <br />
-
-    {product.category}
-  </div>
-))}
-</div> */}
 
 
 {showProducts && (
@@ -502,6 +532,8 @@ try {
           </div>
 
         )}
+
+        <EmmaInsightCard insight={insight} />
 
         {/* ================= COMPOSER ================= */}
 
