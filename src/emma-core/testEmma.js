@@ -1,63 +1,39 @@
 import Emma from "./Emma";
-import EmmaMemory from "./EmmaMemory";
 
 
-// Emma experiences repeated customer behavior
+const emma = new Emma();
 
-Emma.experience(
-  "ANY_CONNECTOR",
-  {
-    action:"CUSTOMER_INTEREST",
-    item:"Product A"
+
+const testBusinessEvent = {
+
+  source: "linkhub",
+
+  type: "product_view",
+
+  businessId: "fashion_hub",
+
+  data: {
+
+    product:
+      "Silk Saree",
+
+    views: 100,
+
+    whatsappClicks: 2
+
   }
-);
+
+};
 
 
-Emma.experience(
-  "ANY_CONNECTOR",
-  {
-    action:"CUSTOMER_INTEREST",
-    item:"Product A"
-  }
-);
+emma.think(
+  testBusinessEvent
+)
+.then((response)=>{
 
+  console.log(
+    "🤖 Emma Final Response:",
+    response
+  );
 
-Emma.experience(
-  "ANY_CONNECTOR",
-  {
-    action:"CUSTOMER_INTEREST",
-    item:"Product A"
-  }
-);
-
-
-Emma.experience(
-  "ANY_CONNECTOR",
-  {
-    action:"CUSTOMER_INTEREST",
-    item:"Product A"
-  }
-);
-
-
-Emma.experience(
-  "ANY_CONNECTOR",
-  {
-    action:"CUSTOMER_INTEREST",
-    item:"Product A"
-  }
-);
-
-
-
-
-
-// Check evolved memory
-
-EmmaMemory.showMemories();
-
-setTimeout(()=>{
-
-  Emma.think();
-
-},3000);
+});

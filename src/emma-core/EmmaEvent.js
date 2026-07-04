@@ -1,54 +1,57 @@
 // EmmaEvent.js
-// Universal Emma event language
+// Universal language of Emma
+
 
 class EmmaEvent {
 
-  constructor({
 
-    source,
+ static create({
 
-    type,
+  source,
 
-    rawData,
+  businessId,
 
-    meaning,
+  type,
 
-    businessId = null,
+  actor="system",
 
-    customerId = null,
+  object=null,
 
-    importance = 1
+  data={}
 
-  }) {
-
-
-    this.id = crypto.randomUUID();
+ }){
 
 
-    this.source = source;
+  return {
 
 
-    this.type = type;
+   source,
 
 
-    this.meaning = meaning;
+   businessId,
 
 
-    this.rawData = rawData;
+   type,
 
 
-    this.businessId = businessId;
+   actor,
 
 
-    this.customerId = customerId;
+   object,
 
 
-    this.importance = importance;
+   context:data,
 
 
-    this.createdAt = new Date();
+   happenedAt:
+    new Date()
 
-  }
+
+  };
+
+
+ }
+
 
 }
 

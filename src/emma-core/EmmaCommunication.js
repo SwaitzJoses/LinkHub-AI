@@ -1,97 +1,50 @@
 // EmmaCommunication.js
-// Emma's personality and communication layer
+// Emma's voice
+// Converts insights into human conversation
+
 
 class EmmaCommunication {
 
 
-  speak(decisions){
-
-
-    const messages =
-      decisions.map(decision => {
-
-
-        return this.createMessage(
-          decision
-        );
-
-
-      });
-
-
+  constructor(){
 
     console.log(
-      "🗣 Emma says:",
-      messages
+      "💬 Emma Communication ready"
     );
-
-
-    return messages;
-
 
   }
 
 
 
+  async reply(insight){
 
 
-
-  createMessage(decision){
-
-
-
-    if(
-      decision.confidence >= 3
-    ){
-
-
-      return {
-
-        message:
-        `
-I noticed something interesting.
-
-${decision.conclusion}
-
-I have seen this pattern multiple times,
-so I think this is worth your attention.
-        `,
-
-
-        emotion:"confident",
-
-
-        confidence:
-        decision.confidence
-
-
-      };
-
-
-    }
-
-
-
+    console.log(
+      "💬 Preparing response:",
+      insight
+    );
 
 
     return {
 
+      from:
+        "Emma",
+
 
       message:
-      `
-I noticed something happening.
-
-I will continue observing before making
-a strong suggestion.
-      `,
+        insight.message,
 
 
-      emotion:"curious",
+      priority:
+        insight.priority,
 
 
       confidence:
-      decision.confidence
+        insight.confidence || 0,
 
+
+      createdAt:
+        new Date()
 
     };
 
@@ -103,4 +56,4 @@ a strong suggestion.
 
 
 
-export default new EmmaCommunication();
+export default EmmaCommunication;

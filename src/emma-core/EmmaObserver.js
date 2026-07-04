@@ -1,130 +1,94 @@
-import { EmmaDB } from "./config/EmmaDatabase";
-import { reflectOnEvent } from "./EmmaReflection";
-
-
-// ===================================
-// Emma Observer 👀
-//
+// EmmaObserver.js
 // Emma's eyes
-// Receives experiences from any source
-//
-// LinkHub
-// WhatsApp
-// Shopify
-// POS
-// Calendar
-//
-// Everything enters Emma here
-// ===================================
+// Watches business events
 
 
-export async function recordEmmaEvent(
-  eventType,
-  eventData = {},
-  source = "LINKHUB"
-) {
+class EmmaObserver {
 
 
-  // Who owns this experience?
-
-  const {
-    data: { user },
-  } = await EmmaDB.auth.getUser();
-
-
-
-  if (!user) {
+  constructor() {
 
     console.log(
-      "Emma Observer: no user found"
+      "👀 Emma Observer ready"
     );
-
-    return;
 
   }
 
 
 
-  // ===========================
-  // Save raw experience
-  // ===========================
+  async observe(event) {
 
-
-  const { error } = await EmmaDB
-    .from("emma_events")
-    .insert({
-
-      business_id: user.id,
-
-      source: source,
-
-      event_type: eventType,
-
-      event_data: eventData,
-
-    });
-
-
-
-  if (error) {
 
     console.log(
-      "Emma memory error:",
-      error
+      "👀 Observing:",
+      event
     );
 
-    return;
+
+    return {
+
+      eventType:
+        event.type,
+
+
+      businessId:
+        event.businessId,
+
+
+      observation:
+        this.understand(event),
+
+
+      raw:
+        event,
+
+
+      observedAt:
+        new Date()
+
+    };
+
 
   }
 
 
 
 
-  console.log(
-    "Emma observed 👀:",
-    eventType
-  );
+  understand(event) {
 
 
+    if (
+      event.type === "product_view"
+    ) {
 
 
-  // ===========================
-  // Send to Reflection
-  //
-  // Observer does NOT think
-  // ===========================
+      return (
+        "Customer interest detected"
+      );
+
+    }
 
 
-  await reflectOnEvent(
+    if (
+      event.type === "low_sales"
+    ) {
 
-    user.id,
 
-    eventType,
+      return (
+        "Possible sales problem detected"
+      );
 
-    eventData
+    }
 
-  );
+
+    return (
+      "General business activity detected"
+    );
+
+  }
 
 
 }
-
-
-
-// ===================================
-// Compatibility with Emma.js
-// ===================================
-
-
-const EmmaObserver = {
-
-
-  observe: recordEmmaEvent,
-
-
-  recordEmmaEvent: recordEmmaEvent,
-
-
-};
 
 
 

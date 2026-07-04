@@ -1,173 +1,89 @@
-import { EmmaDB } from "./config/EmmaDatabase";
+// EmmaInsight.js
+// Emma's understanding layer
+// Converts judgement into useful business insights
 
 
-// =======================================
-// Emma Insight 💡
-//
-// Job:
-//
-// Store Emma's recommendations
-// for the business owner
-//
-// =======================================
+class EmmaInsight {
 
 
-export async function createEmmaInsight(
-  businessId,
-  insight
-) {
-
-
-  console.log(
-    "💡 Emma creating insight:",
-    insight
-  );
-
-
-
-  if (!businessId || !insight) {
-
+  constructor(){
 
     console.log(
-      "Emma Insight: missing data"
+      "💡 Emma Insight ready"
     );
-
-
-    return;
 
   }
 
 
 
+  async create(judgement){
 
 
-  const { error } =
-    await EmmaDB
-      .from("emma_insights")
-      .insert({
+    console.log(
+      "💡 Creating insight:",
+      judgement
+    );
 
 
-        business_id:
-        businessId,
+
+    if(
+      judgement.shouldAct
+    ){
 
 
-        insight_type:
-        insight.type,
+      return {
+
+        type:
+          "actionable_insight",
 
 
         message:
-        insight.message,
+          judgement.action,
 
 
         priority:
-        insight.priority || "medium",
+          judgement.priority,
 
 
-        status:
-        "new"
+        confidence:
+          judgement.confidence,
 
 
-      });
+        reason:
+          judgement.reason
+
+      };
+
+
+    }
 
 
 
 
+    return {
 
-  if(error){
-
-
-    console.log(
-      "Emma insight save error:",
-      error
-    );
+      type:
+        "observation",
 
 
-    return;
+      message:
+        "I noticed this, but I will wait for stronger signals before suggesting action.",
+
+
+      priority:
+        "low",
+
+
+      confidence:
+        judgement.confidence
+
+    };
 
 
   }
 
 
-
-
-
-  console.log(
-    "💡 Emma insight saved"
-  );
-
-
 }
-
-
-
-
-
-
-// =================================
-// Read insights
-// =================================
-
-
-export async function getEmmaInsights(
-  businessId
-){
-
-
-  const { data, error } =
-    await EmmaDB
-      .from("emma_insights")
-      .select("*")
-      .eq(
-        "business_id",
-        businessId
-      )
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      );
-
-
-
-
-  if(error){
-
-
-    console.log(
-      "Emma insight read error:",
-      error
-    );
-
-
-    return [];
-
-  }
-
-
-
-  return data;
-
-
-}
-
-
-
-
-
-
-const EmmaInsight = {
-
-
-  create:
-  createEmmaInsight,
-
-
-  get:
-  getEmmaInsights
-
-
-};
 
 
 

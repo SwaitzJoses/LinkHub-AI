@@ -1,249 +1,112 @@
-import { EmmaDB } from "./config/EmmaDatabase";
+// EmmaMemory.js
+// Emma's long term memory system
+// Reads previous experiences from Supabase
 
 
-// =====================================
-// Emma Memory 🧠
-//
-// Job:
-//
-// Decide:
-// Forget 🗑️
-// or
-// Store as knowledge 💎
-//
-// =====================================
-
-
-export async function processMemory(
-  businessId,
-  memory
-) {
-
-
-  console.log(
-    "Emma is processing memory 🧠"
-  );
+import { EmmaDB }
+from "./config/EmmaDatabase";
 
 
 
-  const importance =
-    calculateImportance(memory);
+class EmmaMemory {
+
+
+  constructor(){
+
+    console.log(
+      "🧠 Emma Memory ready"
+    );
+
+  }
 
 
 
-  // ==============================
-  // Forget low value memories
-  // ==============================
 
 
-  if (importance < 0.3) {
+  async remember(
+    reflection
+  ){
 
 
     console.log(
-      "Emma forgot memory 🗑️"
+      "🧠 Emma searching past experience..."
     );
 
 
-    return;
 
-  }
+    const businessId =
+      reflection.businessId;
 
 
 
+    if(!businessId){
 
-  // ==============================
-  // Store long term knowledge
-  // ==============================
 
+      console.log(
+        "No business id for memory search"
+      );
 
-  const { error } =
-    await EmmaDB
-      .from("emma_knowledge")
-      .insert({
 
+      return {
 
-        business_id:
-          businessId,
+        previousExperiences: [],
 
+        totalMemories:0,
 
-        knowledge_type:
-          memory.type,
+        lastAdvice:null
 
+      };
 
-        knowledge: {
+    }
 
-          thought:
-            memory.thought,
 
 
-          details:
-            memory.details || {},
 
-
-          learned_from:
-            memory.source
-
-        },
-
-
-        confidence:
-          importance
-
-
-      });
-
-
-
-  if (error) {
-
-
-    console.log(
-      "Emma knowledge error:",
-      error
-    );
-
-
-    return;
-
-  }
-
-
-
-
-  console.log(
-    "Emma stored knowledge 💎"
-  );
-
-
-}
-
-
-
-
-// =====================================
-// Importance calculation
-//
-// Later Emma AI replaces this
-// =====================================
-
-
-function calculateImportance(
-  memory
-){
-
-
-  let score = 0.5;
-
-
-
-  if(
-    memory.type ===
-    "PRODUCT_PATTERN"
-  ){
-
-    score += 0.3;
-
-  }
-
-
-
-  if(
-    memory.type ===
-    "CUSTOMER_PATTERN"
-  ){
-
-    score += 0.4;
-
-  }
-
-
-
-  if(
-    memory.type ===
-    "MARKETING_PATTERN"
-  ){
-
-    score += 0.2;
-
-  }
-
-
-
-  return Math.min(
-    score,
-    1
-  );
-
-}
-
-
-
-// =====================================
-// Show Emma Memories 🧠
-// =====================================
-
-
-export async function showMemories(
-  businessId
-){
-
-  console.log(
-    "🧠 Emma Memories:"
-  );
-
-
-  const { data, error } =
-    await EmmaDB
-      .from("emma_knowledge")
-      .select("*")
-      .eq(
-        "business_id",
+    const memories =
+      await EmmaDB.getMemories(
         businessId
       );
 
 
-  if(error){
 
-    console.log(
-      "Emma memory read error:",
-      error
-    );
 
-    return [];
+    const lastMemory =
+      memories[0];
+
+
+
+
+    return {
+
+
+      previousExperiences:
+        memories,
+
+
+
+      totalMemories:
+        memories.length,
+
+
+
+      lastAdvice:
+
+        lastMemory
+        ?.memory
+        ?.reasoning
+        ?.suggestion
+
+        || null
+
+
+    };
+
 
   }
 
 
-  console.log(data);
-
-
-  return data;
-
 }
 
-
-
-// =====================================
-// Default Emma Memory API
-// =====================================
-
-
-const EmmaMemory = {
-
-
-  process:
-    processMemory,
-
-
-  remember:
-    processMemory,
-
-
-  showMemories:
-    showMemories
-
-
-};
 
 
 export default EmmaMemory;

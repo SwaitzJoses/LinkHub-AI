@@ -1,196 +1,105 @@
-import { EmmaDB } from "./config/EmmaDatabase";
-import { createEmmaInsight } from "./emmaInsight";
+// EmmaReasoning.js
+// Emma's thinking engine
+// Understands problems and creates possible solutions
 
 
-// ======================================
-// Emma Reasoning 🤔
-//
-// Reads knowledge
-// Thinks
-// Creates insights
-// ======================================
+class EmmaReasoning {
 
 
-export async function reason(
-  businessId
-) {
-
-
-  console.log(
-  "🔥 NEW EMMA REASONING FILE LOADED"
-);
-
-
-  // If nobody gives business id,
-  // Emma finds her owner herself
-
-
-  if(!businessId){
-
-
-    const {
-      data:{user}
-    } =
-    await EmmaDB.auth.getUser();
-
-
-
-    if(!user){
-
-      console.log(
-        "Emma reasoning: no owner"
-      );
-
-
-      return [];
-
-    }
-
-
-
-    businessId = user.id;
-
-
-  }
-
-
-
-  console.log(
-    "👤 Emma reasoning for:",
-    businessId
-  );
-
-
-
-
-
-  // ==========================
-  // Read long term memory
-  // ==========================
-
-
-  const {
-    data: memories,
-    error
-  } =
-  await EmmaDB
-    .from("emma_knowledge")
-    .select("*")
-    .eq(
-      "business_id",
-      businessId
-    );
-
-
-
-
-
-  if(error){
-
+  constructor(){
 
     console.log(
-      "Emma knowledge read error:",
-      error
+      "💭 Emma Reasoning ready"
     );
-
-
-    return [];
-
 
   }
 
 
 
 
-
-  console.log(
-    "🧠 Emma knows:",
-    memories
-  );
-
-
-
-
-
-  const insights = [];
-
-
-
-
-  memories.forEach(
-    (memory)=>{
-
-
-      if(
-        memory.knowledge_type
-        ===
-        "PRODUCT_PATTERN"
-      ){
-
-
-        insights.push({
-
-          type:
-          "MARKETING_ACTION",
-
-
-          priority:
-          "medium",
-
-
-          message:
-          "You are adding products regularly. Create a promotion campaign to attract customers."
-
-
-        });
-
-
-      }
-
-
-    }
-  );
-
-
-
-
-
-  for(
-    const insight of insights
+  async think(
+    reflection,
+    memory
   ){
 
 
-    await createEmmaInsight(
-      businessId,
-      insight
+    console.log(
+      "💭 Thinking using:",
+      {
+        reflection,
+        memory
+      }
     );
 
 
+
+    let suggestion =
+      "Continue observing business activity";
+
+
+    let confidence = 50;
+
+
+
+    if(
+      reflection.meaning
+      ?.includes("interest")
+    ){
+
+
+      suggestion =
+        "Improve conversion because customers are showing interest";
+
+
+      confidence = 80;
+
+
+    }
+
+
+
+    if(
+      memory.totalMemories > 5
+    ){
+
+
+      confidence += 10;
+
+
+    }
+
+
+
+
+    return {
+
+      thought:
+        "Emma analyzed the situation",
+
+
+      suggestion,
+
+
+      confidence,
+
+
+      impact:
+        confidence > 70
+          ? "high"
+          : "medium",
+
+
+      createdAt:
+        new Date()
+
+    };
+
+
   }
-
-
-
-
-  console.log(
-    "💡 Emma created insights:",
-    insights
-  );
-
-
-
-  return insights;
 
 
 }
 
-
-
-
-const EmmaReasoning = {
-
-  reason
-
-};
 
 
 export default EmmaReasoning;

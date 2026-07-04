@@ -1,23 +1,49 @@
 // Emma.js
 // Emma's central nervous system
-// Coordinates Emma's brain layers
+// Coordinates all Emma brain layers
+
 
 import UniversalTranslator
 from "./translators/UniversalTranslator";
 
+
+import LinkHubConnector
+from "./connectors/LinkHubConnector";
+
+
 import EmmaObserver
 from "./EmmaObserver";
+
 
 import EmmaReflection
 from "./EmmaReflection";
 
+
+import EmmaMemory
+from "./EmmaMemory";
+
+
 import EmmaReasoning
 from "./EmmaReasoning";
+
+
+import EmmaJudgement
+from "./EmmaJudgement";
+
+
+import EmmaInsight
+from "./EmmaInsight";
+
 
 import EmmaCommunication
 from "./EmmaCommunication";
 
-import { EmmaDB } from "./config/EmmaDatabase";
+
+import { EmmaDB }
+from "./config/EmmaDatabase";
+
+
+
 
 
 class Emma {
@@ -25,12 +51,62 @@ class Emma {
 
   constructor(){
 
-    this.name = "Emma";
-
 
     console.log(
-      "🤖 Emma is awake"
+      "🧠 Emma AI Employee waking up..."
     );
+
+
+
+    // External system connectors
+
+    this.linkhub =
+      new LinkHubConnector();
+
+
+
+    // Universal language layer
+
+    this.translator =
+      new UniversalTranslator();
+
+
+
+    // Emma brain organs
+
+    this.observer =
+      new EmmaObserver();
+
+
+
+    this.reflection =
+      new EmmaReflection();
+
+
+
+    this.memory =
+      new EmmaMemory();
+
+
+
+    this.reasoning =
+      new EmmaReasoning();
+
+
+
+    this.judgement =
+      new EmmaJudgement();
+
+
+
+    this.insight =
+      new EmmaInsight();
+
+
+
+    this.communication =
+      new EmmaCommunication();
+
 
   }
 
@@ -38,51 +114,308 @@ class Emma {
 
 
 
-  // ------------------------------------------------
-  // EXPERIENCE LAYER
-  // ------------------------------------------------
-  // Anything from outside world enters here:
-  //
-  // WhatsApp
-  // Shopify
-  // LinkHub
-  // Instagram
-  // Gmail
-  //
-  // Emma does not care where it came from.
-  // ------------------------------------------------
 
-  experience(source, rawEvent){
+  // =========================
+  // LINKHUB ENTRY POINT
+  // =========================
+
+
+  async analyzeLinkHub(
+    businessData
+  ){
 
 
     console.log(
-      "📡 New experience from:",
-      source
+      "🔗 Emma received LinkHub data",
+      businessData
     );
 
 
 
-    // 1. Translate external language
-    // into Emma universal language
-
     const event =
-      UniversalTranslator.translate(
-        source,
-        rawEvent
+      this.linkhub.createEvent(
+        businessData
+      );
+
+
+
+    return await this.think(
+      event
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // MAIN EMMA THINKING LOOP
+  // =========================
+
+
+
+  async think(input){
+
+
+
+    console.log(
+      "🤖 Emma started thinking..."
+    );
+
+
+
+    try {
+
+
+
+      // 1. Translate outside world
+
+
+      const translatedEvent =
+        await this.translator.translate(
+          input
+        );
+
+
+      console.log(
+        "🌎 Translated:",
+        translatedEvent
       );
 
 
 
 
-    // 2. Observe and remember experience
-
-    EmmaObserver.observe(
-      event
-    );
 
 
 
-    return event;
+      // 2. Observe
+
+
+      const observation =
+        await this.observer.observe(
+          translatedEvent
+        );
+
+
+
+      console.log(
+        "👀 Observation:",
+        observation
+      );
+
+
+
+
+
+
+
+      // 3. Reflect
+
+
+      const reflection =
+        await this.reflection.reflect(
+          observation
+        );
+
+
+
+      console.log(
+        "🤔 Reflection:",
+        reflection
+      );
+
+
+
+
+
+
+
+
+      // 4. Memory
+
+
+      const memories =
+        await this.memory.remember(
+          reflection
+        );
+
+
+
+      console.log(
+        "🧠 Memory:",
+        memories
+      );
+
+
+
+
+
+
+
+
+      // 5. Reason
+
+
+      const reasoning =
+        await this.reasoning.think(
+          reflection,
+          memories
+        );
+
+
+
+      console.log(
+        "💭 Reasoning:",
+        reasoning
+      );
+
+
+
+
+
+
+
+
+
+      // 6. Judgement
+
+
+      const judgement =
+        await this.judgement.judge(
+          reasoning,
+          memories
+        );
+
+
+
+      console.log(
+        "⚖️ Judgement:",
+        judgement
+      );
+
+
+
+
+
+
+
+
+
+      // 7. Insight
+
+
+      const insight =
+        await this.insight.create(
+          judgement
+        );
+
+
+
+      console.log(
+        "💡 Insight:",
+        insight
+      );
+
+
+
+
+
+
+
+
+
+
+      // 8. Communication
+
+
+      const message =
+        await this.communication.reply(
+          insight
+        );
+
+
+
+      console.log(
+        "💬 Emma says:",
+        message
+      );
+
+
+
+
+
+
+
+
+
+
+      // 9. Store experience
+
+
+      await EmmaDB.saveMemory({
+
+        input,
+
+        observation,
+
+        reflection,
+
+        reasoning,
+
+        judgement,
+
+        insight,
+
+        message
+
+      });
+
+
+
+
+
+      return message;
+
+
+
+
+    } 
+    
+    catch(error){
+
+
+
+      console.error(
+        "❌ Emma brain error:",
+        error
+      );
+
+
+
+      return {
+
+        from:
+          "Emma",
+
+
+        message:
+          "I need more information before making a decision.",
+
+
+        priority:
+          "low"
+
+      };
+
+
+    }
+
 
 
   }
@@ -90,80 +423,9 @@ class Emma {
 
 
 
-
-
-
-
-
-  // ------------------------------------------------
-  // THINKING LAYER
-  // ------------------------------------------------
-  //
-  // Memory
-  //   ↓
-  // Reflection
-  //   ↓
-  // Reasoning
-  //   ↓
-  // Communication
-  //
-  // ------------------------------------------------
-
-
-async think(){
-
-
-  console.log(
-    "🤔 Emma is thinking..."
-  );
-
-
-
-  const {
-    data:{ user },
-    error
-  } = await EmmaDB.auth.getUser();
-
-
-
-  console.log(
-    "👤 Emma working for:",
-    user
-  );
-
-
-
-  if(error || !user){
-
-    console.log(
-      "Emma cannot find owner"
-    );
-
-    return;
-
-  }
-
-
-
-
-  const insights =
-    await EmmaReasoning.reason(
-      user.id
-    );
-
-
-
-
-  EmmaCommunication.speak(
-    insights
-  );
-
-
-}
-
-
 }
 
 
 
-export default new Emma();
+
+export default Emma;
