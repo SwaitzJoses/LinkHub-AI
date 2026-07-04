@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
+import Emma from "../emma-core/emma";
+
 function ProductCatalog() {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -8,6 +10,7 @@ function ProductCatalog() {
   const [productDescription, setProductDescription] = useState("");
   const [productImage, setProductImage] = useState(null);
   const [products, setProducts] = useState([]);
+  
 
   useEffect(() => {
     loadProducts();
@@ -76,13 +79,37 @@ console.log("IMAGE:", imageUrl);
       image_url: imageUrl,
     });
 
-    if (error) {
-      alert(error.message);
-      console.log(error);
-      return;
-    }
+if (error) {
+  alert(error.message);
+  console.log(error);
+  return;
+}
 
-    alert("Product added!");
+
+
+
+alert("Product added!");
+
+await Emma.experience({
+
+  id: crypto.randomUUID(),
+
+  user_id: user.id,
+
+  business_id: user.id,
+
+  type: "PRODUCT_ADDED",
+
+  data: {
+    product_name: productName,
+    price: productPrice
+  },
+
+  entity_type: "product",
+
+  entity_id: null
+
+});
 
     setProductName("");
     setProductPrice("");
@@ -163,12 +190,13 @@ console.log("IMAGE:", imageUrl);
         }
       />
 
-      <input
-        type="file"
-        onChange={(e) =>
-          setProductImage(e.target.files[0])
-        }
-      />
+     <input
+  type="file"
+  accept="image/*"
+  onChange={(e) =>
+    setProductImage(e.target.files[0])
+  }
+/>
 <br /><br />
       <button onClick={saveProduct}>
         Add Product

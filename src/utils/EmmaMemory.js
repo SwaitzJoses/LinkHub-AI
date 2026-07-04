@@ -55,3 +55,34 @@ export async function getMissionHistory(userId) {
 
   return data;
 }
+
+export async function saveEmmaMemory(
+  userId,
+  type,
+  data
+) {
+
+  const { error } = await supabase
+    .from("emma_memory")
+    .insert([
+      {
+        user_id: userId,
+        event_type: type,
+        event_data: data,
+      },
+    ]);
+
+
+  if (error) {
+    console.log(
+      "Emma memory error:",
+      error
+    );
+  } else {
+    console.log(
+      "🧠 Emma remembered:",
+      type
+    );
+  }
+
+}

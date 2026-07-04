@@ -1,0 +1,271 @@
+/* =========================
+   Emma Summary Screen
+========================= */
+
+
+.summary-page{
+
+    min-height:100vh;
+    width:100%;
+
+    background:
+    radial-gradient(
+        circle at top,
+        rgba(99,91,255,.15),
+        transparent 35%
+    ),
+    #f8fafc;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    padding:24px;
+
+
+    font-family:Inter,system-ui,sans-serif;
+
+}
+
+
+
+/* CARD */
+
+
+.summary-card{
+
+
+    width:100%;
+
+    max-width:560px;
+
+
+    background:white;
+
+
+    border-radius:32px;
+
+
+    padding:48px;
+
+
+    text-align:center;
+
+
+    border:1px solid #eef2f7;
+
+
+    box-shadow:
+    0 30px 80px rgba(15,23,42,.10);
+
+}
+
+
+
+/* STEP */
+
+
+.step{
+
+
+    display:inline-block;
+
+
+    margin-bottom:24px;
+
+
+    color:#635bff;
+
+
+    font-size:14px;
+
+
+    font-weight:700;
+
+}
+
+
+
+
+/* TEXT */
+
+
+.summary-card h1{
+
+
+    margin:0;
+
+
+    font-size:36px;
+
+
+    
+
+
+    color:#0f172a;
+
+}
+
+
+
+.summary-card p{
+
+
+    margin:16px auto 32px;
+
+
+    max-width:380px;
+
+
+    color:#64748b;
+
+
+    line-height:1.6;
+
+}
+
+
+
+
+/* MEMORY */
+
+
+.memory-box{
+
+
+    background:#f8fafc;
+
+
+    border:1px solid #e2e8f0;
+
+
+    border-radius:22px;
+
+
+    padding:24px;
+
+
+    margin-bottom:32px;
+
+
+    text-align:left;
+
+}
+
+
+
+.memory-box div{
+
+
+    margin-bottom:20px;
+
+}
+
+
+
+.memory-box div:last-child{
+
+
+    margin-bottom:0;
+
+}
+
+
+
+.memory-box span{
+
+
+    display:block;
+
+
+    font-size:13px;
+
+
+    color:#64748b;
+
+
+    margin-bottom:6px;
+
+}
+
+
+
+.memory-box strong{
+
+
+    font-size:16px;
+
+
+    color:#0f172a;
+
+}
+
+
+
+/* BUTTON */
+
+
+.continue-btn{
+
+
+    width:100%;
+
+
+    height:52px;
+
+
+    border:none;
+
+
+    border-radius:15px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #635bff,
+        #8b5cf6
+    );
+
+
+    color:white;
+
+
+    font-size:15px;
+
+
+    font-weight:700;
+
+
+    cursor:pointer;
+
+}
+
+
+
+/* MOBILE */
+
+
+@media(max-width:600px){
+
+
+.summary-card{
+
+    padding:36px 26px;
+
+}
+
+
+.summary-card h1{
+
+    font-size:30px;
+
+}
+
+
+}

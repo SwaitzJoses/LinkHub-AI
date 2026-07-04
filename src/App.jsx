@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
+import EmmaOnboarding from "./features/emma/EmmaOnboarding";
 
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -11,6 +12,8 @@ import AIPoster from "./pages/AIPoster";
 import PosterGenerator from "./pages/PosterGenerator";
 import MyPosters from "./pages/MyPosters";
 import EmmaAI from "./pages/EmmaAI";
+
+
 
 function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -39,9 +42,13 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
+    
   return (
+
+    
     <BrowserRouter>
 <Routes>
+
   <Route path="/" element={<Navigate to="/dashboard" />} />
   <Route path="/signup" element={<Signup />} />
   <Route path="/login" element={<Login />} />
@@ -54,6 +61,11 @@ function App() {
       </ProtectedRoute>
     }
   />
+
+    <Route
+    path="/emma-onboarding"
+    element={<EmmaOnboarding />}
+/>
 
   <Route
     path="/:username"

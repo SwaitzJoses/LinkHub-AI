@@ -1,0 +1,272 @@
+/* =========================
+   Emma Goals Screen
+========================= */
+
+
+.goals-page {
+
+    min-height:100vh;
+
+    width:100%;
+
+
+    background:
+    radial-gradient(
+        circle at top,
+        rgba(99,91,255,.15),
+        transparent 35%
+    ),
+    #ffffff;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    padding:24px;
+
+
+    font-family:Inter,system-ui,sans-serif;
+
+}
+
+
+/* CARD */
+
+
+.goals-card {
+
+    width:100%;
+
+    max-width:560px;
+
+
+    background:#ffffff;
+
+
+    border-radius:32px;
+
+
+    padding:48px;
+
+
+    box-shadow:
+    0 30px 80px rgba(15,23,42,.10);
+
+
+    border:1px solid #eef2f7;
+
+}
+
+
+
+/* STEP */
+
+
+.step {
+
+    display:inline-block;
+
+
+    margin-bottom:24px;
+
+
+    font-size:14px;
+
+
+    font-weight:700;
+
+
+    color:#635bff;
+
+}
+
+
+
+/* TEXT */
+
+
+.goals-card h1 {
+
+    margin:0;
+
+
+    font-size:36px;
+
+
+    
+
+
+    color:#0f172a;
+
+}
+
+
+
+.goals-card p {
+
+
+    margin-top:14px;
+
+    margin-bottom:32px;
+
+
+    color:#64748b;
+
+
+    line-height:1.6;
+
+}
+
+
+
+
+/* INPUT */
+
+
+.goals-card textarea {
+
+
+    width:100%;
+
+
+    min-height:150px;
+
+
+    border-radius:18px;
+
+
+    border:1px solid #e2e8f0;
+
+
+    padding:18px;
+
+
+    font-size:15px;
+
+
+    line-height:1.6;
+
+
+    resize:none;
+
+
+    outline:none;
+
+
+    font-family:inherit;
+
+
+    box-sizing:border-box;
+
+}
+
+
+
+.goals-card textarea:focus {
+
+
+    border-color:#635bff;
+
+}
+
+
+
+/* BUTTON */
+
+
+.continue-btn {
+
+
+    width:100%;
+
+
+    height:52px;
+
+
+    margin-top:24px;
+
+
+    border:none;
+
+
+    border-radius:15px;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #635bff,
+        #8b5cf6
+    );
+
+
+    color:white;
+
+
+    font-size:15px;
+
+
+    font-weight:700;
+
+
+    cursor:pointer;
+
+}
+
+
+
+/* MOBILE */
+
+
+@media(max-width:600px){
+
+
+.goals-card{
+
+    padding:36px 26px;
+
+}
+
+
+.goals-card h1{
+
+    font-size:30px;
+
+}
+
+}
+
+.error-box{
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    margin:20px 0;
+
+    padding:14px 18px;
+
+
+    border-radius:14px;
+
+
+    background:#fef2f2;
+
+    border:1px solid #fecaca;
+
+
+    color:#dc2626;
+
+
+    font-size:14px;
+
+    font-weight:600;
+
+
+    text-align:center;
+
+}
