@@ -1,14 +1,13 @@
 // EmmaOutcome.js
-// Emma's learning system
-// Converts actions into experience
-// Action → Result → Lesson → Memory
+// Emma's experience engine
+// Converts actions into wisdom
+// Action → Result → Understanding → Lesson → Memory
 
 
 class EmmaOutcome {
 
 
 constructor(){
-
 
 console.log(
 "📊 Emma Outcome Learning ready"
@@ -17,22 +16,13 @@ console.log(
 
 this.outcomes=[];
 
-
 }
 
 
 
-
-
-
-
-
-
-
-
-// ==========================
+// =============================
 // Main learning entry
-// ==========================
+// =============================
 
 
 async record(
@@ -41,9 +31,8 @@ result
 ){
 
 
-
 console.log(
-"📊 Emma reviewing outcome:",
+"📊 Emma analyzing outcome:",
 {
 action,
 result
@@ -52,26 +41,19 @@ result
 
 
 
-
-
-
+// Measure business impact
 
 const impact =
-
 this.calculateImpact(
-result.metrics
+result?.metrics || {}
 );
 
 
 
+// Understand why it happened
 
-
-
-
-
-const learning =
-
-this.createLearning(
+const analysis =
+this.analyzeReason(
 action,
 result,
 impact
@@ -79,87 +61,69 @@ impact
 
 
 
+// Convert into lesson
+
+const learning =
+this.createLearning(
+action,
+result,
+impact,
+analysis
+);
 
 
 
 
-
+// Create experience memory
 
 const outcome={
-
-
 
 
 outcomeId:
 crypto.randomUUID(),
 
 
-
-
-
 action:
-action.action,
-
-
-
-
+action?.action,
 
 
 success:
-result.success,
-
-
-
-
+result?.success || false,
 
 
 impact,
 
 
-
-
+analysis,
 
 
 originalDecision:
 action,
 
 
-
-
-
-
 result:
-result.result || result,
-
-
-
-
+result?.result || result,
 
 
 learning,
 
 
-
-
+memoryTags:
+this.createMemoryTags(
+action,
+impact,
+learning
+),
 
 
 memoryReady:true,
-
-
-
-
 
 
 createdAt:
 new Date()
 
 
-
 };
-
-
-
-
 
 
 
@@ -171,25 +135,84 @@ outcome
 
 
 
-
-
-
-
-
 console.log(
-"🧠 Emma gained experience:",
+"🧠 Emma gained new experience:",
 outcome
 );
 
 
 
-
-
-
-
-
-
 return outcome;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================
+// Understand WHY
+// =============================
+
+
+analyzeReason(
+action,
+result,
+impact
+){
+
+
+
+if(
+result.success &&
+impact !== "negative"
+){
+
+
+return {
+
+
+reason:
+"Action created positive business movement",
+
+
+pattern:
+"repeat_possible",
+
+
+futureUse:
+"Use when similar conditions appear"
+
+
+};
+
+
+}
+
+
+
+
+return {
+
+
+reason:
+"Outcome did not meet expectations",
+
+
+pattern:
+"avoid_or_improve",
+
+
+futureUse:
+"Study before repeating"
+
+
+};
 
 
 
@@ -204,50 +227,32 @@ return outcome;
 
 
 
-
-
-
-// ==========================
-// Create experience
-// ==========================
+// =============================
+// Convert result into knowledge
+// =============================
 
 
 createLearning(
 action,
 result,
-impact
+impact,
+analysis
 ){
 
-
-
-
-
-
-
-
-// Successful outcome
 
 
 if(
-result.success
-&&
+result.success &&
 impact !== "negative"
 ){
-
-
 
 
 
 return {
 
 
-
-
 type:
 "POSITIVE_EXPERIENCE",
-
-
-
 
 
 confidenceImpact:
@@ -256,60 +261,32 @@ impact
 ),
 
 
-
-
-
-
-
 lesson:
-
 this.successLesson(
 action,
-impact
+impact,
+analysis
 ),
-
-
-
-
-
-
 
 
 rememberFor:[
 
-
 action.action,
-
 
 "worked",
 
-
 "successful_strategy",
 
-
 impact
-
 
 ],
 
 
-
-
-
-
-
-
 futureRule:
-
-"Consider this strategy again in similar situations"
-
-
-
+"Prefer this approach when similar situations happen"
 
 
 };
-
-
 
 
 }
@@ -320,81 +297,43 @@ futureRule:
 
 
 
-
-
-
-
-
-// Failed outcome
-
-
 return {
-
-
 
 
 type:
 "NEGATIVE_EXPERIENCE",
 
 
-
-
-
 confidenceImpact:
--10,
-
-
-
-
-
+-15,
 
 
 lesson:
-
 this.failureLesson(
-action
+action,
+analysis
 ),
-
-
-
-
-
 
 
 rememberFor:[
 
-
 action.action,
-
 
 "failed",
 
-
 "avoid_repetition"
-
-
 
 ],
 
 
-
-
-
-
-
 futureRule:
-
-"Do not repeat without changing approach"
-
-
-
+"Do not repeat unless strategy changes"
 
 
 };
 
 
 
-
 }
 
 
@@ -406,27 +345,27 @@ futureRule:
 
 
 
-
-// ==========================
-// Success lesson
-// ==========================
+// =============================
+// Success lesson creator
+// =============================
 
 
 successLesson(
 action,
-impact
+impact,
+analysis
 ){
-
 
 
 return (
 
-`${action.action} produced a ${impact} result. ` +
+`${action.action} created ${impact} impact. ` +
 
-"Emma should remember the conditions that created this success."
+`${analysis.reason}. ` +
+
+"Emma should reuse this experience intelligently."
 
 );
-
 
 
 }
@@ -439,23 +378,24 @@ return (
 
 
 
-
-// ==========================
-// Failure lesson
-// ==========================
+// =============================
+// Failure lesson creator
+// =============================
 
 
 failureLesson(
-action
+action,
+analysis
 ){
-
 
 
 return (
 
-`${action.action} did not achieve the expected outcome. ` +
+`${action.action} was not successful. ` +
 
-"Future decisions should analyze why before trying again."
+`${analysis.reason}. ` +
+
+"Emma should avoid repeating this mistake."
 
 );
 
@@ -471,11 +411,9 @@ return (
 
 
 
-
-
-// ==========================
-// Business impact analysis
-// ==========================
+// =============================
+// Business impact measurement
+// =============================
 
 
 calculateImpact(
@@ -484,101 +422,41 @@ metrics={}
 
 
 
-
-
-
 if(
-!metrics
-){
-
-
-return "unknown";
-
-
-}
-
-
-
-
-
-
-
-
-
-if(
-
-metrics.salesIncrease > 0 ||
-
 metrics.revenueIncrease > 0 ||
-
-metrics.leadsGenerated > 5
-
-
+metrics.salesIncrease > 0 ||
+metrics.leadsGenerated >= 5
 ){
-
-
 
 return "high";
 
-
-
 }
 
 
 
 
-
-
-
-
-
 if(
-
-metrics.customerComplaints > 0 ||
-
-metrics.loss > 0
-
-
-){
-
-
-
-return "negative";
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-if(
-
 metrics.viewsIncrease ||
-
-metrics.engagementIncrease
-
-
+metrics.engagementIncrease ||
+metrics.clicksIncrease
 ){
-
-
 
 return "medium";
 
-
-
 }
 
 
 
 
+if(
+metrics.customerComplaints > 0 ||
+metrics.loss > 0 ||
+metrics.unsubscribes > 0
+){
 
+return "negative";
+
+}
 
 
 
@@ -586,7 +464,6 @@ return "medium";
 return "low";
 
 
-
 }
 
 
@@ -598,16 +475,14 @@ return "low";
 
 
 
-
-// ==========================
-// Adjust future confidence
-// ==========================
+// =============================
+// Confidence evolution
+// =============================
 
 
 confidenceChange(
 impact
 ){
-
 
 
 switch(
@@ -617,8 +492,7 @@ impact
 
 case "high":
 
-return 15;
-
+return 20;
 
 
 case "medium":
@@ -626,11 +500,14 @@ case "medium":
 return 10;
 
 
-
 case "low":
 
 return 5;
 
+
+case "negative":
+
+return -20;
 
 
 default:
@@ -641,6 +518,42 @@ return 0;
 }
 
 
+}
+
+
+
+
+
+
+
+
+
+
+// =============================
+// Create searchable memory tags
+// =============================
+
+
+createMemoryTags(
+action,
+impact,
+learning
+){
+
+
+return [
+
+action?.action,
+
+impact,
+
+learning.type,
+
+...learning.rememberFor
+
+]
+.filter(Boolean);
+
 
 }
 
@@ -653,17 +566,14 @@ return 0;
 
 
 
-
-// ==========================
-// Find previous outcomes
-// ==========================
+// =============================
+// Retrieve all experience
+// =============================
 
 
 getHistory(){
 
-
 return this.outcomes;
-
 
 }
 
@@ -676,27 +586,21 @@ return this.outcomes;
 
 
 
-
-// ==========================
-// Find successful strategies
-// ==========================
+// =============================
+// Successful patterns
+// =============================
 
 
 getSuccessfulActions(){
 
 
-
 return this.outcomes.filter(
+item =>
 
-item=>
-
-item.learning.type
-===
+item.learning.type ===
 "POSITIVE_EXPERIENCE"
 
-
 );
-
 
 
 }
@@ -709,29 +613,70 @@ item.learning.type
 
 
 
-
-
-// ==========================
-// Find mistakes
-// ==========================
+// =============================
+// Failed patterns
+// =============================
 
 
 getFailures(){
 
 
-
 return this.outcomes.filter(
+item =>
 
-item=>
-
-item.learning.type
-===
+item.learning.type ===
 "NEGATIVE_EXPERIENCE"
-
 
 );
 
 
+}
+
+
+
+
+
+
+
+
+
+// =============================
+// Search similar experience
+// =============================
+
+
+findSimilar(
+context
+){
+
+
+const search =
+JSON.stringify(context)
+.toLowerCase();
+
+
+
+return this.outcomes.filter(
+item => {
+
+
+const memory =
+JSON.stringify(item)
+.toLowerCase();
+
+
+return search
+.split(" ")
+.some(word =>
+
+word.length > 5 &&
+memory.includes(word)
+
+);
+
+
+});
+
 
 }
 
@@ -739,11 +684,20 @@ item.learning.type
 
 
 
+
+// =============================
+// Clear debug memory
+// =============================
+
+
+reset(){
+
+this.outcomes=[];
+
 }
 
 
-
-
+}
 
 
 

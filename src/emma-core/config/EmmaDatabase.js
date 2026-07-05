@@ -3,34 +3,33 @@
 // Stores experience, outcomes and lessons
 
 
-import { createClient }
-from "@supabase/supabase-js";
+// import { createClient }
+// from "@supabase/supabase-js";
 
-
-
+import { supabase } from "../../lib/supabase";
 
 // ==============================
 // Supabase connection
 // ==============================
 
 
-const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL;
+// const supabaseUrl =
+//   import.meta.env.VITE_SUPABASE_URL;
 
 
 
-const supabaseKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY;
+// const supabaseKey =
+//   import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 
 
 
 
-const supabase =
-  createClient(
-    supabaseUrl,
-    supabaseKey
-  );
+// const supabase =
+//   createClient(
+//     supabaseUrl,
+//     supabaseKey
+//   );
 
 
 

@@ -1,7 +1,7 @@
 // EmmaActionExecutioner.js
 // Emma's hands
-// Converts decisions into business actions
-// Action → Outcome → Learning
+// Turns intelligence into real work
+// Decision → Action → Result → Learning
 
 
 class EmmaActionExecutioner {
@@ -15,9 +15,10 @@ console.log(
 );
 
 
-
 this.history=[];
 
+
+this.activeActions=[];
 
 
 }
@@ -28,14 +29,9 @@ this.history=[];
 
 
 
-
-
-
-
-
-// =========================
-// Main execution entry
-// =========================
+// ============================
+// Execute approved decision
+// ============================
 
 
 async execute(
@@ -44,16 +40,16 @@ decision
 
 
 console.log(
-"🖐️ Emma received action:",
+"🖐️ Emma preparing action:",
 decision
 );
 
 
 
 
-
-
-// No permission to act
+// ============================
+// Safety gate
+// ============================
 
 
 if(
@@ -62,27 +58,20 @@ if(
 ){
 
 
-
 return this.recordOutcome({
-
 
 success:false,
 
-
-status:
-"BLOCKED",
-
+status:"BLOCKED",
 
 action:null,
 
-
-message:
-
+reason:
 decision?.reason ||
+"Emma judgement rejected action",
 
-"Judgement stopped execution"
-
-
+learning:
+"Not every idea should become an action"
 
 });
 
@@ -94,12 +83,9 @@ decision?.reason ||
 
 
 
-
-
-
-
-
-// Waiting owner approval
+// ============================
+// Human approval required
+// ============================
 
 
 if(
@@ -107,43 +93,29 @@ decision.needsApproval
 ){
 
 
-
 return this.recordOutcome({
 
-
-
 success:true,
-
 
 status:
 "WAITING_FOR_APPROVAL",
 
-
 action:
 decision.action,
 
-
 message:
-"Prepared but waiting for owner approval",
+"Emma prepared action but owner approval is needed",
 
+decision,
 
-reason:
-decision.reason,
-
-
-decision
+learning:
+"High impact actions require human trust"
 
 
 });
 
 
-
 }
-
-
-
-
-
 
 
 
@@ -155,11 +127,16 @@ let result;
 
 
 
-
-
-
-
 try{
+
+
+// Track active work
+
+this.activeActions.push(
+decision.action
+);
+
+
 
 
 
@@ -169,61 +146,62 @@ decision.action
 
 
 
-
-
-
 case "CREATE_CAMPAIGN":
 
-
 result =
-
 await this.createCampaign(
 decision
 );
 
-
 break;
-
-
-
-
 
 
 
 
 case "CREATE_TASK":
 
-
 result =
-
 await this.createTask(
 decision
 );
 
-
 break;
-
-
-
-
 
 
 
 
 case "GENERATE_REPORT":
 
-
 result =
-
 await this.generateReport(
 decision
 );
-
 
 break;
 
 
 
+
+case "REPEAT_PROVEN_ACTION":
+
+result =
+await this.repeatSuccess(
+decision
+);
+
+break;
+
+
+
+
+case "CREATE_GROWTH_ACTION":
+
+result =
+await this.createGrowthAction(
+decision
+);
+
+break;
 
 
 
@@ -231,69 +209,62 @@ break;
 
 default:
 
-
 result={
-
 
 success:false,
 
-
-status:
-"UNKNOWN_ACTION",
-
+status:"UNKNOWN_SKILL",
 
 action:
 decision.action,
 
-
 message:
-"Emma does not have this skill yet"
-
+"Emma understands this action but has not learned the skill yet"
 
 };
 
 
-
 }
 
 
 
-
-
-
-
-
 }
-
-
-
 
 
 
 catch(error){
 
 
-
 result={
-
 
 success:false,
 
-
-status:
-"FAILED",
-
+status:"ERROR",
 
 action:
 decision.action,
 
-
 error:
 error.message
 
-
 };
 
+
+}
+
+
+
+
+
+finally{
+
+
+this.activeActions =
+this.activeActions.filter(
+
+x=>x!==decision.action
+
+);
 
 
 }
@@ -303,31 +274,18 @@ error.message
 
 
 
-
-
-
-
-
-
-// Store execution result
-
-
 return this.recordOutcome({
-
 
 ...result,
 
 
 judgement:{
 
-
 confidence:
 decision.confidence,
 
-
 reason:
 decision.reason
-
 
 }
 
@@ -335,8 +293,6 @@ decision.reason
 });
 
 
-
-
 }
 
 
@@ -347,14 +303,9 @@ decision.reason
 
 
 
-
-
-
-
-
-// =========================
-// Campaign capability
-// =========================
+// ============================
+// Marketing capability
+// ============================
 
 
 async createCampaign(
@@ -362,12 +313,77 @@ decision
 ){
 
 
-
 console.log(
-"🚀 Creating campaign"
+"🚀 Emma creating campaign"
 );
 
 
+
+return {
+
+success:true,
+
+status:"COMPLETED",
+
+action:"CREATE_CAMPAIGN",
+
+
+result:{
+
+
+id:
+crypto.randomUUID(),
+
+
+type:
+"marketing_campaign",
+
+
+objective:
+"Increase customers and engagement",
+
+
+createdBy:
+"Emma",
+
+
+createdAt:
+new Date()
+
+
+},
+
+
+expectedOutcome:
+"More customer interactions"
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+// ============================
+// Growth capability
+// ============================
+
+
+async createGrowthAction(
+decision
+){
+
+
+console.log(
+"📈 Emma creating growth action"
+);
 
 
 
@@ -376,52 +392,101 @@ return {
 
 success:true,
 
+status:"COMPLETED",
 
-status:
-"COMPLETED",
-
-
-action:
-"CREATE_CAMPAIGN",
-
+action:"CREATE_GROWTH_ACTION",
 
 
 result:{
 
 
-
-campaignId:
+id:
 crypto.randomUUID(),
 
 
-
-objective:
-"Increase business growth",
-
+strategy:
+decision.reason,
 
 
-source:
-"Emma AI",
+goal:
+"Business growth",
 
+
+owner:
+"Emma"
+
+
+},
 
 
 expectedOutcome:
-"More customer engagement",
-
-
-
-createdAt:
-new Date()
-
-
-
-}
-
+"Growth improvement"
 
 
 };
 
 
+}
+
+
+
+
+
+
+
+
+
+
+// ============================
+// Repeat proven success
+// ============================
+
+
+async repeatSuccess(
+decision
+){
+
+
+console.log(
+"🔁 Emma repeating proven strategy"
+);
+
+
+
+return {
+
+
+success:true,
+
+status:"COMPLETED",
+
+action:"REPEAT_PROVEN_ACTION",
+
+
+result:{
+
+
+id:
+crypto.randomUUID(),
+
+
+basedOn:
+decision.experienceUsed || [],
+
+
+reason:
+"Past evidence showed success"
+
+
+},
+
+
+expectedOutcome:
+"Repeat previous positive result"
+
+
+};
+
 
 }
 
@@ -434,11 +499,9 @@ new Date()
 
 
 
-
-
-// =========================
+// ============================
 // Task capability
-// =========================
+// ============================
 
 
 async createTask(
@@ -446,11 +509,9 @@ decision
 ){
 
 
-
 console.log(
-"📋 Creating task"
+"📋 Emma creating task"
 );
-
 
 
 
@@ -459,48 +520,36 @@ return {
 
 success:true,
 
+status:"COMPLETED",
 
-status:
-"COMPLETED",
-
-
-action:
-"CREATE_TASK",
-
+action:"CREATE_TASK",
 
 
 result:{
 
 
-
-taskId:
+id:
 crypto.randomUUID(),
-
-
-
-objective:
-"Improve business operation",
-
 
 
 assignedTo:
 "Emma",
 
 
+objective:
+decision.reason ||
+"Improve business operation",
 
-completed:
-false
 
+completed:false
 
 
 }
-
 
 
 };
 
 
-
 }
 
 
@@ -512,11 +561,9 @@ false
 
 
 
-
-
-// =========================
+// ============================
 // Report capability
-// =========================
+// ============================
 
 
 async generateReport(
@@ -524,12 +571,9 @@ decision
 ){
 
 
-
 console.log(
-"📊 Generating report"
+"📊 Emma generating report"
 );
-
-
 
 
 
@@ -538,48 +582,35 @@ return {
 
 success:true,
 
+status:"COMPLETED",
 
-status:
-"COMPLETED",
-
-
-action:
-"GENERATE_REPORT",
-
+action:"GENERATE_REPORT",
 
 
 result:{
 
 
-
-reportId:
+id:
 crypto.randomUUID(),
 
 
-
 summary:
-"Business intelligence report created",
-
+"Business intelligence generated",
 
 
 generatedBy:
 "Emma",
 
-
-
 generatedAt:
 new Date()
 
 
-
 }
-
 
 
 };
 
 
-
 }
 
 
@@ -591,10 +622,9 @@ new Date()
 
 
 
-
-// =========================
-// Outcome tracking
-// =========================
+// ============================
+// Store action result
+// ============================
 
 
 recordOutcome(
@@ -602,35 +632,24 @@ execution
 ){
 
 
-
 const record={
-
 
 
 executionId:
 crypto.randomUUID(),
 
 
-
 ...execution,
 
 
-
-needsLearning:
-true,
-
+needsLearning:true,
 
 
 createdAt:
 new Date()
 
 
-
 };
-
-
-
-
 
 
 
@@ -641,24 +660,14 @@ record
 
 
 
-
-
-
-
 console.log(
-"📚 Execution recorded:",
+"📚 Emma action memory created:",
 record
 );
 
 
 
-
-
-
-
-
 return record;
-
 
 
 }
@@ -672,21 +681,18 @@ return record;
 
 
 
-
-// =========================
-// Future learning feedback
-// =========================
+// ============================
+// Outcome feedback
+// ============================
 
 
 updateOutcome(
 executionId,
-outcome
+realOutcome
 ){
 
 
-
-const item =
-
+const action =
 this.history.find(
 
 x=>x.executionId===executionId
@@ -695,38 +701,37 @@ x=>x.executionId===executionId
 
 
 
-
-
-
-if(!item){
-
+if(!action){
 
 return null;
-
 
 }
 
 
 
+action.realOutcome =
+realOutcome;
 
 
 
-
-
-item.outcome=outcome;
-
-
-
-item.learnedAt=
+action.learnedAt =
 new Date();
 
 
 
+action.learningComplete =
+true;
 
 
 
-return item;
+console.log(
+"🧠 Emma learned from action:",
+action
+);
 
+
+
+return action;
 
 
 }
@@ -740,28 +745,28 @@ return item;
 
 
 
-
-
-// =========================
-// Debug
-// =========================
+// ============================
+// Status
+// ============================
 
 
 getHistory(){
 
-
 return this.history;
 
+}
+
+
+
+getActiveActions(){
+
+return this.activeActions;
 
 }
 
 
 
-
 }
-
-
-
 
 
 
