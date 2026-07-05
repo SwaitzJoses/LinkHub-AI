@@ -1,16 +1,14 @@
 // Emma.js
 // Emma's central nervous system
-// Coordinates all Emma brain layers
+// Coordinates all Emma intelligence layers
 
 
-import EmmaBrain from "./EmmaBrain";
+import EmmaConnectorManager
+from "./connectors/EmmaConnectorManager";
+
 
 import UniversalTranslator
 from "./translators/UniversalTranslator";
-
-
-import LinkHubConnector
-from "./connectors/LinkHubConnector";
 
 
 import EmmaObserver
@@ -49,12 +47,15 @@ import EmmaOutcome
 from "./EmmaOutcome";
 
 
+import EmmaLearningEngine
+from "./EmmaLearningEngine";
+
+
 import EmmaCapabilities
 from "./EmmaCapabilities";
 
 
-import { EmmaDB }
-from "./config/EmmaDatabase";
+
 
 
 
@@ -64,494 +65,139 @@ from "./config/EmmaDatabase";
 class Emma {
 
 
-  constructor(){
+constructor(){
 
 
-    console.log(
-      "🧠 Emma AI Employee waking up..."
-    );
+console.log(
+"🧠 Emma AI Employee waking up..."
+);
 
 
-    // External connectors
 
-    this.linkhub =
-      new LinkHubConnector();
 
 
 
-    // Translation layer
+// ======================
+// Emma senses
+// ======================
 
-    this.translator =
-      new UniversalTranslator();
 
+this.connectors =
+new EmmaConnectorManager();
 
 
 
-    // Emma brain
 
-    this.observer =
-      new EmmaObserver();
 
 
 
-    this.reflection =
-      new EmmaReflection();
 
+// ======================
+// Translation
+// ======================
 
 
-    this.memory =
-      new EmmaMemory();
+this.translator =
+new UniversalTranslator();
 
 
 
-    this.reasoning =
-      new EmmaReasoning();
 
 
 
 
-    // Emma skill awareness
 
-    this.capabilities =
-      EmmaCapabilities;
+// ======================
+// Intelligence layers
+// ======================
 
 
+this.observer =
+new EmmaObserver();
 
 
-    // Emma decision system
 
-    this.judgement =
-      new EmmaJudgement();
+this.reflection =
+new EmmaReflection();
 
 
 
+this.memory =
+new EmmaMemory();
 
-    // Emma output layers
 
-    this.insight =
-      new EmmaInsight();
 
+this.reasoning =
+new EmmaReasoning();
 
 
-    this.communication =
-      new EmmaCommunication();
 
+this.judgement =
+new EmmaJudgement();
 
 
 
-    // Emma hands
 
-    this.actionExecutor =
-      EmmaActionExecutor;
 
 
 
 
-    // Emma experience
 
-    this.outcome =
-      EmmaOutcome;
+// ======================
+// Communication layers
+// ======================
 
 
-  }
+this.insight =
+new EmmaInsight();
 
 
 
+this.communication =
+new EmmaCommunication();
 
 
 
 
 
 
-  // =========================
-  // CONNECTOR ENTRY POINT
-  // =========================
 
 
-  async analyzeLinkHub(
-    businessData
-  ){
 
+// ======================
+// Work + learning
+// ======================
 
-    console.log(
-      "🔗 Emma received external data",
-      businessData
-    );
 
+this.actionExecutor =
+EmmaActionExecutor;
 
-    const event =
-      this.linkhub.createEvent(
-        businessData
-      );
 
 
-    return await this.think(
-      event
-    );
+this.outcome =
+EmmaOutcome;
 
 
-  }
 
+this.learning =
+EmmaLearningEngine;
 
 
 
 
 
+this.capabilities =
+EmmaCapabilities;
 
 
 
 
-  // =========================
-  // MAIN EMMA LOOP
-  // =========================
 
 
-  async think(input){
 
-
-    console.log(
-      "🤖 Emma started working..."
-    );
-
-
-
-    try {
-
-
-
-
-      // 1. Translate
-
-
-      const translatedEvent =
-        await this.translator.translate(
-          input
-        );
-
-
-      console.log(
-        "🌎 Translated:",
-        translatedEvent
-      );
-
-
-
-
-
-
-
-
-      // 2. Observe
-
-
-      const observation =
-        await this.observer.observe(
-          translatedEvent
-        );
-
-
-      console.log(
-        "👀 Observation:",
-        observation
-      );
-
-
-
-
-
-
-
-
-      // 3. Reflect
-
-
-      const reflection =
-        await this.reflection.reflect(
-          observation
-        );
-
-
-      console.log(
-        "🤔 Reflection:",
-        reflection
-      );
-
-
-
-
-
-
-
-
-      // 4. Remember
-
-
-      const memories =
-        await this.memory.remember(
-          reflection
-        );
-
-
-      console.log(
-        "🧠 Memory:",
-        memories
-      );
-
-
-
-
-
-
-
-
-
-      // 5. Reason
-
-
-      const reasoning =
-        await this.reasoning.think(
-          reflection,
-          memories
-        );
-
-
-      console.log(
-        "💭 Reasoning:",
-        reasoning
-      );
-
-
-
-
-
-
-
-
-
-      // 6. Check available skills
-
-
-      const capabilities =
-        this.capabilities.getSkills();
-
-
-      console.log(
-        "🖐️ Available Skills:",
-        capabilities
-      );
-
-
-
-
-
-
-
-
-
-
-      // 7. Judge
-
-
-      const judgement =
-        await this.judgement.judge(
-
-          reasoning,
-
-          memories,
-
-          capabilities
-
-        );
-
-
-      console.log(
-        "⚖️ Judgement:",
-        judgement
-      );
-
-
-
-
-
-
-
-
-
-
-
-      // 8. Create insight
-
-
-      const insight =
-        await this.insight.create(
-          judgement
-        );
-
-
-      console.log(
-        "💡 Insight:",
-        insight
-      );
-
-
-
-
-
-
-
-
-
-
-      // 9. Act
-
-
-      const actionResult =
-        await this.actionExecutor.execute(
-          judgement
-        );
-
-
-      console.log(
-        "🖐️ Action:",
-        actionResult
-      );
-
-
-
-
-
-
-
-
-
-
-      // 10. Learn outcome
-
-
-      const outcome =
-        await this.outcome.record(
-          judgement,
-          actionResult
-        );
-
-
-      console.log(
-        "📊 Outcome:",
-        outcome
-      );
-
-
-
-
-
-
-
-
-
-
-
-      // 11. Communicate
-
-
-      const message =
-        await this.communication.reply({
-
-          insight,
-
-          actionResult,
-
-          outcome
-
-        });
-
-
-      console.log(
-        "💬 Emma says:",
-        message
-      );
-
-
-
-
-
-
-
-
-
-
-      // 12. Save experience
-
-
-      await EmmaDB.saveMemory({
-
-        input,
-
-        observation,
-
-        reflection,
-
-        memories,
-
-        reasoning,
-
-        capabilities,
-
-        judgement,
-
-        insight,
-
-        actionResult,
-
-        outcome,
-
-        message
-
-      });
-
-
-
-
-
-
-
-
-      return message;
-
-
-
-    }
-
-
-    catch(error){
-
-
-      console.error(
-        "❌ Emma brain error:",
-        error
-      );
-
-
-
-      return {
-
-        from:
-        "Emma",
-
-
-        message:
-        "I need more context before deciding the best action.",
-
-
-        priority:
-        "low"
-
-      };
-
-
-    }
-
-
-  }
+console.log(
+"✅ Emma fully awake"
+);
 
 
 }
@@ -560,4 +206,753 @@ class Emma {
 
 
 
-export default Emma;
+
+
+
+
+
+
+
+// ======================================
+// UNIVERSAL CONNECTOR ENTRY POINT
+// ======================================
+
+
+async experience(
+source,
+businessData
+){
+
+
+
+console.log(
+"🌎 Emma received external signal",
+{
+source,
+businessData
+}
+);
+
+
+
+
+
+const event =
+
+this.connectors.receive(
+
+source,
+
+businessData
+
+);
+
+
+
+
+
+return await this.think(
+event
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// LinkHub support
+// ======================================
+
+
+async analyzeLinkHub(
+businessData
+){
+
+
+return await this.experience(
+
+"LINKHUB",
+
+businessData
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// MAIN EMMA LIFE LOOP
+// ======================================
+
+
+async think(
+input
+){
+
+
+
+console.log(
+"🤖 Emma started working..."
+);
+
+
+
+
+
+
+try{
+
+
+
+
+
+
+
+// 1. Translate
+
+
+const translatedEvent =
+
+await this.translator.translate(
+input
+);
+
+
+
+
+console.log(
+"🌎 Translated:",
+translatedEvent
+);
+
+
+
+
+
+
+
+
+
+// 2. Observe
+
+
+const observation =
+
+await this.observer.observe(
+translatedEvent
+);
+
+
+
+
+console.log(
+"👀 Observation:",
+observation
+);
+
+
+
+
+
+
+
+
+
+// 3. Reflect
+
+
+const reflection =
+
+await this.reflection.reflect(
+observation
+);
+
+
+
+
+console.log(
+"🤔 Reflection:",
+reflection
+);
+
+
+
+
+
+
+
+
+
+// 4. Recall memories
+
+
+const memories =
+
+await this.memory.recall(
+reflection
+);
+
+
+
+
+console.log(
+"🧠 Memories:",
+memories
+);
+
+
+
+
+
+
+
+
+
+
+// 5. Reason
+
+
+const reasoning =
+
+await this.reasoning.think(
+
+reflection,
+
+memories
+
+);
+
+
+
+
+console.log(
+"💭 Reasoning:",
+reasoning
+);
+
+
+
+
+
+
+
+
+
+
+// 6. Capabilities
+
+
+const capabilities =
+
+this.capabilities.getSkills();
+
+
+
+
+console.log(
+"🖐️ Skills:",
+capabilities
+);
+
+
+
+
+
+
+
+
+
+
+// 7. Judgement
+
+
+const judgement =
+
+await this.judgement.judge(
+
+reasoning,
+
+memories,
+
+capabilities
+
+);
+
+
+
+
+console.log(
+"⚖️ Judgement:",
+judgement
+);
+
+
+
+
+
+
+
+
+
+
+// 8. Insight
+
+
+const insight =
+
+await this.insight.create(
+judgement
+);
+
+
+
+
+console.log(
+"💡 Insight:",
+insight
+);
+
+
+
+
+
+
+
+
+
+
+// 9. Execute
+
+
+const actionResult =
+
+await this.actionExecutor.execute(
+judgement
+);
+
+
+
+
+console.log(
+"🖐️ Action:",
+actionResult
+);
+
+
+
+
+
+
+
+
+
+
+// 10. Outcome
+
+
+const outcome =
+
+await this.outcome.record(
+
+judgement,
+
+actionResult
+
+);
+
+
+
+
+console.log(
+"📊 Outcome:",
+outcome
+);
+
+
+
+
+
+
+
+
+
+
+
+// 11. Learning Engine
+
+
+const learning =
+
+await this.learning.learn(
+
+
+{
+
+
+...outcome,
+
+
+businessId:
+
+reflection.businessId ||
+
+observation.businessId ||
+
+translatedEvent.businessId ||
+
+input.businessId
+
+
+},
+
+
+
+memories
+
+
+
+);
+
+
+
+
+
+console.log(
+"📚 Learning:",
+learning
+);
+
+
+
+
+
+
+
+
+
+// 12. Store learned experience
+
+
+await this.memory.remember({
+
+
+
+...outcome,
+
+
+
+learning,
+
+
+
+businessId:
+
+reflection.businessId ||
+
+observation.businessId ||
+
+translatedEvent.businessId ||
+
+input.businessId
+
+
+
+});
+
+
+
+
+
+console.log(
+"💾 Experience saved"
+);
+
+
+
+
+
+
+
+
+
+
+// 13. Communicate
+
+
+const message =
+
+await this.communication.reply({
+
+
+
+insight,
+
+
+
+reasoning,
+
+
+
+judgement,
+
+
+
+actionResult,
+
+
+
+outcome,
+
+
+
+learning
+
+
+
+});
+
+
+
+
+
+console.log(
+"💬 Emma:",
+message
+);
+
+
+
+
+
+
+
+return message;
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+catch(error){
+
+
+
+
+
+console.error(
+"❌ Emma error:",
+error
+);
+
+
+
+
+
+
+return {
+
+
+
+from:
+"Emma",
+
+
+
+
+message:
+"I need more information before making the best decision.",
+
+
+
+
+priority:
+"low",
+
+
+
+
+error:
+error.message
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// Direct owner conversation
+// ======================================
+
+
+async ask(
+businessId,
+question
+){
+
+
+
+const memories =
+
+await this.memory.recall({
+
+businessId,
+
+question
+
+});
+
+
+
+
+
+
+return await this.reasoning.think(
+
+{
+
+
+businessId,
+
+
+meaning:
+question,
+
+
+importance:
+"medium"
+
+
+},
+
+
+memories
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// Emma status
+// ======================================
+
+
+status(){
+
+
+
+return {
+
+
+
+state:
+"ACTIVE",
+
+
+
+
+connectors:
+
+this.connectors.getConnectors(),
+
+
+
+
+
+skills:
+
+this.capabilities.getSkills(),
+
+
+
+
+
+checkedAt:
+
+new Date()
+
+
+
+
+};
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+export default new Emma();

@@ -1,130 +1,293 @@
-import { createMemory } from "./EmmaMemory";
-
-
-// Emma Observer
+// EmmaObserver.js
+// Emma's eyes
 // Watches business activity and converts raw data into meaningful events
 
 
-export async function observe({
-  business,
-  source,
-  eventType,
-  data,
-  history = []
+class EmmaObserver {
+
+
+constructor(){
+
+console.log(
+"👀 Emma Observer ready"
+);
+
+}
+
+
+
+
+
+
+
+// ===========================
+// Main observation function
+// ===========================
+
+
+async observe({
+business,
+source,
+eventType,
+data,
+history = []
 }) {
 
-  const analysis = analyzeSignals({
-    data,
-    history
-  });
 
 
-  const event = {
-    businessId: business.id,
-
-    source,          // LinkHub, Shopify, WhatsApp
-    type: eventType, // sale, visitor, message
-
-    rawData: data,
-
-    signals: analysis.signals,
-
-    importance: analysis.importance,
-
-    summary: analysis.summary,
-
-    createdAt: new Date()
-  };
+console.log(
+"👀 Observing event:",
+{
+source,
+eventType,
+data
+}
+);
 
 
 
-  // Emma only remembers meaningful experiences
-
-  if (event.importance >= 7) {
-
-    await createMemory({
-
-      businessId: business.id,
-
-      type: "observation",
-
-      content: event,
-
-      lesson:
-        "Important business signal detected"
-
-    });
-
-  }
 
 
-  return event;
+const analysis =
+analyzeSignals({
+data:data || {},
+history
+});
+
+
+
+
+
+
+const event = {
+
+
+businessId:
+
+business?.id
+
+||
+
+business?.businessId
+
+||
+
+data?.businessId,
+
+
+
+
+
+source:
+
+source ||
+
+"UNKNOWN",
+
+
+
+
+
+
+eventType:
+
+eventType ||
+
+data?.type ||
+
+"BUSINESS_ACTIVITY",
+
+
+
+
+
+
+raw:{
+
+data:data || {}
+
+},
+
+
+
+
+
+
+signals:
+
+analysis.signals,
+
+
+
+
+
+
+importance:
+
+analysis.importance,
+
+
+
+
+
+
+summary:
+
+analysis.summary,
+
+
+
+
+
+
+createdAt:
+
+new Date()
+
+
+
+};
+
+
+
+
+
+
+
+return event;
+
+
+
 }
 
 
 
 
 
-function analyzeSignals({ data, history }) {
-
-
-  let signals = [];
-
-  let importance = 3;
+}
 
 
 
-  detectGrowth(
-    data,
-    history,
-    signals
-  );
-
-
-  detectProblems(
-    data,
-    signals
-  );
-
-
-  detectCustomerSignals(
-    data,
-    signals
-  );
-
-
-  detectOpportunities(
-    data,
-    signals
-  );
 
 
 
-  // importance calculation
-
-  importance += signals.length * 2;
 
 
-  if (importance > 10) {
-    importance = 10;
-  }
 
 
-  return {
 
-    signals,
 
-    importance,
+// ===========================
+// Signal analysis
+// ===========================
 
-    summary:
-      createSummary(signals)
 
-  };
+function analyzeSignals({
+data,
+history
+}) {
+
+
+let signals=[];
+
+
+let importance=3;
+
+
+
+
+
+
+detectGrowth(
+data,
+history,
+signals
+);
+
+
+
+detectProblems(
+data,
+signals
+);
+
+
+
+detectCustomerSignals(
+data,
+signals
+);
+
+
+
+detectOpportunities(
+data,
+signals
+);
+
+
+
+
+
+
+
+
+importance +=
+signals.length * 2;
+
+
+
+
+
+if(
+importance > 10
+){
+
+importance=10;
 
 }
 
 
 
+
+
+
+return {
+
+
+signals,
+
+
+importance,
+
+
+summary:
+
+createSummary(
+signals
+)
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ===========================
+// Growth detection
+// ===========================
 
 
 function detectGrowth(
@@ -133,36 +296,77 @@ history,
 signals
 ){
 
-if(!history.length) return;
-
-
-const previous =
-history[history.length-1];
 
 
 if(
+!history ||
+history.length===0
+){
+
+return;
+
+}
+
+
+
+
+const previous =
+
+history[
+history.length-1
+];
+
+
+
+
+
+if(
+
 data.views &&
+
 previous.views &&
+
 data.views >
 previous.views * 2
+
 ){
+
+
 
 signals.push({
 
-type:"growth",
+
+type:
+"growth",
+
 
 message:
 "Traffic increased significantly"
 
+
 });
 
-}
 
 
 }
 
 
 
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===========================
+// Risk detection
+// ===========================
 
 
 function detectProblems(
@@ -171,49 +375,95 @@ signals
 ){
 
 
-// people interested but not buying
+
+
 
 if(
-data.views > 100 &&
+
+data.views > 100
+
+&&
+
 data.orders === 0
+
 ){
+
+
 
 signals.push({
 
-type:"risk",
+
+type:
+"risk",
+
 
 message:
 "High attention but low conversion"
 
+
 });
+
+
 
 }
 
 
 
-// many messages no sales
+
+
+
+
 
 if(
-data.messages > 20 &&
+
+data.messages > 20
+
+&&
+
 data.sales === 0
+
 ){
+
+
 
 signals.push({
 
-type:"risk",
+
+
+type:
+"risk",
+
+
 
 message:
 "Customers asking but not purchasing"
 
+
+
 });
 
-}
 
 
 }
 
 
 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===========================
+// Customer patterns
+// ===========================
 
 
 function detectCustomerSignals(
@@ -223,32 +473,60 @@ signals
 
 
 
-if(data.repeatCustomers > 5){
+
+
+if(
+data.repeatCustomers > 5
+){
+
+
 
 signals.push({
 
-type:"pattern",
+
+type:
+"pattern",
+
 
 message:
-"Returning customer interest detected"
+"Returning customer behavior detected"
+
 
 });
+
+
 
 }
 
 
 
-if(data.searches){
+
+
+
+
+
+
+if(
+data.searches
+){
+
+
 
 signals.push({
 
-type:"demand",
+
+type:
+"demand",
+
 
 message:
 "Customers are searching for products"
 
+
 });
 
+
+
 }
 
 
@@ -257,6 +535,18 @@ message:
 
 
 
+
+
+
+
+
+
+
+
+
+// ===========================
+// Opportunity detection
+// ===========================
 
 
 function detectOpportunities(
@@ -266,55 +556,127 @@ signals
 
 
 
-if(data.productViews > 100){
+
+
+if(
+data.productViews > 100
+){
+
+
 
 signals.push({
 
-type:"opportunity",
+
+
+type:
+"opportunity",
+
+
 
 message:
 "Product receiving strong attention"
 
+
+
 });
+
+
 
 }
 
 
 
-if(data.engagementRate > 10){
+
+
+
+
+
+if(
+data.engagementRate > 10
+){
+
+
 
 signals.push({
 
-type:"opportunity",
+
+type:
+"opportunity",
+
 
 message:
 "Marketing content performing well"
 
+
+
 });
 
+
+
 }
 
 
 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ===========================
+// Summary creator
+// ===========================
+
+
+function createSummary(
+signals
+){
+
+
+
+if(
+signals.length===0
+){
+
+
+return (
+"Normal business activity observed"
+);
+
+
 }
 
 
 
 
-
-
-function createSummary(signals){
-
-
-if(signals.length === 0){
-
-return "Normal business activity observed";
-
-}
 
 
 return signals
-.map(s => s.message)
+
+.map(
+signal=>signal.message
+)
+
 .join(". ");
 
+
+
 }
+
+
+
+
+
+
+
+
+
+export default EmmaObserver;
