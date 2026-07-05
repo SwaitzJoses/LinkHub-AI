@@ -1,19 +1,28 @@
 // EmmaDatabase.js
 // Universal permanent memory storage for Emma
+// Stores experience, outcomes and lessons
 
-import { createClient } 
+
+import { createClient }
 from "@supabase/supabase-js";
 
 
 
+
+// ==============================
 // Supabase connection
+// ==============================
+
 
 const supabaseUrl =
   import.meta.env.VITE_SUPABASE_URL;
 
 
+
 const supabaseKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+
 
 
 
@@ -27,14 +36,25 @@ const supabase =
 
 
 
+
+
+
+
+
 export const EmmaDB = {
 
 
 
 
+
+
+
+
+
   // ==============================
-  // SAVE EXPERIENCE TO MEMORY
+  // SAVE FULL EXPERIENCE
   // ==============================
+
 
 
   async saveMemory(
@@ -42,69 +62,141 @@ export const EmmaDB = {
   ){
 
 
+
     console.log(
-      "💾 Emma saving universal memory...",
+      "💾 Emma saving memory:",
       experience
     );
 
 
 
-    const { data, error } =
+
+
+
+
+
+
+    const { data,error } =
       await supabase
 
+
       .from("emma_memory")
+
 
       .insert({
 
 
-        // Who owns this memory
+
+
+
+
+
+        // OWNER
+
 
         business_id:
-          experience.input.businessId,
+
+        experience
+        ?.input
+        ?.businessId,
 
 
 
 
-        // Where did this experience come from
+
+
+
+
+
+        // EVENT SOURCE
+
 
         source:
-          experience.input.source,
+
+        experience
+        ?.input
+        ?.source
+
+        || "unknown",
 
 
 
 
-        // What type of event happened
+
+
+
 
         event_type:
-          experience.input.type,
+
+        experience
+        ?.input
+        ?.type
+
+        || "GENERAL",
 
 
 
 
 
-        // What Emma learned
 
-        memory: {
+
+
+
+
+
+
+        // BRAIN SNAPSHOT
+
+
+        memory:{
+
 
 
           reflection:
-            experience.reflection,
+
+          experience.reflection,
+
+
+
 
 
           reasoning:
-            experience.reasoning,
+
+          experience.reasoning,
+
+
+
 
 
           judgement:
-            experience.judgement,
+
+          experience.judgement,
 
 
-          insight:
-            experience.insight,
+
+
+
+          action:
+
+          experience.action,
+
+
+
+
+
+          outcome:
+
+          experience.outcome,
+
+
+
 
 
           message:
-            experience.message
+
+          experience.message
+
+
 
 
         },
@@ -114,17 +206,40 @@ export const EmmaDB = {
 
 
 
-        // Facts behind the learning
 
-        evidence: {
+
+
+        // WHY EMMA LEARNED THIS
+
+
+        evidence:{
+
 
 
           original_event:
-            experience.input,
+
+          experience.input,
+
+
+
 
 
           observation:
-            experience.observation
+
+          experience.observation,
+
+
+
+
+
+          result:
+
+          experience
+          ?.outcome
+          ?.result
+
+
+
 
 
         },
@@ -134,14 +249,68 @@ export const EmmaDB = {
 
 
 
-        // How important is this memory?
+
+
+
+        // LEARNING
+
+
+        lesson:
+
+
+        experience
+        ?.outcome
+        ?.learning
+
+        || null,
+
+
+
+
+
+
+
+
+
+        experience_type:
+
+
+        experience
+        ?.outcome
+        ?.learning
+        ?.type
+
+        || "UNKNOWN",
+
+
+
+
+
+
+
+
+
 
         importance:
-          experience.judgement
-          ?.priority || "normal"
+
+
+
+        experience
+        ?.judgement
+        ?.priority
+
+
+        || "normal"
+
+
+
+
+
+
 
 
       })
+
 
 
       .select();
@@ -151,16 +320,22 @@ export const EmmaDB = {
 
 
 
+
+
+
     if(error){
 
 
+
       console.error(
-        "❌ Emma memory save failed:",
+        "❌ Memory save failed:",
         error
       );
 
 
+
       return null;
+
 
 
     }
@@ -170,14 +345,23 @@ export const EmmaDB = {
 
 
 
+
+
+
+
     console.log(
-      "🧠 Emma memory saved forever:",
+      "🧠 Memory stored permanently:",
       data
     );
 
 
 
+
+
+
+
     return data;
+
 
 
   },
@@ -190,9 +374,15 @@ export const EmmaDB = {
 
 
 
+
+
+
+
+
   // ==============================
-  // RETRIEVE BUSINESS MEMORY
+  // GET ALL BUSINESS MEMORY
   // ==============================
+
 
 
 
@@ -202,25 +392,42 @@ export const EmmaDB = {
 
 
 
+
+
     console.log(
-      "🧠 Emma searching memories for:",
+      "🧠 Loading memories:",
       businessId
     );
 
 
 
 
-    const { data, error } =
+
+
+
+
+
+    const {data,error} =
+
       await supabase
+
+
 
       .from("emma_memory")
 
+
+
       .select("*")
+
+
 
       .eq(
         "business_id",
         businessId
       )
+
+
+
 
       .order(
         "created_at",
@@ -234,13 +441,116 @@ export const EmmaDB = {
 
 
 
+
+
+
     if(error){
 
 
+
       console.error(
-        "❌ Emma memory fetch failed:",
+        "❌ Memory fetch failed:",
         error
       );
+
+
+
+      return [];
+
+
+
+    }
+
+
+
+
+
+
+
+
+    return data || [];
+
+
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ==============================
+  // GET IMPORTANT EXPERIENCE
+  // ==============================
+
+
+
+  async getImportantMemories(
+    businessId
+  ){
+
+
+
+
+
+    const {data,error} =
+
+
+    await supabase
+
+
+
+    .from("emma_memory")
+
+
+
+    .select("*")
+
+
+
+    .eq(
+      "business_id",
+      businessId
+    )
+
+
+
+    .in(
+      "importance",
+      [
+        "high",
+        "critical"
+      ]
+    )
+
+
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+
+
+
+
+
+
+    if(error){
+
+
+      console.error(error);
 
 
       return [];
@@ -253,17 +563,97 @@ export const EmmaDB = {
 
 
 
-    console.log(
-      "📚 Emma remembered:",
-      data
+
+    return data || [];
+
+
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ==============================
+  // DELETE OLD LOW VALUE MEMORY
+  // future maintenance
+  // ==============================
+
+
+
+
+  async forgetMemory(
+    memoryId
+  ){
+
+
+
+
+
+    const {error} =
+
+    await supabase
+
+
+    .from("emma_memory")
+
+
+    .delete()
+
+
+    .eq(
+      "id",
+      memoryId
     );
 
 
 
-    return data;
+
+
+
+
+
+    if(error){
+
+
+
+      console.error(
+        "❌ Forget failed",
+        error
+      );
+
+
+
+      return false;
+
+
+
+    }
+
+
+
+
+
+
+
+
+    return true;
+
+
 
 
   }
+
+
 
 
 

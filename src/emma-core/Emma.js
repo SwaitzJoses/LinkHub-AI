@@ -3,6 +3,8 @@
 // Coordinates all Emma brain layers
 
 
+import EmmaBrain from "./EmmaBrain";
+
 import UniversalTranslator
 from "./translators/UniversalTranslator";
 
@@ -39,8 +41,21 @@ import EmmaCommunication
 from "./EmmaCommunication";
 
 
+import EmmaActionExecutor
+from "./EmmaActionExecutor";
+
+
+import EmmaOutcome
+from "./EmmaOutcome";
+
+
+import EmmaCapabilities
+from "./EmmaCapabilities";
+
+
 import { EmmaDB }
 from "./config/EmmaDatabase";
+
 
 
 
@@ -57,22 +72,22 @@ class Emma {
     );
 
 
-
-    // External system connectors
+    // External connectors
 
     this.linkhub =
       new LinkHubConnector();
 
 
 
-    // Universal language layer
+    // Translation layer
 
     this.translator =
       new UniversalTranslator();
 
 
 
-    // Emma brain organs
+
+    // Emma brain
 
     this.observer =
       new EmmaObserver();
@@ -94,10 +109,24 @@ class Emma {
 
 
 
+
+    // Emma skill awareness
+
+    this.capabilities =
+      EmmaCapabilities;
+
+
+
+
+    // Emma decision system
+
     this.judgement =
       new EmmaJudgement();
 
 
+
+
+    // Emma output layers
 
     this.insight =
       new EmmaInsight();
@@ -108,6 +137,22 @@ class Emma {
       new EmmaCommunication();
 
 
+
+
+    // Emma hands
+
+    this.actionExecutor =
+      EmmaActionExecutor;
+
+
+
+
+    // Emma experience
+
+    this.outcome =
+      EmmaOutcome;
+
+
   }
 
 
@@ -115,8 +160,11 @@ class Emma {
 
 
 
+
+
+
   // =========================
-  // LINKHUB ENTRY POINT
+  // CONNECTOR ENTRY POINT
   // =========================
 
 
@@ -126,17 +174,15 @@ class Emma {
 
 
     console.log(
-      "🔗 Emma received LinkHub data",
+      "🔗 Emma received external data",
       businessData
     );
-
 
 
     const event =
       this.linkhub.createEvent(
         businessData
       );
-
 
 
     return await this.think(
@@ -154,18 +200,17 @@ class Emma {
 
 
 
-  // =========================
-  // MAIN EMMA THINKING LOOP
-  // =========================
 
+  // =========================
+  // MAIN EMMA LOOP
+  // =========================
 
 
   async think(input){
 
 
-
     console.log(
-      "🤖 Emma started thinking..."
+      "🤖 Emma started working..."
     );
 
 
@@ -174,7 +219,8 @@ class Emma {
 
 
 
-      // 1. Translate outside world
+
+      // 1. Translate
 
 
       const translatedEvent =
@@ -194,6 +240,7 @@ class Emma {
 
 
 
+
       // 2. Observe
 
 
@@ -203,11 +250,11 @@ class Emma {
         );
 
 
-
       console.log(
         "👀 Observation:",
         observation
       );
+
 
 
 
@@ -224,7 +271,6 @@ class Emma {
         );
 
 
-
       console.log(
         "🤔 Reflection:",
         reflection
@@ -237,7 +283,7 @@ class Emma {
 
 
 
-      // 4. Memory
+      // 4. Remember
 
 
       const memories =
@@ -246,11 +292,11 @@ class Emma {
         );
 
 
-
       console.log(
         "🧠 Memory:",
         memories
       );
+
 
 
 
@@ -269,7 +315,6 @@ class Emma {
         );
 
 
-
       console.log(
         "💭 Reasoning:",
         reasoning
@@ -283,15 +328,40 @@ class Emma {
 
 
 
-      // 6. Judgement
+      // 6. Check available skills
+
+
+      const capabilities =
+        this.capabilities.getSkills();
+
+
+      console.log(
+        "🖐️ Available Skills:",
+        capabilities
+      );
+
+
+
+
+
+
+
+
+
+
+      // 7. Judge
 
 
       const judgement =
         await this.judgement.judge(
-          reasoning,
-          memories
-        );
 
+          reasoning,
+
+          memories,
+
+          capabilities
+
+        );
 
 
       console.log(
@@ -307,14 +377,15 @@ class Emma {
 
 
 
-      // 7. Insight
+
+
+      // 8. Create insight
 
 
       const insight =
         await this.insight.create(
           judgement
         );
-
 
 
       console.log(
@@ -331,14 +402,67 @@ class Emma {
 
 
 
-      // 8. Communication
+      // 9. Act
+
+
+      const actionResult =
+        await this.actionExecutor.execute(
+          judgement
+        );
+
+
+      console.log(
+        "🖐️ Action:",
+        actionResult
+      );
+
+
+
+
+
+
+
+
+
+
+      // 10. Learn outcome
+
+
+      const outcome =
+        await this.outcome.record(
+          judgement,
+          actionResult
+        );
+
+
+      console.log(
+        "📊 Outcome:",
+        outcome
+      );
+
+
+
+
+
+
+
+
+
+
+
+      // 11. Communicate
 
 
       const message =
-        await this.communication.reply(
-          insight
-        );
+        await this.communication.reply({
 
+          insight,
+
+          actionResult,
+
+          outcome
+
+        });
 
 
       console.log(
@@ -355,7 +479,7 @@ class Emma {
 
 
 
-      // 9. Store experience
+      // 12. Save experience
 
 
       await EmmaDB.saveMemory({
@@ -366,11 +490,19 @@ class Emma {
 
         reflection,
 
+        memories,
+
         reasoning,
+
+        capabilities,
 
         judgement,
 
         insight,
+
+        actionResult,
+
+        outcome,
 
         message
 
@@ -380,15 +512,17 @@ class Emma {
 
 
 
+
+
+
       return message;
 
 
 
+    }
 
-    } 
-    
+
     catch(error){
-
 
 
       console.error(
@@ -401,15 +535,15 @@ class Emma {
       return {
 
         from:
-          "Emma",
+        "Emma",
 
 
         message:
-          "I need more information before making a decision.",
+        "I need more context before deciding the best action.",
 
 
         priority:
-          "low"
+        "low"
 
       };
 
@@ -417,13 +551,11 @@ class Emma {
     }
 
 
-
   }
 
 
-
-
 }
+
 
 
 

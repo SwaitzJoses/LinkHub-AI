@@ -1,39 +1,72 @@
 import Emma from "./Emma";
 
 
-const emma = new Emma();
+const emma =
+  new Emma();
 
 
-const testBusinessEvent = {
-
-  source: "linkhub",
-
-  type: "product_view",
-
-  businessId: "fashion_hub",
-
-  data: {
-
-    product:
-      "Silk Saree",
-
-    views: 100,
-
-    whatsappClicks: 2
-
-  }
-
-};
 
 
-emma.think(
-  testBusinessEvent
-)
-.then((response)=>{
+
+async function testEmma(){
+
+
+  const event = {
+
+    business_id:
+      "company_001",
+
+
+    source:
+      "ProductAnalytics",
+
+
+    type:
+      "USER_RETENTION_DROP",
+
+
+    data: {
+
+      active_users_before:
+        10000,
+
+
+      active_users_now:
+        7600,
+
+
+      timeframe:
+        "30_days"
+
+    }
+
+
+  };
+
+
+
+
+
+
+  const result =
+    await emma.think(
+      event
+    );
+
+
+
+
 
   console.log(
-    "🤖 Emma Final Response:",
-    response
+    "FINAL EMMA RESULT:",
+    result
   );
 
-});
+
+}
+
+
+
+
+
+testEmma();

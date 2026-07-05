@@ -1,6 +1,7 @@
 // EmmaJudgement.js
 // Emma's wisdom layer
-// Guardrails before Emma takes action
+// Decides if an action SHOULD happen
+// Not just whether it CAN happen
 
 
 class EmmaJudgement {
@@ -17,38 +18,66 @@ class EmmaJudgement {
 
 
 
+
+
+
+
+
   async judge(
     reasoning,
-    memory
+    memory,
+    capabilities
   ){
+
 
 
     console.log(
       "⚖️ Judging Emma decision:",
       {
         reasoning,
-        memory
+        memory,
+        capabilities
       }
     );
 
 
 
-    // Default decision
-    // Emma does nothing unless approved
+
+
+
+
+
+
+    const confidence =
+
+      reasoning.confidence
+      || 50;
+
+
+
+
+
+
 
     let decision = {
 
-      shouldAct: false,
 
-      priority: "low",
+      shouldAct:false,
 
-      action: null,
 
-      confidence:
-        reasoning.confidence || 0,
+      priority:"low",
+
+
+      action:null,
+
+
+      confidence,
+
 
       reason:
-        "Waiting for judgement"
+
+      "Emma decided observation is better"
+
 
     };
 
@@ -56,50 +85,6 @@ class EmmaJudgement {
 
 
 
-    // ==================================================
-    // GUARDRAIL 1:
-    // Do not act without enough confidence
-    // ==================================================
-
-
-    if(
-      reasoning.confidence < 70
-    ){
-
-
-      decision.reason =
-        "Confidence too low. Need more information.";
-
-
-      return decision;
-
-    }
-
-
-
-
-
-
-    // ==================================================
-    // GUARDRAIL 2:
-    // Do not repeat same advice again and again
-    // ==================================================
-
-
-    if(
-      memory &&
-      memory.lastAdvice &&
-      memory.lastAdvice === reasoning.suggestion
-    ){
-
-
-      decision.reason =
-        "Emma already suggested this before";
-
-
-      return decision;
-
-    }
 
 
 
@@ -107,96 +92,30 @@ class EmmaJudgement {
 
 
 
-    // ==================================================
-    // GUARDRAIL 3:
-    // Respect business identity
-    // ==================================================
-
-
-    if(
-      reasoning.conflictsWithBusiness === true
-    ){
-
-
-      decision.reason =
-        "Suggestion conflicts with business identity";
-
-
-      return decision;
-
-    }
-
-
-
-
-
-
-
-    // ==================================================
-    // GUARDRAIL 4:
-    // Dangerous actions need owner approval
-    // ==================================================
-
-
-    const riskyActions = [
-
-      "send_campaign",
-
-      "delete_data",
-
-      "change_price",
-
-      "spend_money"
-
-    ];
+    // ==============================
+    // Low confidence protection
+    // ==============================
 
 
 
     if(
-      riskyActions.includes(
-        reasoning.actionType
-      )
+      confidence < 50
     ){
 
 
-      decision.reason =
-        "Owner approval required before this action";
+      return {
 
 
-      decision.needsApproval = true;
+        ...decision,
 
 
-      return decision;
+        reason:
 
-    }
-
-
+        "Not enough confidence. Need more learning before acting"
 
 
+      };
 
-
-
-
-    // ==================================================
-    // GUARDRAIL 5:
-    // Do not repeat failed strategies
-    // ==================================================
-
-
-    if(
-      memory &&
-      memory.failedStrategies &&
-      memory.failedStrategies.includes(
-        reasoning.suggestion
-      )
-    ){
-
-
-      decision.reason =
-        "This strategy failed before. Try another approach.";
-
-
-      return decision;
 
     }
 
@@ -208,53 +127,485 @@ class EmmaJudgement {
 
 
 
-    // ==================================================
-    // PASSED ALL GUARDRAILS
-    // Emma can proceed
-    // ==================================================
 
 
-    decision = {
 
-      shouldAct: true,
+    // ==============================
+    // Study reasoning warnings
+    // ==============================
 
 
-      priority:
-        reasoning.impact || "medium",
+
+    const recommendation =
+
+      reasoning.recommendation
+
+      || {};
+
+
+
+
+
+
+    if(
+      recommendation.warning
+    ){
+
+
+
+      return {
+
+
+        shouldAct:false,
+
+
+        priority:"high",
+
+
+        action:null,
+
+
+        confidence,
+
+
+        reason:
+
+        recommendation.warning,
+
+
+        lesson:
+
+        recommendation.failedExperience
+
+        || []
+
+
+      };
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Check past failures
+    // ==============================
+
+
+
+    const memories =
+
+
+      memory
+      ?.relevantExperiences
+
+      || [];
+
+
+
+
+
+
+    const failedBefore =
+
+
+      memories.some(item => {
+
+
+
+        const text =
+
+        JSON.stringify(item)
+        .toLowerCase();
+
+
+
+
+        return (
+
+          text.includes("failed")
+
+          ||
+
+          text.includes("did not work")
+
+        );
+
+
+      });
+
+
+
+
+
+
+
+    if(failedBefore){
+
+
+
+      return {
+
+
+        shouldAct:false,
+
+
+        priority:"high",
+
+
+        action:null,
+
+
+        confidence,
+
+
+        reason:
+
+        "Emma found similar failures in company history. Action stopped to avoid repeating mistakes"
+
+
+      };
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Decide needed capability
+    // ==============================
+
+
+
+    let desiredAction =
+
+      "CREATE_TASK";
+
+
+
+
+
+
+
+    if(
+
+      reasoning.goal === "growth"
+
+      ||
+
+      reasoning.type === "growth"
+
+    ){
+
+
+      desiredAction =
+
+      "CREATE_CAMPAIGN";
+
+
+    }
+
+
+
+
+
+
+
+
+    if(
+
+      reasoning.goal === "analysis"
+
+      ||
+
+      reasoning.type === "analysis"
+
+    ){
+
+
+      desiredAction =
+
+      "GENERATE_REPORT";
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Find Emma ability
+    // ==============================
+
+
+
+    const skill =
+
+
+      capabilities.find(
+
+        item =>
+
+        item.name === desiredAction
+
+      );
+
+
+
+
+
+
+
+
+    if(!skill){
+
+
+
+      return {
+
+
+        shouldAct:false,
+
+
+        action:null,
+
+
+        confidence,
+
+
+        reason:
+
+        `Emma understands the solution but does not have ${desiredAction} ability yet`
+
+
+      };
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Risk judgement
+    // ==============================
+
+
+
+    if(
+
+      skill.risk === "high"
+
+      &&
+
+      confidence < 85
+
+    ){
+
+
+
+      return {
+
+
+        shouldAct:false,
+
+
+        action:null,
+
+
+        confidence,
+
+
+        reason:
+
+        "Risk is too high compared with confidence level"
+
+
+      };
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Approval judgement
+    // ==============================
+
+
+
+    if(
+      skill.requiresApproval
+    ){
+
+
+
+      return {
+
+
+        shouldAct:true,
+
+
+        action:
+
+        desiredAction,
+
+
+        confidence,
+
+
+        priority:
+
+        "medium",
+
+
+
+        mode:
+
+        "prepare",
+
+
+
+        needsApproval:
+
+        true,
+
+
+
+        reason:
+
+        "Emma recommends this action but owner approval is required"
+
+
+      };
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ==============================
+    // Final approval
+    // ==============================
+
+
+
+    return {
+
+
+
+      shouldAct:true,
+
 
 
       action:
-        reasoning.suggestion,
+
+      desiredAction,
 
 
-      confidence:
-        reasoning.confidence,
+
+      confidence,
+
+
+
+      priority:
+
+      skill.risk === "low"
+
+      ? "medium"
+
+      : "high",
+
+
+
+
+      mode:
+
+      "execute",
+
+
+
+      needsApproval:false,
+
+
 
 
       reason:
-        "Approved by Emma Judgement",
+
+      "Emma approved this action after checking memory, risk and capability"
 
 
-      needsApproval:
-        false
+
 
     };
 
-
-
-
-    console.log(
-      "✅ Judgement result:",
-      decision
-    );
-
-
-
-    return decision;
 
 
 
   }
+
 
 
 
