@@ -1,25 +1,43 @@
 // EmmaBrain.js
-// Emma's LLM brain
-// Connection between Emma and OpenAI
+// Emma's central intelligence system
+// Observe → Reflect → Remember → Reason → Learn
 
 
 import OpenAI from "openai";
 
 
-
-const openai = new OpenAI({
-
-
-  apiKey:
-
-  import.meta.env.VITE_OPENAI_API_KEY,
+import EmmaObserver
+from "./EmmaObserver";
 
 
+import EmmaReflection
+from "./EmmaReflection";
 
-  dangerouslyAllowBrowser:true
+
+import EmmaMemory
+from "./EmmaMemory";
+
+
+
+
+
+
+const openai =
+new OpenAI({
+
+
+apiKey:
+import.meta.env.VITE_OPENAI_API_KEY,
+
+
+// development only
+// production should use backend
+
+dangerouslyAllowBrowser:true
 
 
 });
+
 
 
 
@@ -32,198 +50,410 @@ class EmmaBrain {
 
 
 
+constructor(){
 
-  constructor(){
 
+console.log(
+"🧠 Emma Brain online"
+);
 
-    console.log(
-      "🧠 Emma LLM Brain connected"
-    );
 
 
-  }
+this.observer =
+new EmmaObserver();
 
 
 
+this.reflection =
+new EmmaReflection();
 
 
 
+this.memory =
+new EmmaMemory();
 
 
 
-  async think(
-    context
-  ){
 
+this.stats={
 
+aiCalls:0,
 
-    try{
+savedCalls:0
 
+};
 
 
 
+}
 
-      const response =
 
-      await openai.chat.completions.create({
 
 
 
-        model:
 
-        "gpt-4.1-mini",
 
 
 
+// =================================
+// EXPERIENCE LOOP
+// =================================
 
 
+async experience(
+event
+){
 
-        messages:[
 
 
+console.log(
+"👀 Emma received event",
+event
+);
 
-          {
 
 
-            role:"system",
 
+// 1. Observe
 
-            content:
 
-            `
-            You are Emma.
+const observation =
 
-            You are not a chatbot.
+await this.observer.observe(
+event
+);
 
-            You are an AI growth employee.
 
-            Think like someone working
-            inside the business.
 
-            Use:
-            - memories
-            - past success
-            - failures
-            - results
 
-            before making decisions.
-            `
 
+// 2. Reflect
 
 
-          },
+const reflection =
 
+await this.reflection.reflect(
+observation
+);
 
 
 
 
 
 
+// 3. Remember important lessons
 
 
-          {
+if(
+reflection.importance
+!== "low"
+){
 
 
-            role:"user",
 
+await this.memory.remember(
+reflection
+);
 
-            content:
 
-            JSON.stringify(context)
 
+console.log(
+"💾 Emma learned something new"
+);
 
 
-          }
+}
 
 
 
 
-        ]
 
 
 
+return {
 
-      });
+observation,
 
+reflection
 
+};
 
 
 
+}
 
 
 
 
 
 
-      return {
 
 
-        success:true,
 
 
-        response:
 
-        response
-        .choices[0]
-        .message
-        .content
 
+// =================================
+// THINKING ENGINE
+// =================================
 
 
-      };
+async think(
+context
+){
 
 
 
+console.log(
+"🤔 Emma preparing decision"
+);
 
 
-    }
 
 
 
+// Load relevant experience first
 
 
+const memories =
 
+await this.memory.getRelevantMemories(
+context
+);
 
 
 
-    catch(error){
 
 
 
-      console.error(
+const enrichedContext={
 
-        "❌ Emma Brain error:",
 
-        error
+...context,
 
-      );
 
+companyExperience:
+memories
 
 
+};
 
 
 
-      return {
 
 
-        success:false,
 
 
-        response:null
 
+const decision =
 
+this.shouldUseAI(
+enrichedContext
+);
 
-      };
 
 
 
-    }
 
 
 
 
+// Memory/local decision
 
-  }
+
+if(
+!decision.useAI
+){
+
+
+
+this.stats.savedCalls++;
+
+
+
+
+return {
+
+
+success:true,
+
+
+mode:
+"MEMORY_REASONING",
+
+
+
+reason:
+decision.reason,
+
+
+
+experienceUsed:
+memories
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+try{
+
+
+
+this.stats.aiCalls++;
+
+
+
+
+
+const response =
+
+await openai.chat.completions.create({
+
+
+
+
+model:
+"gpt-4.1-mini",
+
+
+
+
+messages:[
+
+
+{
+
+
+role:"system",
+
+
+content:
+
+`
+
+You are Emma.
+
+You are not a chatbot.
+
+You are an AI employee working
+inside this company.
+
+
+Before answering:
+
+
+1. Study company memories.
+
+2. Use past experience first.
+
+3. Never repeat failed actions.
+
+4. Find patterns.
+
+5. Protect profit.
+
+6. Recommend practical actions.
+
+7. Explain which memory affected
+your decision.
+
+
+Company experience is more important
+than generic AI knowledge.
+
+
+`
+
+
+},
+
+
+
+
+
+
+
+
+{
+
+
+role:"user",
+
+
+content:
+
+JSON.stringify(
+enrichedContext
+)
+
+
+}
+
+
+
+]
+
+
+
+});
+
+
+
+
+
+
+
+
+
+return {
+
+
+success:true,
+
+
+mode:
+"AI_REASONING",
+
+
+
+response:
+
+response
+.choices[0]
+.message
+.content,
+
+
+
+memoriesUsed:
+memories,
+
+
+
+usage:
+response.usage,
+
+
+
+stats:
+this.stats
+
+
+
+};
 
 
 
@@ -234,5 +464,284 @@ class EmmaBrain {
 
 
 
-export default new EmmaBrain();
 
+
+catch(error){
+
+
+
+console.error(
+"Emma Brain error",
+error
+);
+
+
+
+
+return {
+
+
+success:false,
+
+
+mode:
+"FALLBACK",
+
+
+reason:
+"AI unavailable",
+
+
+stats:
+this.stats
+
+
+};
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// COST + JUDGEMENT
+// =================================
+
+
+shouldUseAI(
+context
+){
+
+
+
+const reflection =
+
+context.reflection ||
+
+context.situation ||
+
+{};
+
+
+
+
+const memories =
+
+context.companyExperience || [];
+
+
+
+
+
+
+
+
+// Small events don't need AI
+
+
+if(
+reflection.importance==="low"
+){
+
+
+return {
+
+
+useAI:false,
+
+
+reason:
+"Low importance. No AI needed."
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// Experienced Emma trusts herself
+
+
+if(
+memories.length >= 5
+){
+
+
+
+return {
+
+
+useAI:false,
+
+
+reason:
+"Enough company experience available."
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+const text =
+
+JSON.stringify(
+context
+)
+.toLowerCase();
+
+
+
+
+
+
+const important=[
+
+
+"sales",
+
+"revenue",
+
+"loss",
+
+"customer",
+
+"growth",
+
+"drop",
+
+"strategy",
+
+"competitor",
+
+"failure",
+
+"risk"
+
+
+];
+
+
+
+
+
+
+const required =
+
+important.some(
+
+word=>
+
+text.includes(word)
+
+);
+
+
+
+
+
+
+if(required){
+
+
+return {
+
+
+useAI:true,
+
+
+reason:
+"Important decision requires deep thinking"
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+return {
+
+
+useAI:false,
+
+
+reason:
+"Routine business activity"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+getStats(){
+
+
+return this.stats;
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+export default new EmmaBrain();

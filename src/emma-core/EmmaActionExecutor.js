@@ -1,147 +1,146 @@
 // EmmaActionExecutioner.js
 // Emma's hands
-// Converts judgement into real business work
-// Every action creates an outcome to learn from
-
+// Converts decisions into business actions
+// Action → Outcome → Learning
 
 
 class EmmaActionExecutioner {
 
 
+constructor(){
 
-  constructor(){
 
-    console.log(
-      "🖐️ Emma Action Executioner ready"
-    );
+console.log(
+"🖐️ Emma Action Executioner ready"
+);
 
-  }
 
 
+this.history=[];
 
 
 
+}
 
 
 
 
-  async execute(decision){
 
 
 
-    console.log(
-      "🖐️ Emma preparing action:",
-      decision
-    );
 
 
 
 
 
+// =========================
+// Main execution entry
+// =========================
 
 
-    // =========================
-    // No action approved
-    // =========================
+async execute(
+decision
+){
 
 
-    if(
-      !decision ||
-      !decision.shouldAct
-    ){
+console.log(
+"🖐️ Emma received action:",
+decision
+);
 
 
 
-      return {
 
 
-        success:false,
 
+// No permission to act
 
-        action:null,
 
+if(
+!decision ||
+!decision.shouldAct
+){
 
-        message:
 
-        decision?.reason
-        ||
-        "Emma judged that action is not needed",
 
+return this.recordOutcome({
 
 
-        createdAt:
+success:false,
 
-        new Date()
 
+status:
+"BLOCKED",
 
-      };
 
+action:null,
 
-    }
 
+message:
 
+decision?.reason ||
 
+"Judgement stopped execution"
 
 
 
+});
 
 
+}
 
 
 
 
-    // =========================
-    // Approval mode
-    // =========================
 
 
 
-    if(
-      decision.needsApproval
-    ){
 
 
 
-      return {
 
+// Waiting owner approval
 
 
-        success:true,
+if(
+decision.needsApproval
+){
 
 
 
-        action:
-        decision.action,
+return this.recordOutcome({
 
 
 
-        status:
-        "WAITING_FOR_APPROVAL",
+success:true,
 
 
+status:
+"WAITING_FOR_APPROVAL",
 
-        message:
 
-        "Emma prepared the action and is waiting for owner approval",
+action:
+decision.action,
 
 
+message:
+"Prepared but waiting for owner approval",
 
-        reason:
 
-        decision.reason,
+reason:
+decision.reason,
 
 
+decision
 
-        createdAt:
 
-        new Date()
+});
 
 
 
-      };
+}
 
 
-    }
 
 
 
@@ -152,424 +151,112 @@ class EmmaActionExecutioner {
 
 
 
+let result;
 
 
-    // =========================
-    // Execute capability
-    // =========================
 
 
 
-    let result;
 
 
+try{
 
 
 
-    switch(decision.action){
+switch(
+decision.action
+){
 
 
 
-      case "CREATE_CAMPAIGN":
 
 
-        result =
-        await this.createCampaign(
-          decision
-        );
 
+case "CREATE_CAMPAIGN":
 
-        break;
 
+result =
 
+await this.createCampaign(
+decision
+);
 
 
+break;
 
 
 
-      case "CREATE_TASK":
 
 
 
-        result =
-        await this.createTask(
-          decision
-        );
 
 
+case "CREATE_TASK":
 
-        break;
 
+result =
 
+await this.createTask(
+decision
+);
 
 
+break;
 
 
 
 
-      case "GENERATE_REPORT":
 
 
 
-        result =
-        await this.generateReport(
-          decision
-        );
 
+case "GENERATE_REPORT":
 
 
-        break;
+result =
 
+await this.generateReport(
+decision
+);
 
 
+break;
 
 
 
 
 
 
-      default:
 
 
+default:
 
-        result = {
 
+result={
 
-          success:false,
 
+success:false,
 
-          action:
-          decision.action,
 
+status:
+"UNKNOWN_ACTION",
 
-          message:
 
-          "Emma does not have this capability yet"
+action:
+decision.action,
 
 
+message:
+"Emma does not have this skill yet"
 
-        };
 
+};
 
-    }
 
 
+}
 
 
-
-
-
-
-
-    // =========================
-    // Return execution record
-    // =========================
-
-
-
-    return {
-
-
-
-      executionId:
-
-      crypto.randomUUID(),
-
-
-
-
-      ...result,
-
-
-
-
-      judgement:{
-
-
-        confidence:
-
-        decision.confidence,
-
-
-
-        reason:
-
-        decision.reason
-
-
-
-      },
-
-
-
-
-
-      createdAt:
-
-      new Date()
-
-
-
-    };
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // =========================
-  // Growth capability
-  // =========================
-
-
-
-  async createCampaign(decision){
-
-
-
-    console.log(
-      "🚀 Emma creating campaign..."
-    );
-
-
-
-
-
-    return {
-
-
-
-      success:true,
-
-
-
-      action:
-
-      "CREATE_CAMPAIGN",
-
-
-
-
-      result:{
-
-
-
-        status:
-
-        "Campaign created",
-
-
-
-
-        objective:
-
-        "Business growth",
-
-
-
-
-        expectedOutcome:
-
-        "Increase customer engagement",
-
-
-
-
-        createdBy:
-
-        "Emma"
-
-
-
-      }
-
-
-
-    };
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // =========================
-  // Operation capability
-  // =========================
-
-
-
-  async createTask(decision){
-
-
-
-    console.log(
-      "📋 Emma creating task..."
-    );
-
-
-
-
-
-
-    return {
-
-
-
-      success:true,
-
-
-
-      action:
-
-      "CREATE_TASK",
-
-
-
-
-      result:{
-
-
-
-        status:
-
-        "Task created",
-
-
-
-
-        objective:
-
-        "Improve operations",
-
-
-
-
-        assignedTo:
-
-        "Emma"
-
-
-
-      }
-
-
-
-    };
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // =========================
-  // Intelligence capability
-  // =========================
-
-
-
-  async generateReport(decision){
-
-
-
-    console.log(
-      "📊 Emma generating report..."
-    );
-
-
-
-
-
-
-
-    return {
-
-
-
-      success:true,
-
-
-
-      action:
-
-      "GENERATE_REPORT",
-
-
-
-
-      result:{
-
-
-
-        status:
-
-        "Report generated",
-
-
-
-
-        objective:
-
-        "Understand business situation",
-
-
-
-
-        generatedBy:
-
-        "Emma"
-
-
-
-      }
-
-
-
-    };
-
-
-
-  }
 
 
 
@@ -577,6 +264,503 @@ class EmmaActionExecutioner {
 
 
 }
+
+
+
+
+
+
+catch(error){
+
+
+
+result={
+
+
+success:false,
+
+
+status:
+"FAILED",
+
+
+action:
+decision.action,
+
+
+error:
+error.message
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Store execution result
+
+
+return this.recordOutcome({
+
+
+...result,
+
+
+judgement:{
+
+
+confidence:
+decision.confidence,
+
+
+reason:
+decision.reason
+
+
+}
+
+
+});
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Campaign capability
+// =========================
+
+
+async createCampaign(
+decision
+){
+
+
+
+console.log(
+"🚀 Creating campaign"
+);
+
+
+
+
+
+return {
+
+
+success:true,
+
+
+status:
+"COMPLETED",
+
+
+action:
+"CREATE_CAMPAIGN",
+
+
+
+result:{
+
+
+
+campaignId:
+crypto.randomUUID(),
+
+
+
+objective:
+"Increase business growth",
+
+
+
+source:
+"Emma AI",
+
+
+
+expectedOutcome:
+"More customer engagement",
+
+
+
+createdAt:
+new Date()
+
+
+
+}
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Task capability
+// =========================
+
+
+async createTask(
+decision
+){
+
+
+
+console.log(
+"📋 Creating task"
+);
+
+
+
+
+return {
+
+
+success:true,
+
+
+status:
+"COMPLETED",
+
+
+action:
+"CREATE_TASK",
+
+
+
+result:{
+
+
+
+taskId:
+crypto.randomUUID(),
+
+
+
+objective:
+"Improve business operation",
+
+
+
+assignedTo:
+"Emma",
+
+
+
+completed:
+false
+
+
+
+}
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Report capability
+// =========================
+
+
+async generateReport(
+decision
+){
+
+
+
+console.log(
+"📊 Generating report"
+);
+
+
+
+
+
+return {
+
+
+success:true,
+
+
+status:
+"COMPLETED",
+
+
+action:
+"GENERATE_REPORT",
+
+
+
+result:{
+
+
+
+reportId:
+crypto.randomUUID(),
+
+
+
+summary:
+"Business intelligence report created",
+
+
+
+generatedBy:
+"Emma",
+
+
+
+generatedAt:
+new Date()
+
+
+
+}
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Outcome tracking
+// =========================
+
+
+recordOutcome(
+execution
+){
+
+
+
+const record={
+
+
+
+executionId:
+crypto.randomUUID(),
+
+
+
+...execution,
+
+
+
+needsLearning:
+true,
+
+
+
+createdAt:
+new Date()
+
+
+
+};
+
+
+
+
+
+
+
+
+this.history.push(
+record
+);
+
+
+
+
+
+
+
+console.log(
+"📚 Execution recorded:",
+record
+);
+
+
+
+
+
+
+
+
+return record;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Future learning feedback
+// =========================
+
+
+updateOutcome(
+executionId,
+outcome
+){
+
+
+
+const item =
+
+this.history.find(
+
+x=>x.executionId===executionId
+
+);
+
+
+
+
+
+
+if(!item){
+
+
+return null;
+
+
+}
+
+
+
+
+
+
+
+
+item.outcome=outcome;
+
+
+
+item.learnedAt=
+new Date();
+
+
+
+
+
+
+return item;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =========================
+// Debug
+// =========================
+
+
+getHistory(){
+
+
+return this.history;
+
+
+}
+
+
+
+
+}
+
+
 
 
 

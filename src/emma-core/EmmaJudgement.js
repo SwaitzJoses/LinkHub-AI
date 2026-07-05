@@ -1,19 +1,19 @@
 // EmmaJudgement.js
 // Emma's wisdom layer
-// Decides if an action SHOULD happen
-// Not just whether it CAN happen
+// Decides SHOULD we do this?
+// Protects business before taking action
 
 
 class EmmaJudgement {
 
 
-  constructor(){
+constructor(){
 
-    console.log(
-      "⚖️ Emma Judgement ready"
-    );
+console.log(
+"⚖️ Emma Judgement ready"
+);
 
-  }
+}
 
 
 
@@ -23,171 +23,188 @@ class EmmaJudgement {
 
 
 
-  async judge(
-    reasoning,
-    memory,
-    capabilities
-  ){
 
+async judge(
+reasoning,
+memory,
+capabilities=[]
+){
 
 
-    console.log(
-      "⚖️ Judging Emma decision:",
-      {
-        reasoning,
-        memory,
-        capabilities
-      }
-    );
+console.log(
+"⚖️ Emma judging:",
+{
+reasoning,
+memory,
+capabilities
+}
+);
 
 
 
 
 
 
+const confidence =
+reasoning.confidence || 50;
 
 
 
-    const confidence =
+const recommendation =
+reasoning.recommendation || {};
 
-      reasoning.confidence
-      || 50;
 
 
+const memories =
+memory?.relevantExperiences || [];
 
 
 
 
 
-    let decision = {
 
+let judgementLog=[];
 
-      shouldAct:false,
 
 
-      priority:"low",
 
+judgementLog.push(
+`Confidence checked: ${confidence}%`
+);
 
-      action:null,
 
 
-      confidence,
 
 
-      reason:
 
-      "Emma decided observation is better"
 
 
-    };
 
+// ===============================
+// Confidence protection
+// ===============================
 
 
+if(confidence < 50){
 
 
 
+return this.block({
 
+confidence,
 
+reason:
+"Confidence too low. More learning required.",
 
+judgementLog
 
+});
 
 
-    // ==============================
-    // Low confidence protection
-    // ==============================
+}
 
 
 
-    if(
-      confidence < 50
-    ){
 
 
-      return {
 
 
-        ...decision,
 
 
-        reason:
 
-        "Not enough confidence. Need more learning before acting"
+// ===============================
+// Check previous failures
+// ===============================
 
 
-      };
+const failures =
+this.findFailures(
+memories
+);
 
 
-    }
 
+if(
+failures.length>0
+){
 
 
+judgementLog.push(
+"Similar failures discovered"
+);
 
 
 
+return this.block({
 
+confidence,
 
 
+reason:
+"Similar actions failed before. Avoiding repeated mistake.",
 
 
+lesson:
+failures.slice(0,3),
 
-    // ==============================
-    // Study reasoning warnings
-    // ==============================
 
+judgementLog
 
 
-    const recommendation =
+});
 
-      reasoning.recommendation
 
-      || {};
+}
 
 
 
 
 
 
-    if(
-      recommendation.warning
-    ){
 
 
 
-      return {
 
 
-        shouldAct:false,
+// ===============================
+// Detect action
+// ===============================
 
 
-        priority:"high",
+const desiredAction =
+this.chooseAction(
+reasoning
+);
 
 
-        action:null,
 
 
-        confidence,
+judgementLog.push(
+`Desired action: ${desiredAction}`
+);
 
 
-        reason:
 
-        recommendation.warning,
 
 
-        lesson:
 
-        recommendation.failedExperience
 
-        || []
 
 
-      };
 
+// ===============================
+// Capability check
+// ===============================
 
-    }
 
+const skill =
 
+capabilities.find(
 
+item=>
+item.name===desiredAction
 
+);
 
 
 
@@ -195,421 +212,562 @@ class EmmaJudgement {
 
 
 
+if(!skill){
 
 
+return this.block({
 
-    // ==============================
-    // Check past failures
-    // ==============================
 
+confidence,
 
 
-    const memories =
+reason:
+`Emma understands the solution but cannot perform ${desiredAction} yet.`,
 
 
-      memory
-      ?.relevantExperiences
+judgementLog
 
-      || [];
 
+});
 
 
+}
 
 
 
-    const failedBefore =
 
 
-      memories.some(item => {
 
 
 
-        const text =
 
-        JSON.stringify(item)
-        .toLowerCase();
 
 
+// ===============================
+// Risk evaluation
+// ===============================
 
 
-        return (
+const riskScore =
+this.calculateRisk(
+skill,
+reasoning
+);
 
-          text.includes("failed")
 
-          ||
 
-          text.includes("did not work")
+judgementLog.push(
+`Risk score: ${riskScore}`
+);
 
-        );
 
 
-      });
 
 
 
 
 
+if(
+riskScore > confidence
+){
 
 
-    if(failedBefore){
 
+return this.block({
 
 
-      return {
+confidence,
 
 
-        shouldAct:false,
+reason:
+"Risk is higher than confidence.",
 
 
-        priority:"high",
+judgementLog
 
 
-        action:null,
+});
 
 
-        confidence,
+}
 
 
-        reason:
 
-        "Emma found similar failures in company history. Action stopped to avoid repeating mistakes"
 
 
-      };
 
 
-    }
 
 
 
 
 
+// ===============================
+// Repetition protection
+// ===============================
 
 
+if(
+this.isRepeatedAction(
+desiredAction,
+memories
+)
+){
 
 
 
+return this.block({
 
 
+confidence,
 
 
-    // ==============================
-    // Decide needed capability
-    // ==============================
+reason:
+"Action was done recently. Avoiding unnecessary repetition.",
 
 
+judgementLog
 
-    let desiredAction =
 
-      "CREATE_TASK";
+});
 
 
+}
 
 
 
 
 
-    if(
 
-      reasoning.goal === "growth"
 
-      ||
 
-      reasoning.type === "growth"
 
-    ){
 
 
-      desiredAction =
+// ===============================
+// Human approval layer
+// ===============================
 
-      "CREATE_CAMPAIGN";
 
+if(
+skill.requiresApproval
+){
 
-    }
 
 
+return {
 
 
+shouldAct:true,
 
 
+action:
+desiredAction,
 
 
-    if(
+mode:
+"prepare",
 
-      reasoning.goal === "analysis"
 
-      ||
+needsApproval:true,
 
-      reasoning.type === "analysis"
 
-    ){
+priority:
+"medium",
 
 
-      desiredAction =
+confidence,
 
-      "GENERATE_REPORT";
 
+reason:
+"Action prepared. Owner approval required.",
 
-    }
 
+judgementLog,
 
 
+createdAt:
+new Date()
 
 
+};
 
 
+}
 
 
 
 
 
 
-    // ==============================
-    // Find Emma ability
-    // ==============================
 
 
 
-    const skill =
 
 
-      capabilities.find(
+// ===============================
+// Final approval
+// ===============================
 
-        item =>
 
-        item.name === desiredAction
+return {
 
-      );
 
+shouldAct:true,
 
 
+action:
+desiredAction,
 
 
+mode:
+"execute",
 
 
+needsApproval:false,
 
-    if(!skill){
 
+priority:
+riskScore < 40
+? "medium"
+: "high",
 
 
-      return {
+confidence,
 
 
-        shouldAct:false,
+reason:
+"Approved after checking memory, risk and capability.",
 
 
-        action:null,
+judgementLog,
 
 
-        confidence,
+createdAt:
+new Date()
 
 
-        reason:
-
-        `Emma understands the solution but does not have ${desiredAction} ability yet`
-
-
-      };
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ==============================
-    // Risk judgement
-    // ==============================
-
-
-
-    if(
-
-      skill.risk === "high"
-
-      &&
-
-      confidence < 85
-
-    ){
-
-
-
-      return {
-
-
-        shouldAct:false,
-
-
-        action:null,
-
-
-        confidence,
-
-
-        reason:
-
-        "Risk is too high compared with confidence level"
-
-
-      };
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ==============================
-    // Approval judgement
-    // ==============================
-
-
-
-    if(
-      skill.requiresApproval
-    ){
-
-
-
-      return {
-
-
-        shouldAct:true,
-
-
-        action:
-
-        desiredAction,
-
-
-        confidence,
-
-
-        priority:
-
-        "medium",
-
-
-
-        mode:
-
-        "prepare",
-
-
-
-        needsApproval:
-
-        true,
-
-
-
-        reason:
-
-        "Emma recommends this action but owner approval is required"
-
-
-      };
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ==============================
-    // Final approval
-    // ==============================
-
-
-
-    return {
-
-
-
-      shouldAct:true,
-
-
-
-      action:
-
-      desiredAction,
-
-
-
-      confidence,
-
-
-
-      priority:
-
-      skill.risk === "low"
-
-      ? "medium"
-
-      : "high",
-
-
-
-
-      mode:
-
-      "execute",
-
-
-
-      needsApproval:false,
-
-
-
-
-      reason:
-
-      "Emma approved this action after checking memory, risk and capability"
-
-
-
-
-    };
-
-
-
-
-  }
+};
 
 
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Find failed experience
+// ===============================
+
+
+findFailures(
+memories
+){
+
+
+
+return memories.filter(
+item=>{
+
+
+const text =
+JSON.stringify(item)
+.toLowerCase();
+
+
+
+return (
+
+text.includes("failed") ||
+
+text.includes("loss") ||
+
+text.includes("mistake") ||
+
+text.includes("did not work")
+
+);
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Select capability needed
+// ===============================
+
+
+chooseAction(
+reasoning
+){
+
+
+
+if(
+reasoning.recommendation?.action
+){
+
+
+return reasoning.recommendation.action;
+
+
+}
+
+
+
+
+
+
+if(
+reasoning.goal==="growth"
+){
+
+
+return "CREATE_CAMPAIGN";
+
+
+}
+
+
+
+
+
+if(
+reasoning.goal==="analysis"
+){
+
+
+return "GENERATE_REPORT";
+
+
+}
+
+
+
+
+
+return "CREATE_TASK";
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Risk calculation
+// ===============================
+
+
+calculateRisk(
+skill,
+reasoning
+){
+
+
+
+let risk=30;
+
+
+
+
+if(
+skill.risk==="medium"
+){
+
+risk+=20;
+
+}
+
+
+
+if(
+skill.risk==="high"
+){
+
+risk+=50;
+
+}
+
+
+
+
+
+if(
+reasoning.confidence>80
+){
+
+risk-=20;
+
+}
+
+
+
+
+if(risk<0){
+
+risk=0;
+
+}
+
+
+
+return risk;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Prevent spam/repetition
+// ===============================
+
+
+isRepeatedAction(
+action,
+memories
+){
+
+
+
+return memories.some(
+item=>{
+
+
+const text =
+JSON.stringify(item)
+.toLowerCase();
+
+
+
+return (
+
+text.includes(action.toLowerCase())
+
+&&
+
+text.includes("recent")
+
+);
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Standard rejection
+// ===============================
+
+
+block({
+confidence,
+reason,
+lesson=[],
+judgementLog=[]
+}){
+
+
+
+return {
+
+
+shouldAct:false,
+
+
+action:null,
+
+
+mode:
+"observe",
+
+
+confidence,
+
+
+priority:
+"low",
+
+
+needsApproval:false,
+
+
+reason,
+
+
+lesson,
+
+
+judgementLog,
+
+
+createdAt:
+new Date()
+
+
+};
+
+
+
+}
+
+
+
+}
+
 
 
 

@@ -1,377 +1,847 @@
 // EmmaMemory.js
-// Emma's long term memory system
-// Reads previous experiences from Supabase
-// Finds relevant experiences before decisions
+// Emma's long term experience system
+// Stores and recalls business knowledge
 
 
-import { EmmaDB } from "./config/EmmaDatabase";
+import { EmmaDB } 
+from "./config/EmmaDatabase";
+
 
 
 
 class EmmaMemory {
 
 
-  constructor(){
+constructor(){
 
-    console.log(
-      "🧠 Emma Memory ready"
-    );
 
-  }
+console.log(
+"🧠 Emma Memory ready"
+);
 
 
+}
 
 
 
 
-  // ------------------------------------
-  // Save / recall memories for reflection
-  // ------------------------------------
 
-  async remember(reflection){
 
 
-    console.log(
-      "🧠 Emma searching past experience..."
-    );
 
 
 
-    const businessId =
-      reflection.businessId;
 
+// =================================
+// Store new experience
+// =================================
 
 
-    if(!businessId){
+async remember(
+experience
+){
 
 
-      console.log(
-        "No business id for memory search"
-      );
 
+console.log(
+"💾 Emma saving experience:",
+experience
+);
 
-      return {
 
-        previousExperiences: [],
 
-        relevantExperiences: [],
 
-        totalMemories: 0,
 
-        lastAdvice: null
+if(
+!experience.businessId
+){
 
-      };
 
-    }
+console.log(
+"⚠️ Memory ignored: no business id"
+);
 
 
+return null;
 
 
+}
 
 
-    // Load all company memories
 
-    const memories =
-      await EmmaDB.getMemories(
-        businessId
-      );
 
 
 
 
 
+const memory={
 
-    // Find memories related
-    // to current situation
 
-    const relevantMemories =
-      this.getRelevantMemories(
-        reflection,
-        memories
-      );
 
 
+businessId:
+experience.businessId,
 
 
 
 
-    const lastMemory =
-      memories[0];
 
+type:
+experience.learning?.type
+||
+experience.type
+||
+"EXPERIENCE",
 
 
 
 
 
-    return {
+memory:{
 
 
-      previousExperiences:
-        memories,
 
+summary:
+experience.meaning
+||
+experience.learning?.lesson
+||
+"Business experience recorded",
 
 
-      relevantExperiences:
-        relevantMemories,
 
 
 
-      totalMemories:
-        memories.length,
+experience,
 
 
 
-      lastAdvice:
 
-        lastMemory
-        ?.memory
-        ?.reasoning
-        ?.suggestion
 
-        || null
 
+lesson:
+experience.learning?.lesson
+||
+experience.lesson
+||
+null,
 
-    };
 
 
-  }
 
 
 
 
+success:
 
+experience.success
+??
+null,
 
 
 
 
-  // ------------------------------------
-  // Emma experience search
-  // Human-like memory recall
-  // ------------------------------------
 
-  getRelevantMemories(
-    context,
-    memories
-  ){
 
 
 
-    console.log(
-      "🔎 Emma finding similar experiences..."
-    );
+confidenceImpact:
 
+experience.learning?.confidenceImpact
+||
+0,
 
 
-    if(
-      !memories ||
-      memories.length === 0
-    ){
 
-      return [];
 
-    }
 
 
 
+createdAt:
+new Date()
 
 
 
-    const contextText =
-      JSON.stringify(context)
-      .toLowerCase();
+}
 
 
 
+};
 
 
 
-    const scoredMemories =
 
 
-      memories.map(memory => {
 
 
 
-        const memoryText =
 
-          JSON.stringify(
-            memory
-          )
-          .toLowerCase();
+await EmmaDB.saveMemory(
+memory
+);
 
 
 
 
 
-        let score = 0;
 
+console.log(
+"🧠 Memory stored"
+);
 
 
 
 
 
-        // Product similarity
 
-        if(
-          contextText.includes("product")
-          &&
-          memoryText.includes("product")
-        ){
 
-          score += 2;
+return memory;
 
-        }
 
 
+}
 
 
 
-        // Sales related experience
 
-        if(
-          contextText.includes("sales")
-          &&
-          memoryText.includes("sales")
-        ){
 
-          score += 3;
 
-        }
 
 
 
 
 
 
-        // Customer behaviour
+// =================================
+// Recall memories for thinking
+// =================================
 
-        if(
-          contextText.includes("customer")
-          &&
-          memoryText.includes("customer")
-        ){
 
-          score += 3;
+async recall(
+context
+){
 
-        }
 
 
+console.log(
+"🔎 Emma recalling experience..."
+);
 
 
 
 
-        // Marketing lessons
 
-        if(
-          contextText.includes("offer")
-          &&
-          memoryText.includes("offer")
-        ){
 
-          score += 2;
+const businessId =
+context.businessId ||
+context?.reflection?.businessId;
 
-        }
 
 
 
 
 
 
-        // Failed attempts matter more
+if(!businessId){
 
-        if(
-          memoryText.includes("failed")
-          ||
-          memoryText.includes("did not work")
-        ){
 
-          score += 4;
 
-        }
+return {
 
 
+previousExperiences:[],
 
+relevantExperiences:[],
 
+successes:[],
 
+failures:[],
 
-        // Successful actions
+totalMemories:0
 
-        if(
-          memoryText.includes("worked")
-          ||
-          memoryText.includes("success")
-        ){
 
-          score += 4;
+};
 
-        }
 
+}
 
 
 
 
 
-        return {
 
-          ...memory,
 
-          relevanceScore: score
 
-        };
 
 
+const memories =
 
-      })
+await EmmaDB.getMemories(
+businessId
+);
 
 
 
 
 
-      // remove unrelated memories
 
-      .filter(memory =>
 
-        memory.relevanceScore > 0
 
-      )
+const relevant =
 
+this.getRelevantMemories(
+context,
+memories
+);
 
 
 
 
-      // strongest experiences first
 
-      .sort(
 
-        (a,b)=>
 
-        b.relevanceScore -
-        a.relevanceScore
 
-      );
 
 
+return {
 
 
 
+previousExperiences:
+memories,
 
 
-    console.log(
 
-      `🧠 Found ${
-        scoredMemories.length
-      } useful experiences`
 
-    );
 
+relevantExperiences:
+relevant,
 
 
 
 
-    return scoredMemories;
 
 
-  }
+successes:
+
+this.findSuccess(
+memories
+),
+
+
+
+
+
+
+
+failures:
+
+this.findFailures(
+memories
+),
+
+
+
+
+
+
+
+
+totalMemories:
+memories.length,
+
+
+
+
+
+
+
+
+
+lastExperience:
+
+memories[0] || null
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// Human-like memory search
+// =================================
+
+
+getRelevantMemories(
+context,
+memories=[]
+){
+
+
+
+console.log(
+"🧠 Searching similar memories"
+);
+
+
+
+
+
+if(
+memories.length===0
+){
+
+return [];
+
+}
+
+
+
+
+
+
+
+
+
+const contextText =
+
+JSON.stringify(
+context
+)
+.toLowerCase();
+
+
+
+
+
+
+
+
+
+const scored =
+
+memories.map(
+memory=>{
+
+
+
+
+
+const memoryText =
+
+JSON.stringify(
+memory
+)
+.toLowerCase();
+
+
+
+
+
+
+let score=0;
+
+
+
+
+
+
+
+
+// Same business topic
+
+
+const topics=[
+
+
+"sales",
+
+"customer",
+
+"product",
+
+"marketing",
+
+"campaign",
+
+"lead",
+
+"revenue",
+
+"growth",
+
+"drop",
+
+"risk",
+
+"conversion"
+
+
+];
+
+
+
+
+
+
+
+
+
+topics.forEach(
+topic=>{
+
+
+if(
+
+contextText.includes(topic)
+
+&&
+
+memoryText.includes(topic)
+
+){
+
+
+score+=3;
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+
+// failures are valuable
+
+
+if(
+
+memoryText.includes("failed")
+
+||
+
+memoryText.includes("mistake")
+
+||
+
+memoryText.includes("avoid")
+
+){
+
+
+score+=5;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// success patterns
+
+
+if(
+
+memoryText.includes("worked")
+
+||
+
+memoryText.includes("success")
+
+||
+
+memoryText.includes("improved")
+
+){
+
+
+score+=4;
+
+
+}
+
+
+
+
+
+
+
+
+
+// recent memories matter
+
+
+if(
+memory.created_at
+){
+
+
+
+const age =
+
+Date.now()
+
+-
+
+new Date(
+memory.created_at
+)
+.getTime();
+
+
+
+
+
+
+const days =
+
+age /
+
+(1000*60*60*24);
+
+
+
+
+
+
+
+if(days < 30){
+
+score+=2;
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+return {
+
+
+...memory,
+
+
+relevanceScore:
+score
+
+
+};
+
+
+
+
+}
+
+)
+
+
+
+
+
+
+
+
+
+.filter(
+
+memory=>
+
+memory.relevanceScore>0
+
+)
+
+
+
+
+
+
+
+.sort(
+
+(a,b)=>
+
+b.relevanceScore -
+a.relevanceScore
+
+)
+
+
+
+
+
+
+
+.slice(0,10);
+
+
+
+
+
+
+
+
+
+
+console.log(
+`🧠 ${scored.length} memories recalled`
+);
+
+
+
+
+
+
+return scored;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// Successful experience
+// =================================
+
+
+findSuccess(
+memories
+){
+
+
+
+return memories.filter(
+item=>{
+
+
+
+const text =
+JSON.stringify(item)
+.toLowerCase();
+
+
+
+
+return (
+
+text.includes("positive_experience")
+
+||
+
+text.includes("success")
+
+||
+
+text.includes("worked")
+
+);
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// Failed experience
+// =================================
+
+
+findFailures(
+memories
+){
+
+
+
+return memories.filter(
+item=>{
+
+
+
+const text =
+JSON.stringify(item)
+.toLowerCase();
+
+
+
+
+return (
+
+text.includes("negative_experience")
+
+||
+
+text.includes("failed")
+
+||
+
+text.includes("mistake")
+
+);
+
+
+});
+
+
+
+}
+
+
+
 
 
 

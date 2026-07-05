@@ -1,22 +1,24 @@
 // EmmaOutcome.js
 // Emma's learning system
-// Reviews actions and creates experience
+// Converts actions into experience
+// Action → Result → Lesson → Memory
 
 
 class EmmaOutcome {
 
 
+constructor(){
 
-  constructor(){
 
+console.log(
+"📊 Emma Outcome Learning ready"
+);
 
-    console.log(
-      "📊 Emma Outcome Learning ready"
-    );
 
+this.outcomes=[];
 
-  }
 
+}
 
 
 
@@ -26,37 +28,39 @@ class EmmaOutcome {
 
 
 
-  async record(
-    action,
-    result
-  ){
 
 
+// ==========================
+// Main learning entry
+// ==========================
 
-    console.log(
-      "📊 Emma reviewing outcome:",
-      {
-        action,
-        result
-      }
-    );
 
+async record(
+action,
+result
+){
 
 
 
+console.log(
+"📊 Emma reviewing outcome:",
+{
+action,
+result
+}
+);
 
 
 
 
 
 
-    const learning =
 
-      this.createLearning(
-        action,
-        result
-      );
+const impact =
 
+this.calculateImpact(
+result.metrics
+);
 
 
 
@@ -65,91 +69,94 @@ class EmmaOutcome {
 
 
 
+const learning =
 
-    const outcome = {
+this.createLearning(
+action,
+result,
+impact
+);
 
 
 
 
-      action:
 
-      action.action,
 
 
 
 
-      success:
+const outcome={
 
-      result.success,
 
 
 
+outcomeId:
+crypto.randomUUID(),
 
-      result:
 
-      result.result,
 
 
 
+action:
+action.action,
 
 
-      judgement:
 
-      action.judgement || null,
 
 
 
+success:
+result.success,
 
 
 
-      learning,
 
 
 
+impact,
 
 
 
 
-      memoryReady:true,
 
 
+originalDecision:
+action,
 
 
 
 
-      createdAt:
 
-      new Date()
 
+result:
+result.result || result,
 
 
-    };
 
 
 
 
+learning,
 
 
 
 
 
-    console.log(
-      "🧠 New experience created:",
-      outcome
-    );
 
+memoryReady:true,
 
 
 
 
 
 
-    return outcome;
+createdAt:
+new Date()
 
 
 
+};
 
-  }
 
 
 
@@ -158,22 +165,22 @@ class EmmaOutcome {
 
 
 
+this.outcomes.push(
+outcome
+);
 
 
 
 
 
-  // ==========================
-  // Convert outcome into memory
-  // ==========================
 
 
 
+console.log(
+"🧠 Emma gained experience:",
+outcome
+);
 
-  createLearning(
-    action,
-    result
-  ){
 
 
 
@@ -182,201 +189,562 @@ class EmmaOutcome {
 
 
 
+return outcome;
 
-    if(result.success){
 
 
+}
 
 
 
 
 
-      return {
 
 
 
 
-        type:
 
-        "POSITIVE_EXPERIENCE",
 
 
 
+// ==========================
+// Create experience
+// ==========================
 
 
-        confidenceImpact:
+createLearning(
+action,
+result,
+impact
+){
 
-        +10,
 
 
 
 
 
-        lesson:
 
-        `This action worked successfully.
-        Similar situations should consider
-        this strategy again.`,
 
+// Successful outcome
 
 
+if(
+result.success
+&&
+impact !== "negative"
+){
 
 
 
-        rememberFor:
 
-        [
 
-          action.action,
+return {
 
-          "successful_strategy",
 
-          "future_decisions"
 
-        ]
 
+type:
+"POSITIVE_EXPERIENCE",
 
 
 
-      };
 
 
+confidenceImpact:
+this.confidenceChange(
+impact
+),
 
 
-    }
 
 
 
 
 
+lesson:
 
+this.successLesson(
+action,
+impact
+),
 
 
 
 
 
 
-    return {
 
 
+rememberFor:[
 
 
-      type:
+action.action,
 
-      "NEGATIVE_EXPERIENCE",
 
+"worked",
 
 
+"successful_strategy",
 
 
-      confidenceImpact:
+impact
 
-      -10,
 
+],
 
 
 
 
-      lesson:
 
-      `This action failed or did not create
-      the expected result.
 
-      Avoid repeating the same strategy
-      without changes.`,
 
 
+futureRule:
 
+"Consider this strategy again in similar situations"
 
 
 
 
-      rememberFor:
 
-      [
+};
 
-        action.action,
 
-        "failed_strategy",
 
-        "avoid_repetition"
 
-      ]
+}
 
 
 
 
 
-    };
 
 
 
 
-  }
 
 
 
+// Failed outcome
 
 
+return {
 
 
 
 
+type:
+"NEGATIVE_EXPERIENCE",
 
 
 
-  // ==========================
-  // Future: calculate impact
-  // ==========================
 
 
+confidenceImpact:
+-10,
 
-  calculateImpact(metrics){
 
 
 
-    if(!metrics){
 
 
-      return "unknown";
 
+lesson:
 
-    }
+this.failureLesson(
+action
+),
 
 
 
 
 
 
-    if(
-      metrics.salesIncrease
-      ||
-      metrics.leadsGenerated
-    ){
 
+rememberFor:[
 
-      return "high";
 
+action.action,
 
-    }
 
+"failed",
 
 
+"avoid_repetition"
 
 
 
-    return "medium";
+],
 
 
 
-  }
 
+
+
+
+futureRule:
+
+"Do not repeat without changing approach"
+
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Success lesson
+// ==========================
+
+
+successLesson(
+action,
+impact
+){
+
+
+
+return (
+
+`${action.action} produced a ${impact} result. ` +
+
+"Emma should remember the conditions that created this success."
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Failure lesson
+// ==========================
+
+
+failureLesson(
+action
+){
+
+
+
+return (
+
+`${action.action} did not achieve the expected outcome. ` +
+
+"Future decisions should analyze why before trying again."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Business impact analysis
+// ==========================
+
+
+calculateImpact(
+metrics={}
+){
+
+
+
+
+
+
+if(
+!metrics
+){
+
+
+return "unknown";
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+metrics.salesIncrease > 0 ||
+
+metrics.revenueIncrease > 0 ||
+
+metrics.leadsGenerated > 5
+
+
+){
+
+
+
+return "high";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+metrics.customerComplaints > 0 ||
+
+metrics.loss > 0
+
+
+){
+
+
+
+return "negative";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+if(
+
+metrics.viewsIncrease ||
+
+metrics.engagementIncrease
+
+
+){
+
+
+
+return "medium";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return "low";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Adjust future confidence
+// ==========================
+
+
+confidenceChange(
+impact
+){
+
+
+
+switch(
+impact
+){
+
+
+case "high":
+
+return 15;
+
+
+
+case "medium":
+
+return 10;
+
+
+
+case "low":
+
+return 5;
+
+
+
+default:
+
+return 0;
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Find previous outcomes
+// ==========================
+
+
+getHistory(){
+
+
+return this.outcomes;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Find successful strategies
+// ==========================
+
+
+getSuccessfulActions(){
+
+
+
+return this.outcomes.filter(
+
+item=>
+
+item.learning.type
+===
+"POSITIVE_EXPERIENCE"
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// Find mistakes
+// ==========================
+
+
+getFailures(){
+
+
+
+return this.outcomes.filter(
+
+item=>
+
+item.learning.type
+===
+"NEGATIVE_EXPERIENCE"
+
+
+);
+
+
+
+}
 
 
 
 
 
 }
+
+
+
+
+
 
 
 
