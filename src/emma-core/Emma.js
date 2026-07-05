@@ -2,6 +2,8 @@
 // Emma's central nervous system
 // Coordinates all Emma intelligence layers
 
+import EmmaBrain
+from "./EmmaBrain";
 
 import EmmaConnectorManager
 from "./connectors/EmmaConnectorManager";
@@ -75,20 +77,12 @@ console.log(
 
 
 
-
-
 // ======================
-// Emma senses
+// Senses
 // ======================
-
 
 this.connectors =
 new EmmaConnectorManager();
-
-
-
-
-
 
 
 
@@ -96,19 +90,14 @@ new EmmaConnectorManager();
 // Translation
 // ======================
 
-
 this.translator =
 new UniversalTranslator();
 
 
 
 
-
-
-
-
 // ======================
-// Intelligence layers
+// Intelligence
 // ======================
 
 
@@ -116,20 +105,18 @@ this.observer =
 new EmmaObserver();
 
 
-
 this.reflection =
-new EmmaReflection();
-
+new EmmaReflection(
+EmmaBrain.ai
+);
 
 
 this.memory =
 new EmmaMemory();
 
 
-
 this.reasoning =
 new EmmaReasoning();
-
 
 
 this.judgement =
@@ -139,18 +126,13 @@ new EmmaJudgement();
 
 
 
-
-
-
-
 // ======================
-// Communication layers
+// Communication
 // ======================
 
 
 this.insight =
 new EmmaInsight();
-
 
 
 this.communication =
@@ -160,12 +142,8 @@ new EmmaCommunication();
 
 
 
-
-
-
-
 // ======================
-// Work + learning
+// Actions + Learning
 // ======================
 
 
@@ -173,25 +151,16 @@ this.actionExecutor =
 EmmaActionExecutor;
 
 
-
 this.outcome =
 EmmaOutcome;
-
 
 
 this.learning =
 EmmaLearningEngine;
 
 
-
-
-
 this.capabilities =
 EmmaCapabilities;
-
-
-
-
 
 
 
@@ -212,9 +181,8 @@ console.log(
 
 
 
-
 // ======================================
-// UNIVERSAL CONNECTOR ENTRY POINT
+// Universal connector entry
 // ======================================
 
 
@@ -226,7 +194,7 @@ businessData
 
 
 console.log(
-"🌎 Emma received external signal",
+"🌎 Signal received",
 {
 source,
 businessData
@@ -235,25 +203,15 @@ businessData
 
 
 
-
-
 const event =
-
 this.connectors.receive(
-
 source,
-
 businessData
-
 );
 
 
 
-
-
-return await this.think(
-event
-);
+return await this.think(event);
 
 
 }
@@ -264,34 +222,18 @@ event
 
 
 
-
-
-
-
-
-// ======================================
-// LinkHub support
-// ======================================
 
 
 async analyzeLinkHub(
 businessData
 ){
 
-
 return await this.experience(
-
 "LINKHUB",
-
 businessData
-
 );
 
-
 }
-
-
-
 
 
 
@@ -306,24 +248,17 @@ businessData
 // ======================================
 
 
-async think(
-input
-){
+async think(input){
 
 
 
 console.log(
-"🤖 Emma started working..."
+"🤖 Emma started thinking..."
 );
 
 
 
-
-
-
 try{
-
-
 
 
 
@@ -337,16 +272,6 @@ const translatedEvent =
 await this.translator.translate(
 input
 );
-
-
-
-
-console.log(
-"🌎 Translated:",
-translatedEvent
-);
-
-
 
 
 
@@ -366,16 +291,6 @@ translatedEvent
 
 
 
-console.log(
-"👀 Observation:",
-observation
-);
-
-
-
-
-
-
 
 
 
@@ -391,33 +306,46 @@ observation
 
 
 
-console.log(
-"🤔 Reflection:",
+
+
+
+// 4. Retrieve relevant memories
+
+
+let memories;
+
+
+
+if(this.memory.getRelevantMemories){
+
+
+memories =
+
+await this.memory.getRelevantMemories(
 reflection
 );
 
 
+}
+
+else{
 
 
-
-
-
-
-
-// 4. Recall memories
-
-
-const memories =
+memories =
 
 await this.memory.recall(
 reflection
 );
 
 
+}
+
+
+
 
 
 console.log(
-"🧠 Memories:",
+"🧠 Relevant memories:",
 memories
 );
 
@@ -428,9 +356,7 @@ memories
 
 
 
-
-
-// 5. Reason
+// 5. Reason with experience
 
 
 const reasoning =
@@ -446,21 +372,10 @@ memories
 
 
 
-console.log(
-"💭 Reasoning:",
-reasoning
-);
 
 
 
-
-
-
-
-
-
-
-// 6. Capabilities
+// 6. Understand abilities
 
 
 const capabilities =
@@ -470,21 +385,11 @@ this.capabilities.getSkills();
 
 
 
-console.log(
-"🖐️ Skills:",
-capabilities
-);
 
 
 
 
-
-
-
-
-
-
-// 7. Judgement
+// 7. Judge best decision
 
 
 const judgement =
@@ -502,21 +407,11 @@ capabilities
 
 
 
-console.log(
-"⚖️ Judgement:",
-judgement
-);
 
 
 
 
-
-
-
-
-
-
-// 8. Insight
+// 8. Create insight
 
 
 const insight =
@@ -528,21 +423,11 @@ judgement
 
 
 
-console.log(
-"💡 Insight:",
-insight
-);
 
 
 
 
-
-
-
-
-
-
-// 9. Execute
+// 9. Act
 
 
 const actionResult =
@@ -554,21 +439,11 @@ judgement
 
 
 
-console.log(
-"🖐️ Action:",
-actionResult
-);
 
 
 
 
-
-
-
-
-
-
-// 10. Outcome
+// 10. Measure outcome
 
 
 const outcome =
@@ -584,22 +459,12 @@ actionResult
 
 
 
-console.log(
-"📊 Outcome:",
-outcome
-);
 
 
 
 
 
-
-
-
-
-
-
-// 11. Learning Engine
+// 11. Learn
 
 
 const learning =
@@ -627,20 +492,9 @@ input.businessId
 },
 
 
-
 memories
 
 
-
-);
-
-
-
-
-
-console.log(
-"📚 Learning:",
-learning
 );
 
 
@@ -650,20 +504,25 @@ learning
 
 
 
-
-// 12. Store learned experience
+// 12. Store experience
 
 
 await this.memory.remember({
 
 
+observation,
 
-...outcome,
 
+reasoning,
+
+
+judgement,
+
+
+outcome,
 
 
 learning,
-
 
 
 businessId:
@@ -677,15 +536,16 @@ translatedEvent.businessId ||
 input.businessId
 
 
-
 });
 
 
 
 
 
+
+
 console.log(
-"💾 Experience saved"
+"💾 Experience stored"
 );
 
 
@@ -696,8 +556,7 @@ console.log(
 
 
 
-
-// 13. Communicate
+// 13. Human communication
 
 
 const message =
@@ -705,29 +564,31 @@ const message =
 await this.communication.reply({
 
 
+observation,
+
+
+reflection,
+
+
+memories,
+
 
 insight,
-
 
 
 reasoning,
 
 
-
 judgement,
-
 
 
 actionResult,
 
 
-
 outcome,
 
 
-
 learning
-
 
 
 });
@@ -736,13 +597,12 @@ learning
 
 
 
+
+
 console.log(
-"💬 Emma:",
+"💬 Emma response:",
 message
 );
-
-
-
 
 
 
@@ -755,18 +615,9 @@ return message;
 
 
 
-
 }
 
-
-
-
-
-
-
 catch(error){
-
-
 
 
 
@@ -777,47 +628,38 @@ error
 
 
 
-
-
-
 return {
-
 
 
 from:
 "Emma",
 
 
-
-
 message:
-"I need more information before making the best decision.",
-
-
+"I could not fully understand this situation yet. I need more information before making a confident decision.",
 
 
 priority:
 "low",
 
 
+confidence:
+20,
 
 
 error:
 error.message
 
 
-
-
 };
 
 
-
-
 }
 
 
 
 }
+
 
 
 
@@ -830,7 +672,7 @@ error.message
 
 
 // ======================================
-// Direct owner conversation
+// Owner conversation
 // ======================================
 
 
@@ -841,7 +683,30 @@ question
 
 
 
+console.log(
+"👤 Owner asked:",
+question
+);
+
+
+
+
 const memories =
+
+this.memory.getRelevantMemories
+
+?
+
+await this.memory.getRelevantMemories({
+
+businessId,
+
+question
+
+})
+
+
+:
 
 await this.memory.recall({
 
@@ -856,21 +721,20 @@ question
 
 
 
-return await this.reasoning.think(
+
+const reasoning =
+
+await this.reasoning.think(
 
 {
 
-
 businessId,
-
 
 meaning:
 question,
 
-
 importance:
 "medium"
-
 
 },
 
@@ -882,6 +746,50 @@ memories
 
 
 
+
+
+
+const judgement =
+
+await this.judgement.judge(
+
+reasoning,
+
+memories,
+
+this.capabilities.getSkills()
+
+);
+
+
+
+
+
+
+
+return await this.communication.reply({
+
+
+memories,
+
+
+reasoning,
+
+
+judgement,
+
+
+insight:{
+message:
+question
+}
+
+
+});
+
+
+
+
 }
 
 
@@ -892,65 +800,47 @@ memories
 
 
 
-
-
-
-// ======================================
-// Emma status
-// ======================================
-
-
 status(){
 
 
-
 return {
-
 
 
 state:
 "ACTIVE",
 
 
+brain:
+[
+"Observer",
+"Memory",
+"Reasoning",
+"Judgement",
+"Communication",
+"Learning"
+],
 
 
 connectors:
-
 this.connectors.getConnectors(),
 
 
-
-
-
 skills:
-
 this.capabilities.getSkills(),
 
 
-
-
-
 checkedAt:
-
 new Date()
-
-
 
 
 };
 
 
-
 }
 
 
 
-
 }
-
-
-
-
 
 
 

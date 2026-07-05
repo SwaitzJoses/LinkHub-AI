@@ -1,6 +1,6 @@
 // UniversalTranslator.js
-// Converts outside world events into Emma's common language
-// Makes all connectors speak the same format
+// Converts outside systems into Emma's common language
+// Preserves meaning so Emma never loses context
 
 
 class UniversalTranslator {
@@ -44,30 +44,21 @@ input
 
 
 
-return {
+const message =
 
+input.message ||
 
+input.text ||
 
+input.description ||
 
-// company identity
-// never lose this
+input.data?.message ||
 
+input.data?.text ||
 
-businessId:
+input.raw?.message ||
 
-input.businessId
-
-||
-
-input.data?.businessId
-
-||
-
-input.data?.raw?.businessId
-
-||
-
-input.raw?.businessId,
+"";
 
 
 
@@ -76,15 +67,72 @@ input.raw?.businessId,
 
 
 
+const businessId =
 
-// where did this come from?
+input.businessId ||
+
+input.business?.id ||
+
+input.data?.businessId ||
+
+input.data?.raw?.businessId ||
+
+input.raw?.businessId ||
+
+"unknown";
+
+
+
+
+
+
+
+
+const eventType =
+
+input.eventType ||
+
+input.type ||
+
+input.action ||
+
+input.data?.type ||
+
+"BUSINESS_ACTIVITY";
+
+
+
+
+
+
+
+
+
+const translated = {
+
+
+
+
+// ==============================
+// Identity
+// ==============================
+
+
+businessId,
+
+
+
+
+// ==============================
+// Source system
+// ==============================
 
 
 source:
 
-input.source
+input.source ||
 
-||
+input.platform ||
 
 "UNKNOWN",
 
@@ -94,42 +142,18 @@ input.source
 
 
 
+// ==============================
+// Event type
+// ==============================
 
 
-// event category
-
-
-eventType:
-
-input.eventType
-
-||
-
-input.type
-
-||
-
-"BUSINESS_ACTIVITY",
-
-
-
-
-
-
+eventType,
 
 
 
 type:
 
-input.type
-
-||
-
-input.eventType
-
-||
-
-"BUSINESS_ACTIVITY",
+eventType,
 
 
 
@@ -138,15 +162,39 @@ input.eventType
 
 
 
+// ==============================
+// Natural meaning
+// IMPORTANT FOR OBSERVER
+// ==============================
 
-// what changed?
+
+message,
+
+
+
+description:
+
+input.description ||
+
+message,
+
+
+
+
+
+
+
+
+// ==============================
+// Object affected
+// ==============================
 
 
 object:
 
-input.object
+input.object ||
 
-||
+input.entity ||
 
 "general",
 
@@ -157,8 +205,9 @@ input.object
 
 
 
-
-// keep original information
+// ==============================
+// Preserve ALL DATA
+// ==============================
 
 
 data:{
@@ -169,17 +218,23 @@ data:{
 
 
 
-businessId:
+businessId,
 
-input.businessId
 
-||
 
-input.data?.businessId
+message,
+
+
+
+originalType:
+
+input.type
 
 
 
 },
+
+
 
 
 
@@ -198,10 +253,15 @@ input,
 
 
 
-// Emma understanding
+
+// ==============================
+// Context for Emma
+// ==============================
 
 
 meaning:
+
+message ||
 
 "Business event translated for Emma",
 
@@ -212,22 +272,19 @@ meaning:
 
 
 
-// timing
+
+// ==============================
+// Time
+// ==============================
 
 
 time:
 
-input.time
+input.time ||
 
-||
-
-input.createdAt
-
-||
+input.createdAt ||
 
 new Date(),
-
-
 
 
 
@@ -241,6 +298,24 @@ new Date()
 
 
 };
+
+
+
+
+
+
+
+
+console.log(
+"🌎 Translation complete:",
+translated
+);
+
+
+
+
+
+return translated;
 
 
 

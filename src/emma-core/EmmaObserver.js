@@ -1,6 +1,6 @@
 // EmmaObserver.js
 // Emma's eyes
-// Watches business activity and converts raw data into meaningful events
+// Understands business events and converts them into signals
 
 
 class EmmaObserver {
@@ -9,7 +9,7 @@ class EmmaObserver {
 constructor(){
 
 console.log(
-"👀 Emma Observer ready"
+"👀 Emma Intelligent Observer ready"
 );
 
 }
@@ -26,21 +26,30 @@ console.log(
 
 
 async observe({
+
 business,
+
 source,
+
 eventType,
+
 data,
-history = []
-}) {
+
+message,
+
+history=[]
+
+}){
 
 
 
 console.log(
-"👀 Observing event:",
+"👀 Emma observing:",
 {
 source,
 eventType,
-data
+data,
+message
 }
 );
 
@@ -50,8 +59,18 @@ data
 
 const analysis =
 analyzeSignals({
-data:data || {},
+
+data:
+data || {},
+
+
+message:
+message || data?.message || "",
+
+
 history
+
+
 });
 
 
@@ -59,21 +78,19 @@ history
 
 
 
-const event = {
+return {
+
 
 
 businessId:
 
-business?.id
+business?.id ||
 
-||
+business?.businessId ||
 
-business?.businessId
+data?.businessId ||
 
-||
-
-data?.businessId,
-
+"unknown",
 
 
 
@@ -83,7 +100,6 @@ source:
 source ||
 
 "UNKNOWN",
-
 
 
 
@@ -104,9 +120,17 @@ data?.type ||
 
 raw:{
 
-data:data || {}
+
+data:
+data || {},
+
+
+message:
+message || ""
+
 
 },
+
 
 
 
@@ -122,6 +146,7 @@ analysis.signals,
 
 
 
+
 importance:
 
 analysis.importance,
@@ -131,9 +156,11 @@ analysis.importance,
 
 
 
+
 summary:
 
 analysis.summary,
+
 
 
 
@@ -150,17 +177,7 @@ new Date()
 
 
 
-
-
-
-
-return event;
-
-
-
 }
-
-
 
 
 
@@ -176,16 +193,21 @@ return event;
 
 
 
-
-// ===========================
-// Signal analysis
-// ===========================
+// ==================================
+// Analyze everything Emma observes
+// ==================================
 
 
 function analyzeSignals({
+
 data,
+
+message,
+
 history
-}) {
+
+}){
+
 
 
 let signals=[];
@@ -194,6 +216,30 @@ let signals=[];
 let importance=3;
 
 
+
+
+const text =
+
+JSON.stringify({
+
+data,
+
+message
+
+})
+.toLowerCase();
+
+
+
+
+
+
+
+
+detectTextMeaning(
+text,
+signals
+);
 
 
 
@@ -206,6 +252,7 @@ signals
 
 
 
+
 detectProblems(
 data,
 signals
@@ -213,10 +260,12 @@ signals
 
 
 
+
 detectCustomerSignals(
 data,
 signals
 );
+
 
 
 
@@ -231,21 +280,39 @@ signals
 
 
 
-
 importance +=
+
 signals.length * 2;
 
 
 
 
-
 if(
-importance > 10
+
+signals.some(
+s=>s.type==="risk"
+)
+
 ){
 
-importance=10;
+importance +=3;
 
 }
+
+
+
+
+
+
+
+importance =
+
+Math.min(
+importance,
+10
+);
+
+
 
 
 
@@ -284,23 +351,235 @@ signals
 
 
 
+// ==================================
+// Understand human/business language
+// ==================================
 
-// ===========================
-// Growth detection
-// ===========================
+
+function detectTextMeaning(
+
+text,
+
+signals
+
+){
+
+
+
+
+
+
+// SALES PROBLEMS
+
+
+if(
+
+text.includes("sales are lower") ||
+
+text.includes("sales dropped") ||
+
+text.includes("sales down") ||
+
+text.includes("less sales") ||
+
+text.includes("revenue dropped") ||
+
+text.includes("decrease")
+
+){
+
+
+
+signals.push({
+
+
+type:
+"risk",
+
+
+area:
+"sales",
+
+
+message:
+"Sales performance decreased compared to normal"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// CUSTOMER LOSS
+
+
+if(
+
+text.includes("customers reduced") ||
+
+text.includes("less customers") ||
+
+text.includes("no customers") ||
+
+text.includes("customer drop")
+
+){
+
+
+
+signals.push({
+
+
+type:
+"risk",
+
+
+area:
+"customers",
+
+
+message:
+"Customer activity appears to be reducing"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// GROWTH
+
+
+if(
+
+text.includes("increased") ||
+
+text.includes("more orders") ||
+
+text.includes("growth") ||
+
+text.includes("improved")
+
+){
+
+
+
+signals.push({
+
+
+type:
+"growth",
+
+
+message:
+"Positive business growth detected"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// OPPORTUNITY
+
+
+if(
+
+text.includes("interested") ||
+
+text.includes("asking") ||
+
+text.includes("many enquiries")
+
+){
+
+
+
+signals.push({
+
+
+type:
+"opportunity",
+
+
+message:
+"Customer interest opportunity detected"
+
+
+});
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==================================
+// Numeric growth detection
+// ==================================
 
 
 function detectGrowth(
+
 data,
+
 history,
+
 signals
+
 ){
 
 
 
 if(
+
 !history ||
+
 history.length===0
+
 ){
 
 return;
@@ -327,6 +606,7 @@ data.views &&
 previous.views &&
 
 data.views >
+
 previous.views * 2
 
 ){
@@ -364,15 +644,20 @@ message:
 
 
 
-// ===========================
+// ==================================
 // Risk detection
-// ===========================
+// ==================================
 
 
 function detectProblems(
+
 data,
+
 signals
+
 ){
+
+
 
 
 
@@ -380,9 +665,48 @@ signals
 
 if(
 
-data.views > 100
+data.previousSales &&
 
-&&
+data.currentSales &&
+
+data.currentSales < data.previousSales
+
+){
+
+
+
+signals.push({
+
+
+type:
+"risk",
+
+
+area:
+"sales",
+
+
+message:
+`Sales reduced from ${data.previousSales} to ${data.currentSales}`
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+data.views > 100 &&
 
 data.orders === 0
 
@@ -398,7 +722,7 @@ type:
 
 
 message:
-"High attention but low conversion"
+"Many people viewed but nobody purchased"
 
 
 });
@@ -414,11 +738,10 @@ message:
 
 
 
+
 if(
 
-data.messages > 20
-
-&&
+data.messages > 20 &&
 
 data.sales === 0
 
@@ -429,15 +752,12 @@ data.sales === 0
 signals.push({
 
 
-
 type:
 "risk",
 
 
-
 message:
-"Customers asking but not purchasing"
-
+"Customers show interest but purchases are missing"
 
 
 });
@@ -461,14 +781,17 @@ message:
 
 
 
-// ===========================
+// ==================================
 // Customer patterns
-// ===========================
+// ==================================
 
 
 function detectCustomerSignals(
+
 data,
+
 signals
+
 ){
 
 
@@ -476,7 +799,9 @@ signals
 
 
 if(
+
 data.repeatCustomers > 5
+
 ){
 
 
@@ -489,7 +814,7 @@ type:
 
 
 message:
-"Returning customer behavior detected"
+"Returning customer pattern detected"
 
 
 });
@@ -505,9 +830,10 @@ message:
 
 
 
-
 if(
+
 data.searches
+
 ){
 
 
@@ -531,6 +857,7 @@ message:
 
 
 
+
 }
 
 
@@ -543,23 +870,28 @@ message:
 
 
 
-
-// ===========================
-// Opportunity detection
-// ===========================
+// ==================================
+// Opportunities
+// ==================================
 
 
 function detectOpportunities(
+
 data,
+
 signals
+
 ){
 
 
 
 
 
+
 if(
+
 data.productViews > 100
+
 ){
 
 
@@ -567,15 +899,12 @@ data.productViews > 100
 signals.push({
 
 
-
 type:
 "opportunity",
 
 
-
 message:
-"Product receiving strong attention"
-
+"A product is getting strong customer attention"
 
 
 });
@@ -583,7 +912,6 @@ message:
 
 
 }
-
 
 
 
@@ -592,7 +920,9 @@ message:
 
 
 if(
+
 data.engagementRate > 10
+
 ){
 
 
@@ -605,8 +935,7 @@ type:
 
 
 message:
-"Marketing content performing well"
-
+"Marketing content is performing well"
 
 
 });
@@ -617,7 +946,6 @@ message:
 
 
 
-
 }
 
 
@@ -629,26 +957,30 @@ message:
 
 
 
-
-
-// ===========================
-// Summary creator
-// ===========================
+// ==================================
+// Summary
+// ==================================
 
 
 function createSummary(
+
 signals
+
 ){
 
 
 
 if(
+
 signals.length===0
+
 ){
 
 
 return (
-"Normal business activity observed"
+
+"No strong pattern yet. Continue observing."
+
 );
 
 
@@ -659,10 +991,13 @@ return (
 
 
 
+
 return signals
 
 .map(
-signal=>signal.message
+
+signal => signal.message
+
 )
 
 .join(". ");
@@ -670,8 +1005,6 @@ signal=>signal.message
 
 
 }
-
-
 
 
 

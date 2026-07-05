@@ -1,7 +1,6 @@
 // EmmaJudgement.js
 // Emma's wisdom layer
-// Protects business decisions
-// Reasoning → Ethics → Risk → Experience → Approval
+// Decides priority, risk, action and responsibility
 
 
 class EmmaJudgement {
@@ -10,7 +9,7 @@ class EmmaJudgement {
 constructor(){
 
 console.log(
-"⚖️ Emma Judgement ready"
+"⚖️ Emma Intelligent Judgement ready"
 );
 
 }
@@ -18,9 +17,12 @@ console.log(
 
 
 
+
+
 // ==============================
 // Main judgement engine
 // ==============================
+
 
 async judge(
 reasoning,
@@ -40,19 +42,41 @@ capabilities
 
 
 
-const confidence =
+
+
+let confidence =
 reasoning?.confidence || 50;
 
 
-const recommendation =
-reasoning?.recommendation || {};
+// support AI decimal confidence
+
+if(confidence <= 1){
+
+confidence =
+Math.round(
+confidence * 100
+);
+
+}
+
+
+
 
 
 const memories =
-memory?.relevantExperiences || [];
+
+memory?.relevantExperiences ||
+
+memory ||
+
+[];
+
+
+
 
 
 let judgementLog=[];
+
 
 
 judgementLog.push(
@@ -61,31 +85,52 @@ judgementLog.push(
 
 
 
-// ==============================
-// Understand action
-// ==============================
 
-const desiredAction =
-this.chooseAction(
+
+// understand business seriousness
+
+
+const businessRisk =
+this.detectBusinessRisk(
 reasoning
 );
 
 
+
 judgementLog.push(
-`Requested action: ${desiredAction}`
+`Business risk: ${businessRisk.level}`
 );
 
 
 
-// ==============================
-// Extract past knowledge
-// ==============================
+
+
+
+// choose action
+
+
+const desiredAction =
+this.chooseAction(
+reasoning,
+businessRisk
+);
+
+
+
+judgementLog.push(
+`Suggested action: ${desiredAction}`
+);
+
+
+
+
 
 
 const failures =
 this.findFailures(
 memories
 );
+
 
 
 const successes =
@@ -96,93 +141,142 @@ memories
 
 
 
-// ==============================
-// Low confidence protection
-// ==============================
-
-
-if(confidence < 45){
-
-return this.block({
-
-confidence,
-
-reason:
-"Emma is not confident enough. More observation required.",
-
-judgementLog
-
-});
-
-}
-
-
-
-// ==============================
-// Never repeat known failures
-// ==============================
-
-
-const repeatedFailure =
-this.matchesPastFailure(
-desiredAction,
-failures
-);
-
-
-
-if(repeatedFailure){
-
-
-judgementLog.push(
-"Previous failure detected"
-);
-
-
-return this.block({
-
-confidence,
-
-reason:
-"Emma rejected this because similar action failed before.",
-
-lesson:
-failures.slice(0,3),
-
-judgementLog
-
-});
-
-
-}
 
 
 
 
 // ==============================
-// Repetition protection
+// Low confidence
 // ==============================
 
 
 if(
+confidence < 45
+){
+
+
+return this.wait({
+
+
+confidence,
+
+
+priority:
+businessRisk.priority,
+
+
+reason:
+"Emma needs more evidence before acting.",
+
+
+judgementLog
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// Avoid repeated mistakes
+// ==============================
+
+
+if(
+
+this.matchesPastFailure(
+desiredAction,
+failures
+)
+
+){
+
+
+return this.wait({
+
+
+confidence,
+
+
+priority:
+"medium",
+
+
+reason:
+"Similar action failed before. Emma will not repeat it blindly.",
+
+
+lesson:
+failures.slice(0,3),
+
+
+judgementLog
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// Prevent spam actions
+// ==============================
+
+
+if(
+
 this.isRepeatedAction(
 desiredAction,
 memories
 )
+
 ){
 
-return this.block({
+
+return this.wait({
+
 
 confidence,
 
+
+priority:
+businessRisk.priority,
+
+
 reason:
-"Emma already performed this recently. Avoiding spam.",
+"This action was recently performed. Avoiding unnecessary repetition.",
+
 
 judgementLog
 
+
 });
 
+
 }
+
+
+
+
+
+
 
 
 
@@ -193,46 +287,63 @@ judgementLog
 
 
 const skill =
+
 capabilities.find(
 
 item =>
+
 item.name === desiredAction
 
 );
 
 
 
+
+
+
 if(!skill){
+
 
 
 return {
 
+
 shouldAct:false,
+
 
 action:
 desiredAction,
 
+
 mode:
-"learn",
+"recommend",
+
 
 confidence,
 
+
 priority:
-"medium",
+businessRisk.priority,
+
 
 needsApproval:false,
 
+
 reason:
-`Emma knows this may help, but she has not learned the ${desiredAction} capability yet.`,
+"Emma understands the issue but does not have permission/tool capability to execute yet.",
+
 
 judgementLog,
+
 
 createdAt:
 new Date()
 
+
 };
 
 
+
 }
 
 
@@ -240,43 +351,68 @@ new Date()
 
 
 
+
+
+
+
 // ==============================
-// Risk intelligence
+// Calculate execution risk
 // ==============================
 
 
-const risk =
+const actionRisk =
+
 this.calculateRisk(
+
 skill,
+
 reasoning,
+
 memories
+
 );
+
 
 
 
 judgementLog.push(
-`Risk calculated: ${risk}`
+`Action risk: ${actionRisk}`
 );
+
 
 
 
 
 
 if(
-risk > confidence
+
+actionRisk > confidence
+
 ){
 
-return this.block({
+
+
+return this.wait({
+
 
 confidence,
 
+
+priority:
+businessRisk.priority,
+
+
 reason:
-"Business risk is higher than confidence.",
+"Action risk is higher than confidence. Emma recommends caution.",
+
 
 judgementLog
 
+
 });
 
+
+
 }
 
 
@@ -284,27 +420,11 @@ judgementLog
 
 
 
-// ==============================
-// Previous success bonus
-// ==============================
-
-
-if(
-successes.length>0
-){
-
-judgementLog.push(
-"Past success increases trust"
-);
-
-}
-
-
 
 
 
 // ==============================
-// Approval decision
+// Approval needed
 // ==============================
 
 
@@ -312,7 +432,11 @@ const needsHuman =
 
 skill.requiresApproval ||
 
-risk>60;
+actionRisk > 60;
+
+
+
+
 
 
 
@@ -320,39 +444,54 @@ risk>60;
 if(needsHuman){
 
 
+
 return {
 
 
 shouldAct:true,
 
+
 action:
 desiredAction,
+
 
 mode:
 "prepare",
 
+
 needsApproval:true,
 
+
 priority:
-"medium",
+businessRisk.priority,
+
 
 confidence,
 
+
 reason:
-"Emma prepared the action but requests owner approval.",
+"Emma prepared the action but wants owner approval.",
+
 
 experienceUsed:
 successes.slice(0,3),
 
+
 judgementLog,
+
 
 createdAt:
 new Date()
 
+
 };
 
 
+
 }
+
+
+
 
 
 
@@ -370,31 +509,101 @@ return {
 
 shouldAct:true,
 
+
 action:
 desiredAction,
+
 
 mode:
 "execute",
 
+
 needsApproval:false,
 
+
 priority:
-confidence>80
-? "high"
-: "medium",
+businessRisk.priority,
+
 
 confidence,
 
+
 reason:
-"Approved using memory, capability and risk judgement.",
+"Emma approved this using reasoning, memory and risk judgement.",
+
 
 experienceUsed:
 successes.slice(0,3),
 
+
 judgementLog,
+
 
 createdAt:
 new Date()
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// Understand business danger
+// ==============================
+
+
+detectBusinessRisk(
+reasoning
+){
+
+
+const text =
+
+JSON.stringify(
+reasoning
+)
+.toLowerCase();
+
+
+
+
+
+if(
+
+text.includes("sales drop") ||
+
+text.includes("sales have dropped") ||
+
+text.includes("revenue") ||
+
+text.includes("loss") ||
+
+text.includes("customer decline") ||
+
+text.includes("risk")
+
+){
+
+
+return {
+
+level:
+"high",
+
+priority:
+"high"
 
 };
 
@@ -407,109 +616,46 @@ new Date()
 
 
 
+if(
 
-// ==============================
-// Successful memories
-// ==============================
+text.includes("opportunity") ||
 
+text.includes("growth") ||
 
-findSuccess(memories){
-
-
-return memories.filter(item=>{
-
-
-const text =
-JSON.stringify(item)
-.toLowerCase();
-
-
-return (
-
-text.includes("success") ||
-text.includes("worked") ||
-text.includes("improved") ||
 text.includes("increase")
 
-);
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-// ==============================
-// Failure memories
-// ==============================
-
-
-findFailures(memories){
-
-
-return memories.filter(item=>{
-
-
-const text =
-JSON.stringify(item)
-.toLowerCase();
-
-
-return (
-
-text.includes("failed") ||
-text.includes("loss") ||
-text.includes("mistake") ||
-text.includes("ignored") ||
-text.includes("did not work")
-
-);
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-// ==============================
-// Match old mistakes
-// ==============================
-
-
-matchesPastFailure(
-action,
-failures
 ){
 
 
-return failures.some(item=>{
+return {
+
+level:
+"medium",
+
+priority:
+"medium"
+
+};
 
 
-const text =
-JSON.stringify(item)
-.toLowerCase();
+}
 
 
-return text.includes(
-action.toLowerCase()
-);
 
 
-});
+
+
+
+return {
+
+level:
+"low",
+
+priority:
+"low"
+
+};
+
 
 
 }
@@ -523,11 +669,15 @@ action.toLowerCase()
 
 
 // ==============================
-// Pick action
+// Choose action intelligently
 // ==============================
 
 
-chooseAction(reasoning){
+chooseAction(
+reasoning,
+risk
+){
+
 
 
 if(
@@ -539,6 +689,19 @@ return reasoning.recommendation.action;
 }
 
 
+
+
+if(
+risk.level==="high"
+){
+
+return "ANALYZE_PROBLEM";
+
+}
+
+
+
+
 if(
 reasoning.goal==="growth"
 ){
@@ -548,31 +711,119 @@ return "CREATE_CAMPAIGN";
 }
 
 
-if(
-reasoning.goal==="analysis"
+
+
+return "CONTINUE_MONITORING";
+
+
+}
+
+
+
+
+
+
+
+
+
+
+findSuccess(memories){
+
+
+return memories.filter(item=>{
+
+
+const text =
+JSON.stringify(item).toLowerCase();
+
+
+return (
+
+text.includes("success") ||
+
+text.includes("worked") ||
+
+text.includes("improved")
+
+);
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+findFailures(memories){
+
+
+return memories.filter(item=>{
+
+
+const text =
+JSON.stringify(item).toLowerCase();
+
+
+return (
+
+text.includes("failed") ||
+
+text.includes("loss") ||
+
+text.includes("mistake")
+
+);
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+matchesPastFailure(
+action,
+failures
 ){
 
-return "GENERATE_REPORT";
+
+return failures.some(item=>
+
+JSON.stringify(item)
+
+.toLowerCase()
+
+.includes(
+
+action.toLowerCase()
+
+)
+
+);
+
 
 }
 
 
-return "CREATE_TASK";
-
-
-}
 
 
 
 
 
-
-
-
-
-// ==============================
-// Risk calculation
-// ==============================
 
 
 calculateRisk(
@@ -580,6 +831,7 @@ skill,
 reasoning,
 memories
 ){
+
 
 
 let risk=30;
@@ -596,16 +848,12 @@ risk+=50;
 
 
 
-if(
-reasoning.confidence>80
-)
+if(reasoning.confidence>80)
 risk-=20;
 
 
 
-if(
-memories.length>5
-)
+if(memories.length>5)
 risk-=10;
 
 
@@ -614,6 +862,7 @@ return Math.max(
 risk,
 0
 );
+
 
 
 }
@@ -626,24 +875,22 @@ risk,
 
 
 
-
-// ==============================
-// Stop duplicate actions
-// ==============================
-
-
 isRepeatedAction(
 action,
 memories
 ){
 
 
+
 return memories.some(item=>{
 
 
 const text =
+
 JSON.stringify(item)
 .toLowerCase();
+
+
 
 
 return (
@@ -655,14 +902,18 @@ action.toLowerCase()
 &&
 
 (
-text.includes("recent") ||
-text.includes("today")
+
+text.includes("today") ||
+
+text.includes("recent")
+
 )
 
 );
 
 
 });
+
 
 
 }
@@ -677,12 +928,13 @@ text.includes("today")
 
 
 // ==============================
-// Reject safely
+// Wait but don't ignore
 // ==============================
 
 
-block({
+wait({
 confidence,
+priority,
 reason,
 lesson=[],
 judgementLog=[]
@@ -694,21 +946,31 @@ return {
 
 shouldAct:false,
 
+
 action:null,
 
-mode:"observe",
+
+mode:
+"observe",
+
 
 confidence,
 
-priority:"low",
+
+priority,
+
 
 needsApproval:false,
 
+
 reason,
+
 
 lesson,
 
+
 judgementLog,
+
 
 createdAt:
 new Date()
@@ -721,7 +983,9 @@ new Date()
 
 
 
+
 }
+
 
 
 export default EmmaJudgement;

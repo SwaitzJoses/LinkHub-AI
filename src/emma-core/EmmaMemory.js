@@ -1,11 +1,14 @@
 // EmmaMemory.js
 // Emma's long-term intelligence system
-// Stores experience, lessons and business wisdom
-// Experience → Knowledge → Future Decisions
+//
+// Observation
+// → Experience
+// → Memory
+// → Reasoning
+// → Better Future Decisions
 
 
-import { EmmaDB }
-from "./config/EmmaDatabase";
+import { EmmaDB } from "./config/EmmaDatabase";
 
 
 
@@ -15,13 +18,15 @@ class EmmaMemory {
 constructor(){
 
 
+this.localMemories = [];
+
+
 console.log(
-"🧠 Emma Memory ready"
+"🧠 Emma Experience Memory online"
 );
 
 
 }
-
 
 
 
@@ -35,22 +40,18 @@ console.log(
 // =================================
 
 
-async remember(
-experience
-){
+async remember(experience){
 
 
 console.log(
-"💾 Emma storing experience:",
+"💾 Emma analyzing experience:",
 experience
 );
 
 
 
 
-if(
-!experience.businessId
-){
+if(!experience.businessId){
 
 
 console.log(
@@ -77,8 +78,6 @@ experience
 
 
 
-
-
 const memory={
 
 
@@ -86,49 +85,188 @@ businessId:
 experience.businessId,
 
 
+
 type:
 knowledge.type,
+
 
 
 memory:{
 
 
-summary:
-knowledge.summary,
+
+problem:
+
+experience.problem ||
+
+experience.situation ||
+
+"UNKNOWN_PROBLEM",
 
 
-experience,
+
+
+
+context:
+
+experience.context ||
+
+null,
+
+
+
+
+
+
+attemptedAction:
+
+experience.attemptedAction ||
+
+experience.action ||
+
+"UNKNOWN_ACTION",
+
+
+
+
+
+
+reasonForAction:
+
+experience.reason ||
+
+null,
+
+
+
+
+
+
+
+outcome:{
+
+
+
+result:
+
+experience.result ||
+
+(
+experience.success
+
+?
+
+"success"
+
+:
+
+"failed"
+),
+
+
+
+
+
+metrics:
+
+experience.metrics ||
+
+{},
+
+
+
+
+
+
+impact:
+
+experience.impact ||
+
+null
+
+
+
+},
+
+
+
+
+
+
 
 
 lesson:
+
 knowledge.lesson,
 
 
-patterns:
-knowledge.patterns,
 
 
-success:
-knowledge.success,
 
-
-confidenceImpact:
-knowledge.confidenceImpact,
 
 
 futureRule:
+
 knowledge.futureRule,
 
 
+
+
+
+
+
+patterns:
+
+knowledge.patterns,
+
+
+
+
+
+
+
+
+success:
+
+knowledge.success,
+
+
+
+
+
+
+
+
+confidenceImpact:
+
+knowledge.confidenceImpact,
+
+
+
+
+
+
+
+
 tags:
+
 knowledge.tags,
 
 
+
+
+
+
+
+
 createdAt:
+
 new Date()
 
 
+
 }
+
 
 
 };
@@ -140,17 +278,61 @@ new Date()
 
 
 
+
+
+
+// ACTIVE MEMORY
+
+this.localMemories.push(
+memory
+);
+
+
+
+console.log(
+"🧠 Stored in active memory"
+);
+
+
+
+
+
+
+
+
+
+// DATABASE MEMORY
+
+try{
+
+
 await EmmaDB.saveMemory(
 memory
 );
 
 
 
-
-
 console.log(
-"🧠 Long-term memory saved"
+"💾 Permanent memory saved"
 );
+
+
+}
+
+catch(error){
+
+
+
+console.warn(
+"⚠️ Database unavailable, using active memory",
+error
+);
+
+
+
+}
+
+
 
 
 
@@ -159,7 +341,11 @@ console.log(
 return memory;
 
 
+
 }
+
+
+
 
 
 
@@ -176,14 +362,68 @@ return memory;
 // =================================
 
 
-createKnowledge(
-experience
-){
+createKnowledge(experience){
 
 
 
-const learning =
-experience.learning || {};
+const success =
+
+experience.success === true;
+
+
+
+
+
+// IMPORTANT FIX
+
+const action =
+
+experience.attemptedAction ||
+
+experience.action ||
+
+"previous strategy";
+
+
+
+
+
+
+
+let lesson =
+
+experience.lesson;
+
+
+
+
+
+
+
+if(!lesson){
+
+
+
+lesson =
+
+success
+
+?
+
+`${action} worked. Repeat or improve this strategy in similar situations`
+
+:
+
+`${action} failed. Avoid repeating without changing strategy`;
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -191,31 +431,31 @@ experience.learning || {};
 return {
 
 
+
+
 type:
-learning.type ||
-experience.type ||
-"BUSINESS_EXPERIENCE",
+
+success
+
+?
+
+"POSITIVE_EXPERIENCE"
+
+:
+
+"NEGATIVE_EXPERIENCE",
 
 
 
-summary:
-
-learning.lesson ||
-
-experience.meaning ||
-
-"Emma learned something new",
 
 
 
 
-lesson:
+lesson,
 
-learning.lesson ||
 
-experience.lesson ||
 
-null,
+
 
 
 
@@ -224,43 +464,75 @@ patterns:
 
 experience.patternsFound ||
 
-learning.rememberFor ||
-
 [],
 
 
 
 
-success:
 
-experience.success ?? null,
+
+
+
+
+success,
+
+
+
+
+
 
 
 
 
 confidenceImpact:
 
-learning.confidenceImpact || 0,
+success ? 5 : -5,
+
+
+
+
+
+
 
 
 
 
 futureRule:
 
-learning.futureRule ||
-experience.futureBehavior ||
-null,
+
+success
+
+
+?
+
+
+`Repeat successful strategy: ${action}`
+
+
+:
+
+
+`Avoid repeating failed strategy: ${action}`,
+
+
+
+
+
 
 
 
 
 tags:
+
 this.createTags(
 experience
 )
 
 
+
+
 };
+
 
 
 
@@ -275,19 +547,23 @@ experience
 
 
 
+
+
+
+
 // =================================
-// Recall memory for reasoning
+// Recall memories
 // =================================
 
 
-async recall(
-context
-){
+async recall(context){
+
 
 
 console.log(
-"🔎 Emma searching memory..."
+"🔎 Emma recalling experience..."
 );
+
 
 
 
@@ -301,9 +577,9 @@ context?.reflection?.businessId;
 
 
 
-if(
-!businessId
-){
+
+
+if(!businessId){
 
 
 return this.emptyMemory();
@@ -317,12 +593,81 @@ return this.emptyMemory();
 
 
 
+let memories=[];
 
-const memories =
+
+
+
+
+
+try{
+
+
+memories =
 
 await EmmaDB.getMemories(
 businessId
 );
+
+
+
+}
+
+catch(error){
+
+
+
+console.warn(
+"⚠️ DB recall failed"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+// fallback
+
+if(
+
+!memories ||
+
+memories.length===0
+
+){
+
+
+
+memories =
+
+this.localMemories.filter(
+
+m =>
+
+m.businessId === businessId
+
+);
+
+
+
+
+console.log(
+"🧠 Loaded active memories:",
+memories.length
+);
+
+
+
+}
+
+
+
 
 
 
@@ -343,50 +688,93 @@ memories
 
 
 
+
 return {
 
 
+
+
 previousExperiences:
+
 memories,
 
 
+
+
+
 relevantExperiences:
+
 relevant,
 
 
+
+
+
 successes:
+
 this.findSuccess(
 memories
 ),
 
 
+
+
+
+
 failures:
+
 this.findFailures(
 memories
 ),
 
 
+
+
+
+
 rules:
+
 this.extractRules(
 memories
 ),
 
 
+
+
+
+
 patterns:
+
 this.extractPatterns(
 memories
 ),
 
 
+
+
+
+
 totalMemories:
+
 memories.length,
 
 
+
+
+
+
+
 lastExperience:
-memories[0] || null
+
+memories[0] ||
+
+null
+
+
 
 
 };
+
 
 
 }
@@ -400,26 +788,26 @@ memories[0] || null
 
 
 
+
+
 // =================================
-// Intelligent memory retrieval
+// Intelligent retrieval
 // =================================
 
 
-getRelevantMemories(
-context,
-memories=[]
-){
+getRelevantMemories(context, memories=[]){
+
 
 
 console.log(
-"🧠 Finding useful memories"
+"🧠 Searching useful past experiences"
 );
 
 
 
-if(
-memories.length===0
-){
+
+
+if(memories.length===0){
 
 return [];
 
@@ -428,10 +816,12 @@ return [];
 
 
 
+
 const contextText =
 
 JSON.stringify(context)
 .toLowerCase();
+
 
 
 
@@ -453,38 +843,31 @@ JSON.stringify(memory)
 
 
 
+
 let score=0;
 
 
 
 
 
-// business similarity
 
 
-const keywords=[
 
-"customer",
+[
 "sales",
+"customer",
 "lead",
-"product",
 "marketing",
 "campaign",
+"discount",
 "offer",
+"product",
 "growth",
-"revenue",
-"conversion",
-"engagement",
-"complaint",
-"risk"
+"revenue"
+]
 
-];
+.forEach(word=>{
 
-
-
-
-
-keywords.forEach(word=>{
 
 
 if(
@@ -497,9 +880,12 @@ memoryText.includes(word)
 
 ){
 
-score +=5;
+
+score +=10;
+
 
 }
+
 
 
 });
@@ -510,19 +896,19 @@ score +=5;
 
 
 
-// failures are important
+
 
 if(
 
 memoryText.includes("failed") ||
 
-memoryText.includes("mistake") ||
-
 memoryText.includes("avoid")
 
 ){
 
-score +=8;
+
+score +=10;
+
 
 }
 
@@ -532,39 +918,18 @@ score +=8;
 
 
 
-
-// successful patterns
 
 if(
 
 memoryText.includes("success") ||
 
-memoryText.includes("worked") ||
-
-memoryText.includes("improved")
+memoryText.includes("worked")
 
 ){
 
-score +=6;
 
-}
+score +=8;
 
-
-
-
-
-
-
-
-// learned rules matter
-
-if(
-
-memoryText.includes("futureRule")
-
-){
-
-score +=5;
 
 }
 
@@ -576,36 +941,10 @@ score +=5;
 
 
 
-// recent experience bonus
-
-const date =
-memory.created_at ||
-memory.memory?.createdAt;
+if(memory.memory?.futureRule){
 
 
-
-
-if(date){
-
-
-const days =
-
-(
-Date.now() -
-new Date(date).getTime()
-)
-
-/
-
-(1000*60*60*24);
-
-
-
-if(days < 30){
-
-score +=3;
-
-}
+score +=10;
 
 
 }
@@ -619,12 +958,18 @@ score +=3;
 
 return {
 
+
 ...memory,
 
+
 relevanceScore:
+
 score
 
+
+
 };
+
 
 
 })
@@ -634,11 +979,13 @@ score
 
 
 .filter(
-memory=>
 
-memory.relevanceScore > 0
+m =>
+
+m.relevanceScore > 0
 
 )
+
 
 
 
@@ -649,9 +996,11 @@ memory.relevanceScore > 0
 (a,b)=>
 
 b.relevanceScore -
+
 a.relevanceScore
 
 )
+
 
 
 
@@ -661,6 +1010,7 @@ a.relevanceScore
 0,
 10
 );
+
 
 
 }
@@ -674,26 +1024,19 @@ a.relevanceScore
 
 
 
-// =================================
-// Extract learned rules
-// =================================
 
 
-extractRules(
-memories
-){
+
+extractRules(memories){
 
 
 return memories
 
-
 .map(
-item =>
 
-item.memory?.futureRule
+m => m.memory?.futureRule
 
 )
-
 
 .filter(Boolean);
 
@@ -708,38 +1051,38 @@ item.memory?.futureRule
 
 
 
+extractPatterns(memories){
 
-// =================================
-// Extract patterns
-// =================================
-
-
-extractPatterns(
-memories
-){
 
 
 let patterns=[];
 
 
 
+
 memories.forEach(memory=>{
 
 
-if(
-memory.memory?.patterns
-){
+
+if(memory.memory?.patterns){
+
 
 
 patterns.push(
+
 ...memory.memory.patterns
+
 );
+
 
 
 }
 
 
+
 });
+
+
 
 
 
@@ -761,39 +1104,17 @@ return [
 
 
 
-// =================================
-// Find successful memories
-// =================================
+
+findSuccess(memories){
 
 
-findSuccess(
-memories
-){
+return memories.filter(
 
+m =>
 
-return memories.filter(item=>{
-
-
-const text =
-JSON.stringify(item)
-.toLowerCase();
-
-
-
-return (
-
-text.includes("positive_experience") ||
-
-text.includes("success") ||
-
-text.includes("worked") ||
-
-text.includes("improved")
+m.memory?.success === true
 
 );
-
-
-});
 
 
 }
@@ -806,44 +1127,21 @@ text.includes("improved")
 
 
 
-
-// =================================
-// Find failed memories
-// =================================
-
-
-findFailures(
-memories
-){
-
-
-return memories.filter(item=>{
-
-
-const text =
-JSON.stringify(item)
-.toLowerCase();
+findFailures(memories){
 
 
 
-return (
+return memories.filter(
 
-text.includes("negative_experience") ||
+m =>
 
-text.includes("failed") ||
-
-text.includes("mistake") ||
-
-text.includes("avoid")
+m.memory?.success === false
 
 );
 
 
-});
-
 
 }
-
 
 
 
@@ -858,23 +1156,61 @@ text.includes("avoid")
 // =================================
 
 
-createTags(
-experience
-){
+createTags(experience){
+
+
+
+const action =
+
+experience.attemptedAction ||
+
+experience.action ||
+
+null;
+
+
+
+
 
 
 return [
 
-experience.action,
 
-experience.impact,
+experience.problem,
+
+
+experience.situation,
+
+
+action,
+
 
 experience.success
-? "success"
-: "failure"
+
+?
+
+"success"
+
+:
+
+"failure"
+
+
 
 ]
-.filter(Boolean);
+
+
+.filter(Boolean)
+
+
+.map(
+
+x =>
+
+x.toLowerCase()
+
+);
+
 
 
 }
@@ -886,37 +1222,44 @@ experience.success
 
 
 
-
-// =================================
-// Empty memory response
-// =================================
 
 
 emptyMemory(){
 
 
+
 return {
+
 
 
 previousExperiences:[],
 
+
 relevantExperiences:[],
+
 
 successes:[],
 
+
 failures:[],
+
 
 rules:[],
 
+
 patterns:[],
 
+
 totalMemories:0
+
 
 
 };
 
 
+
 }
+
 
 
 

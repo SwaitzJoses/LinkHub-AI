@@ -1,9 +1,14 @@
 // EmmaReasoning.js
 // Emma's thinking engine
-// Memory-first intelligence
-// Experience → Lessons → Analysis → Decision
+//
+// Memory
+// → Experience
+// → Reason
+// → Decision
+
 
 import EmmaBrain from "./EmmaBrain";
+
 
 
 class EmmaReasoning {
@@ -19,31 +24,57 @@ console.log(
 
 
 
-// ==============================
-// Main thinking process
-// ==============================
 
-async think(
-reflection,
-memory
-){
+
+// =================================
+// MAIN THINKING
+// =================================
+
+
+async think(input, suppliedMemory=null){
 
 
 console.log(
-"💭 Emma studying experience before thinking",
-{
-reflection,
-memory
-}
+"💭 Emma thinking started",
+input
 );
 
 
-// ==============================
-// 1. Retrieve memories first
-// ==============================
+
+
+// support both calling styles
+
+const reflection =
+input.reflection ||
+input;
+
+
+
+const memory =
+suppliedMemory ||
+input.memory ||
+{};
+
+
+
+
+
+
+// =================================
+// STUDY MEMORY FIRST
+// =================================
+
 
 const experiences =
-memory?.relevantExperiences || [];
+
+memory.relevantExperiences ||
+
+memory.previousExperiences ||
+
+[];
+
+
+
 
 
 const successfulMemories =
@@ -52,10 +83,12 @@ experiences
 );
 
 
+
 const failedMemories =
 this.findFailures(
 experiences
 );
+
 
 
 const lessons =
@@ -64,9 +97,7 @@ experiences
 );
 
 
-// ==============================
-// 2. Detect repeated situations
-// ==============================
+
 
 const repeatedSituation =
 this.detectSimilarSituation(
@@ -75,120 +106,202 @@ experiences
 );
 
 
-// ==============================
-// 3. Ask Emma Brain AFTER memory
-// ==============================
 
-const aiThought =
+
+
+console.log(
+"🧠 Emma studied memories:",
+{
+total:experiences.length,
+success:successfulMemories.length,
+failed:failedMemories.length,
+lessons
+}
+);
+
+
+
+
+
+
+
+
+// =================================
+// AI THINKING WITH EXPERIENCE
+// =================================
+
+
+let aiThought=null;
+
+
+
+
+try{
+
+
+aiThought =
+
 await EmmaBrain.think({
 
-role:
-"AI business growth employee",
+
+
+identity:
+`
+You are Emma.
+
+You are an AI employee.
+
+You have memory.
+
+Never ignore company experience.
+
+Before deciding:
+- study past outcomes
+- reuse what worked
+- avoid what failed
+- explain what memory affected your decision
+`,
+
+
+
+
+
 
 currentSituation:
+
 reflection,
 
-companyExperience:
+
+
+
+
+
+companyMemory:{
+
+
+
+experiencesStudied:
+
+experiences.length,
+
+
+
+pastExperiences:
+
 experiences,
 
-pastSuccesses:
+
+
+successes:
+
 successfulMemories,
 
-pastFailures:
+
+
+failures:
+
 failedMemories,
 
-lessonsLearned:
-lessons,
 
 
-instruction:
+lessons
+
+
+
+},
+
+
+
+
+
+
+
+task:
 `
-You are not a generic AI assistant.
 
-You are an employee of this company.
+Think carefully.
 
-Before answering:
+Answer:
 
-1. Study company memories
-2. Reuse what worked before
-3. Avoid actions that failed before
-4. Protect profit and customer trust
-5. Explain what experience influenced you
+1. What is happening?
+2. What previous experience applies?
+3. What failed before?
+4. What worked before?
+5. What should we do differently?
 
-Never ignore company history.
+
+Return JSON:
+
+{
+"analysis":"",
+"cause":"",
+"prediction":"",
+"recommendation":"",
+"memoryUsed":"",
+"confidence":0
+}
+
 `
+
+
 
 });
 
 
 
 
-// ==============================
-// Understand situation
-// ==============================
+}
 
-const situation={
+catch(error){
 
-meaning:
-reflection?.meaning ||
-"Unknown situation",
 
-importance:
-reflection?.importance ||
-"medium",
 
-impact:
-reflection?.impact || {},
+console.warn(
+"⚠️ AI reasoning unavailable",
+error
+);
 
-repeated:
-repeatedSituation
 
-};
+
+}
 
 
 
 
-// ==============================
-// Generate decisions
-// ==============================
+
+
+
+
+
+
+
+// =================================
+// ACTION OPTIONS
+// =================================
 
 
 let options=[
 
+
 {
 
 action:
-"ANALYZE_MORE",
+"OBSERVE_MORE",
 
 goal:
 "understanding",
 
-reason:
-"Need deeper understanding before acting",
+score:
+50,
 
-score:50,
-
-risk:"low"
-
-},
-
-
-{
-
-action:
-"CREATE_TASK",
-
-goal:
-"operation",
+risk:
+"low",
 
 reason:
-"Useful follow-up action detected",
-
-score:55,
-
-risk:"low"
+"Need more information"
 
 }
+
 
 ];
 
@@ -196,178 +309,242 @@ risk:"low"
 
 
 
+
+
+
 const text =
-JSON.stringify(
-reflection
-)
+
+JSON.stringify(reflection)
 .toLowerCase();
 
 
 
 
-// Growth opportunity
+
+
 
 if(
 
-text.includes("growth") ||
-text.includes("customer") ||
-text.includes("lead") ||
 text.includes("sale") ||
-text.includes("opportunity")
+
+text.includes("customer") ||
+
+text.includes("growth") ||
+
+text.includes("lead")
 
 ){
 
+
+
 options.push({
+
+
 
 action:
 "CREATE_GROWTH_ACTION",
 
-goal:
-"growth",
-
-reason:
-"Business growth opportunity detected",
-
-score:75,
-
-risk:"medium"
-
-});
-
-}
-
-
-
-
-// Memory based winning action
-
-if(
-successfulMemories.length>0
-){
-
-options.push({
-
-action:
-"REPEAT_PROVEN_ACTION",
 
 goal:
 "growth",
 
-reason:
-"Similar action succeeded previously",
-
-memoryEvidence:
-successfulMemories.slice(0,3),
-
-score:95,
-
-risk:"low"
-
-});
-
-}
-
-
-
-
-// Avoid repeating mistakes
-
-if(
-failedMemories.length>0
-){
-
-options =
-options.map(option=>({
-
-...option,
 
 score:
-option.score-15,
-
-failureCheck:
-"Compared with previous failures"
-
-}));
-
-}
+75,
 
 
+risk:
+"medium",
 
-
-
-// Repeated situation bonus
-
-if(
-repeatedSituation
-){
-
-options.push({
-
-action:
-"USE_PREVIOUS_EXPERIENCE",
-
-goal:
-"experience",
 
 reason:
-"Emma has handled a similar situation before",
+"Growth opportunity detected"
 
-score:90,
 
-risk:"low"
 
 });
 
+
+
 }
 
 
 
 
-// ==============================
-// Pick best decision
-// ==============================
+
+
+
+
+
+if(successfulMemories.length){
+
+
+
+options.push({
+
+
+action:
+"REPEAT_SUCCESS_PATTERN",
+
+
+goal:
+"growth",
+
+
+score:
+95,
+
+
+risk:
+"low",
+
+
+reason:
+"Past success found",
+
+
+evidence:
+successfulMemories
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(failedMemories.length){
+
+
+
+options.push({
+
+
+
+action:
+"AVOID_FAILED_PATTERN",
+
+
+
+goal:
+"protection",
+
+
+
+score:
+90,
+
+
+
+risk:
+"low",
+
+
+
+reason:
+"Previous failure detected",
+
+
+
+evidence:
+failedMemories
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
 
 
 const recommendation =
 
+
 options.sort(
+
 (a,b)=>b.score-a.score
+
 )[0];
 
 
 
 
 
-// ==============================
-// Confidence calculation
-// ==============================
+
+
+
+
+
+
+
+// =================================
+// CONFIDENCE
+// =================================
 
 
 let confidence=50;
 
 
-if(
-experiences.length>0
-)
-confidence +=20;
 
 
-if(
-successfulMemories.length>0
-)
+confidence +=
+
+experiences.length * 10;
+
+
+
+
+if(repeatedSituation)
+
 confidence +=15;
 
 
-if(
-aiThought.success
-)
+
+
+if(failedMemories.length)
+
 confidence +=10;
 
 
-if(
-repeatedSituation
-)
+
+
+if(successfulMemories.length)
+
 confidence +=10;
+
+
+
+
+
+
+if(aiThought?.confidence){
+
+
+confidence =
+aiThought.confidence;
+
+
+}
+
+
 
 
 confidence =
@@ -379,76 +556,219 @@ confidence,
 
 
 
-// ==============================
-// Return reasoning result
-// ==============================
+
+
+
+
+
+
+// =================================
+// FINAL THINKING RESULT
+// =================================
 
 
 return {
 
 
+
+
+analysis:
+
+aiThought?.analysis ||
+
+"Emma compared this situation with past company experience.",
+
+
+
+
+
+cause:
+
+aiThought?.cause ||
+
+"Cause requires more observation.",
+
+
+
+
+
+
+prediction:
+
+aiThought?.prediction ||
+
+"Past experience affects expected outcome.",
+
+
+
+
+
+
+
 thought:
 
-aiThought.response ||
-"Emma reasoned from company experience",
+aiThought || null,
 
 
-situation,
+
+
+
+
 
 
 memoryInfluence:{
 
+
+
 memoriesStudied:
+
 experiences.length,
 
+
+
+
+
 successPatterns:
+
 successfulMemories.length,
 
+
+
+
+
 failurePatterns:
+
 failedMemories.length,
 
-lessons
+
+
+
+
+lessonsApplied:
+
+lessons,
+
+
+
+
+
+
+failedActions:
+
+failedMemories.map(
+
+m=>
+
+m.memory?.attemptedAction
+
+)
+
+.filter(Boolean)
+
+
+
+
 
 },
+
+
+
+
+
+
+
+
+
+repeatedSituation,
+
+
+
+
+
+
+
+
+recommendation,
+
+
+
+
+
+
 
 
 options,
 
 
-recommendation,
+
+
+
+
+
+
+suggestion:
+
+
+aiThought?.recommendation ||
+
+recommendation.reason,
+
+
+
+
+
+
 
 
 decisionExplanation:
 
+
 this.explainDecision(
+
 recommendation,
+
 successfulMemories,
+
 failedMemories,
+
 lessons
+
 ),
 
 
-suggestion:
-recommendation.reason,
 
 
-goal:
-recommendation.goal,
+
+
 
 
 confidence,
 
 
+
+
+
+
+
 needsJudgement:true,
 
 
+
+
+
+
+
+
 createdAt:
+
 new Date()
+
 
 
 };
 
 
+
 }
 
 
@@ -456,32 +776,28 @@ new Date()
 
 
 
-// ==============================
-// Find successful memories
-// ==============================
+
+
+
+
+
+// =================================
+// HELPERS
+// =================================
 
 
 findSuccess(memories){
 
 
-return memories.filter(item=>{
 
-const text =
-JSON.stringify(item)
-.toLowerCase();
+return memories.filter(
 
+m =>
 
-return (
-
-text.includes("success") ||
-text.includes("worked") ||
-text.includes("increase") ||
-text.includes("improved") ||
-text.includes("customer liked")
+m.memory?.success===true
 
 );
 
-});
 
 
 }
@@ -492,32 +808,20 @@ text.includes("customer liked")
 
 
 
-// ==============================
-// Find failures
-// ==============================
 
 
 findFailures(memories){
 
 
-return memories.filter(item=>{
 
-const text =
-JSON.stringify(item)
-.toLowerCase();
+return memories.filter(
 
+m =>
 
-return (
-
-text.includes("failed") ||
-text.includes("mistake") ||
-text.includes("ignored") ||
-text.includes("loss") ||
-text.includes("did not work")
+m.memory?.success===false
 
 );
 
-});
 
 
 }
@@ -529,28 +833,26 @@ text.includes("did not work")
 
 
 
-// ==============================
-// Extract lessons
-// ==============================
 
 
 extractLessons(memories){
 
 
+
 return memories
-.map(memory=>{
 
-return (
 
-memory.lesson ||
-memory.learning ||
-memory.outcome ||
-null
+.map(
 
-);
+m =>
 
-})
+m.memory?.lesson
+
+)
+
+
 .filter(Boolean);
+
 
 
 }
@@ -563,41 +865,50 @@ null
 
 
 
-// ==============================
-// Detect similar past events
-// ==============================
 
 
-detectSimilarSituation(
-reflection,
-memories
-){
+detectSimilarSituation(reflection,memories){
+
 
 
 const current =
+
 JSON.stringify(reflection)
 .toLowerCase();
+
+
 
 
 return memories.some(memory=>{
 
 
+
 const old =
+
 JSON.stringify(memory)
 .toLowerCase();
 
 
+
+
 return current
+
 .split(" ")
-.some(word=>
+
+.some(
+
+word =>
 
 word.length>5 &&
+
 old.includes(word)
 
 );
 
 
+
 });
+
 
 
 }
@@ -609,9 +920,6 @@ old.includes(word)
 
 
 
-// ==============================
-// Human explanation
-// ==============================
 
 
 explainDecision(
@@ -622,56 +930,79 @@ lessons
 ){
 
 
+
 let explanation =
 
-`Selected ${decision.action}. `;
+`I selected ${decision.action}. `;
 
 
 
-if(
-success.length>0
-){
+
+
+
+if(success.length){
+
 
 explanation +=
 
-"Emma found previous successful company experience. ";
+`I found ${success.length} successful past experience. `;
+
 
 }
 
 
 
-if(
-failure.length>0
-){
+
+
+
+if(failure.length){
+
+
 
 explanation +=
 
-"Emma avoided repeating known failures. ";
+`I found ${failure.length} previous failure and avoided repeating it. `;
+
+
 
 }
 
 
 
-if(
-lessons.length>0
-){
+
+
+
+
+
+if(lessons.length){
+
+
 
 explanation +=
 
-"Past lessons influenced the decision.";
+"Past lessons influenced this decision.";
+
+
 
 }
+
+
+
+
 
 
 
 return explanation;
 
 
-}
-
-
 
 }
+
+
+
+
+}
+
 
 
 export default EmmaReasoning;

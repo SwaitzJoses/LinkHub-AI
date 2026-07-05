@@ -1,82 +1,293 @@
 // testEmma.js
-// Testing Emma full intelligence loop
+//
+// Emma Intelligence Test
+//
+// Failure
+// ↓
+// Reflection
+// ↓
+// Memory
+// ↓
+// Recall
+// ↓
+// Better Decision
 
 
-import Emma
-from "./Emma";
+import EmmaReflection from "./EmmaReflection";
+import EmmaMemory from "./EmmaMemory";
+import EmmaReasoning from "./EmmaReasoning";
 
 
 
 
-// ==========================
-// Test Emma
-// ==========================
+// =================================
+// CREATE EMMA SYSTEMS
+// =================================
+
+
+const reflectionEngine =
+new EmmaReflection();
+
+
+
+const memoryEngine =
+new EmmaMemory();
+
+
+
+const reasoningEngine =
+new EmmaReasoning();
+
+
+
+
+
+
+
+
+// =================================
+// MAIN TEST
+// =================================
 
 
 async function testEmma(){
 
 
 console.log(
-"🚀 Starting Emma test..."
+"🚀 Emma Learning Test Started"
 );
 
 
 
 
 
-const result =
 
-await Emma.experience(
+// =================================
+// DAY 1 - FAILURE EXPERIENCE
+// =================================
 
-"LINKHUB",
 
-
-{
+const oldEvent = {
 
 
 businessId:
-"fashionhub",
+"test-shop",
+
+
+eventType:
+"SALES_DROP",
 
 
 
-
-// simulate LinkHub data
-
-productId:
-"product_001",
+problem:
+"Sales decreased this week",
 
 
 
-productName:
-"Silk Saree",
+situation:
+"Orders reduced compared to last week",
 
 
 
-productViews:
-500,
+action:
+"20% discount campaign",
 
 
 
-orders:
-0,
+reason:
+"Emma wanted to quickly increase purchases",
 
 
 
-messages:
-25,
+expectedOutcome:
+"More customer orders",
 
 
 
-revenue:
-0
+success:
+false,
 
 
+
+result:
+"failed",
+
+
+
+metrics:{
+
+
+customersReached:500,
+
+
+orders:0,
+
+
+salesIncrease:0
 
 
 }
 
 
+};
+
+
+
+
+
+
+
+
+// =================================
+// REFLECTION CREATES EXPERIENCE
+// =================================
+
+
+const experience =
+
+await reflectionEngine.reflect(
+oldEvent
 );
+
+
+
+
+console.log(
+"🤔 Reflection created:"
+);
+
+
+console.log(
+experience
+);
+
+
+
+
+
+
+
+
+
+// =================================
+// SAVE EXPERIENCE MEMORY
+// =================================
+
+
+await memoryEngine.remember(
+experience
+);
+
+
+
+
+console.log(
+"🧠 Emma stored experience"
+);
+
+
+
+
+
+
+
+
+
+// =================================
+// FUTURE SAME PROBLEM
+// =================================
+
+
+const newProblem = {
+
+
+businessId:
+"test-shop",
+
+
+
+problem:
+
+"Sales dropped again. Should we run another discount campaign?",
+
+
+
+context:
+
+"Owner asking Emma for advice"
+
+
+};
+
+
+
+
+
+
+
+
+
+// =================================
+// MEMORY RECALL
+// =================================
+
+
+const memory =
+
+await memoryEngine.recall(
+newProblem
+);
+
+
+
+
+
+console.log(
+"📚 Emma remembered:"
+);
+
+
+
+console.log(
+memory
+);
+
+
+
+
+
+
+
+
+
+
+// =================================
+// REASON WITH MEMORY
+// =================================
+
+
+const decision =
+
+await reasoningEngine.think({
+
+
+businessId:
+"test-shop",
+
+
+
+problem:
+
+newProblem.problem,
+
+
+
+memory:
+memory
+
+
+});
+
 
 
 
@@ -85,14 +296,29 @@ revenue:
 
 
 console.log(
-"🎉 Emma Final Result:"
+"💭 Emma final decision:"
 );
+
 
 
 console.log(
-result
+decision
 );
 
+
+
+
+
+
+
+
+console.log(
+"✅ Emma Intelligence Test Completed"
+);
+
+
+
+return decision;
 
 
 }
@@ -101,4 +327,43 @@ result
 
 
 
-testEmma();
+
+
+
+
+// =================================
+// AUTO RUN
+// =================================
+
+
+testEmma()
+
+
+.then(()=>{
+
+
+console.log(
+"🔥 Emma learning loop verified"
+);
+
+
+})
+
+
+.catch(error=>{
+
+
+console.error(
+"❌ Emma Test Failed:",
+error
+);
+
+
+});
+
+
+
+
+// optional export
+
+export default testEmma;

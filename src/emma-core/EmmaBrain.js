@@ -1,6 +1,11 @@
 // EmmaBrain.js
-// Emma's central intelligence system
-// Observe → Reflect → Remember → Reason → Learn
+// Emma central intelligence system
+//
+// Observe
+// Reflect
+// Remember
+// Reason
+// Learn
 
 
 import OpenAI from "openai";
@@ -22,6 +27,7 @@ from "./EmmaMemory";
 
 
 
+
 const openai =
 new OpenAI({
 
@@ -30,10 +36,8 @@ apiKey:
 import.meta.env.VITE_OPENAI_API_KEY,
 
 
-// development only
-// production should use backend
-
-dangerouslyAllowBrowser:true
+dangerouslyAllowBrowser:
+true
 
 
 });
@@ -50,6 +54,7 @@ class EmmaBrain {
 
 
 
+
 constructor(){
 
 
@@ -59,13 +64,23 @@ console.log(
 
 
 
+this.ai =
+openai;
+
+
+
+
 this.observer =
 new EmmaObserver();
 
 
 
+
 this.reflection =
-new EmmaReflection();
+new EmmaReflection(
+openai
+);
+
 
 
 
@@ -75,11 +90,15 @@ new EmmaMemory();
 
 
 
+
 this.stats={
+
 
 aiCalls:0,
 
+
 savedCalls:0
+
 
 };
 
@@ -95,27 +114,28 @@ savedCalls:0
 
 
 
+
+
+
 // =================================
 // EXPERIENCE LOOP
 // =================================
 
 
-async experience(
-event
-){
+async experience(event){
 
 
 
 console.log(
-"👀 Emma received event",
+"👀 Emma received event:",
 event
 );
 
 
 
 
-// 1. Observe
 
+// observe
 
 const observation =
 
@@ -127,8 +147,8 @@ event
 
 
 
-// 2. Reflect
 
+// understand
 
 const reflection =
 
@@ -141,12 +161,14 @@ observation
 
 
 
-// 3. Remember important lessons
 
+
+// remember
 
 if(
-reflection.importance
-!== "low"
+
+reflection.importance !== "low"
+
 ){
 
 
@@ -157,9 +179,11 @@ reflection
 
 
 
+
 console.log(
-"💾 Emma learned something new"
+"🧠 Emma stored experience"
 );
+
 
 
 }
@@ -172,9 +196,12 @@ console.log(
 
 return {
 
+
 observation,
 
+
 reflection
+
 
 };
 
@@ -198,28 +225,73 @@ reflection
 // =================================
 
 
-async think(
-context
-){
+async think(context){
 
 
 
 console.log(
-"🤔 Emma preparing decision"
+"🤔 Emma deep thinking started"
 );
 
 
 
 
 
-// Load relevant experience first
+
+
+
+
+// =================================
+// LOAD EXPERIENCE MEMORY
+// =================================
+
+
+let memoryPackage={};
+
+
+
+try{
+
+
+
+memoryPackage =
+
+await this.memory.recall(
+context
+);
+
+
+
+}
+
+catch(error){
+
+
+
+console.warn(
+"⚠️ Memory skipped",
+error
+);
+
+
+
+}
+
+
+
+
+
+
 
 
 const memories =
 
-await this.memory.getRelevantMemories(
-context
-);
+memoryPackage.relevantExperiences ||
+
+[];
+
+
+
 
 
 
@@ -229,14 +301,58 @@ context
 const enrichedContext={
 
 
-...context,
+
+current:
+
+context,
 
 
-companyExperience:
-memories
+
+memory:{
+
+
+
+memoriesStudied:
+
+memories.length,
+
+
+
+
+experiences:
+
+memories,
+
+
+
+
+failures:
+
+memoryPackage.failures || [],
+
+
+
+
+successes:
+
+memoryPackage.successes || [],
+
+
+
+
+rules:
+
+memoryPackage.rules || []
+
+
+
+}
+
 
 
 };
+
+
 
 
 
@@ -258,12 +374,13 @@ enrichedContext
 
 
 
-// Memory/local decision
+
+// =================================
+// LOCAL THINKING
+// =================================
 
 
-if(
-!decision.useAI
-){
+if(!decision.useAI){
 
 
 
@@ -275,21 +392,67 @@ this.stats.savedCalls++;
 return {
 
 
+
 success:true,
 
 
-mode:
-"MEMORY_REASONING",
+mode:"MEMORY_REASONING",
 
 
 
-reason:
+
+analysis:
+
+"I reviewed company experience before deciding.",
+
+
+
+
+cause:
+
 decision.reason,
 
 
 
-experienceUsed:
-memories
+
+prediction:
+
+"Future actions should follow learned patterns.",
+
+
+
+
+
+recommendation:
+
+"Use stored experience.",
+
+
+
+
+
+reason:
+
+decision.reason,
+
+
+
+
+confidence:70,
+
+
+
+
+memoriesUsed:
+
+memories,
+
+
+
+
+stats:
+
+this.stats
 
 
 
@@ -308,6 +471,13 @@ memories
 
 
 
+
+
+// =================================
+// AI THINKING
+// =================================
+
+
 try{
 
 
@@ -324,14 +494,22 @@ await openai.chat.completions.create({
 
 
 
-
 model:
+
 "gpt-4.1-mini",
 
 
 
 
+temperature:
+
+0.2,
+
+
+
+
 messages:[
+
 
 
 {
@@ -340,46 +518,54 @@ messages:[
 role:"system",
 
 
-content:
 
+content:
 `
 
 You are Emma.
 
-You are not a chatbot.
+You are an AI employee.
 
-You are an AI employee working
-inside this company.
+You have company memory.
+
+Your priority:
+
+Experience > generic advice.
 
 
 Before answering:
 
-
-1. Study company memories.
-
-2. Use past experience first.
-
-3. Never repeat failed actions.
-
-4. Find patterns.
-
-5. Protect profit.
-
-6. Recommend practical actions.
-
-7. Explain which memory affected
-your decision.
+1. Read memory
+2. Find repeated situations
+3. Avoid past failures
+4. Reuse success
+5. Explain why
 
 
-Company experience is more important
-than generic AI knowledge.
+Return ONLY valid JSON.
 
+No markdown.
+
+No text outside JSON.
+
+
+Format:
+
+{
+"analysis":"",
+"cause":"",
+"prediction":"",
+"recommendation":"",
+"memoryUsed":"",
+"reason":"",
+"confidence":0
+}
 
 `
 
 
-},
 
+},
 
 
 
@@ -404,6 +590,7 @@ enrichedContext
 
 
 
+
 ]
 
 
@@ -418,38 +605,198 @@ enrichedContext
 
 
 
+const raw =
+
+response
+.choices[0]
+.message
+.content;
+
+
+
+
+
+
+
+
+const thought =
+
+this.parseAIResponse(
+raw
+);
+
+
+
+
+
+
+
+
+
 return {
+
+
 
 
 success:true,
 
 
+
+
 mode:
+
 "AI_REASONING",
 
 
 
-response:
 
-response
-.choices[0]
-.message
-.content,
+
+...thought,
+
+
+
 
 
 
 memoriesUsed:
+
 memories,
 
 
 
+
+
+
+
+memoryStats:{
+
+
+
+studied:
+
+memories.length,
+
+
+
+failures:
+
+memoryPackage.failures?.length || 0,
+
+
+
+successes:
+
+memoryPackage.successes?.length || 0
+
+
+
+},
+
+
+
+
+
+
+
+
 usage:
+
 response.usage,
 
 
 
+
+
+
+
 stats:
+
 this.stats
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
+}
+
+catch(error){
+
+
+
+
+
+
+console.error(
+"❌ Emma Brain error",
+error
+);
+
+
+
+
+
+
+return {
+
+
+
+
+success:false,
+
+
+
+mode:"FALLBACK",
+
+
+
+
+analysis:
+
+"Advanced reasoning unavailable.",
+
+
+
+
+cause:
+
+"AI unavailable.",
+
+
+
+
+
+prediction:
+
+"Use stored memory.",
+
+
+
+
+
+recommendation:
+
+"Continue with known experience.",
+
+
+
+
+
+confidence:40,
+
+
+
+
+stats:this.stats
+
 
 
 
@@ -462,7 +809,38 @@ this.stats
 
 
 
+}
 
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SMART JSON PARSER
+// =================================
+
+
+parseAIResponse(raw){
+
+
+
+try{
+
+
+return JSON.parse(
+raw
+);
+
+
+
+}
 
 
 
@@ -470,30 +848,112 @@ catch(error){
 
 
 
-console.error(
-"Emma Brain error",
-error
+
+
+console.warn(
+"⚠️ Cleaning AI JSON"
 );
 
 
 
 
+
+
+try{
+
+
+
+const cleaned =
+
+raw
+
+.replace(/```json/g,"")
+
+.replace(/```/g,"")
+
+.trim();
+
+
+
+
+
+
+return JSON.parse(
+cleaned
+);
+
+
+
+}
+
+
+
+catch(e){
+
+
+
+
+
+
 return {
 
 
-success:false,
 
 
-mode:
-"FALLBACK",
+analysis:
+
+raw,
+
+
+
+
+
+cause:
+
+"Unable to parse structured reasoning.",
+
+
+
+
+
+
+prediction:
+
+"Continue monitoring.",
+
+
+
+
+
+recommendation:
+
+"Review manually.",
+
+
+
+
+
+memoryUsed:
+
+null,
+
+
+
 
 
 reason:
-"AI unavailable",
+
+"Parsing fallback",
 
 
-stats:
-this.stats
+
+
+
+confidence:
+
+50
+
+
 
 
 };
@@ -504,8 +964,12 @@ this.stats
 
 
 
+}
+
+
 
 }
+
 
 
 
@@ -518,97 +982,11 @@ this.stats
 
 
 // =================================
-// COST + JUDGEMENT
+// SHOULD USE AI?
 // =================================
 
 
-shouldUseAI(
-context
-){
-
-
-
-const reflection =
-
-context.reflection ||
-
-context.situation ||
-
-{};
-
-
-
-
-const memories =
-
-context.companyExperience || [];
-
-
-
-
-
-
-
-
-// Small events don't need AI
-
-
-if(
-reflection.importance==="low"
-){
-
-
-return {
-
-
-useAI:false,
-
-
-reason:
-"Low importance. No AI needed."
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// Experienced Emma trusts herself
-
-
-if(
-memories.length >= 5
-){
-
-
-
-return {
-
-
-useAI:false,
-
-
-reason:
-"Enough company experience available."
-
-
-};
-
-
-}
-
-
-
-
+shouldUseAI(context){
 
 
 
@@ -617,9 +995,8 @@ reason:
 
 const text =
 
-JSON.stringify(
-context
-)
+JSON.stringify(context)
+
 .toLowerCase();
 
 
@@ -630,28 +1007,35 @@ context
 const important=[
 
 
+
 "sales",
 
-"revenue",
-
-"loss",
 
 "customer",
 
+
 "growth",
 
-"drop",
+
+"loss",
+
+
+"revenue",
+
 
 "strategy",
 
-"competitor",
 
-"failure",
+"problem",
 
-"risk"
+
+"failed"
+
 
 
 ];
+
+
 
 
 
@@ -662,7 +1046,7 @@ const required =
 
 important.some(
 
-word=>
+word =>
 
 text.includes(word)
 
@@ -673,41 +1057,30 @@ text.includes(word)
 
 
 
-if(required){
-
-
 return {
 
 
-useAI:true,
+
+useAI:
+
+required,
+
+
 
 
 reason:
-"Important decision requires deep thinking"
+
+required
+
+?
+
+"Important reasoning required"
+
+:
+
+"Routine event"
 
 
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-
-return {
-
-
-useAI:false,
-
-
-reason:
-"Routine business activity"
 
 
 };
@@ -715,6 +1088,7 @@ reason:
 
 
 }
+
 
 
 
@@ -734,10 +1108,7 @@ return this.stats;
 
 
 
-
 }
-
-
 
 
 

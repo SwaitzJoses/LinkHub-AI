@@ -1,769 +1,774 @@
 // EmmaReflection.js
 // Emma's thinking mirror
-// Converts observations into experience and lessons
+//
+// Converts observations into business experience
+//
+// Event
+// → Understanding
+// → Lesson
+// → Future Wisdom
 
 
 class EmmaReflection {
 
 
-  constructor(){
+constructor(ai = null){
 
-    console.log(
-      "🤔 Emma Reflection ready"
-    );
 
-  }
+this.ai = ai;
 
 
+console.log(
+"🤔 Emma Experience Reflection ready"
+);
 
 
+}
 
-  async reflect(
-    observation
-  ){
 
 
-    console.log(
-      "🤔 Reflecting:",
-      observation
-    );
 
 
 
-    const meaning =
-      this.findMeaning(
-        observation
-      );
 
 
+// =================================
+// Reflect on observation
+// =================================
 
-    const impact =
-      this.findImpact(
-        observation
-      );
 
+async reflect(observation){
 
 
-    const lesson =
-      this.extractLesson(
-        observation
-      );
 
+console.log(
+"🤔 Emma analyzing experience:",
+observation
+);
 
 
-    const recommendation =
-      this.createRecommendation(
-        observation
-      );
 
 
+// ===============================
+// AI EXPERIENCE PATH
+// ===============================
 
-    const confidence =
-      this.calculateConfidence(
-        observation
-      );
 
+if(this.ai){
 
 
 
-    return {
+try{
 
 
-      businessId:
-      observation.businessId,
+const reflection =
+await this.askAI(
+observation
+);
 
 
 
-      eventType:
-      observation.eventType,
 
 
+return {
 
-      originalObservation:
-      observation,
 
+businessId:
+observation.businessId,
 
 
-      meaning,
 
+eventType:
+observation.eventType,
 
 
-      impact,
 
+originalObservation:
+observation,
 
 
-      lesson,
 
+// WHAT HAPPENED
 
+problem:
+reflection.problem,
 
-      recommendation,
 
 
+situation:
+reflection.situation,
 
-      confidence,
 
 
+// WHY
 
-      importance:
-      this.findImportance(
-        observation,
-        impact,
-        confidence
-      ),
+cause:
+reflection.cause,
 
 
 
-      reflectedAt:
-      new Date()
 
+// ACTION EXPERIENCE
 
+attemptedAction:
+reflection.attemptedAction,
 
-    };
 
 
-  }
+reason:
+reflection.reasonForAction,
 
 
 
+expectedOutcome:
+reflection.expectedOutcome,
 
 
 
+// RESULT
 
+result:
+reflection.result,
 
 
 
-  // ===========================
-  // Understand what happened
-  // ===========================
+success:
+reflection.success,
 
 
-  findMeaning(
-    observation
-  ){
 
+metrics:
+reflection.metrics || {},
 
-    const event =
-      observation.eventType;
 
 
-    const data =
-      observation.raw?.data || {};
 
+// EXPERIENCE
 
+lesson:
+reflection.lesson,
 
 
-    if(
-      event === "product_view"
-    ){
 
-      return (
-        "Customers are showing interest in a product"
-      );
+patternsFound:
+reflection.patternsFound || [],
 
-    }
 
 
 
+futureBehavior:
+reflection.futureBehavior,
 
 
 
-    if(
-      event === "USER_RETENTION_DROP"
-    ){
+recommendation:
+reflection.recommendation,
 
 
-      const before =
-      data.active_users_before;
 
 
-      const now =
-      data.active_users_now;
+// MEMORY SIGNAL
 
+learning:{
 
 
-      if(before && now){
+type:
 
+reflection.success
 
-        const drop =
-        Math.round(
+?
+"POSITIVE_EXPERIENCE"
 
-          ((before-now)/before)
-          *100
+:
+"NEGATIVE_EXPERIENCE",
 
-        );
 
 
+lesson:
+reflection.lesson,
 
-        return (
 
-          `Customer retention dropped by ${drop}%. ` +
 
-          "This may show reduced customer satisfaction."
+futureRule:
+reflection.futureBehavior,
 
-        );
 
-      }
 
+confidenceImpact:
 
+reflection.success
 
-      return (
-        "Customer retention decreased"
-      );
+?
+5
 
+:
+-5
 
-    }
 
+},
 
 
 
 
 
+confidence:
+reflection.confidence || 5,
 
 
-    if(
-      event === "SALES_DROP"
-    ){
 
+importance:
+this.findImportance(
+reflection
+),
 
-      return (
-        "Sales decreased. Revenue may be affected."
-      );
 
 
-    }
+source:
+"AI_REFLECTION",
 
 
 
+reflectedAt:
+new Date()
 
 
-
-
-    if(
-      event === "NEW_LEAD"
-    ){
-
-
-      return (
-        "A potential customer showed buying interest"
-      );
-
-
-    }
-
-
-
-
-
-
-
-
-    return (
-      "Business activity detected"
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===========================
-  // Business impact
-  // ===========================
-
-
-  findImpact(
-    observation
-  ){
-
-
-
-    const event =
-    observation.eventType;
-
-
-
-
-    if(
-      event.includes("DROP")
-    ){
-
-
-      return {
-
-        area:
-        "business_health",
-
-
-        severity:
-        "high",
-
-
-        requiresAttention:
-        true
-
-      };
-
-
-    }
-
-
-
-
-
-
-
-
-    if(
-      event.includes("VIEW")
-      ||
-      event.includes("LEAD")
-    ){
-
-
-      return {
-
-        area:
-        "growth",
-
-
-        severity:
-        "medium",
-
-
-        requiresAttention:
-        false
-
-      };
-
-
-    }
-
-
-
-
-
-
-
-
-    return {
-
-      area:
-      "general",
-
-
-      severity:
-      "low",
-
-
-      requiresAttention:
-      false
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===========================
-  // Convert event into learning
-  // ===========================
-
-
-  extractLesson(
-    observation
-  ){
-
-
-
-    const signals =
-    observation.signals || [];
-
-
-
-
-
-    if(
-      signals.length === 0
-    ){
-
-
-      return (
-        "No strong pattern discovered yet"
-      );
-
-
-    }
-
-
-
-
-
-    const lessons =
-    signals.map(
-      signal=>{
-
-
-        if(
-          signal.type==="risk"
-        ){
-
-
-          return (
-
-            "Risk discovered: " +
-
-            signal.message
-
-          );
-
-
-        }
-
-
-
-
-
-        if(
-          signal.type==="opportunity"
-        ){
-
-
-          return (
-
-            "Opportunity discovered: " +
-
-            signal.message
-
-          );
-
-
-        }
-
-
-
-
-
-        if(
-          signal.type==="pattern"
-        ){
-
-
-          return (
-
-            "Customer behavior learned: " +
-
-            signal.message
-
-          );
-
-
-        }
-
-
-
-
-
-
-        return signal.message;
-
-
-      }
-    );
-
-
-
-
-
-    return lessons.join(". ");
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===========================
-  // Suggest next thinking
-  // ===========================
-
-
-
-  createRecommendation(
-    observation
-  ){
-
-
-    const signals =
-    observation.signals || [];
-
-
-
-    let recommendations=[];
-
-
-
-
-
-    signals.forEach(
-      signal=>{
-
-
-
-        if(
-          signal.type==="risk"
-        ){
-
-
-          recommendations.push(
-
-            "Investigate this problem before increasing marketing"
-
-          );
-
-
-        }
-
-
-
-
-
-
-        if(
-          signal.type==="opportunity"
-        ){
-
-
-          recommendations.push(
-
-            "Repeat and scale this successful activity"
-
-          );
-
-
-        }
-
-
-
-
-
-
-        if(
-          signal.type==="pattern"
-        ){
-
-
-          recommendations.push(
-
-            "Use this customer behavior for future decisions"
-
-          );
-
-
-        }
-
-
-
-      }
-    );
-
-
-
-
-
-
-    if(
-      recommendations.length===0
-    ){
-
-      recommendations.push(
-
-        "Continue observing before taking action"
-
-      );
-
-    }
-
-
-
-    return recommendations;
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===========================
-  // Confidence score
-  // ===========================
-
-
-  calculateConfidence(
-    observation
-  ){
-
-
-    let score=5;
-
-
-
-
-    if(
-      observation.signals?.length
-    ){
-
-
-      score +=
-      observation.signals.length * 2;
-
-
-    }
-
-
-
-
-
-
-    if(
-      observation.raw?.data
-    ){
-
-      score++;
-
-    }
-
-
-
-
-
-
-    if(score>10){
-
-      score=10;
-
-    }
-
-
-
-
-    return score;
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===========================
-  // Memory importance
-  // ===========================
-
-
-  findImportance(
-    observation,
-    impact,
-    confidence
-  ){
-
-
-
-    if(
-
-      impact.requiresAttention
-
-      ||
-
-      confidence>=8
-
-    ){
-
-
-      return "high";
-
-
-    }
-
-
-
-
-
-
-
-
-    if(
-      confidence>=6
-    ){
-
-
-      return "medium";
-
-
-    }
-
-
-
-
-
-
-
-    return "low";
-
-
-  }
-
+};
 
 
 
 }
 
 
+
+catch(error){
+
+
+
+console.error(
+"❌ AI Reflection failed:",
+error.message
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+// fallback
+
+console.log(
+"⚠️ Using local reflection"
+);
+
+
+
+return this.localReflect(
+observation
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// Ask AI to create experience
+// =================================
+
+
+async askAI(observation){
+
+
+
+const response =
+
+await this.ai.chat.completions.create({
+
+
+
+model:
+"gpt-4.1-mini",
+
+
+
+temperature:
+0.2,
+
+
+
+messages:[
+
+
+
+{
+
+
+role:
+"system",
+
+
+
+content:
+`
+
+You are Emma.
+
+You are not a chatbot.
+
+You are an AI business employee
+building experience over time.
+
+
+Your job:
+
+Convert business events into
+future reusable experience.
+
+
+Think like an employee:
+
+What happened?
+Why did it happen?
+What action was tried?
+Did it work?
+What should I remember forever?
+
+
+
+IMPORTANT:
+
+Never store generic actions like:
+
+"CREATE_GROWTH_ACTION"
+
+Convert them into the real business action.
+
+Example:
+
+BAD:
+"growth action failed"
+
+GOOD:
+"20% discount campaign failed because it generated clicks but no orders"
+
+
+
+Return ONLY valid JSON:
+
+
+{
+
+
+"problem":"",
+
+"situation":"",
+
+"cause":"",
+
+
+"attemptedAction":"",
+
+"reasonForAction":"",
+
+
+"expectedOutcome":"",
+
+"result":"success or failed",
+
+"success":true,
+
+
+"metrics":{},
+
+
+"lesson":"",
+
+"patternsFound":[],
+
+"futureBehavior":"",
+
+
+"recommendation":[],
+
+
+"confidence":0
+
+
+}
+
+
+
+Rules:
+
+Failures teach what to avoid.
+
+Success teaches what to repeat.
+
+Always create memory useful for a future decision.
+
+`
+
+},
+
+
+
+
+
+
+
+
+{
+
+
+role:
+"user",
+
+
+content:
+
+JSON.stringify(
+observation
+)
+
+
+}
+
+
+
+]
+
+
+});
+
+
+
+
+
+
+
+
+
+const text =
+
+response
+.choices[0]
+.message
+.content;
+
+
+
+return JSON.parse(
+text
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// Emergency local reflection
+// =================================
+
+
+localReflect(observation){
+
+
+
+const failed =
+
+observation.success === false;
+
+
+
+
+
+return {
+
+
+
+businessId:
+observation.businessId,
+
+
+
+eventType:
+observation.eventType,
+
+
+
+originalObservation:
+observation,
+
+
+
+
+problem:
+
+observation.problem ||
+
+observation.eventType,
+
+
+
+
+situation:
+
+"Business event detected",
+
+
+
+
+cause:
+
+"Unknown - needs more evidence",
+
+
+
+
+attemptedAction:
+
+observation.action ||
+
+"UNKNOWN_ACTION",
+
+
+
+
+reason:
+
+observation.reason ||
+
+null,
+
+
+
+
+expectedOutcome:
+
+observation.expectedOutcome ||
+
+null,
+
+
+
+
+
+result:
+
+failed
+
+?
+"failed"
+
+:
+"success",
+
+
+
+
+success:
+
+!failed,
+
+
+
+
+metrics:
+
+observation.metrics || {},
+
+
+
+
+
+lesson:
+
+failed
+
+?
+
+`${observation.action} did not create expected result`
+
+:
+
+`${observation.action} produced positive outcome`,
+
+
+
+
+
+patternsFound:[],
+
+
+
+
+
+futureBehavior:
+
+failed
+
+?
+
+`Avoid repeating ${observation.action} without improvement`
+
+:
+
+`Consider repeating ${observation.action} in similar situations`,
+
+
+
+
+
+learning:{
+
+
+
+type:
+
+failed
+
+?
+"NEGATIVE_EXPERIENCE"
+
+:
+"POSITIVE_EXPERIENCE",
+
+
+
+
+confidenceImpact:
+
+failed ? -5 : 5
+
+
+
+},
+
+
+
+
+
+confidence:
+5,
+
+
+
+
+importance:
+"medium",
+
+
+
+
+source:
+"LOCAL_REFLECTION",
+
+
+
+
+reflectedAt:
+new Date()
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// Memory priority
+// =================================
+
+
+findImportance(reflection){
+
+
+
+if(
+
+reflection.success === false
+
+){
+
+return "high";
+
+}
+
+
+
+if(
+
+reflection.confidence >=8
+
+){
+
+return "high";
+
+}
+
+
+
+
+if(
+
+reflection.confidence >=5
+
+){
+
+return "medium";
+
+}
+
+
+
+return "low";
+
+
+}
+
+
+
+}
 
 
 
