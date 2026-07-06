@@ -1,8 +1,11 @@
 // GmailConnector.js
-// Emma email sense
+// Emma's first real-world sense: Gmail
+//
+// RULE:
+// Gmail does not think.
+// Gmail only reports what it sees.
 
-import BaseConnector
-from "./BaseConnector";
+import BaseConnector from "./BaseConnector";
 
 
 class GmailConnector extends BaseConnector {
@@ -12,29 +15,30 @@ constructor(){
 
 super("gmail");
 
+
+console.log(
+"📧 Gmail connector awake"
+);
+
 }
 
 
 
-normalize(email){
+// Emma receives mail signals here
+async collect(email){
 
 
-return {
+return this.normalize({
+
+source:"gmail",
+
+event:"email_received",
+
+createdAt:
+new Date(),
 
 
-type:
-"EMAIL_RECEIVED",
-
-
-object:
-"email",
-
-
-businessId:
-email.businessId || "user",
-
-
-data:{
+payload:{
 
 
 from:
@@ -46,41 +50,20 @@ email.subject,
 
 
 message:
-email.message,
-
-
-receivedAt:
-email.time || new Date()
+email.message
 
 
 }
 
 
-};
+});
 
 
 }
 
 
 
-
-getCapabilities(){
-
-
-return [
-
-"read_emails",
-"understand_messages",
-"email_context"
-
-];
-
 }
-
-
-
-}
-
 
 
 export default GmailConnector;

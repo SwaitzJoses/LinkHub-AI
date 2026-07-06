@@ -1,6 +1,15 @@
 // UniversalTranslator.js
 // Converts outside systems into Emma's common language
-// Preserves meaning so Emma never loses context
+//
+// External language
+//        ↓
+// Universal Translator
+//        ↓
+// Emma language
+//
+// RULE:
+// Translator understands structure.
+// Emma creates intelligence.
 
 
 class UniversalTranslator {
@@ -29,9 +38,7 @@ console.log(
 // ==============================
 
 
-async translate(
-input
-){
+async translate(input){
 
 
 
@@ -44,7 +51,31 @@ input
 
 
 
+const payload =
+
+input.payload ||
+
+input.data ||
+
+input.raw ||
+
+{};
+
+
+
+
+
+
+
+
+
+// ==============================
+// EXTRACT MESSAGE
+// ==============================
+
+
 const message =
+
 
 input.message ||
 
@@ -52,11 +83,25 @@ input.text ||
 
 input.description ||
 
-input.data?.message ||
 
-input.data?.text ||
+// Gmail
 
-input.raw?.message ||
+payload.snippet ||
+
+payload.subject ||
+
+payload.body ||
+
+
+// nested
+
+payload.message ||
+
+payload.text ||
+
+payload.data?.message ||
+
+payload.data?.text ||
 
 "";
 
@@ -67,17 +112,23 @@ input.raw?.message ||
 
 
 
+
+
+// ==============================
+// BUSINESS ID
+// ==============================
+
+
 const businessId =
+
 
 input.businessId ||
 
+payload.businessId ||
+
+payload.raw?.businessId ||
+
 input.business?.id ||
-
-input.data?.businessId ||
-
-input.data?.raw?.businessId ||
-
-input.raw?.businessId ||
 
 "unknown";
 
@@ -88,7 +139,40 @@ input.raw?.businessId ||
 
 
 
-const eventType =
+
+
+// ==============================
+// SOURCE
+// ==============================
+
+
+const source =
+
+
+input.source ||
+
+input.platform ||
+
+payload.source ||
+
+"UNKNOWN";
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// EVENT TYPE
+// ==============================
+
+
+let eventType =
+
 
 input.eventType ||
 
@@ -96,16 +180,120 @@ input.type ||
 
 input.action ||
 
-input.data?.type ||
+payload.type ||
 
-"BUSINESS_ACTIVITY";
-
-
+"ACTIVITY";
 
 
 
 
 
+
+
+
+
+
+// ==============================
+// SIMPLE INTENT EXTRACTION
+// (translation only)
+// ==============================
+
+
+let intent =
+"GENERAL_ACTIVITY";
+
+
+
+let importance =
+"normal";
+
+
+
+const lowerMessage =
+
+message.toLowerCase();
+
+
+
+
+
+if(
+
+lowerMessage.includes("price") ||
+
+lowerMessage.includes("cost") ||
+
+lowerMessage.includes("how much") ||
+
+lowerMessage.includes("buy") ||
+
+lowerMessage.includes("interested") ||
+
+lowerMessage.includes("service")
+
+){
+
+
+
+intent =
+"CUSTOMER_INQUIRY";
+
+
+
+importance =
+"high";
+
+
+
+eventType =
+"CUSTOMER_SIGNAL";
+
+
+
+}
+
+
+
+
+
+
+
+if(
+
+source === "gmail"
+
+){
+
+
+eventType =
+
+intent === "CUSTOMER_INQUIRY"
+
+?
+
+"CUSTOMER_EMAIL"
+
+:
+
+"EMAIL_RECEIVED";
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// EMMA LANGUAGE
+// ==============================
 
 
 const translated = {
@@ -113,82 +301,53 @@ const translated = {
 
 
 
-// ==============================
-// Identity
-// ==============================
-
+// identity
 
 businessId,
 
 
 
 
-// ==============================
-// Source system
-// ==============================
 
+// source
 
-source:
-
-input.source ||
-
-input.platform ||
-
-"UNKNOWN",
+source,
 
 
 
 
 
 
-
-// ==============================
-// Event type
-// ==============================
-
+// event
 
 eventType,
 
+type:eventType,
 
+intent,
 
-type:
-
-eventType,
-
-
+importance,
 
 
 
 
 
 
-// ==============================
-// Natural meaning
-// IMPORTANT FOR OBSERVER
-// ==============================
-
+// human meaning
 
 message,
-
 
 
 description:
 
-input.description ||
-
-message,
+message || "External activity detected",
 
 
 
 
 
 
-
-
-// ==============================
-// Object affected
-// ==============================
-
+// affected object
 
 object:
 
@@ -196,7 +355,7 @@ input.object ||
 
 input.entity ||
 
-"general",
+source,
 
 
 
@@ -204,26 +363,24 @@ input.entity ||
 
 
 
-
-// ==============================
-// Preserve ALL DATA
-// ==============================
-
+// preserve everything
 
 data:{
 
 
-
-...(input.data || {}),
-
+...payload,
 
 
 businessId,
 
 
-
 message,
 
+
+intent,
+
+
+importance,
 
 
 originalType:
@@ -231,10 +388,7 @@ originalType:
 input.type
 
 
-
 },
-
-
 
 
 
@@ -254,16 +408,33 @@ input,
 
 
 
-// ==============================
-// Context for Emma
-// ==============================
+// Emma understanding seed
+
+meaning:{
 
 
-meaning:
+
+summary:
 
 message ||
 
-"Business event translated for Emma",
+`${source} activity received`,
+
+
+
+possibleMeaning:
+
+intent,
+
+
+
+requiresAttention:
+
+importance === "high"
+
+
+
+},
 
 
 
@@ -271,14 +442,10 @@ message ||
 
 
 
-
-
-// ==============================
-// Time
-// ==============================
 
 
 time:
+
 
 input.time ||
 
@@ -306,11 +473,12 @@ new Date()
 
 
 
+
+
 console.log(
 "🌎 Translation complete:",
 translated
 );
-
 
 
 
@@ -324,8 +492,8 @@ return translated;
 
 
 
-
 }
+
 
 
 

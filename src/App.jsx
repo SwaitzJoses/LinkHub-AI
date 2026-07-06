@@ -13,6 +13,9 @@ import PosterGenerator from "./pages/PosterGenerator";
 import MyPosters from "./pages/MyPosters";
 import EmmaAI from "./pages/EmmaAI";
 
+import EmmaGmailConnect
+from "./emma-core/connectors/EmmaGmailConnect";
+
 
 
 function ProtectedRoute({ children }) {
@@ -44,8 +47,8 @@ function ProtectedRoute({ children }) {
 function App() {
     
   return (
-
-    
+<>
+    <EmmaGmailConnect />
     <BrowserRouter>
 <Routes>
 
@@ -91,6 +94,8 @@ function App() {
 
 
     </BrowserRouter>
+
+    </>
   );
 }
 
