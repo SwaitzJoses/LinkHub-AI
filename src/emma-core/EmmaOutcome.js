@@ -6,6 +6,11 @@
 // → Understanding
 // → Personal Learning
 // → Memory
+//
+// RULE:
+// Acting can succeed/fail.
+// Observing is learning.
+// Waiting is intelligence.
 
 
 
@@ -39,15 +44,15 @@ this.outcomes=[];
 
 
 async record(
-action,
-result
+decision,
+result={}
 ){
 
 
 console.log(
 "📊 Emma studying outcome:",
 {
-action,
+decision,
 result
 }
 );
@@ -55,45 +60,277 @@ result
 
 
 
+// =============================
+// WAITING IS NOT FAILURE
+// =============================
 
-const impact =
 
-this.calculateImpact(
+if(
+decision?.type === "WAIT"
+){
 
-result?.metrics || {}
 
+const outcome={
+
+
+outcomeId:
+crypto.randomUUID(),
+
+
+type:
+"MONITORING",
+
+
+success:
+null,
+
+
+analysis:{
+
+
+reason:
+"Emma intentionally waited for more information",
+
+
+pattern:
+"continue_monitoring",
+
+
+futureUse:
+"Observe future signals before acting"
+
+
+},
+
+
+learning:{
+
+
+type:
+"MONITORING_EXPERIENCE",
+
+
+lesson:
+"Waiting was intentional. No success or failure assigned.",
+
+
+futureRule:
+"Continue watching this situation"
+
+
+},
+
+
+memoryReady:false,
+
+
+createdAt:
+new Date()
+
+
+};
+
+
+
+
+this.outcomes.push(outcome);
+
+
+
+console.log(
+"👀 Emma continues monitoring",
+outcome
 );
 
+
+return outcome;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =============================
+// OBSERVATION IS LEARNING
+// =============================
+
+
+if(
+decision?.type === "OBSERVE_ONLY"
+){
+
+
+
+const outcome={
+
+
+outcomeId:
+crypto.randomUUID(),
+
+
+
+userId:
+decision?.userId || null,
+
+
+businessId:
+decision?.businessId || null,
+
+
+
+type:
+"OBSERVED_PATTERN",
+
+
+
+success:
+null,
+
+
+
+observation:
+decision.reason,
+
+
+
+analysis:{
+
+
+reason:
+"Emma discovered a possible pattern",
+
+
+pattern:
+"needs_more_evidence",
+
+
+futureUse:
+"Compare with future events"
+
+
+},
+
+
+
+
+learning:{
+
+
+type:
+"OBSERVATION_EXPERIENCE",
+
+
+lesson:
+"Pattern stored. More evidence required before action.",
+
+
+rememberFor:[
+decision.reason,
+"observed"
+],
+
+
+futureRule:
+"Use if pattern repeats"
+
+
+},
+
+
+
+
+memoryTags:[
+
+"observation",
+decision.reason,
+"pattern"
+
+]
+.filter(Boolean),
+
+
+
+memoryReady:true,
+
+
+
+createdAt:
+new Date()
+
+
+};
+
+
+
+
+
+this.outcomes.push(outcome);
+
+
+
+
+console.log(
+"🧠 Emma learned observation:",
+outcome
+);
+
+
+
+return outcome;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =============================
+// ACTION OUTCOME
+// =============================
+
+
+const action =
+decision;
+
+
+
+
+const impact =
+this.calculateImpact(
+result?.metrics || {}
+);
 
 
 
 
 
 const analysis =
-
 this.analyzeReason(
-
 action,
-
 result,
-
 impact
-
 );
 
 
 
 
 
-
 const personalLearning =
-
 this.learnAboutPerson(
-
 action,
-
 result
-
 );
 
 
@@ -102,7 +339,6 @@ result
 
 
 const learning =
-
 this.createLearning(
 
 action,
@@ -133,6 +369,12 @@ outcomeId:
 
 crypto.randomUUID(),
 
+
+
+
+type:
+
+"ACTION_RESULT",
 
 
 
@@ -174,11 +416,10 @@ action?.action,
 
 
 
+
 success:
 
-result?.success ||
-
-false,
+result?.success === true,
 
 
 
@@ -194,6 +435,7 @@ impact,
 
 
 
+
 analysis,
 
 
@@ -202,8 +444,6 @@ analysis,
 
 
 
-
-// ⭐ Emma learns user
 
 personalLearning,
 
@@ -224,6 +464,7 @@ action,
 
 
 
+
 result:
 
 result?.result ||
@@ -237,7 +478,9 @@ result,
 
 
 
+
 learning,
+
 
 
 
@@ -278,6 +521,7 @@ memoryReady:true,
 
 
 
+
 createdAt:
 
 new Date()
@@ -292,11 +536,13 @@ new Date()
 
 
 
+
 this.outcomes.push(
 
 outcome
 
 );
+
 
 
 
@@ -360,7 +606,6 @@ result
 let learning={
 
 
-
 preferences:[],
 
 
@@ -371,7 +616,6 @@ decisionPatterns:[],
 
 
 futureSupport:[]
-
 
 
 };
@@ -391,7 +635,6 @@ text.includes("liked")
 ){
 
 
-
 learning.preferences.push(
 
 "User responded positively to this approach"
@@ -399,9 +642,7 @@ learning.preferences.push(
 );
 
 
-
 }
-
 
 
 
@@ -434,7 +675,6 @@ learning.workingStyle.push(
 
 
 
-
 if(
 
 text.includes("delayed") ||
@@ -454,7 +694,6 @@ learning.decisionPatterns.push(
 
 
 }
-
 
 
 
@@ -497,14 +736,11 @@ learning.futureSupport.push(
 
 
 
-
-
 return learning;
 
 
 
 }
-
 
 
 
@@ -586,7 +822,7 @@ return {
 
 reason:
 
-"Outcome did not fully achieve goal",
+"Action did not create expected result",
 
 
 
@@ -610,8 +846,6 @@ futureUse:
 
 
 }
-
-
 
 
 
@@ -740,6 +974,7 @@ impact
 
 
 
+
 futureRule:
 
 "Use this approach when a similar situation appears"
@@ -764,6 +999,7 @@ futureRule:
 
 
 
+
 return {
 
 
@@ -771,7 +1007,8 @@ return {
 
 type:
 
-"LEARNING_EXPERIENCE",
+"FAILED_EXPERIENCE",
+
 
 
 
@@ -782,6 +1019,7 @@ type:
 confidenceImpact:
 
 -5,
+
 
 
 
@@ -807,9 +1045,11 @@ analysis
 
 
 
+
 personalLesson:
 
 personalLearning,
+
 
 
 
@@ -839,6 +1079,7 @@ action?.action,
 
 
 
+
 futureRule:
 
 "Adapt strategy before trying again"
@@ -859,13 +1100,6 @@ futureRule:
 
 
 
-
-
-
-
-// =============================
-// Success lesson
-// =============================
 
 
 successLesson(
@@ -899,11 +1133,6 @@ return (
 
 
 
-// =============================
-// Failure lesson
-// =============================
-
-
 failureLesson(
 action,
 analysis
@@ -933,13 +1162,6 @@ return (
 
 
 
-
-
-// =============================
-// Impact measurement
-// =============================
-
-
 calculateImpact(metrics={}){
 
 
@@ -957,13 +1179,10 @@ metrics.goalCompleted
 ){
 
 
-
 return "high";
 
 
-
 }
-
 
 
 
@@ -982,13 +1201,10 @@ metrics.engagementIncrease
 ){
 
 
-
 return "medium";
 
 
-
 }
-
 
 
 
@@ -1006,14 +1222,10 @@ metrics.loss
 ){
 
 
-
 return "negative";
 
 
-
 }
-
-
 
 
 
@@ -1033,13 +1245,6 @@ return "low";
 
 
 
-
-
-
-
-// =============================
-// Confidence growth
-// =============================
 
 
 confidenceChange(impact){
@@ -1094,29 +1299,16 @@ return 0;
 
 
 
-
-
-// =============================
-// Search tags
-// =============================
-
-
 createMemoryTags(
-
 action,
-
 impact,
-
 learning,
-
 personal
-
 ){
 
 
 
 return [
-
 
 
 action?.action,
@@ -1128,14 +1320,13 @@ impact,
 learning.type,
 
 
-...learning.rememberFor,
+...(learning.rememberFor || []),
 
 
-...personal.preferences,
+...(personal.preferences || []),
 
 
-...personal.workingStyle
-
+...(personal.workingStyle || [])
 
 
 ]
@@ -1155,11 +1346,6 @@ learning.type,
 
 
 
-// =============================
-// History
-// =============================
-
-
 getHistory(){
 
 
@@ -1167,8 +1353,6 @@ return this.outcomes;
 
 
 }
-
-
 
 
 
@@ -1203,7 +1387,6 @@ x.learning.type ===
 
 
 
-
 getFailures(){
 
 
@@ -1214,7 +1397,7 @@ x =>
 
 x.learning.type ===
 
-"LEARNING_EXPERIENCE"
+"FAILED_EXPERIENCE"
 
 );
 
@@ -1244,7 +1427,6 @@ JSON.stringify(context)
 
 
 
-
 return this.outcomes.filter(item=>{
 
 
@@ -1254,7 +1436,6 @@ const memory =
 JSON.stringify(item)
 
 .toLowerCase();
-
 
 
 
@@ -1287,7 +1468,6 @@ memory.includes(word)
 
 
 
-
 reset(){
 
 
@@ -1295,7 +1475,6 @@ this.outcomes=[];
 
 
 }
-
 
 
 

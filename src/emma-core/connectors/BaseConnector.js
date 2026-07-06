@@ -1,24 +1,24 @@
 // BaseConnector.js
 // Emma universal connector foundation
-// Every external system must speak Emma's language
-
-
-import EmmaEvent
-from "../EmmaEvent";
-
+//
+// Connectors are Emma's senses.
+//
+// RULE:
+// Connectors do NOT think.
+// Connectors do NOT decide.
+// Connectors do NOT create Emma intelligence.
+//
+// Their only job:
+// External World → Clean Signal → Emma Pipeline
 
 
 class BaseConnector {
 
 
-constructor(
-source
-){
+constructor(source){
 
 
-if(
-!source
-){
+if(!source){
 
 throw new Error(
 "Connector requires a source name"
@@ -27,9 +27,7 @@ throw new Error(
 }
 
 
-
-this.source =
-source;
+this.source = source;
 
 
 
@@ -48,23 +46,29 @@ console.log(
 
 
 
-// ==============================
-// Receive external data
-// ==============================
+// =================================
+// RECEIVE EXTERNAL DATA
+// =================================
+//
+// Example:
+// Gmail API
+// Calendar API
+// Browser Activity
+// Drive Files
+//
+// Output:
+// Clean connector signal only
+// =================================
 
 
-createEvent(
-rawData
-){
+receive(rawData){
 
 
 
 console.log(
-`🔌 ${this.source} received data`,
+`🔌 ${this.source} received signal`,
 rawData
 );
-
-
 
 
 
@@ -80,10 +84,7 @@ rawData
 
 
 
-
-
-
-return EmmaEvent.create({
+return {
 
 
 
@@ -93,48 +94,76 @@ this.source,
 
 
 
-businessId:
-normalized.businessId,
-
-
-
-
+// what happened
 
 type:
-normalized.type,
+normalized.type ||
+"ACTIVITY",
 
 
 
 
+// affected thing
 
 object:
-normalized.object,
+normalized.object ||
+"general",
 
 
 
 
 
+// owner/user/company
+
+businessId:
+normalized.businessId ||
+"user",
+
+
+
+
+
+// clean useful data
 
 data:
-normalized.data || normalized,
+normalized.data ||
+normalized,
 
 
 
 
 
+// preserve original
+
+raw:
+rawData,
+
+
+
+
+
+// connector information
 
 metadata:{
 
+
+connector:
+this.source,
 
 
 receivedAt:
 new Date(),
 
 
+version:
+"1.0"
 
 
-connector:
-this.source
+}
+
+
+
+};
 
 
 
@@ -142,11 +171,6 @@ this.source
 
 
 
-});
-
-
-
-}
 
 
 
@@ -156,38 +180,49 @@ this.source
 
 
 
-
-
-
-// ==============================
-// Convert platform language
-// into Emma language
+// =================================
+// NORMALIZE PLATFORM DATA
 //
-// Every connector overrides this
-// ==============================
+// Child connectors override this
+//
+// GmailConnector
+// DriveConnector
+// CalendarConnector
+// BrowserConnector
+//
+// =================================
 
 
-normalize(
-data
-){
+normalize(data){
+
 
 
 return {
 
-businessId:
-data.businessId,
-
-
 
 type:
+
 data.type ||
-"BUSINESS_ACTIVITY",
+"ACTIVITY",
+
 
 
 
 object:
+
 data.object ||
 "general",
+
+
+
+
+
+businessId:
+
+data.businessId ||
+"user",
+
+
 
 
 
@@ -197,6 +232,7 @@ data
 };
 
 
+
 }
 
 
@@ -209,35 +245,27 @@ data
 
 
 
+// =================================
+// BATCH SYNC
+// =================================
 
 
-// ==============================
-// Batch import
-// ==============================
-
-
-sync(
-items=[]
-){
+sync(items=[]){
 
 
 
 console.log(
-`🔄 ${this.source} syncing ${items.length} events`
+`🔄 ${this.source} syncing ${items.length} items`
 );
-
-
 
 
 
 
 return items.map(
 
-item=>
+item =>
 
-this.createEvent(
-item
-)
+this.receive(item)
 
 );
 
@@ -255,10 +283,9 @@ item
 
 
 
-
-// ==============================
-// Health check
-// ==============================
+// =================================
+// HEALTH CHECK
+// =================================
 
 
 testConnection(){
@@ -274,6 +301,10 @@ this.source,
 
 connected:
 true,
+
+
+status:
+"ONLINE",
 
 
 checkedAt:
@@ -296,13 +327,14 @@ new Date()
 
 
 
-// ==============================
-// Connector abilities
-// ==============================
+// =================================
+// CONNECTOR ABILITIES
+//
+// Each connector overrides
+// =================================
 
 
 getCapabilities(){
-
 
 
 return [];
@@ -320,9 +352,9 @@ return [];
 
 
 
-// ==============================
-// Connector information
-// ==============================
+// =================================
+// CONNECTOR INFO
+// =================================
 
 
 getInfo(){
@@ -332,20 +364,16 @@ getInfo(){
 return {
 
 
-
 source:
 this.source,
-
 
 
 status:
 "ACTIVE",
 
 
-
 capabilities:
 this.getCapabilities()
-
 
 
 };
@@ -353,7 +381,6 @@ this.getCapabilities()
 
 
 }
-
 
 
 

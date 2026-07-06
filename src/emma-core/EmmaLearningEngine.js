@@ -1,7 +1,18 @@
 // EmmaLearningEngine.js
 // Emma's self improvement system
+//
 // Turns experiences into intelligence
-// Outcomes → Patterns → Rules → Better Future Decisions
+//
+// Outcomes
+// → Patterns
+// → Rules
+// → Better Future Decisions
+//
+// RULE:
+// Failed actions teach.
+// Observations create wisdom.
+// Waiting is intelligence.
+
 
 
 class EmmaLearningEngine {
@@ -29,6 +40,7 @@ this.behaviourRules=[];
 
 
 
+
 // ===============================
 // Main learning process
 // ===============================
@@ -36,7 +48,7 @@ this.behaviourRules=[];
 
 async learn(
 outcome,
-memory
+memory={}
 ){
 
 
@@ -48,50 +60,25 @@ outcome
 
 
 
-// Evaluate decision quality
+if(!outcome){
 
-const evaluation =
-this.evaluateDecision(
-outcome
-);
+return null;
 
-
-
-
-// Extract lesson
-
-const lesson =
-this.extractLesson(
-outcome,
-evaluation
-);
+}
 
 
 
 
-// Detect patterns from memory
 
-const patterns =
-this.detectPatterns(
-memory
-);
+// ===============================
+// WAITING
+// ===============================
 
 
+if(
+outcome.type === "MONITORING"
+){
 
-
-// Create future behaviour
-
-const futureRule =
-this.createFutureRule(
-evaluation,
-outcome,
-patterns
-);
-
-
-
-
-// Create learning record
 
 const learning={
 
@@ -100,32 +87,46 @@ learningId:
 crypto.randomUUID(),
 
 
-businessId:
-outcome.businessId || null,
+type:
+"MONITORING_LESSON",
 
 
-originalAction:
-outcome.action,
+evaluation:{
 
 
-evaluation,
+result:
+"INTELLIGENT_WAIT",
 
 
-lesson,
+reason:
+"Emma chose to continue observing instead of forcing action",
 
 
-patternsFound:
-patterns,
+score:0,
 
 
-confidenceChange:
-this.calculateConfidenceChange(
-evaluation
-),
+shouldRepeat:true
 
 
-futureBehavior:
-futureRule,
+},
+
+
+lesson:
+"Waiting was intentional. Continue gathering signals.",
+
+
+futureBehavior:{
+
+
+rule:
+"CONTINUE_MONITORING",
+
+
+message:
+"Do not act until enough evidence exists"
+
+
+},
 
 
 usedForFutureReasoning:true,
@@ -140,6 +141,288 @@ new Date()
 
 
 
+this.lessons.push(
+learning
+);
+
+
+
+console.log(
+"👀 Emma learned patience:",
+learning
+);
+
+
+
+return learning;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// OBSERVATION
+// ===============================
+
+
+if(
+outcome.type === "OBSERVED_PATTERN"
+){
+
+
+const patterns =
+this.detectPatterns(memory);
+
+
+
+const learning={
+
+
+learningId:
+crypto.randomUUID(),
+
+
+type:
+"OBSERVATION_LESSON",
+
+
+businessId:
+outcome.businessId || null,
+
+
+evaluation:{
+
+
+result:
+"PATTERN_DISCOVERED",
+
+
+reason:
+"Emma noticed a possible recurring signal",
+
+
+score:1,
+
+
+shouldRepeat:true
+
+
+},
+
+
+
+lesson:
+outcome.learning?.lesson ||
+"Observation stored for future comparison",
+
+
+
+patternsFound:
+patterns,
+
+
+
+confidenceChange:
+5,
+
+
+
+futureBehavior:{
+
+
+rule:
+"WATCH_PATTERN",
+
+
+basedOn:
+outcome.observation,
+
+
+patterns,
+
+
+message:
+"If this repeats, increase confidence and consider action"
+
+
+},
+
+
+
+usedForFutureReasoning:true,
+
+
+
+createdAt:
+new Date()
+
+
+};
+
+
+
+
+this.lessons.push(
+learning
+);
+
+
+this.behaviourRules.push(
+learning.futureBehavior
+);
+
+
+
+
+console.log(
+"🧠 Emma learned a pattern:",
+learning
+);
+
+
+
+return learning;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// NORMAL ACTION LEARNING
+// ===============================
+
+
+const evaluation =
+this.evaluateDecision(
+outcome
+);
+
+
+
+
+
+const lesson =
+this.extractLesson(
+outcome,
+evaluation
+);
+
+
+
+
+
+const patterns =
+this.detectPatterns(
+memory
+);
+
+
+
+
+
+const futureRule =
+this.createFutureRule(
+evaluation,
+outcome,
+patterns
+);
+
+
+
+
+
+
+
+const learning={
+
+
+
+learningId:
+crypto.randomUUID(),
+
+
+
+
+type:
+"ACTION_LESSON",
+
+
+
+
+businessId:
+outcome.businessId || null,
+
+
+
+
+originalAction:
+outcome.action,
+
+
+
+
+evaluation,
+
+
+
+
+lesson,
+
+
+
+
+patternsFound:
+patterns,
+
+
+
+
+confidenceChange:
+this.calculateConfidenceChange(
+evaluation
+),
+
+
+
+
+futureBehavior:
+futureRule,
+
+
+
+
+usedForFutureReasoning:true,
+
+
+
+
+createdAt:
+new Date()
+
+
+
+};
+
+
+
+
+
 
 this.lessons.push(
 learning
@@ -147,9 +430,12 @@ learning
 
 
 
+
 this.behaviourRules.push(
 futureRule
 );
+
+
 
 
 
@@ -162,10 +448,13 @@ learning
 
 
 
+
 return learning;
 
 
 }
+
+
 
 
 
@@ -186,8 +475,16 @@ outcome
 
 
 
+
+
+// Important:
+// only ACTION_RESULT can fail
+
+
+
 if(
-!outcome.success
+outcome.type==="ACTION_RESULT" &&
+outcome.success === false
 ){
 
 
@@ -219,6 +516,7 @@ shouldRepeat:false
 
 
 
+
 if(
 outcome.impact==="high"
 ){
@@ -232,7 +530,7 @@ result:
 
 
 reason:
-"Created major business improvement",
+"Created major improvement",
 
 
 score:3,
@@ -245,6 +543,7 @@ shouldRepeat:true
 
 
 }
+
 
 
 
@@ -294,7 +593,7 @@ result:
 
 
 reason:
-"Worked but needs more evidence",
+"Limited evidence collected",
 
 
 score:0,
@@ -318,7 +617,7 @@ shouldRepeat:false
 
 
 // ===============================
-// Create human lesson
+// Human lesson
 // ===============================
 
 
@@ -338,7 +637,7 @@ return (
 
 `${outcome.action} produced useful results. ` +
 
-"Emma should remember the conditions and reuse carefully."
+"Reuse when similar conditions appear."
 
 );
 
@@ -358,9 +657,9 @@ evaluation.result==="BAD_EXPERIENCE"
 
 return (
 
-`${outcome.action} failed or hurt results. ` +
+`${outcome.action} failed. ` +
 
-"Emma should avoid repeating without a better strategy."
+"Change approach before trying again."
 
 );
 
@@ -376,15 +675,15 @@ return (
 
 return (
 
-`${outcome.action} gave limited information. ` +
+`${outcome.action} needs more evidence. ` +
 
-"Emma should collect more data before trusting this pattern."
+"Keep learning before creating a rule."
 
 );
 
 
-}
 
+}
 
 
 
@@ -421,6 +720,7 @@ experiences.forEach(item=>{
 const text =
 JSON.stringify(item)
 .toLowerCase();
+
 
 
 
@@ -465,6 +765,7 @@ patterns.push(
 
 
 
+
 if(
 text.includes("worked") ||
 text.includes("success")
@@ -498,8 +799,6 @@ return [
 
 
 
-
-
 // ===============================
 // Confidence evolution
 // ===============================
@@ -510,16 +809,15 @@ evaluation
 ){
 
 
+
 switch(
 evaluation.result
 ){
 
 
-
 case "STRONG_SUCCESS":
 
 return 20;
-
 
 
 
@@ -529,11 +827,15 @@ return 10;
 
 
 
+case "PATTERN_DISCOVERED":
+
+return 5;
+
+
 
 case "BAD_EXPERIENCE":
 
 return -20;
-
 
 
 
@@ -555,10 +857,8 @@ return 0;
 
 
 
-
-
 // ===============================
-// Create future rule
+// Future rules
 // ===============================
 
 
@@ -590,13 +890,14 @@ patterns,
 
 
 message:
-"Prefer this strategy when similar business conditions appear"
+"Use when similar conditions appear"
 
 
 };
 
 
 }
+
 
 
 
@@ -624,7 +925,7 @@ patterns,
 
 
 message:
-"Do not repeat this action without changing approach"
+"Do not repeat without changing strategy"
 
 
 };
@@ -654,7 +955,7 @@ patterns,
 
 
 message:
-"Need more evidence before creating a permanent strategy"
+"Collect more evidence"
 
 
 };
@@ -670,8 +971,9 @@ message:
 
 
 
+
 // ===============================
-// Give knowledge to Reasoning
+// Reasoning access
 // ===============================
 
 
@@ -686,6 +988,7 @@ JSON.stringify(context)
 
 
 
+
 return this.lessons.filter(
 lesson=>{
 
@@ -695,9 +998,10 @@ JSON.stringify(lesson)
 .toLowerCase();
 
 
+
 return search
 .split(" ")
-.some(word=>
+.some(word =>
 
 word.length>5 &&
 text.includes(word)
@@ -718,12 +1022,6 @@ text.includes(word)
 
 
 
-
-// ===============================
-// Get learned rules
-// ===============================
-
-
 getRules(){
 
 return this.behaviourRules;
@@ -731,15 +1029,6 @@ return this.behaviourRules;
 }
 
 
-
-
-
-
-
-
-// ===============================
-// All lessons
-// ===============================
 
 
 getLessons(){
@@ -751,15 +1040,6 @@ return this.lessons;
 
 
 
-
-
-
-
-// ===============================
-// Debug reset
-// ===============================
-
-
 reset(){
 
 this.lessons=[];
@@ -769,7 +1049,9 @@ this.behaviourRules=[];
 }
 
 
+
 }
+
 
 
 

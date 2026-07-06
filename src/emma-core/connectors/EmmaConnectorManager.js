@@ -1,15 +1,48 @@
 // EmmaConnectorManager.js
 // Emma's nervous system
-// Manages all external senses
-// Platforms → Connectors → Emma Events
+//
+// External Systems
+//        ↓
+// Connectors
+//        ↓
+// Clean Signals
+//        ↓
+// Emma
+//
+// RULE:
+// Connectors collect.
+// Manager routes.
+// Emma thinks.
+
 
 
 import LinkHubConnector
 from "./LinkHubConnector";
 
 
+import GmailConnector
+from "./GmailConnector";
+
+
+import DriveConnector
+from "./DriveConnector";
+
+
+import CalendarConnector
+from "./CalendarConnector";
+
+
+import BrowserConnector
+from "./BrowserConnector";
+
+
+
+
+
+
 
 class EmmaConnectorManager {
+
 
 
 constructor(){
@@ -25,10 +58,38 @@ this.connectors = {};
 
 
 
-// Register default connectors
+
+// ==============================
+// REGISTER DEFAULT SENSES
+// ==============================
+
 
 this.register(
 new LinkHubConnector()
+);
+
+
+
+this.register(
+new GmailConnector()
+);
+
+
+
+this.register(
+new DriveConnector()
+);
+
+
+
+this.register(
+new CalendarConnector()
+);
+
+
+
+this.register(
+new BrowserConnector()
 );
 
 
@@ -44,23 +105,21 @@ new LinkHubConnector()
 
 
 // ==============================
-// Add a connector
+// ADD CONNECTOR
 // ==============================
 
 
-register(
-connector
-){
+register(connector){
 
 
 
-if(
-!connector.source
-){
+if(!connector.source){
+
 
 throw new Error(
 "Connector must have a source name"
 );
+
 
 }
 
@@ -75,9 +134,7 @@ connector.source
 
 
 console.log(
-
-`✅ Connector added: ${connector.source}`
-
+`✅ Sense connected: ${connector.source}`
 );
 
 
@@ -93,16 +150,12 @@ console.log(
 
 
 
-
-
 // ==============================
-// Remove connector
+// REMOVE CONNECTOR
 // ==============================
 
 
-disconnect(
-source
-){
+disconnect(source){
 
 
 
@@ -112,10 +165,9 @@ source
 
 
 
+
 console.log(
-
-`❌ Connector removed: ${source}`
-
+`❌ Sense disconnected: ${source}`
 );
 
 
@@ -130,19 +182,24 @@ console.log(
 
 
 
-
-
-
 // ==============================
-// Receive activity
-// from any platform
+// RECEIVE EXTERNAL ACTIVITY
 // ==============================
 
 
-receive(
+async receive(
 source,
-data
+rawData
 ){
+
+
+
+console.log(
+"🌎 Signal received from:",
+source
+);
+
+
 
 
 
@@ -156,15 +213,12 @@ source
 
 
 
-
 if(!connector){
 
 
 
 throw new Error(
-
 `No connector found for ${source}`
-
 );
 
 
@@ -177,12 +231,16 @@ throw new Error(
 
 
 
+// Connector only cleans.
+// No thinking here.
 
-const event =
 
-connector.createEvent(
-data
+const signal =
+
+connector.receive(
+rawData
 );
+
 
 
 
@@ -190,8 +248,8 @@ data
 
 
 console.log(
-"📡 Emma received event:",
-event
+"🔌 Clean signal created:",
+signal
 );
 
 
@@ -199,7 +257,7 @@ event
 
 
 
-return event;
+return signal;
 
 
 
@@ -213,14 +271,12 @@ return event;
 
 
 
-
-
 // ==============================
-// Sync many events
+// SYNC HISTORY
 // ==============================
 
 
-sync(
+async sync(
 source,
 items=[]
 ){
@@ -236,8 +292,6 @@ source
 
 
 
-
-
 if(!connector){
 
 
@@ -245,7 +299,6 @@ return [];
 
 
 }
-
 
 
 
@@ -268,9 +321,8 @@ items
 
 
 
-
 // ==============================
-// Get all active connectors
+// LIST CONNECTORS
 // ==============================
 
 
@@ -302,10 +354,8 @@ connector.getInfo()
 
 
 
-
-
 // ==============================
-// What can Emma see?
+// EMMA SENSE ABILITIES
 // ==============================
 
 
@@ -337,10 +387,8 @@ connector.getCapabilities()
 
 
 
-
-
 // ==============================
-// Health check
+// HEALTH CHECK
 // ==============================
 
 
@@ -366,7 +414,60 @@ connector.testConnection()
 
 
 
+
+
+
+
+
+// ==============================
+// STATUS
+// ==============================
+
+
+status(){
+
+
+
+return {
+
+
+
+connected:
+
+Object.keys(
+this.connectors
+),
+
+
+
+
+count:
+
+Object.keys(
+this.connectors
+).length,
+
+
+
+
+capabilities:
+
+this.getCapabilities()
+
+
+
+};
+
+
+
 }
+
+
+
+}
+
+
+
 
 
 
