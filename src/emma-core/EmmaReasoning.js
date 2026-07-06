@@ -1,14 +1,14 @@
 // EmmaReasoning.js
-// Emma's thinking engine
+// Emma's personal thinking engine
 //
-// Memory
-// → Experience
+// Identity
+// + Memory
+// + Experience
 // → Reason
-// → Decision
+// → Better Decisions
 
 
 import EmmaBrain from "./EmmaBrain";
-
 
 
 class EmmaReasoning {
@@ -17,7 +17,7 @@ class EmmaReasoning {
 constructor(){
 
 console.log(
-"💭 Emma Reasoning ready"
+"💭 Emma Personal Reasoning online"
 );
 
 }
@@ -25,24 +25,20 @@ console.log(
 
 
 
-
-// =================================
+// ===============================
 // MAIN THINKING
-// =================================
+// ===============================
 
 
 async think(input, suppliedMemory=null){
 
 
 console.log(
-"💭 Emma thinking started",
+"💭 Emma thinking...",
 input
 );
 
 
-
-
-// support both calling styles
 
 const reflection =
 input.reflection ||
@@ -58,11 +54,9 @@ input.memory ||
 
 
 
-
-
-// =================================
+// ===============================
 // STUDY MEMORY FIRST
-// =================================
+// ===============================
 
 
 const experiences =
@@ -75,27 +69,26 @@ memory.previousExperiences ||
 
 
 
+const identity =
+
+memory.identity ||
+
+{};
+
 
 
 const successfulMemories =
-this.findSuccess(
-experiences
-);
+this.findSuccess(experiences);
 
 
 
 const failedMemories =
-this.findFailures(
-experiences
-);
+this.findFailures(experiences);
 
 
 
 const lessons =
-this.extractLessons(
-experiences
-);
-
+this.extractLessons(experiences);
 
 
 
@@ -107,15 +100,11 @@ experiences
 
 
 
-
-
 console.log(
-"🧠 Emma studied memories:",
+"🧠 Emma understands:",
 {
-total:experiences.length,
-success:successfulMemories.length,
-failed:failedMemories.length,
-lessons
+memories: experiences.length,
+identity
 }
 );
 
@@ -123,16 +112,12 @@ lessons
 
 
 
-
-
-
-// =================================
-// AI THINKING WITH EXPERIENCE
-// =================================
+// ===============================
+// PERSONAL AI REASONING
+// ===============================
 
 
 let aiThought=null;
-
 
 
 
@@ -147,20 +132,66 @@ await EmmaBrain.think({
 
 identity:
 `
-You are Emma.
+You are Emma 🤍
 
-You are an AI employee.
+You are a personal AI assistant.
 
-You have memory.
+Your purpose:
+Understand this person.
 
-Never ignore company experience.
+Never answer like a stranger.
 
-Before deciding:
-- study past outcomes
-- reuse what worked
-- avoid what failed
-- explain what memory affected your decision
+Before responding:
+
+1. Understand who this person is
+2. Study memories
+3. Look at goals
+4. Notice patterns
+5. Learn from past outcomes
+6. Give personal judgement
+
+Your goal is:
+
+"Ah... she gets it."
 `,
+
+
+
+
+
+personUnderstanding:{
+
+
+goals:
+
+identity.goals || [],
+
+
+
+preferences:
+
+identity.preferences || [],
+
+
+
+workingStyle:
+
+identity.workingStyle || [],
+
+
+
+decisionPatterns:
+
+identity.decisionPatterns || [],
+
+
+
+priorities:
+
+identity.priorities || []
+
+
+},
 
 
 
@@ -175,9 +206,7 @@ reflection,
 
 
 
-
-companyMemory:{
-
+memory:{
 
 
 experiencesStudied:
@@ -207,7 +236,6 @@ failedMemories,
 lessons
 
 
-
 },
 
 
@@ -219,22 +247,23 @@ lessons
 task:
 `
 
-Think carefully.
+Think like someone who knows this person.
 
 Answer:
 
 1. What is happening?
-2. What previous experience applies?
-3. What failed before?
-4. What worked before?
-5. What should we do differently?
+2. What do I know about this person?
+3. What past experience matters?
+4. What pattern do I notice?
+5. What should they do?
 
 
 Return JSON:
 
 {
 "analysis":"",
-"cause":"",
+"personalUnderstanding":"",
+"pattern":"",
 "prediction":"",
 "recommendation":"",
 "memoryUsed":"",
@@ -249,11 +278,9 @@ Return JSON:
 
 
 
-
 }
 
 catch(error){
-
 
 
 console.warn(
@@ -262,7 +289,6 @@ error
 );
 
 
-
 }
 
 
@@ -272,42 +298,31 @@ error
 
 
 
-
-
-
-// =================================
-// ACTION OPTIONS
-// =================================
+// ===============================
+// DECISION OPTIONS
+// ===============================
 
 
 let options=[
 
-
 {
 
 action:
-"OBSERVE_MORE",
+"UNDERSTAND_MORE",
 
 goal:
-"understanding",
+"context",
 
-score:
-50,
+score:50,
 
-risk:
-"low",
+risk:"low",
 
 reason:
-"Need more information"
+"Need more personal context"
 
 }
 
-
 ];
-
-
-
-
 
 
 
@@ -321,55 +336,36 @@ JSON.stringify(reflection)
 
 
 
-
-
 if(
 
-text.includes("sale") ||
+text.includes("goal") ||
 
-text.includes("customer") ||
+text.includes("decision") ||
 
-text.includes("growth") ||
-
-text.includes("lead")
+text.includes("should")
 
 ){
 
 
-
 options.push({
 
-
-
 action:
-"CREATE_GROWTH_ACTION",
-
+"PERSONAL_GUIDANCE",
 
 goal:
-"growth",
+"clarity",
 
+score:80,
 
-score:
-75,
-
-
-risk:
-"medium",
-
+risk:"low",
 
 reason:
-"Growth opportunity detected"
-
-
+"Personal decision detected"
 
 });
 
 
-
 }
-
-
-
 
 
 
@@ -379,41 +375,25 @@ reason:
 if(successfulMemories.length){
 
 
-
 options.push({
 
-
 action:
-"REPEAT_SUCCESS_PATTERN",
-
+"USE_SUCCESS_PATTERN",
 
 goal:
-"growth",
+"repeat what works",
 
+score:95,
 
-score:
-95,
-
-
-risk:
-"low",
-
+risk:"low",
 
 reason:
-"Past success found",
-
-
-evidence:
-successfulMemories
-
+"Successful pattern exists"
 
 });
 
 
-
 }
-
-
 
 
 
@@ -424,43 +404,22 @@ successfulMemories
 if(failedMemories.length){
 
 
-
 options.push({
 
-
-
 action:
-"AVOID_FAILED_PATTERN",
-
-
+"AVOID_OLD_MISTAKE",
 
 goal:
 "protection",
 
+score:90,
 
-
-score:
-90,
-
-
-
-risk:
-"low",
-
-
+risk:"low",
 
 reason:
-"Previous failure detected",
-
-
-
-evidence:
-failedMemories
-
-
+"Previous mistake detected"
 
 });
-
 
 
 }
@@ -471,12 +430,41 @@ failedMemories
 
 
 
+if(
+
+identity.goals?.length ||
+
+identity.workingStyle?.length
+
+){
+
+
+options.push({
+
+action:
+"IDENTITY_BASED_ADVICE",
+
+goal:
+"personal alignment",
+
+score:100,
+
+risk:"low",
+
+reason:
+"Emma understands this person"
+
+});
+
+
+}
+
+
 
 
 
 
 const recommendation =
-
 
 options.sort(
 
@@ -491,67 +479,45 @@ options.sort(
 
 
 
-
-
-
-
-// =================================
+// ===============================
 // CONFIDENCE
-// =================================
+// ===============================
 
 
 let confidence=50;
 
 
 
-
 confidence +=
 
-experiences.length * 10;
+experiences.length * 5;
 
+
+
+if(Object.keys(identity).length)
+
+confidence +=20;
 
 
 
 if(repeatedSituation)
 
-confidence +=15;
-
-
-
-
-if(failedMemories.length)
-
 confidence +=10;
-
-
-
-
-if(successfulMemories.length)
-
-confidence +=10;
-
-
-
 
 
 
 if(aiThought?.confidence){
 
-
 confidence =
 aiThought.confidence;
-
 
 }
 
 
 
-
 confidence =
-Math.min(
-confidence,
-100
-);
+
+Math.min(confidence,100);
 
 
 
@@ -560,15 +526,12 @@ confidence,
 
 
 
-
-
-// =================================
-// FINAL THINKING RESULT
-// =================================
+// ===============================
+// RESULT
+// ===============================
 
 
 return {
-
 
 
 
@@ -576,18 +539,25 @@ analysis:
 
 aiThought?.analysis ||
 
-"Emma compared this situation with past company experience.",
+"Emma reasoned using personal history.",
 
 
 
 
+personalUnderstanding:
 
-cause:
+aiThought?.personalUnderstanding ||
 
-aiThought?.cause ||
+identity,
 
-"Cause requires more observation.",
 
+
+
+pattern:
+
+aiThought?.pattern ||
+
+null,
 
 
 
@@ -597,92 +567,7 @@ prediction:
 
 aiThought?.prediction ||
 
-"Past experience affects expected outcome.",
-
-
-
-
-
-
-
-thought:
-
-aiThought || null,
-
-
-
-
-
-
-
-
-memoryInfluence:{
-
-
-
-memoriesStudied:
-
-experiences.length,
-
-
-
-
-
-successPatterns:
-
-successfulMemories.length,
-
-
-
-
-
-failurePatterns:
-
-failedMemories.length,
-
-
-
-
-
-lessonsApplied:
-
-lessons,
-
-
-
-
-
-
-failedActions:
-
-failedMemories.map(
-
-m=>
-
-m.memory?.attemptedAction
-
-)
-
-.filter(Boolean)
-
-
-
-
-
-},
-
-
-
-
-
-
-
-
-
-repeatedSituation,
-
-
-
+"Future outcome depends on previous patterns.",
 
 
 
@@ -694,20 +579,7 @@ recommendation,
 
 
 
-
-
-
-options,
-
-
-
-
-
-
-
-
 suggestion:
-
 
 aiThought?.recommendation ||
 
@@ -718,14 +590,40 @@ recommendation.reason,
 
 
 
+memoryInfluence:{
+
+
+memoriesStudied:
+
+experiences.length,
+
+
+
+lessonsApplied:
+
+lessons,
+
+
+
+identityUsed:
+
+identity
+
+
+},
+
+
+
+
 
 
 decisionExplanation:
 
-
 this.explainDecision(
 
 recommendation,
+
+identity,
 
 successfulMemories,
 
@@ -740,22 +638,11 @@ lessons
 
 
 
-
-
 confidence,
 
 
 
-
-
-
-
 needsJudgement:true,
-
-
-
-
-
 
 
 
@@ -779,58 +666,33 @@ new Date()
 
 
 
-
-
-// =================================
+// ===============================
 // HELPERS
-// =================================
+// ===============================
 
 
 findSuccess(memories){
 
-
-
 return memories.filter(
 
-m =>
-
-m.memory?.success===true
+m=>m.memory?.success===true
 
 );
 
-
-
 }
-
-
-
-
-
 
 
 
 
 findFailures(memories){
 
-
-
 return memories.filter(
 
-m =>
-
-m.memory?.success===false
+m=>m.memory?.success===false
 
 );
 
-
-
 }
-
-
-
-
-
-
 
 
 
@@ -838,29 +700,18 @@ m.memory?.success===false
 extractLessons(memories){
 
 
-
 return memories
-
 
 .map(
 
-m =>
-
-m.memory?.lesson
+m=>m.memory?.lesson
 
 )
-
 
 .filter(Boolean);
 
 
-
 }
-
-
-
-
-
 
 
 
@@ -870,7 +721,6 @@ m.memory?.lesson
 detectSimilarSituation(reflection,memories){
 
 
-
 const current =
 
 JSON.stringify(reflection)
@@ -878,16 +728,13 @@ JSON.stringify(reflection)
 
 
 
-
 return memories.some(memory=>{
-
 
 
 const old =
 
 JSON.stringify(memory)
 .toLowerCase();
-
 
 
 
@@ -906,15 +753,10 @@ old.includes(word)
 );
 
 
-
 });
 
 
-
 }
-
-
-
 
 
 
@@ -924,85 +766,81 @@ old.includes(word)
 
 explainDecision(
 decision,
+identity,
 success,
 failure,
 lessons
 ){
 
 
-
-let explanation =
+let text =
 
 `I selected ${decision.action}. `;
 
 
+
+if(identity.goals?.length){
+
+text +=
+
+"I considered this person's goals. ";
+
+}
+
+
+
+
+if(identity.workingStyle?.length){
+
+text +=
+
+"I considered their working style. ";
+
+}
 
 
 
 
 if(success.length){
 
+text +=
 
-explanation +=
-
-`I found ${success.length} successful past experience. `;
-
+`${success.length} successful experiences influenced me. `;
 
 }
-
-
 
 
 
 
 if(failure.length){
 
+text +=
 
-
-explanation +=
-
-`I found ${failure.length} previous failure and avoided repeating it. `;
-
-
+`${failure.length} previous mistakes were considered. `;
 
 }
-
-
-
-
 
 
 
 
 if(lessons.length){
 
+text +=
+
+"I applied learned lessons.";
+
+}
 
 
-explanation +=
 
-"Past lessons influenced this decision.";
-
+return text;
 
 
 }
 
 
 
-
-
-
-
-return explanation;
-
-
-
 }
-
-
-
-
-}
-
 
 
 export default EmmaReasoning;

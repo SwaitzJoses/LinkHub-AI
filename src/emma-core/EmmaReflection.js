@@ -1,25 +1,27 @@
 // EmmaReflection.js
 // Emma's thinking mirror
 //
-// Converts observations into business experience
+// Converts life/work events into wisdom
 //
 // Event
-// → Understanding
+// → Meaning
+// → Identity Understanding
 // → Lesson
 // → Future Wisdom
+
 
 
 class EmmaReflection {
 
 
-constructor(ai = null){
+constructor(ai=null){
 
 
 this.ai = ai;
 
 
 console.log(
-"🤔 Emma Experience Reflection ready"
+"🤔 Emma Personal Reflection online"
 );
 
 
@@ -32,30 +34,24 @@ console.log(
 
 
 
-// =================================
+// ===============================
 // Reflect on observation
-// =================================
+// ===============================
 
 
 async reflect(observation){
 
 
-
 console.log(
-"🤔 Emma analyzing experience:",
+"🤔 Emma reflecting:",
 observation
 );
 
 
 
 
-// ===============================
-// AI EXPERIENCE PATH
-// ===============================
-
 
 if(this.ai){
-
 
 
 try{
@@ -69,12 +65,15 @@ observation
 
 
 
-
 return {
 
 
+userId:
+observation.userId || null,
+
+
 businessId:
-observation.businessId,
+observation.businessId || null,
 
 
 
@@ -88,19 +87,24 @@ observation,
 
 
 
+
 // WHAT HAPPENED
+
+situation:
+reflection.situation,
+
 
 problem:
 reflection.problem,
 
 
 
-situation:
-reflection.situation,
 
+// WHY IT MATTERS
 
+meaning:
+reflection.meaning,
 
-// WHY
 
 cause:
 reflection.cause,
@@ -108,11 +112,11 @@ reflection.cause,
 
 
 
-// ACTION EXPERIENCE
+
+// ACTION / DECISION
 
 attemptedAction:
 reflection.attemptedAction,
-
 
 
 reason:
@@ -125,16 +129,16 @@ reflection.expectedOutcome,
 
 
 
+
+
 // RESULT
 
 result:
 reflection.result,
 
 
-
 success:
 reflection.success,
-
 
 
 metrics:
@@ -143,17 +147,16 @@ reflection.metrics || {},
 
 
 
-// EXPERIENCE
+
+
+// EXPERIENCE MEMORY
 
 lesson:
 reflection.lesson,
 
 
-
 patternsFound:
 reflection.patternsFound || [],
-
-
 
 
 futureBehavior:
@@ -161,13 +164,52 @@ reflection.futureBehavior,
 
 
 
+
+
+// ⭐ PERSONAL INTELLIGENCE
+
+identityLearning:{
+
+
+goals:
+reflection.goals || [],
+
+
+preferences:
+reflection.preferences || [],
+
+
+workingStyle:
+reflection.workingStyle || [],
+
+
+decisionPatterns:
+reflection.decisionPatterns || [],
+
+
+priorities:
+reflection.priorities || [],
+
+
+personInsight:
+reflection.personInsight || null
+
+
+},
+
+
+
+
+
+
 recommendation:
-reflection.recommendation,
+reflection.recommendation || [],
 
 
 
 
-// MEMORY SIGNAL
+
+
 
 learning:{
 
@@ -177,32 +219,37 @@ type:
 reflection.success
 
 ?
+
 "POSITIVE_EXPERIENCE"
 
 :
-"NEGATIVE_EXPERIENCE",
+
+"LEARNING_EXPERIENCE",
 
 
 
 lesson:
+
 reflection.lesson,
 
 
 
 futureRule:
+
 reflection.futureBehavior,
+
+
+
+identityGrowth:
+
+reflection.personInsight,
 
 
 
 confidenceImpact:
 
-reflection.success
+reflection.success ? 5 : 0
 
-?
-5
-
-:
--5
 
 
 },
@@ -211,24 +258,34 @@ reflection.success
 
 
 
+
+
 confidence:
+
 reflection.confidence || 5,
 
 
 
+
 importance:
+
 this.findImportance(
 reflection
 ),
 
 
 
+
+
 source:
+
 "AI_REFLECTION",
 
 
 
+
 reflectedAt:
+
 new Date()
 
 
@@ -236,12 +293,11 @@ new Date()
 
 
 
+
+
 }
 
-
-
 catch(error){
-
 
 
 console.error(
@@ -250,20 +306,14 @@ error.message
 );
 
 
+}
+
 
 }
 
 
 
-}
 
-
-
-
-
-
-
-// fallback
 
 console.log(
 "⚠️ Using local reflection"
@@ -276,7 +326,6 @@ observation
 );
 
 
-
 }
 
 
@@ -289,10 +338,9 @@ observation
 
 
 
-
-// =================================
-// Ask AI to create experience
-// =================================
+// ===============================
+// Ask AI
+// ===============================
 
 
 async askAI(observation){
@@ -304,15 +352,12 @@ const response =
 await this.ai.chat.completions.create({
 
 
-
 model:
 "gpt-4.1-mini",
 
 
-
 temperature:
 0.2,
-
 
 
 messages:[
@@ -322,65 +367,64 @@ messages:[
 {
 
 
-role:
-"system",
-
+role:"system",
 
 
 content:
 `
 
-You are Emma.
+You are Emma 🤍
 
 You are not a chatbot.
 
-You are an AI business employee
-building experience over time.
+You are a personal AI assistant
+that learns the person over time.
 
 
-Your job:
+Your purpose:
 
-Convert business events into
-future reusable experience.
-
-
-Think like an employee:
-
-What happened?
-Why did it happen?
-What action was tried?
-Did it work?
-What should I remember forever?
+"Emma learns you."
 
 
-
-IMPORTANT:
-
-Never store generic actions like:
-
-"CREATE_GROWTH_ACTION"
-
-Convert them into the real business action.
-
-Example:
-
-BAD:
-"growth action failed"
-
-GOOD:
-"20% discount campaign failed because it generated clicks but no orders"
+Convert events into wisdom.
 
 
+Think:
 
-Return ONLY valid JSON:
+1. What happened?
+2. Why does it matter?
+3. What does this reveal about the person?
+4. What pattern exists?
+5. What should Emma remember for the future?
+
+
+Learn:
+
+- goals
+- preferences
+- working style
+- decision habits
+- priorities
+- repeated patterns
+
+
+Do NOT only summarize.
+
+Create future intelligence.
+
+
+
+Return ONLY JSON:
 
 
 {
 
 
+"situation":"",
+
 "problem":"",
 
-"situation":"",
+"meaning":"",
 
 "cause":"",
 
@@ -392,7 +436,7 @@ Return ONLY valid JSON:
 
 "expectedOutcome":"",
 
-"result":"success or failed",
+"result":"success or learning",
 
 "success":true,
 
@@ -402,9 +446,26 @@ Return ONLY valid JSON:
 
 "lesson":"",
 
+
 "patternsFound":[],
 
 "futureBehavior":"",
+
+
+
+"goals":[],
+
+"preferences":[],
+
+"workingStyle":[],
+
+"decisionPatterns":[],
+
+"priorities":[],
+
+
+"personInsight":"",
+
 
 
 "recommendation":[],
@@ -416,15 +477,6 @@ Return ONLY valid JSON:
 }
 
 
-
-Rules:
-
-Failures teach what to avoid.
-
-Success teaches what to repeat.
-
-Always create memory useful for a future decision.
-
 `
 
 },
@@ -432,15 +484,10 @@ Always create memory useful for a future decision.
 
 
 
-
-
-
-
 {
 
 
-role:
-"user",
+role:"user",
 
 
 content:
@@ -463,10 +510,6 @@ observation
 
 
 
-
-
-
-
 const text =
 
 response
@@ -476,10 +519,7 @@ response
 
 
 
-return JSON.parse(
-text
-);
-
+return JSON.parse(text);
 
 
 }
@@ -494,19 +534,96 @@ text
 
 
 
-
-// =================================
-// Emergency local reflection
-// =================================
+// ===============================
+// Local fallback
+// ===============================
 
 
 localReflect(observation){
 
 
 
-const failed =
+const text =
 
-observation.success === false;
+JSON.stringify(observation)
+.toLowerCase();
+
+
+
+
+
+const identity = {
+
+
+goals:[],
+
+
+preferences:[],
+
+
+workingStyle:[],
+
+
+decisionPatterns:[],
+
+
+priorities:[],
+
+
+personInsight:null
+
+
+};
+
+
+
+
+
+
+if(text.includes("goal")){
+
+
+identity.goals.push(
+
+observation.summary
+
+);
+
+
+}
+
+
+
+
+if(text.includes("fast")){
+
+
+identity.workingStyle.push(
+
+"Prefers fast execution"
+
+);
+
+
+}
+
+
+
+
+if(text.includes("decision")){
+
+
+identity.decisionPatterns.push(
+
+"Important decision detected"
+
+);
+
+
+}
+
+
+
 
 
 
@@ -516,41 +633,65 @@ return {
 
 
 
+userId:
+
+observation.userId || null,
+
+
+
 businessId:
-observation.businessId,
+
+observation.businessId || null,
+
 
 
 
 eventType:
+
 observation.eventType,
+
+
 
 
 
 originalObservation:
+
 observation,
 
-
-
-
-problem:
-
-observation.problem ||
-
-observation.eventType,
 
 
 
 
 situation:
 
-"Business event detected",
+observation.summary ||
+
+"New experience detected",
+
+
+
+
+meaning:
+
+"Emma learned something new about this person",
+
+
+
+
+
+problem:
+
+null,
+
 
 
 
 
 cause:
 
-"Unknown - needs more evidence",
+"More observation required",
+
+
 
 
 
@@ -559,25 +700,17 @@ attemptedAction:
 
 observation.action ||
 
-"UNKNOWN_ACTION",
-
-
-
-
-reason:
-
-observation.reason ||
-
 null,
 
 
 
 
-expectedOutcome:
 
-observation.expectedOutcome ||
 
-null,
+success:
+
+true,
+
 
 
 
@@ -585,27 +718,16 @@ null,
 
 result:
 
-failed
-
-?
-"failed"
-
-:
-"success",
+"learning",
 
 
 
 
-success:
-
-!failed,
 
 
+metrics:{},
 
 
-metrics:
-
-observation.metrics || {},
 
 
 
@@ -613,21 +735,18 @@ observation.metrics || {},
 
 lesson:
 
-failed
-
-?
-
-`${observation.action} did not create expected result`
-
-:
-
-`${observation.action} produced positive outcome`,
+"New information added to personal understanding",
 
 
 
 
 
-patternsFound:[],
+
+patternsFound:
+
+observation.signals || [],
+
+
 
 
 
@@ -635,15 +754,19 @@ patternsFound:[],
 
 futureBehavior:
 
-failed
+"Use this understanding in future decisions",
 
-?
 
-`Avoid repeating ${observation.action} without improvement`
 
-:
 
-`Consider repeating ${observation.action} in similar situations`,
+
+
+identityLearning:
+
+identity,
+
+
+
 
 
 
@@ -652,24 +775,15 @@ failed
 learning:{
 
 
-
 type:
 
-failed
-
-?
-"NEGATIVE_EXPERIENCE"
-
-:
-"POSITIVE_EXPERIENCE",
-
+"PERSONAL_LEARNING",
 
 
 
 confidenceImpact:
 
-failed ? -5 : 5
-
+1
 
 
 },
@@ -678,31 +792,42 @@ failed ? -5 : 5
 
 
 
+
+
+
 confidence:
+
 5,
 
 
 
 
+
 importance:
+
 "medium",
 
 
 
 
+
+
 source:
+
 "LOCAL_REFLECTION",
 
 
 
 
+
+
 reflectedAt:
+
 new Date()
 
 
 
 };
-
 
 
 }
@@ -715,9 +840,9 @@ new Date()
 
 
 
-// =================================
-// Memory priority
-// =================================
+// ===============================
+// Importance
+// ===============================
 
 
 findImportance(reflection){
@@ -726,7 +851,7 @@ findImportance(reflection){
 
 if(
 
-reflection.success === false
+reflection.personInsight
 
 ){
 
@@ -745,7 +870,6 @@ reflection.confidence >=8
 return "high";
 
 }
-
 
 
 

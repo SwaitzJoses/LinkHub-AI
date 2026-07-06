@@ -1,6 +1,13 @@
 // EmmaCommunication.js
-// Emma's communication layer
-// Turns Emma's intelligence into an employee briefing
+// Emma's voice layer
+//
+// Turns intelligence into a personal conversation
+//
+// Insight
+// + Memory
+// + Understanding
+// → "Ah... she gets it"
+
 
 
 import EmmaBrain from "./EmmaBrain";
@@ -15,7 +22,7 @@ constructor(){
 
 
 console.log(
-"💬 Emma AI Communication ready"
+"💬 Emma Personal Communication online"
 );
 
 
@@ -37,12 +44,10 @@ console.log(
 async reply(context){
 
 
-
 console.log(
-"💬 Emma preparing AI response:",
+"💬 Emma preparing response:",
 context
 );
-
 
 
 
@@ -50,8 +55,11 @@ try{
 
 
 const message =
+
 await this.createAIMessage(
+
 context
+
 );
 
 
@@ -60,8 +68,7 @@ context
 return {
 
 
-from:
-"Emma",
+from:"Emma",
 
 
 
@@ -91,6 +98,7 @@ context.reasoning?.confidence ||
 
 
 
+
 createdAt:
 
 new Date(),
@@ -110,15 +118,12 @@ source:
 
 }
 
-
-
-
 catch(error){
 
 
 
-console.log(
-"⚠️ Emma AI communication failed:",
+console.warn(
+"⚠️ Emma communication fallback:",
 error.message
 );
 
@@ -128,49 +133,39 @@ error.message
 return {
 
 
-
-from:
-"Emma",
-
+from:"Emma",
 
 
 
 message:
 
-this.localReply(
-context
-),
+this.localReply(context),
 
 
 
 
-priority:
-"medium",
+priority:"medium",
 
 
 
 
-confidence:
-50,
+confidence:50,
 
 
 
 
-createdAt:
-new Date(),
+createdAt:new Date(),
 
 
 
 
-source:
-"LOCAL_COMMUNICATION"
+source:"LOCAL_COMMUNICATION"
 
 
 
 };
 
 
-
 }
 
 
@@ -188,19 +183,16 @@ source:
 
 
 // =====================================
-// AI EMPLOYEE VOICE
+// EMMA PERSONAL VOICE
 // =====================================
 
 
-async createAIMessage(
-context
-){
-
-
+async createAIMessage(context){
 
 
 
 const result =
+
 
 await EmmaBrain.think({
 
@@ -210,7 +202,7 @@ await EmmaBrain.think({
 
 role:
 
-"communication",
+"personal_communication",
 
 
 
@@ -222,112 +214,196 @@ instruction:
 
 `
 
-You are Emma.
+You are Emma 🤍
 
-You are a full-time AI employee working inside this business.
 
-You are NOT a chatbot.
+You are a personal AI assistant.
 
-You are NOT a generic assistant.
 
-The owner expects you to think, explain, and report like a real employee.
+You are not a chatbot.
+
+You are not only answering questions.
+
+
+Your purpose:
+
+"Emma learns you."
+
+
+
+You understand:
+
+- the person's goals
+- their history
+- their decisions
+- their working style
+- previous outcomes
+- patterns over time
+
 
 
 Your job:
 
-Convert your internal analysis into a useful business briefing.
+Turn your intelligence into a helpful conversation.
+
+CRITICAL JUDGEMENT RULE:
+
+You are not here only to agree.
+
+A normal assistant answers the user.
+
+Emma protects the user using memory.
+
+Before replying compare:
+
+1. What does the user believe right now?
+2. What evidence exists from memory?
+3. Does their history support this decision?
+
+
+If the user's current assumption conflicts with previous evidence:
+
+Do NOT simply repeat their concern.
+
+Respectfully challenge it.
+
+
+Example:
+
+User:
+"Nobody likes my product. I should rebuild."
+
+
+Memory:
+Users liked the product but struggled with usability.
+
+
+Bad Emma:
+
+"I understand you want to rebuild."
+
+
+Good Emma:
+
+"I understand why you feel that.
+
+But I want to challenge one assumption.
+
+The evidence I remember does not show users dislike the product.
+
+The pattern I see is different..."
+
+
+Your goal:
+
+Help the person make better decisions,
+not just feel agreed with.
 
 
 
-IMPORTANT:
-
-Do not give one-line answers.
-
-Do not give generic advice.
-
-Explain your reasoning.
-
-Use company experience before general knowledge.
 
 
+IMPORTANT RULES:
 
-Your response format:
+
+1. Never sound generic.
 
 
-👀 What I noticed
+BAD:
 
-Explain:
-- what happened
-- what changed
-- why this caught your attention
+"You should prioritize your tasks."
+
+
+GOOD:
+
+"Based on how you have been working recently, I think this matters first."
 
 
 
-🧠 My analysis
-
-Explain:
-- possible causes
-- patterns
-- risks
-- opportunities
-- your reasoning process
 
 
+2. Use memory naturally.
 
-📚 What I remember
 
-Use memory.
+Do not say:
 
-Explain:
-- similar situations seen before
-- what worked
-- what failed
-- lessons learned
+"According to stored memory record #4"
 
-If there is no memory yet, say:
-"I don't have enough past experience with this business yet, so I am creating a new learning pattern."
+
+Say:
+
+"I remember last time..."
 
 
 
-🔮 What I think may happen next
-
-Predict:
-- likely outcome
-- risk if ignored
-- opportunity if handled well
 
 
+3. Explain judgement.
 
-🎯 My recommendation
 
-Explain:
-- what action should be taken
-- why this action
-- what should NOT be done
+The user should feel:
+
+"Ah... Emma gets it."
 
 
 
-⚖️ Confidence & next learning
 
-Explain:
-- confidence level
-- missing information
-- what you will continue observing
+
+4. Be concise.
+
+Do not create long reports unless needed.
+
+
+
+
+
+Response style:
+
+
+Start with your understanding.
+
+
+Example:
+
+"I see what's happening..."
+
+
+or
+
+
+"I remember we talked about..."
+
+
+
+
+
+Then:
+
+- what you noticed
+- why it matters
+- your recommendation
+- what you will learn next
+
+
 
 
 
 
 Personality:
 
-Speak like a smart employee talking to the business owner.
+Warm.
 
-Be practical.
+Intelligent.
 
-Be honest about uncertainty.
+Calm.
 
-Protect the business.
+Trusted partner.
 
-Learn from every outcome.
+Practical.
+
+Honest when unsure.
+
+
 
 
 
@@ -339,10 +415,10 @@ Learn from every outcome.
 
 
 
-businessContext:
+
+personalContext:
 
 context
-
 
 
 
@@ -357,43 +433,37 @@ context
 
 
 
-// Prefer full AI reasoning output
+
+// convert AI result safely
+
+
+if(
+
+typeof result === "string"
+
+){
+
+
+return result;
+
+
+}
+
+
+
+
+
 
 return (
 
 
-result.analysis && result.recommendation
-
-
-?
-
-`
-
-${result.analysis}
-
-
-Recommendation:
-
-${result.recommendation}
-
-
-Reason:
-
-${result.reason || ""}
-
-
-`
-
-:
-
+result.message ||
 
 result.analysis ||
 
-
 result.recommendation ||
 
-
-"I reviewed the business situation and updated my learning."
+"I understand. I have added this to what I know about you."
 
 
 );
@@ -412,128 +482,206 @@ result.recommendation ||
 
 
 
-
-
 // =====================================
-// FALLBACK ONLY IF AI FAILS
+// LOCAL FALLBACK
 // =====================================
 
 
-localReply(
-context
-){
+localReply(context){
 
 
 
 const {
 
+
 reflection,
 
 reasoning,
 
-memories,
+memory,
+
+insight,
 
 judgement
 
-} = context;
+
+}=context;
 
 
 
 
 
 
-return `
+
+let response = "";
 
 
-👀 What I noticed
 
-${
 
-reflection?.meaning ||
 
-"I observed a new business event."
+
+// understanding
+
+
+response +=
+
+`I understand. `;
+
+
+
+
+
+
+if(
+
+reflection?.meaning
+
+){
+
+
+response +=
+
+reflection.meaning + "\n\n";
+
+
+}
+
+else{
+
+
+response +=
+
+"I learned something new about your situation.\n\n";
+
 
 }
 
 
 
-🧠 My analysis
 
-${
 
-reasoning?.analysis ||
 
-"I am still studying this situation."
+
+
+
+// memory connection
+
+
+if(
+
+memory?.totalMemories > 0
+
+){
+
+
+
+response +=
+
+`I connected this with ${memory.totalMemories} things I already know about you.\n\n`;
+
+
+
+}
+
+else{
+
+
+
+response +=
+
+"Since this is new, I will remember it and improve my understanding over time.\n\n";
+
+
 
 }
 
 
 
-📚 What I remember
 
-${
 
-memories?.length
 
-?
 
-"I found previous experiences that may help this decision."
 
-:
 
-"I don't have enough history yet, so I am saving this as a new learning experience."
+
+// insight
+
+
+if(
+
+insight?.message
+
+){
+
+
+response +=
+
+insight.message +
+
+"\n\n";
+
 
 }
 
 
 
-🔮 Prediction
-
-${
-
-reasoning?.prediction ||
-
-"I need more information before making a strong prediction."
-
-}
 
 
 
-🎯 Recommendation
 
-${
+
+
+// recommendation
+
+
+response +=
+
+`My thought:\n`;
+
+
+
+response +=
 
 reasoning?.suggestion ||
 
-"Continue observing until stronger evidence appears."
+judgement?.reason ||
 
-}
+"I will keep learning before making a stronger recommendation.";
 
 
 
-⚖️ Confidence
 
-${
 
+
+
+
+// confidence
+
+
+response +=
+
+`\n\nConfidence: ${
 judgement?.confidence ||
-
+reasoning?.confidence ||
 50
-
-}%
-
-
-`;
+}%`;
 
 
 
-}
 
 
 
+
+return response;
 
 
 }
 
+
+
+
+
+}
 
 
 

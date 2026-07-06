@@ -1,6 +1,15 @@
 // EmmaObserver.js
 // Emma's eyes
-// Understands business events and converts them into signals
+//
+// Observes user's world
+// Converts events into signals
+//
+// World
+// → Signals
+// → Reflection
+// → Memory
+// → Reasoning
+
 
 
 class EmmaObserver {
@@ -9,7 +18,7 @@ class EmmaObserver {
 constructor(){
 
 console.log(
-"👀 Emma Intelligent Observer ready"
+"👀 Emma Personal Observer online"
 );
 
 }
@@ -27,6 +36,8 @@ console.log(
 
 async observe({
 
+user,
+
 business,
 
 source,
@@ -42,7 +53,6 @@ history=[]
 }){
 
 
-
 console.log(
 "👀 Emma observing:",
 {
@@ -56,23 +66,20 @@ message
 
 
 
-
 const analysis =
+
 analyzeSignals({
 
-data:
-data || {},
-
+data:data || {},
 
 message:
-message || data?.message || "",
-
+message ||
+data?.message ||
+"",
 
 history
 
-
 });
-
 
 
 
@@ -82,6 +89,21 @@ return {
 
 
 
+// new Emma identity
+
+userId:
+
+user?.id ||
+
+data?.userId ||
+
+null,
+
+
+
+
+// keep old support
+
 businessId:
 
 business?.id ||
@@ -90,7 +112,8 @@ business?.businessId ||
 
 data?.businessId ||
 
-"unknown",
+null,
+
 
 
 
@@ -104,15 +127,13 @@ source ||
 
 
 
-
 eventType:
 
 eventType ||
 
 data?.type ||
 
-"BUSINESS_ACTIVITY",
-
+"LIFE_EVENT",
 
 
 
@@ -120,18 +141,11 @@ data?.type ||
 
 raw:{
 
+data:data || {},
 
-data:
-data || {},
-
-
-message:
-message || ""
-
+message:message || ""
 
 },
-
-
 
 
 
@@ -145,13 +159,9 @@ analysis.signals,
 
 
 
-
-
 importance:
 
 analysis.importance,
-
-
 
 
 
@@ -165,12 +175,9 @@ analysis.summary,
 
 
 
-
-
 createdAt:
 
 new Date()
-
 
 
 };
@@ -191,10 +198,8 @@ new Date()
 
 
 
-
-
 // ==================================
-// Analyze everything Emma observes
+// Analyze everything Emma sees
 // ==================================
 
 
@@ -209,12 +214,9 @@ history
 }){
 
 
-
 let signals=[];
 
-
 let importance=3;
-
 
 
 
@@ -233,15 +235,52 @@ message
 
 
 
+// PERSONAL INTELLIGENCE
 
-
-
-detectTextMeaning(
+detectGoals(
 text,
 signals
 );
 
 
+detectDecisions(
+text,
+signals
+);
+
+
+detectWorkStyle(
+text,
+signals
+);
+
+
+detectEmotions(
+text,
+signals
+);
+
+
+detectPriorities(
+text,
+signals
+);
+
+
+detectRelationships(
+text,
+signals
+);
+
+
+
+
+// BUSINESS INTELLIGENCE
+
+detectBusinessText(
+text,
+signals
+);
 
 
 detectGrowth(
@@ -251,22 +290,10 @@ signals
 );
 
 
-
-
 detectProblems(
 data,
 signals
 );
-
-
-
-
-detectCustomerSignals(
-data,
-signals
-);
-
-
 
 
 detectOpportunities(
@@ -278,19 +305,20 @@ signals
 
 
 
-
-
 importance +=
 
 signals.length * 2;
 
 
 
-
 if(
 
 signals.some(
-s=>s.type==="risk"
+
+s =>
+
+s.type==="risk"
+
 )
 
 ){
@@ -298,9 +326,6 @@ s=>s.type==="risk"
 importance +=3;
 
 }
-
-
-
 
 
 
@@ -316,29 +341,19 @@ importance,
 
 
 
-
-
-
 return {
-
 
 signals,
 
-
 importance,
-
 
 summary:
 
-createSummary(
-signals
-)
-
+createSummary(signals)
 
 };
 
 
-
 }
 
 
@@ -351,62 +366,328 @@ signals
 
 
 
-// ==================================
-// Understand human/business language
-// ==================================
+// ===============================
+// PERSONAL UNDERSTANDING
+// ===============================
 
 
-function detectTextMeaning(
-
-text,
-
-signals
-
-){
-
-
-
-
-
-
-// SALES PROBLEMS
+function detectGoals(text,signals){
 
 
 if(
 
-text.includes("sales are lower") ||
+text.includes("goal") ||
+
+text.includes("want to") ||
+
+text.includes("trying to") ||
+
+text.includes("dream")
+
+){
+
+
+signals.push({
+
+type:"identity",
+
+area:"goal",
+
+message:
+"User goal detected"
+
+});
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+function detectDecisions(text,signals){
+
+
+if(
+
+text.includes("decided") ||
+
+text.includes("should i") ||
+
+text.includes("thinking about") ||
+
+text.includes("choice")
+
+){
+
+
+signals.push({
+
+type:"decision",
+
+message:
+"Important decision moment detected"
+
+});
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+function detectWorkStyle(text,signals){
+
+
+if(
+
+text.includes("fast") ||
+
+text.includes("quick") ||
+
+text.includes("build") ||
+
+text.includes("ship")
+
+){
+
+
+signals.push({
+
+type:"pattern",
+
+area:"working_style",
+
+message:
+"User execution style pattern detected"
+
+});
+
+
+}
+
+
+
+if(
+
+text.includes("tired") ||
+
+text.includes("exhausted") ||
+
+text.includes("burn")
+
+){
+
+
+signals.push({
+
+type:"risk",
+
+area:"energy",
+
+message:
+"Energy or workload concern detected"
+
+});
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+function detectEmotions(text,signals){
+
+
+
+if(
+
+text.includes("excited") ||
+
+text.includes("happy") ||
+
+text.includes("love")
+
+){
+
+
+signals.push({
+
+type:"emotion",
+
+message:
+"Positive emotional signal detected"
+
+});
+
+
+}
+
+
+
+
+if(
+
+text.includes("confused") ||
+
+text.includes("stuck") ||
+
+text.includes("worried")
+
+){
+
+
+signals.push({
+
+type:"emotion",
+
+message:
+"Challenge or uncertainty detected"
+
+});
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+function detectPriorities(text,signals){
+
+
+
+if(
+
+text.includes("important") ||
+
+text.includes("focus") ||
+
+text.includes("priority")
+
+){
+
+
+signals.push({
+
+type:"priority",
+
+message:
+"Priority signal detected"
+
+});
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function detectRelationships(text,signals){
+
+
+if(
+
+text.includes("client") ||
+
+text.includes("customer") ||
+
+text.includes("team") ||
+
+text.includes("founder")
+
+){
+
+
+signals.push({
+
+type:"relationship",
+
+message:
+"Important person or relationship detected"
+
+});
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// BUSINESS SIGNALS
+// ===============================
+
+
+function detectBusinessText(text,signals){
+
+
+
+if(
 
 text.includes("sales dropped") ||
 
-text.includes("sales down") ||
+text.includes("revenue down") ||
 
-text.includes("less sales") ||
-
-text.includes("revenue dropped") ||
-
-text.includes("decrease")
+text.includes("less sales")
 
 ){
 
 
-
 signals.push({
 
+type:"risk",
 
-type:
-"risk",
-
-
-area:
-"sales",
-
+area:"sales",
 
 message:
-"Sales performance decreased compared to normal"
-
+"Business performance issue detected"
 
 });
-
 
 
 }
@@ -415,163 +696,65 @@ message:
 
 
 
-
-
-
-
-
-// CUSTOMER LOSS
-
-
 if(
-
-text.includes("customers reduced") ||
-
-text.includes("less customers") ||
-
-text.includes("no customers") ||
-
-text.includes("customer drop")
-
-){
-
-
-
-signals.push({
-
-
-type:
-"risk",
-
-
-area:
-"customers",
-
-
-message:
-"Customer activity appears to be reducing"
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// GROWTH
-
-
-if(
-
-text.includes("increased") ||
-
-text.includes("more orders") ||
 
 text.includes("growth") ||
 
-text.includes("improved")
+text.includes("more orders") ||
+
+text.includes("increased")
 
 ){
 
 
-
 signals.push({
 
-
-type:
-"growth",
-
+type:"growth",
 
 message:
-"Positive business growth detected"
-
+"Growth signal detected"
 
 });
 
 
-
 }
 
-
-
-
-
-
-
-
-
-
-// OPPORTUNITY
 
 
 if(
 
 text.includes("interested") ||
 
-text.includes("asking") ||
-
-text.includes("many enquiries")
+text.includes("enquiry")
 
 ){
-
 
 
 signals.push({
 
-
-type:
-"opportunity",
-
+type:"opportunity",
 
 message:
-"Customer interest opportunity detected"
-
+"Opportunity detected"
 
 });
 
 
+}
+
+
 
 }
 
 
 
 
-}
 
 
 
 
 
-
-
-
-
-
-
-// ==================================
-// Numeric growth detection
-// ==================================
-
-
-function detectGrowth(
-
-data,
-
-history,
-
-signals
-
-){
-
+function detectGrowth(data,history,signals){
 
 
 if(
@@ -588,13 +771,9 @@ return;
 
 
 
-
 const previous =
 
-history[
-history.length-1
-];
-
+history[history.length-1];
 
 
 
@@ -612,54 +791,30 @@ previous.views * 2
 ){
 
 
-
 signals.push({
 
-
-type:
-"growth",
-
+type:"growth",
 
 message:
-"Traffic increased significantly"
-
+"Strong increase detected"
 
 });
 
 
+}
+
 
 }
 
 
 
-}
 
 
 
 
 
 
-
-
-
-
-
-// ==================================
-// Risk detection
-// ==================================
-
-
-function detectProblems(
-
-data,
-
-signals
-
-){
-
-
-
-
+function detectProblems(data,signals){
 
 
 
@@ -674,32 +829,17 @@ data.currentSales < data.previousSales
 ){
 
 
-
 signals.push({
 
-
-type:
-"risk",
-
-
-area:
-"sales",
-
+type:"risk",
 
 message:
-`Sales reduced from ${data.previousSales} to ${data.currentSales}`
-
+"Numbers show decline"
 
 });
 
 
-
 }
-
-
-
-
-
 
 
 
@@ -708,65 +848,22 @@ if(
 
 data.views > 100 &&
 
-data.orders === 0
+data.orders===0
 
 ){
-
 
 
 signals.push({
 
-
-type:
-"risk",
-
+type:"risk",
 
 message:
-"Many people viewed but nobody purchased"
-
+"Attention exists but conversion missing"
 
 });
 
 
-
 }
-
-
-
-
-
-
-
-
-
-if(
-
-data.messages > 20 &&
-
-data.sales === 0
-
-){
-
-
-
-signals.push({
-
-
-type:
-"risk",
-
-
-message:
-"Customers show interest but purchases are missing"
-
-
-});
-
-
-
-}
-
-
 
 
 }
@@ -780,111 +877,7 @@ message:
 
 
 
-
-// ==================================
-// Customer patterns
-// ==================================
-
-
-function detectCustomerSignals(
-
-data,
-
-signals
-
-){
-
-
-
-
-
-if(
-
-data.repeatCustomers > 5
-
-){
-
-
-
-signals.push({
-
-
-type:
-"pattern",
-
-
-message:
-"Returning customer pattern detected"
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-if(
-
-data.searches
-
-){
-
-
-
-signals.push({
-
-
-type:
-"demand",
-
-
-message:
-"Customers are searching for products"
-
-
-});
-
-
-
-}
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// ==================================
-// Opportunities
-// ==================================
-
-
-function detectOpportunities(
-
-data,
-
-signals
-
-){
-
-
-
+function detectOpportunities(data,signals){
 
 
 
@@ -895,26 +888,17 @@ data.productViews > 100
 ){
 
 
-
 signals.push({
 
-
-type:
-"opportunity",
-
+type:"opportunity",
 
 message:
-"A product is getting strong customer attention"
-
+"High interest area detected"
 
 });
 
 
-
 }
-
-
-
 
 
 
@@ -926,22 +910,16 @@ data.engagementRate > 10
 ){
 
 
-
 signals.push({
 
-
-type:
-"opportunity",
-
+type:"opportunity",
 
 message:
-"Marketing content is performing well"
-
+"Strong engagement detected"
 
 });
 
 
-
 }
 
 
@@ -956,30 +934,20 @@ message:
 
 
 
-
-// ==================================
+// ===============================
 // Summary
-// ==================================
+// ===============================
 
 
-function createSummary(
-
-signals
-
-){
+function createSummary(signals){
 
 
-
-if(
-
-signals.length===0
-
-){
+if(signals.length===0){
 
 
 return (
 
-"No strong pattern yet. Continue observing."
+"No strong signal yet. Emma continues learning."
 
 );
 
@@ -988,25 +956,18 @@ return (
 
 
 
-
-
-
-
 return signals
 
 .map(
 
-signal => signal.message
+s=>s.message
 
 )
 
 .join(". ");
 
 
-
 }
-
-
 
 
 

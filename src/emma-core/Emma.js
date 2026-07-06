@@ -1,9 +1,19 @@
 // Emma.js
 // Emma's central nervous system
-// Coordinates all Emma intelligence layers
+//
+// World
+// → Observe
+// → Understand
+// → Remember
+// → Think
+// → Judge
+// → Help
+// → Learn
+
 
 import EmmaBrain
 from "./EmmaBrain";
+
 
 import EmmaConnectorManager
 from "./connectors/EmmaConnectorManager";
@@ -62,16 +72,15 @@ from "./EmmaCapabilities";
 
 
 
-
-
 class Emma {
+
 
 
 constructor(){
 
 
 console.log(
-"🧠 Emma AI Employee waking up..."
+"🤍 Emma waking up..."
 );
 
 
@@ -86,8 +95,9 @@ new EmmaConnectorManager();
 
 
 
+
 // ======================
-// Translation
+// Translator
 // ======================
 
 this.translator =
@@ -97,12 +107,12 @@ new UniversalTranslator();
 
 
 // ======================
-// Intelligence
+// Brain organs
 // ======================
-
 
 this.observer =
 new EmmaObserver();
+
 
 
 this.reflection =
@@ -111,12 +121,15 @@ EmmaBrain.ai
 );
 
 
+
 this.memory =
 new EmmaMemory();
 
 
+
 this.reasoning =
 new EmmaReasoning();
+
 
 
 this.judgement =
@@ -125,14 +138,13 @@ new EmmaJudgement();
 
 
 
-
 // ======================
-// Communication
+// Human layer
 // ======================
-
 
 this.insight =
 new EmmaInsight();
+
 
 
 this.communication =
@@ -141,22 +153,23 @@ new EmmaCommunication();
 
 
 
-
 // ======================
-// Actions + Learning
+// Hands + Growth
 // ======================
-
 
 this.actionExecutor =
 EmmaActionExecutor;
+
 
 
 this.outcome =
 EmmaOutcome;
 
 
+
 this.learning =
 EmmaLearningEngine;
+
 
 
 this.capabilities =
@@ -164,8 +177,9 @@ EmmaCapabilities;
 
 
 
+
 console.log(
-"✅ Emma fully awake"
+"✅ Emma is ready to learn"
 );
 
 
@@ -179,59 +193,48 @@ console.log(
 
 
 
-
-
 // ======================================
-// Universal connector entry
+// External world entry
 // ======================================
 
 
 async experience(
 source,
-businessData
+data
 ){
 
 
 
 console.log(
-"🌎 Signal received",
+"🌎 Emma received experience",
 {
 source,
-businessData
+data
 }
 );
+
 
 
 
 const event =
+
 this.connectors.receive(
+
 source,
-businessData
+
+data
+
 );
 
 
 
-return await this.think(event);
 
+return await this.think(
 
-}
+event
 
-
-
-
-
-
-
-
-
-async analyzeLinkHub(
-businessData
-){
-
-return await this.experience(
-"LINKHUB",
-businessData
 );
+
 
 }
 
@@ -244,7 +247,7 @@ businessData
 
 
 // ======================================
-// MAIN EMMA LIFE LOOP
+// MAIN LIFE LOOP
 // ======================================
 
 
@@ -253,8 +256,9 @@ async think(input){
 
 
 console.log(
-"🤖 Emma started thinking..."
+"🤍 Emma thinking..."
 );
+
 
 
 
@@ -264,13 +268,16 @@ try{
 
 
 
-// 1. Translate
 
+
+// 1. Understand format
 
 const translatedEvent =
 
 await this.translator.translate(
+
 input
+
 );
 
 
@@ -279,13 +286,16 @@ input
 
 
 
-// 2. Observe
 
+
+// 2. Observe world
 
 const observation =
 
 await this.observer.observe(
+
 translatedEvent
+
 );
 
 
@@ -294,13 +304,17 @@ translatedEvent
 
 
 
-// 3. Reflect
 
+
+
+// 3. Reflect meaning
 
 const reflection =
 
 await this.reflection.reflect(
+
 observation
+
 );
 
 
@@ -309,43 +323,54 @@ observation
 
 
 
-// 4. Retrieve relevant memories
-
-
-let memories;
 
 
 
-if(this.memory.getRelevantMemories){
+// 4. Remember first
 
 
-memories =
+const memories =
 
-await this.memory.getRelevantMemories(
+await this.memory.recall({
+
+
+
+userId:
+
+reflection.userId ||
+
+observation.userId ||
+
+input.userId,
+
+
+
+businessId:
+
+reflection.businessId ||
+
+observation.businessId ||
+
+input.businessId,
+
+
+
+context:
+
 reflection
-);
 
 
-}
 
-else{
-
-
-memories =
-
-await this.memory.recall(
-reflection
-);
+});
 
 
-}
 
 
 
 
 
 console.log(
-"🧠 Relevant memories:",
+"🧠 Emma memories:",
 memories
 );
 
@@ -356,8 +381,8 @@ memories
 
 
 
-// 5. Reason with experience
 
+// 5. Reason using identity
 
 const reasoning =
 
@@ -375,8 +400,10 @@ memories
 
 
 
-// 6. Understand abilities
 
+
+
+// 6. Available abilities
 
 const capabilities =
 
@@ -389,8 +416,9 @@ this.capabilities.getSkills();
 
 
 
-// 7. Judge best decision
 
+
+// 7. Apply wisdom
 
 const judgement =
 
@@ -411,13 +439,18 @@ capabilities
 
 
 
-// 8. Create insight
 
+
+// 8. Create understanding
 
 const insight =
 
 await this.insight.create(
-judgement
+
+judgement,
+
+memories
+
 );
 
 
@@ -427,13 +460,16 @@ judgement
 
 
 
-// 9. Act
 
+
+// 9. Take helpful action
 
 const actionResult =
 
 await this.actionExecutor.execute(
+
 judgement
+
 );
 
 
@@ -443,8 +479,9 @@ judgement
 
 
 
-// 10. Measure outcome
 
+
+// 10. Learn outcome
 
 const outcome =
 
@@ -464,29 +501,31 @@ actionResult
 
 
 
-// 11. Learn
 
+// 11. Deep learning
 
 const learning =
 
 await this.learning.learn(
 
-
 {
 
-
 ...outcome,
+
+
+userId:
+
+reflection.userId ||
+
+observation.userId,
+
 
 
 businessId:
 
 reflection.businessId ||
 
-observation.businessId ||
-
-translatedEvent.businessId ||
-
-input.businessId
+observation.businessId
 
 
 },
@@ -504,25 +543,23 @@ memories
 
 
 
-// 12. Store experience
+
+
+// 12. Store new wisdom
 
 
 await this.memory.remember({
 
 
-observation,
 
+userId:
 
-reasoning,
+reflection.userId ||
 
+observation.userId ||
 
-judgement,
+input.userId,
 
-
-outcome,
-
-
-learning,
 
 
 businessId:
@@ -531,9 +568,50 @@ reflection.businessId ||
 
 observation.businessId ||
 
-translatedEvent.businessId ||
+input.businessId,
 
-input.businessId
+
+
+situation:
+
+reflection.situation,
+
+
+
+context:
+
+reflection,
+
+
+
+action:
+
+judgement.action,
+
+
+
+success:
+
+outcome.success,
+
+
+
+result:
+
+outcome.result,
+
+
+
+lesson:
+
+learning.lesson,
+
+
+
+patternsFound:
+
+reflection.patternsFound
+
 
 
 });
@@ -545,7 +623,7 @@ input.businessId
 
 
 console.log(
-"💾 Experience stored"
+"💾 Emma learned something new"
 );
 
 
@@ -556,12 +634,13 @@ console.log(
 
 
 
-// 13. Human communication
+// 13. Talk as Emma
 
 
-const message =
+const response =
 
 await this.communication.reply({
+
 
 
 observation,
@@ -570,16 +649,18 @@ observation,
 reflection,
 
 
+memory:
+
 memories,
-
-
-insight,
 
 
 reasoning,
 
 
 judgement,
+
+
+insight,
 
 
 actionResult,
@@ -591,6 +672,7 @@ outcome,
 learning
 
 
+
 });
 
 
@@ -599,15 +681,8 @@ learning
 
 
 
-console.log(
-"💬 Emma response:",
-message
-);
 
-
-
-
-return message;
+return response;
 
 
 
@@ -628,27 +703,30 @@ error
 
 
 
+
 return {
 
 
-from:
-"Emma",
+from:"Emma",
+
 
 
 message:
-"I could not fully understand this situation yet. I need more information before making a confident decision.",
+
+"I am still learning this context. I need a little more information before I can make a confident judgement.",
 
 
-priority:
-"low",
+
+priority:"low",
 
 
-confidence:
-20,
+
+confidence:20,
 
 
-error:
-error.message
+
+error:error.message
+
 
 
 };
@@ -672,121 +750,50 @@ error.message
 
 
 // ======================================
-// Owner conversation
+// Direct conversation
 // ======================================
 
 
 async ask(
-businessId,
-question
+userId,
+message
 ){
 
 
 
 console.log(
-"👤 Owner asked:",
-question
+"👤 Talking with Emma:",
+message
 );
 
 
 
 
-const memories =
-
-this.memory.getRelevantMemories
-
-?
-
-await this.memory.getRelevantMemories({
-
-businessId,
-
-question
-
-})
-
-
-:
-
-await this.memory.recall({
-
-businessId,
-
-question
-
-});
+return await this.think({
 
 
 
+source:
+
+"conversation",
 
 
 
-
-const reasoning =
-
-await this.reasoning.think(
-
-{
-
-businessId,
-
-meaning:
-question,
-
-importance:
-"medium"
-
-},
-
-
-memories
-
-
-);
+userId,
 
 
 
+message,
 
 
 
-const judgement =
+type:
 
-await this.judgement.judge(
+"USER_CONVERSATION"
 
-reasoning,
-
-memories,
-
-this.capabilities.getSkills()
-
-);
-
-
-
-
-
-
-
-return await this.communication.reply({
-
-
-memories,
-
-
-reasoning,
-
-
-judgement,
-
-
-insight:{
-message:
-question
-}
 
 
 });
-
 
 
 
@@ -798,45 +805,129 @@ question
 
 
 
+
+
+
+
+// ======================================
+// Compatibility
+// ======================================
+
+
+async analyzeLinkHub(
+businessData
+){
+
+
+return await this.experience(
+
+"LINKHUB",
+
+businessData
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// Emma status
+// ======================================
 
 
 status(){
 
 
+
 return {
 
 
+
 state:
+
 "ACTIVE",
 
 
-brain:
-[
+
+
+identity:
+
+"AI Personal Assistant that learns you",
+
+
+
+
+
+brain:[
+
+
 "Observer",
+
+"Reflection",
+
 "Memory",
+
 "Reasoning",
+
 "Judgement",
+
+"Insight",
+
 "Communication",
-"Learning"
+
+"Action",
+
+"Outcome Learning"
+
+
 ],
 
 
+
+
+
+
 connectors:
+
 this.connectors.getConnectors(),
 
 
+
+
+
+
 skills:
+
 this.capabilities.getSkills(),
 
 
+
+
+
+
 checkedAt:
+
 new Date()
+
 
 
 };
 
 
+
 }
+
 
 
 

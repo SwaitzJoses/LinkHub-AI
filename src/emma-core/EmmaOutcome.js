@@ -1,7 +1,12 @@
 // EmmaOutcome.js
 // Emma's experience engine
-// Converts actions into wisdom
-// Action → Result → Understanding → Lesson → Memory
+//
+// Action
+// → Result
+// → Understanding
+// → Personal Learning
+// → Memory
+
 
 
 class EmmaOutcome {
@@ -9,14 +14,22 @@ class EmmaOutcome {
 
 constructor(){
 
+
 console.log(
-"📊 Emma Outcome Learning ready"
+"📊 Emma Personal Outcome Learning online"
 );
 
 
 this.outcomes=[];
 
+
 }
+
+
+
+
+
+
 
 
 
@@ -32,7 +45,7 @@ result
 
 
 console.log(
-"📊 Emma analyzing outcome:",
+"📊 Emma studying outcome:",
 {
 action,
 result
@@ -41,86 +54,234 @@ result
 
 
 
-// Measure business impact
+
 
 const impact =
+
 this.calculateImpact(
+
 result?.metrics || {}
+
 );
 
 
 
-// Understand why it happened
+
+
 
 const analysis =
+
 this.analyzeReason(
+
 action,
+
 result,
+
 impact
+
 );
 
 
 
-// Convert into lesson
+
+
+
+const personalLearning =
+
+this.learnAboutPerson(
+
+action,
+
+result
+
+);
+
+
+
+
+
 
 const learning =
+
 this.createLearning(
+
 action,
+
 result,
+
 impact,
-analysis
+
+analysis,
+
+personalLearning
+
 );
 
 
 
 
-// Create experience memory
+
+
+
+
 
 const outcome={
 
 
+
 outcomeId:
+
 crypto.randomUUID(),
 
 
+
+
+
+
+userId:
+
+action?.userId ||
+
+result?.userId ||
+
+null,
+
+
+
+
+
+
+businessId:
+
+action?.businessId ||
+
+result?.businessId ||
+
+null,
+
+
+
+
+
+
+
 action:
+
 action?.action,
 
 
+
+
+
+
 success:
-result?.success || false,
+
+result?.success ||
+
+false,
+
+
+
+
+
 
 
 impact,
+
+
+
+
+
 
 
 analysis,
 
 
+
+
+
+
+
+
+// ⭐ Emma learns user
+
+personalLearning,
+
+
+
+
+
+
+
+
 originalDecision:
+
 action,
 
 
+
+
+
+
+
 result:
-result?.result || result,
+
+result?.result ||
+
+result,
+
+
+
+
+
+
 
 
 learning,
 
 
+
+
+
+
+
+
+
 memoryTags:
+
 this.createMemoryTags(
+
 action,
+
 impact,
-learning
+
+learning,
+
+personalLearning
+
 ),
+
+
+
+
+
+
+
 
 
 memoryReady:true,
 
 
+
+
+
+
+
+
 createdAt:
+
 new Date()
+
 
 
 };
@@ -129,16 +290,28 @@ new Date()
 
 
 
+
+
 this.outcomes.push(
+
 outcome
+
 );
+
+
+
+
 
 
 
 console.log(
-"🧠 Emma gained new experience:",
+"🧠 Emma became smarter:",
 outcome
 );
+
+
+
+
 
 
 
@@ -155,8 +328,196 @@ return outcome;
 
 
 
+
+
 // =============================
-// Understand WHY
+// Learn about person
+// =============================
+
+
+learnAboutPerson(
+action,
+result
+){
+
+
+
+const text =
+
+JSON.stringify({
+
+action,
+
+result
+
+})
+.toLowerCase();
+
+
+
+
+
+let learning={
+
+
+
+preferences:[],
+
+
+workingStyle:[],
+
+
+decisionPatterns:[],
+
+
+futureSupport:[]
+
+
+
+};
+
+
+
+
+
+
+
+if(
+
+text.includes("approved") ||
+
+text.includes("liked")
+
+){
+
+
+
+learning.preferences.push(
+
+"User responded positively to this approach"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+if(
+
+text.includes("fast") ||
+
+text.includes("quick")
+
+){
+
+
+
+learning.workingStyle.push(
+
+"User prefers fast movement"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+
+text.includes("delayed") ||
+
+text.includes("ignored")
+
+){
+
+
+
+learning.decisionPatterns.push(
+
+"User may need better timing or reminders"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(result?.success){
+
+
+
+learning.futureSupport.push(
+
+"Similar help may be useful again"
+
+);
+
+
+
+}
+
+else{
+
+
+
+learning.futureSupport.push(
+
+"Adjust approach next time"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return learning;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =============================
+// Understand why outcome happened
 // =============================
 
 
@@ -168,31 +529,53 @@ impact
 
 
 
+
+
 if(
-result.success &&
+
+result?.success &&
+
 impact !== "negative"
+
 ){
 
 
+
 return {
 
 
+
 reason:
-"Action created positive business movement",
+
+"Action created a positive result",
+
+
 
 
 pattern:
+
 "repeat_possible",
 
 
+
+
 futureUse:
-"Use when similar conditions appear"
+
+"Use when similar personal context appears"
+
 
 
 };
 
 
+
 }
+
+
+
+
+
+
 
 
 
@@ -200,23 +583,34 @@ futureUse:
 return {
 
 
+
 reason:
-"Outcome did not meet expectations",
+
+"Outcome did not fully achieve goal",
+
+
 
 
 pattern:
-"avoid_or_improve",
+
+"adjust_next_time",
+
+
 
 
 futureUse:
-"Study before repeating"
+
+"Improve before repeating"
+
 
 
 };
 
 
 
+
 }
+
 
 
 
@@ -228,68 +622,141 @@ futureUse:
 
 
 // =============================
-// Convert result into knowledge
+// Create memory lesson
 // =============================
 
 
 createLearning(
+
 action,
+
 result,
+
 impact,
-analysis
+
+analysis,
+
+personalLearning
+
 ){
+
+
+
+
 
 
 
 if(
-result.success &&
+
+result?.success &&
+
 impact !== "negative"
+
 ){
 
 
 
+
+
 return {
 
 
+
 type:
+
 "POSITIVE_EXPERIENCE",
 
 
+
+
+
+
+
 confidenceImpact:
+
 this.confidenceChange(
+
 impact
+
 ),
+
+
+
+
+
+
 
 
 lesson:
+
 this.successLesson(
+
 action,
+
 impact,
+
 analysis
+
 ),
+
+
+
+
+
+
+
+
+
+personalLesson:
+
+personalLearning,
+
+
+
+
+
+
+
 
 
 rememberFor:[
 
-action.action,
+
+
+action?.action,
 
 "worked",
 
-"successful_strategy",
-
 impact
+
+
 
 ],
 
 
+
+
+
+
+
+
 futureRule:
-"Prefer this approach when similar situations happen"
+
+"Use this approach when a similar situation appears"
+
+
 
 
 };
 
 
+
+
+
 }
+
+
+
 
 
 
@@ -300,41 +767,92 @@ futureRule:
 return {
 
 
+
+
 type:
-"NEGATIVE_EXPERIENCE",
+
+"LEARNING_EXPERIENCE",
+
+
+
+
+
 
 
 confidenceImpact:
--15,
+
+-5,
+
+
+
+
+
+
 
 
 lesson:
+
 this.failureLesson(
+
 action,
+
 analysis
+
 ),
+
+
+
+
+
+
+
+
+personalLesson:
+
+personalLearning,
+
+
+
+
+
+
 
 
 rememberFor:[
 
-action.action,
 
-"failed",
 
-"avoid_repetition"
+action?.action,
+
+
+"needs_adjustment"
+
+
 
 ],
 
 
+
+
+
+
+
+
+
 futureRule:
-"Do not repeat unless strategy changes"
+
+"Adapt strategy before trying again"
+
+
 
 
 };
 
 
 
+
 }
+
 
 
 
@@ -346,7 +864,7 @@ futureRule:
 
 
 // =============================
-// Success lesson creator
+// Success lesson
 // =============================
 
 
@@ -357,15 +875,17 @@ analysis
 ){
 
 
+
 return (
 
-`${action.action} created ${impact} impact. ` +
+`${action?.action} created ${impact} impact. ` +
 
 `${analysis.reason}. ` +
 
-"Emma should reuse this experience intelligently."
+"Emma should remember why this helped."
 
 );
+
 
 
 }
@@ -378,8 +898,9 @@ return (
 
 
 
+
 // =============================
-// Failure lesson creator
+// Failure lesson
 // =============================
 
 
@@ -389,17 +910,19 @@ analysis
 ){
 
 
+
 return (
 
-`${action.action} was not successful. ` +
+`${action?.action} needs improvement. ` +
 
 `${analysis.reason}. ` +
 
-"Emma should avoid repeating this mistake."
+"Emma should adjust next time."
 
 );
 
 
+
 }
 
 
@@ -411,52 +934,89 @@ return (
 
 
 
+
 // =============================
-// Business impact measurement
+// Impact measurement
 // =============================
 
 
-calculateImpact(
-metrics={}
-){
+calculateImpact(metrics={}){
+
+
 
 
 
 if(
+
 metrics.revenueIncrease > 0 ||
+
 metrics.salesIncrease > 0 ||
-metrics.leadsGenerated >= 5
+
+metrics.goalCompleted
+
 ){
+
+
 
 return "high";
 
+
+
 }
 
 
 
 
+
+
+
+
 if(
-metrics.viewsIncrease ||
-metrics.engagementIncrease ||
-metrics.clicksIncrease
+
+metrics.timeSaved ||
+
+metrics.progress ||
+
+metrics.engagementIncrease
+
 ){
+
+
 
 return "medium";
 
+
+
 }
+
+
+
+
+
 
 
 
 
 if(
-metrics.customerComplaints > 0 ||
-metrics.loss > 0 ||
-metrics.unsubscribes > 0
+
+metrics.problem ||
+
+metrics.loss
+
 ){
+
+
 
 return "negative";
 
+
+
 }
+
+
+
+
+
 
 
 
@@ -464,6 +1024,7 @@ return "negative";
 return "low";
 
 
+
 }
 
 
@@ -475,19 +1036,18 @@ return "low";
 
 
 
+
 // =============================
-// Confidence evolution
+// Confidence growth
 // =============================
 
 
-confidenceChange(
-impact
-){
+confidenceChange(impact){
 
 
-switch(
-impact
-){
+
+switch(impact){
+
 
 
 case "high":
@@ -495,9 +1055,11 @@ case "high":
 return 20;
 
 
+
 case "medium":
 
 return 10;
+
 
 
 case "low":
@@ -505,9 +1067,11 @@ case "low":
 return 5;
 
 
+
 case "negative":
 
-return -20;
+return -10;
+
 
 
 default:
@@ -515,10 +1079,13 @@ default:
 return 0;
 
 
+
 }
 
 
+
 }
+
 
 
 
@@ -530,29 +1097,51 @@ return 0;
 
 
 // =============================
-// Create searchable memory tags
+// Search tags
 // =============================
 
 
 createMemoryTags(
+
 action,
+
 impact,
-learning
+
+learning,
+
+personal
+
 ){
+
 
 
 return [
 
+
+
 action?.action,
+
 
 impact,
 
+
 learning.type,
 
-...learning.rememberFor
+
+...learning.rememberFor,
+
+
+...personal.preferences,
+
+
+...personal.workingStyle
+
+
 
 ]
+
 .filter(Boolean);
+
 
 
 }
@@ -567,13 +1156,15 @@ learning.type,
 
 
 // =============================
-// Retrieve all experience
+// History
 // =============================
 
 
 getHistory(){
 
+
 return this.outcomes;
+
 
 }
 
@@ -584,25 +1175,24 @@ return this.outcomes;
 
 
 
-
-
-// =============================
-// Successful patterns
-// =============================
 
 
 getSuccessfulActions(){
 
 
-return this.outcomes.filter(
-item =>
 
-item.learning.type ===
+return this.outcomes.filter(
+
+x =>
+
+x.learning.type ===
+
 "POSITIVE_EXPERIENCE"
 
 );
 
 
+
 }
 
 
@@ -612,22 +1202,22 @@ item.learning.type ===
 
 
 
-
-// =============================
-// Failed patterns
-// =============================
 
 
 getFailures(){
 
 
-return this.outcomes.filter(
-item =>
 
-item.learning.type ===
-"NEGATIVE_EXPERIENCE"
+return this.outcomes.filter(
+
+x =>
+
+x.learning.type ===
+
+"LEARNING_EXPERIENCE"
 
 );
+
 
 
 }
@@ -640,42 +1230,51 @@ item.learning.type ===
 
 
 
-// =============================
-// Search similar experience
-// =============================
 
+findSimilar(context){
 
-findSimilar(
-context
-){
 
 
 const search =
+
 JSON.stringify(context)
+
 .toLowerCase();
 
 
 
-return this.outcomes.filter(
-item => {
+
+
+return this.outcomes.filter(item=>{
+
 
 
 const memory =
+
 JSON.stringify(item)
+
 .toLowerCase();
 
 
+
+
+
 return search
+
 .split(" ")
+
 .some(word =>
 
-word.length > 5 &&
+word.length>5 &&
+
 memory.includes(word)
 
 );
 
 
+
 });
+
 
 
 }
@@ -685,19 +1284,23 @@ memory.includes(word)
 
 
 
-// =============================
-// Clear debug memory
-// =============================
+
+
 
 
 reset(){
 
+
 this.outcomes=[];
 
+
 }
 
 
+
+
 }
+
 
 
 

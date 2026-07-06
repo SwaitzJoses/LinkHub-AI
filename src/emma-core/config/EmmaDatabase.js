@@ -1,17 +1,10 @@
 // EmmaDatabase.js
 // Emma permanent experience database
 //
-// Stores:
-// Problem
-// Action
-// Outcome
-// Lesson
-// Future wisdom
+// Human → Experience → Lesson → Wisdom
 
 
 import { supabase } from "../../lib/supabase";
-
-
 
 
 
@@ -19,8 +12,9 @@ export const EmmaDB = {
 
 
 
+
 // ======================================
-// SAVE EXPERIENCE MEMORY
+// SAVE MEMORY
 // ======================================
 
 
@@ -33,11 +27,9 @@ console.log(
 
 
 console.log(
-"📦 Incoming memory:",
+"📦 Incoming:",
 experience
 );
-
-
 
 
 
@@ -47,8 +39,56 @@ experience.memory || {};
 
 
 
+// ======================
+// IDENTITY
+// ======================
 
-// protect action names
+
+const userId =
+
+experience.userId ||
+
+experience.ownerId ||
+
+experience.user_id ||
+
+memory.userId ||
+
+null;
+
+
+
+
+const businessId =
+
+experience.businessId ||
+
+experience.business_id ||
+
+memory.businessId ||
+
+null;
+
+
+
+
+
+
+if(!userId && !businessId){
+
+
+console.warn(
+"⚠️ Memory saved without owner identity"
+);
+
+
+}
+
+
+
+
+
+
 
 const action =
 
@@ -65,34 +105,14 @@ experience.action ||
 
 
 
-const lesson =
 
-memory.lesson ||
+const success =
 
-experience.lesson ||
+memory.success ??
 
-null;
+experience.success ??
 
-
-
-
-
-
-const futureRule =
-
-memory.futureRule ||
-
-(
-memory.success === false
-
-?
-
-`Avoid repeating failed strategy: ${action}`
-
-:
-
-`Repeat successful strategy: ${action}`
-);
+false;
 
 
 
@@ -100,43 +120,44 @@ memory.success === false
 
 
 
-const payload = {
+
+
+const payload={
 
 
 
-// =======================
 // OWNER
-// =======================
+
+owner_id:userId,
 
 
-business_id:
-
-experience.businessId,
+user_id:userId,
 
 
-
+business_id:businessId,
 
 
 
-// =======================
+
+
+
+
 // TYPE
-// =======================
-
 
 experience_type:
 
 experience.type ||
 
 (
-memory.success === false
+success
 
 ?
 
-"NEGATIVE_EXPERIENCE"
+"POSITIVE_EXPERIENCE"
 
 :
 
-"POSITIVE_EXPERIENCE"
+"LEARNING_EXPERIENCE"
 
 ),
 
@@ -146,27 +167,13 @@ memory.success === false
 
 
 
-// =======================
-// SITUATION
-// =======================
-
+// EVENT
 
 problem:
 
 memory.problem ||
 
 experience.problem ||
-
-null,
-
-
-
-
-
-
-situation:
-
-memory.context ||
 
 experience.situation ||
 
@@ -178,15 +185,28 @@ null,
 
 
 
+situation:
 
-// =======================
+memory.context ||
+
+experience.context ||
+
+{},
+
+
+
+
+
+
+
+
 // ACTION
-// =======================
-
 
 attempted_action:
 
 action,
+
+
 
 
 
@@ -208,10 +228,8 @@ null,
 
 
 
-// =======================
-// RESULT
-// =======================
 
+// RESULT
 
 result:
 
@@ -226,13 +244,10 @@ null,
 
 
 
-success:
 
-memory.success ??
 
-experience.success ??
+success,
 
-null,
 
 
 
@@ -255,14 +270,17 @@ experience.metrics ||
 
 
 
-// =======================
 // LEARNING
-// =======================
-
 
 lesson:
 
-lesson,
+memory.lesson ||
+
+experience.lesson ||
+
+null,
+
+
 
 
 
@@ -271,7 +289,23 @@ lesson,
 
 future_rule:
 
-futureRule,
+memory.futureRule ||
+
+experience.futureRule ||
+
+(
+
+success
+
+?
+
+`Repeat successful strategy: ${action}`
+
+:
+
+`Improve before repeating: ${action}`
+
+),
 
 
 
@@ -294,14 +328,27 @@ experience.patternsFound ||
 
 
 
-// =======================
-// SEARCH
-// =======================
+identity:
+
+memory.identity ||
+
+experience.identity ||
+
+{},
+
+
+
+
+
+
+
 
 
 tags:
 
 memory.tags ||
+
+experience.tags ||
 
 [],
 
@@ -327,19 +374,17 @@ experience.confidence ||
 
 
 
-
 importance:
 
-
-(memory.success === false)
+success
 
 ?
 
-"high"
+"normal"
 
 :
 
-"normal",
+"high",
 
 
 
@@ -347,16 +392,12 @@ importance:
 
 
 
-
-// =======================
-// RAW BACKUP
-// =======================
 
 
 evidence:{
 
 
-fullMemory:
+fullExperience:
 
 experience,
 
@@ -390,22 +431,15 @@ payload
 
 
 
-
-
 const {data,error}=
-
 
 await supabase
 
-
 .from("emma_memory")
-
 
 .insert(payload)
 
-
 .select();
-
 
 
 
@@ -419,34 +453,13 @@ if(error){
 
 
 console.error(
-"❌ SUPABASE MEMORY SAVE FAILED"
+"❌ MEMORY SAVE ERROR:",
+error
 );
-
-
-
-console.error(
-"CODE:",
-error.code
-);
-
-
-
-console.error(
-"MESSAGE:",
-error.message
-);
-
-
-
-console.error(
-"DETAILS:",
-error.details
-);
-
-
 
 
 throw error;
+
 
 
 }
@@ -458,9 +471,8 @@ throw error;
 
 
 
-
 console.log(
-"🧠 Permanent memory stored:",
+"💾 Permanent memory stored:",
 data
 );
 
@@ -485,20 +497,116 @@ return data;
 
 
 
-
 // ======================================
-// LOAD BUSINESS MEMORIES
+// LOAD MEMORIES
 // ======================================
 
 
-async getMemories(businessId){
+async getMemories(context){
+
+
+
+let userId=null;
+
+let businessId=null;
+
+
+
+
+
+// support old + new calling style
+
+if(typeof context==="object"){
+
+
+userId =
+context.userId || null;
+
+
+businessId =
+context.businessId || null;
+
+
+}
+
+else{
+
+
+businessId=context;
+
+
+}
+
+
+
+
+
 
 
 
 console.log(
-"🧠 Loading permanent memories:",
+
+"🔎 Loading Emma memories:",
+
+{
+userId,
 businessId
+}
+
 );
+
+
+
+
+
+
+
+
+let query =
+
+supabase
+
+.from("emma_memory")
+
+.select("*");
+
+
+
+
+
+
+
+if(userId){
+
+
+query = query.eq(
+
+"owner_id",
+
+userId
+
+);
+
+
+}
+
+
+else if(businessId){
+
+
+
+query=query.eq(
+
+"business_id",
+
+businessId
+
+);
+
+
+}
+
+
 
 
 
@@ -507,29 +615,15 @@ businessId
 
 const {data,error}=
 
+await query.order(
 
-await supabase
-
-
-.from("emma_memory")
-
-
-.select("*")
-
-
-.eq(
-"business_id",
-businessId
-)
-
-
-.order(
 "created_at",
+
 {
 ascending:false
 }
-);
 
+);
 
 
 
@@ -543,16 +637,17 @@ if(error){
 
 
 console.error(
-"❌ Memory fetch failed:"
+
+"❌ Memory fetch failed:",
+
+error
+
 );
 
 
 
-console.error(error);
-
-
-
 return [];
+
 
 
 }
@@ -565,8 +660,11 @@ return [];
 
 
 console.log(
+
 "📚 DB memories found:",
+
 data?.length || 0
+
 );
 
 
@@ -576,15 +674,45 @@ data?.length || 0
 
 
 
+return (
+
+data || []
+
+)
+
+.map(
+
+row=>this.convertMemory(row)
+
+);
 
 
-// Convert database rows
-// back into Emma brain format
+
+},
 
 
-return (data || [])
 
-.map(row=>({
+
+
+
+
+
+
+
+
+
+
+// ======================================
+// DB ROW → EMMA FORMAT
+// ======================================
+
+
+convertMemory(row){
+
+
+
+return {
+
 
 
 
@@ -594,9 +722,21 @@ row.id,
 
 
 
+
+
+userId:
+
+row.owner_id,
+
+
+
+
+
 businessId:
 
 row.business_id,
+
+
 
 
 
@@ -608,7 +748,12 @@ row.experience_type,
 
 
 
+
+
+
 memory:{
+
+
 
 
 
@@ -620,9 +765,14 @@ row.problem,
 
 
 
+
+
+
 context:
 
 row.situation,
+
+
 
 
 
@@ -638,6 +788,8 @@ row.attempted_action,
 
 
 
+
+
 reasonForAction:
 
 row.reason,
@@ -647,7 +799,11 @@ row.reason,
 
 
 
+
+
+
 outcome:{
+
 
 
 result:
@@ -661,7 +817,10 @@ metrics:
 row.metrics || {}
 
 
+
 },
+
+
 
 
 
@@ -679,9 +838,12 @@ row.success,
 
 
 
+
+
 lesson:
 
 row.lesson,
+
 
 
 
@@ -703,6 +865,18 @@ row.future_rule,
 patterns:
 
 row.patterns || [],
+
+
+
+
+
+
+
+
+
+identity:
+
+row.identity || {},
 
 
 
@@ -744,13 +918,11 @@ row.created_at
 
 
 
-}));
+};
 
 
 
 },
-
-
 
 
 
@@ -769,7 +941,7 @@ row.created_at
 // ======================================
 
 
-async getImportantMemories(businessId){
+async getImportantMemories(userId){
 
 
 
@@ -777,36 +949,42 @@ async getImportantMemories(businessId){
 
 const {data,error}=
 
-
 await supabase
-
 
 .from("emma_memory")
 
-
 .select("*")
 
-
 .eq(
-"business_id",
-businessId
-)
 
+"owner_id",
+
+userId
+
+)
 
 .in(
+
 "importance",
+
 [
+
 "high",
+
 "critical"
+
 ]
+
 )
 
-
 .order(
+
 "created_at",
+
 {
 ascending:false
 }
+
 );
 
 
@@ -818,10 +996,7 @@ ascending:false
 if(error){
 
 
-console.error(
-"❌ Important memory error:",
-error
-);
+console.error(error);
 
 
 return [];
@@ -835,14 +1010,21 @@ return [];
 
 
 
-return data || [];
+return (
+
+data || []
+
+)
+
+.map(
+
+row=>this.convertMemory(row)
+
+);
 
 
 
 },
-
-
-
 
 
 
@@ -858,29 +1040,26 @@ return data || [];
 // ======================================
 
 
-async forgetMemory(memoryId){
-
-
-
+async forgetMemory(id){
 
 
 
 const {error}=
 
-
 await supabase
-
 
 .from("emma_memory")
 
-
 .delete()
 
-
 .eq(
+
 "id",
-memoryId
+
+id
+
 );
+
 
 
 
@@ -891,16 +1070,17 @@ memoryId
 if(error){
 
 
-
 console.error(
+
 "❌ Forget failed:",
+
 error
+
 );
 
 
 
 return false;
-
 
 
 }
@@ -911,16 +1091,16 @@ return false;
 
 
 
-
 console.log(
+
 "🗑️ Emma forgot memory"
+
 );
 
 
 
 
 return true;
-
 
 
 
