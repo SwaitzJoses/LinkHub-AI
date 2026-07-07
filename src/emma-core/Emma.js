@@ -2,6 +2,7 @@
 // Emma's central nervous system
 //
 // RULE:
+//
 // Organs do their job.
 // Emma connects them.
 //
@@ -10,9 +11,11 @@
 // Scheduler creates rhythm.
 // Worker runs.
 // Brain thinks.
+// Identity stays consistent.
 // Autonomy decides.
 // Planner prepares.
 // Actions execute.
+// Learning evolves Emma.
 
 
 import EmmaConnectorManager from "./connectors/EmmaConnectorManager";
@@ -20,6 +23,9 @@ import UniversalTranslator from "./translators/UniversalTranslator";
 
 
 import EmmaBrain from "./EmmaBrain";
+
+
+import EmmaIdentity from "./identity/EmmaIdentity";
 
 
 import EmmaObserver from "./EmmaObserver";
@@ -48,15 +54,20 @@ import EmmaDailyAwareness from "./EmmaDailyAwareness";
 import EmmaDailyBrief from "./daily/EmmaDailyBrief";
 
 
-// DAY 12 AUTONOMY
+// AUTONOMY
+
 import EmmaAutonomy from "./autonomy/EmmaAutonomy";
 import EmmaPlanner from "./autonomy/EmmaPlanner";
 import EmmaGoals from "./autonomy/EmmaGoals";
 
 
 // BACKGROUND
+
 import EmmaWorker from "./workers/EmmaWorker";
 import EmmaScheduler from "./scheduler/EmmaScheduler";
+
+
+
 
 
 
@@ -73,21 +84,44 @@ console.log(
 
 
 
+
+// ======================
+// IDENTITY
+// ======================
+
+
+this.identity =
+EmmaIdentity;
+
+
+
+
+
+
 // ======================
 // SENSES
 // ======================
+
 
 this.connectorManager =
 new EmmaConnectorManager();
 
 
 
+
+
+
 // ======================
-// TRANSLATOR
+// TRANSLATION
 // ======================
+
 
 this.translator =
 new UniversalTranslator();
+
+
+
+
 
 
 
@@ -95,8 +129,13 @@ new UniversalTranslator();
 // PRESENCE
 // ======================
 
+
 this.presence =
 new EmmaPresence();
+
+
+
+
 
 
 
@@ -104,8 +143,10 @@ new EmmaPresence();
 // THINKING SYSTEM
 // ======================
 
+
 this.observer =
 new EmmaObserver();
+
 
 
 this.reflection =
@@ -114,12 +155,15 @@ EmmaBrain.ai
 );
 
 
+
 this.memory =
 new EmmaMemory();
 
 
+
 this.reasoning =
 new EmmaReasoning();
+
 
 
 this.judgement =
@@ -127,8 +171,13 @@ new EmmaJudgement();
 
 
 
+
+
+
+
+
 // ======================
-// AUTONOMY SYSTEM
+// AUTONOMY
 // ======================
 
 
@@ -136,8 +185,10 @@ this.autonomy =
 new EmmaAutonomy();
 
 
+
 this.planner =
 new EmmaPlanner();
+
 
 
 this.goals =
@@ -145,8 +196,14 @@ new EmmaGoals();
 
 
 
+
+
+
+
+
+
 // ======================
-// HUMAN LAYER
+// HUMAN OUTPUT
 // ======================
 
 
@@ -154,13 +211,21 @@ this.insight =
 new EmmaInsight();
 
 
+
 this.communication =
 new EmmaCommunication();
 
 
 
+
+
+
+
+
+
+
 // ======================
-// ACTION SYSTEM
+// ACTION + LEARNING
 // ======================
 
 
@@ -168,16 +233,24 @@ this.actionExecutor =
 EmmaActionExecutor;
 
 
+
 this.outcome =
 EmmaOutcome;
+
 
 
 this.learning =
 EmmaLearningEngine;
 
 
+
 this.capabilities =
 EmmaCapabilities;
+
+
+
+
+
 
 
 
@@ -199,13 +272,21 @@ this.judgement
 );
 
 
+
 this.dailyBrief =
 EmmaDailyBrief;
 
 
 
+
+
+
+
+
+
+
 // ======================
-// BACKGROUND SYSTEM
+// BACKGROUND
 // ======================
 
 
@@ -213,10 +294,14 @@ this.worker =
 new EmmaWorker(this);
 
 
+
 this.scheduler =
 new EmmaScheduler(
 this.worker
 );
+
+
+
 
 
 
@@ -229,9 +314,11 @@ this.presence.watching(
 
 
 
+
 console.log(
-"✅ Emma fully alive with autonomy"
+"✅ Emma fully alive with identity + autonomy"
 );
+
 
 
 }
@@ -244,12 +331,18 @@ console.log(
 
 
 
+
+
 // =================================
-// WORLD ENTRY POINT
+// WORLD ENTRY
 // =================================
 
 
-async experience(source,data){
+async experience(
+source,
+data
+){
+
 
 
 this.presence.listening(
@@ -257,6 +350,7 @@ this.presence.listening(
 `Emma received ${source} signal`
 
 );
+
 
 
 
@@ -268,27 +362,17 @@ data
 
 
 
-const queued =
-this.worker.addSignal(
+
+return this.worker.addSignal(
 signal
 );
 
 
 
-return {
-
-
-status:"QUEUED",
-
-message:
-"Emma received the signal.",
-
-signal:queued
-
-};
-
-
 }
+
+
+
 
 
 
@@ -306,7 +390,9 @@ signal:queued
 async think(input){
 
 
+
 try{
+
 
 
 console.log(
@@ -316,20 +402,30 @@ console.log(
 
 
 
+
+
 // TRANSLATE
 
+
 const translated =
-await this.translator.translate(input);
+await this.translator.translate(
+input
+);
+
+
 
 
 
 
 // OBSERVE
 
+
 const observation =
 await this.observer.observe(
 translated
 );
+
+
 
 
 
@@ -345,7 +441,11 @@ observation
 
 
 
-// STORE EXPERIENCE
+
+
+
+
+// STORE EVENT MEMORY
 
 
 await this.memory.remember(
@@ -355,29 +455,43 @@ reflection
 
 
 
-// RECALL EXPERIENCE
+
+
+
+
+
+// RECALL
 
 
 const memories =
 await this.memory.recall({
 
 
+
 userId:
+
 reflection.userId ||
 observation.userId,
 
 
+
 businessId:
+
 reflection.businessId ||
 observation.businessId,
 
 
+
 identity:
+
 reflection.identity,
 
 
+
 context:
+
 reflection
+
 
 
 });
@@ -385,7 +499,12 @@ reflection
 
 
 
-// THINK
+
+
+
+
+
+// REASON
 
 
 const reasoning =
@@ -400,35 +519,54 @@ memories
 
 
 
+
+
+
+
 // JUDGE
 
 
 const judgement =
 await this.judgement.judge(
 
+
 reasoning,
+
 
 memories,
 
+
 this.capabilities.getSkills()
+
 
 );
 
 
 
 
-// AUTONOMY DECISION ⭐
+
+
+
+
+
+// AUTONOMY
 
 
 const autonomyDecision =
 await this.autonomy.decide({
 
 
+
 judgement,
+
 
 memories,
 
-skills:this.capabilities.getSkills()
+
+skills:
+
+this.capabilities.getSkills()
+
 
 
 });
@@ -437,23 +575,47 @@ skills:this.capabilities.getSkills()
 
 
 
-// PLAN ⭐
+
+
+
+
+
+// PLAN
 
 
 const plan =
 await this.planner.create({
 
 
-goal: judgement.goal,
 
-decision: autonomyDecision,
+goal:
 
-context: reflection,
+judgement.goal,
+
+
+
+decision:
+
+autonomyDecision,
+
+
+
+context:
+
+reflection,
+
+
 
 memories
 
 
+
 });
+
+
+
+
+
 
 
 
@@ -474,10 +636,16 @@ memories
 
 
 
-// ACTION GATE ⭐
 
 
-let actionResult = {
+
+
+
+
+// ACTION
+
+
+let actionResult={
 
 
 executed:false,
@@ -493,22 +661,26 @@ reason:
 
 
 
+
+
 if(
-autonomyDecision.allowed === true
+autonomyDecision.allowed
 ){
 
 
 
 actionResult =
 await this.actionExecutor.execute(
-
 plan
-
 );
 
 
 
 }
+
+
+
+
 
 
 
@@ -530,7 +702,13 @@ plan
 
 
 
-// LEARN
+
+
+
+
+
+
+// LEARNING
 
 
 const learning =
@@ -545,43 +723,213 @@ memories
 
 
 
-// SAVE LEARNING
+
+
+
+
+
+// =================================
+// SAVE EMMA SELF EVOLUTION ⭐
+// =================================
 
 
 if(learning){
 
 
+
 await this.memory.remember({
 
 
-identity:
-reflection.identity,
+
+
+
+ownerId:
+
+"emma_self",
+
+
+
+
+
+userId:
+
+reflection.userId ||
+
+observation.userId ||
+
+"emma",
+
+
+
+
+
+
+
+businessId:
+
+reflection.businessId ||
+
+observation.businessId ||
+
+"emma",
+
+
+
+
+
+
+
+identity:{
+
+
+
+name:"Emma",
+
+
+
+type:"AI_SELF",
+
+
+
+mode:
+
+this.identity.status().mode,
+
+
+
+maturity:
+
+this.identity.status().maturity
+
+
+
+},
+
+
+
+
+
+
 
 
 type:
-learning.type,
+
+learning.type ||
+
+"SELF_LEARNING",
+
+
+
+
+
+
 
 
 lesson:
+
 learning.lesson,
 
 
+
+
+
+
+
+
 patternsFound:
-learning.patternsFound,
+
+learning.patternsFound ||
+
+[],
+
+
+
+
+
+
 
 
 futureBehavior:
+
 learning.futureBehavior,
 
 
+
+
+
+
+
+
+relationshipLearning:
+
+learning.relationshipLearning,
+
+
+
+
+
+
+
+
+identityGrowth:
+
+learning.identityGrowth,
+
+
+
+
+
+
+
+
+confidence:
+
+learning.confidence,
+
+
+
+
+
+
+
+
+
 success:
-outcome.success
+
+outcome.success,
+
+
+
+
+
+
+
+
+memoryCategory:
+
+"EMMA_EVOLUTION",
+
+
+
+
+
+
+
+
+createdAt:
+
+new Date()
+
 
 
 });
 
 
+
 }
+
+
+
 
 
 
@@ -599,30 +947,52 @@ this.presence.watching(
 
 
 
+
+
+
+
+
 return await this.communication.reply({
+
 
 
 observation,
 
+
 reflection,
+
 
 memory:memories,
 
+
 reasoning,
+
 
 judgement,
 
+
 autonomy:autonomyDecision,
+
 
 plan,
 
+
 insight,
+
 
 actionResult,
 
+
 outcome,
 
-learning
+
+learning,
+
+
+identity:
+
+this.identity.status()
+
 
 
 });
@@ -630,7 +1000,11 @@ learning
 
 
 
+
+
+
 }
+
 
 
 catch(error){
@@ -644,15 +1018,22 @@ error
 
 
 
+
+
 return {
 
 
 from:"Emma",
 
+
 message:
+
 "I noticed something but need more context.",
 
-error:error.message
+
+error:
+
+error.message
 
 
 };
@@ -673,31 +1054,37 @@ error:error.message
 
 
 
+
+
 // =================================
-// GOAL LOOP ⭐
+// AUTONOMOUS GOALS
 // =================================
 
 
 async pursueGoals(){
 
 
-const goals =
-await this.goals.generate({
+
+return await this.goals.generate({
+
 
 
 memory:this.memory,
 
-skills:this.capabilities.getSkills()
+
+skills:
+
+this.capabilities.getSkills()
+
 
 
 });
 
 
 
-return goals;
-
-
 }
+
+
 
 
 
@@ -715,9 +1102,11 @@ return goals;
 async wakeUp(context){
 
 
+
 return await this.dailyAwareness.wakeUp(
 context
 );
+
 
 
 }
@@ -725,10 +1114,16 @@ context
 
 
 
+
+
+
 async getDailyBrief(){
 
 
-if(this.dailyBrief.needsBrief()){
+
+if(
+this.dailyBrief.needsBrief()
+){
 
 
 return await this.dailyBrief.generate();
@@ -741,7 +1136,10 @@ return await this.dailyBrief.generate();
 return this.dailyBrief.getLastBrief();
 
 
+
 }
+
+
 
 
 
@@ -759,22 +1157,31 @@ return this.dailyBrief.getLastBrief();
 async ask(userId,message){
 
 
+
 return await this.think({
+
 
 
 source:"conversation",
 
+
 userId,
+
 
 message,
 
+
 type:"USER_MESSAGE"
+
 
 
 });
 
 
+
 }
+
+
 
 
 
@@ -801,6 +1208,8 @@ this.scheduler.start();
 
 
 
+
+
 stopWorking(){
 
 
@@ -808,50 +1217,6 @@ this.worker.stop();
 
 this.scheduler.stop();
 
-
-}
-
-
-
-
-workerStatus(){
-
-return this.worker.status();
-
-}
-
-
-
-schedulerStatus(){
-
-return this.scheduler.status();
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// UI
-// =================================
-
-
-getPresence(){
-
-return this.presence.get();
-
-}
-
-
-
-getTimeline(){
-
-return this.presence.getHistory();
 
 }
 
@@ -871,33 +1236,37 @@ return this.presence.getHistory();
 status(){
 
 
+
 return {
+
 
 
 state:"ACTIVE",
 
 
+
 identity:
 
-"Autonomous AI employee that thinks, plans, acts and learns",
+this.identity.status(),
 
 
 
 presence:
 
-this.getPresence(),
+this.presence.get(),
 
 
 
 worker:
 
-this.workerStatus(),
+this.worker.status(),
 
 
 
 scheduler:
 
-this.schedulerStatus(),
+this.scheduler.status(),
+
 
 
 
@@ -906,7 +1275,7 @@ systems:[
 
 "Sense",
 
-"Understand",
+"Identity",
 
 "Memory",
 
@@ -918,15 +1287,13 @@ systems:[
 
 "Plan",
 
-"Act",
+"Action",
 
 "Outcome",
 
-"Learn",
+"Learning",
 
 "Goals",
-
-"Daily Brief",
 
 "Worker",
 
@@ -939,9 +1306,12 @@ systems:[
 
 
 
+
 connectors:
 
 this.connectorManager.getConnectors(),
+
+
 
 
 
@@ -951,12 +1321,16 @@ this.capabilities.getSkills(),
 
 
 
+
+
 checkedAt:
 
 new Date()
 
 
+
 };
+
 
 
 }
