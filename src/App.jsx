@@ -18,6 +18,8 @@ from "./emma-core/connectors/EmmaGmailConnect";
 import EmmaCard from "./emma-core/components/emma/EmmaCard";
 
 // import "./emma-core/tests/testEmma6Months";
+import "./emma-core/tests/testInternetConnector";
+
 
 
 function ProtectedRoute({ children }) {

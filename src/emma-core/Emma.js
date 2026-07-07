@@ -7,11 +7,15 @@
 // Emma connects them.
 //
 // Connectors collect.
+// Attention focuses.
 // Queue organizes.
 // Scheduler creates rhythm.
 // Worker runs.
 // Brain thinks.
 // Identity stays consistent.
+// Memory remembers.
+// Wisdom understands.
+// Optimization improves.
 // Autonomy decides.
 // Planner prepares.
 // Actions execute.
@@ -28,9 +32,17 @@ import EmmaBrain from "./EmmaBrain";
 import EmmaIdentity from "./identity/EmmaIdentity";
 
 
+import EmmaAttention from "./EmmaAttention";
+
+
 import EmmaObserver from "./EmmaObserver";
 import EmmaReflection from "./EmmaReflection";
+
+
 import EmmaMemory from "./EmmaMemory";
+import EmmaWisdom from "./EmmaWisdom";
+
+
 import EmmaReasoning from "./EmmaReasoning";
 import EmmaJudgement from "./EmmaJudgement";
 
@@ -42,6 +54,9 @@ import EmmaCommunication from "./EmmaCommunication";
 import EmmaActionExecutor from "./EmmaActionExecutor";
 import EmmaOutcome from "./EmmaOutcome";
 import EmmaLearningEngine from "./EmmaLearningEngine";
+
+
+import EmmaOptimization from "./EmmaOptimization";
 
 
 import EmmaCapabilities from "./EmmaCapabilities";
@@ -72,10 +87,12 @@ import EmmaScheduler from "./scheduler/EmmaScheduler";
 
 
 
+
 class Emma {
 
 
 constructor(){
+
 
 
 console.log(
@@ -98,6 +115,7 @@ EmmaIdentity;
 
 
 
+
 // ======================
 // SENSES
 // ======================
@@ -105,6 +123,7 @@ EmmaIdentity;
 
 this.connectorManager =
 new EmmaConnectorManager();
+
 
 
 
@@ -140,12 +159,33 @@ new EmmaPresence();
 
 
 // ======================
+// ATTENTION 🎯
+// ======================
+// Emma notices everything.
+// Thinks only when needed.
+// Protects API.
+// ======================
+
+
+this.attention =
+new EmmaAttention();
+
+
+
+
+
+
+
+
+
+// ======================
 // THINKING SYSTEM
 // ======================
 
 
 this.observer =
 new EmmaObserver();
+
 
 
 
@@ -156,8 +196,27 @@ EmmaBrain.ai
 
 
 
+
 this.memory =
 new EmmaMemory();
+
+
+
+
+
+
+
+
+// ======================
+// WISDOM
+// ======================
+
+
+this.wisdom =
+new EmmaWisdom(
+this.memory
+);
+
 
 
 
@@ -166,8 +225,10 @@ new EmmaReasoning();
 
 
 
+
 this.judgement =
 new EmmaJudgement();
+
 
 
 
@@ -244,6 +305,24 @@ EmmaLearningEngine;
 
 
 
+
+
+
+
+
+
+
+// ======================
+// OPTIMIZATION
+// ======================
+
+
+this.optimization =
+new EmmaOptimization();
+
+
+
+
 this.capabilities =
 EmmaCapabilities;
 
@@ -273,6 +352,7 @@ this.judgement
 
 
 
+
 this.dailyBrief =
 EmmaDailyBrief;
 
@@ -291,7 +371,10 @@ EmmaDailyBrief;
 
 
 this.worker =
-new EmmaWorker(this);
+new EmmaWorker(
+this
+);
+
 
 
 
@@ -299,6 +382,8 @@ this.scheduler =
 new EmmaScheduler(
 this.worker
 );
+
+
 
 
 
@@ -315,15 +400,16 @@ this.presence.watching(
 
 
 
+
 console.log(
-"✅ Emma fully alive with identity + autonomy"
+
+"✅ Emma fully alive with attention + wisdom + optimization + autonomy"
+
 );
 
 
 
 }
-
-
 
 
 
@@ -380,7 +466,18 @@ signal
 
 
 
+// =================================
+// PRESENCE ACCESS
+// =================================
 
+
+getPresence(){
+
+
+return this.presence.get();
+
+
+}
 
 // =================================
 // LIFE LOOP
@@ -390,9 +487,7 @@ signal
 async think(input){
 
 
-
 try{
-
 
 
 console.log(
@@ -402,9 +497,9 @@ console.log(
 
 
 
-
-
+// ======================
 // TRANSLATE
+// ======================
 
 
 const translated =
@@ -417,7 +512,120 @@ input
 
 
 
+
+
+// ======================
+// ATTENTION 🎯
+// ======================
+// First decision:
+//
+// Does Emma need to think?
+//
+// No API here.
+// ======================
+
+
+const attention =
+await this.attention.evaluate(
+
+translated,
+
+this.memory
+
+);
+
+
+
+
+
+
+// LOW IMPORTANCE
+// Store quietly.
+// Do not burn reasoning.
+
+
+if(
+attention.level === "RAW"
+){
+
+
+
+console.log(
+
+"🎯 Emma noticed quietly",
+
+attention
+
+);
+
+
+
+
+
+await this.memory.remember({
+
+
+type:
+
+"RAW_SIGNAL",
+
+
+
+signal:
+
+translated,
+
+
+
+attention,
+
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+
+
+
+return {
+
+
+from:"Emma",
+
+
+message:
+
+"I noticed this and stored it quietly.",
+
+
+attention,
+
+
+deepThinking:false
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================
 // OBSERVE
+// ======================
 
 
 const observation =
@@ -430,7 +638,12 @@ translated
 
 
 
+
+
+
+// ======================
 // REFLECT
+// ======================
 
 
 const reflection =
@@ -445,7 +658,10 @@ observation
 
 
 
-// STORE EVENT MEMORY
+
+// ======================
+// STORE MEMORY
+// ======================
 
 
 await this.memory.remember(
@@ -460,7 +676,9 @@ reflection
 
 
 
-// RECALL
+// ======================
+// RECALL EXPERIENCE
+// ======================
 
 
 const memories =
@@ -504,15 +722,51 @@ reflection
 
 
 
+// ======================
+// WISDOM 🧘
+// ======================
+
+
+const wisdom =
+await this.wisdom.reflect({
+
+
+observation,
+
+
+reflection,
+
+
+memories
+
+
+});
+
+
+
+
+
+
+
+
+
+// ======================
 // REASON
+// ======================
 
 
 const reasoning =
 await this.reasoning.think(
 
+
 reflection,
 
-memories
+
+memories,
+
+
+wisdom
+
 
 );
 
@@ -523,7 +777,10 @@ memories
 
 
 
+
+// ======================
 // JUDGE
+// ======================
 
 
 const judgement =
@@ -534,6 +791,9 @@ reasoning,
 
 
 memories,
+
+
+wisdom,
 
 
 this.capabilities.getSkills()
@@ -549,7 +809,9 @@ this.capabilities.getSkills()
 
 
 
+// ======================
 // AUTONOMY
+// ======================
 
 
 const autonomyDecision =
@@ -561,6 +823,9 @@ judgement,
 
 
 memories,
+
+
+wisdom,
 
 
 skills:
@@ -580,7 +845,9 @@ this.capabilities.getSkills()
 
 
 
+// ======================
 // PLAN
+// ======================
 
 
 const plan =
@@ -606,7 +873,10 @@ reflection,
 
 
 
-memories
+memories,
+
+
+wisdom
 
 
 
@@ -621,15 +891,23 @@ memories
 
 
 
-// INSIGHT
+// ======================
+// INSIGHT 💡
+// ======================
 
 
 const insight =
 await this.insight.create(
 
+
 judgement,
 
-memories
+
+memories,
+
+
+wisdom
+
 
 );
 
@@ -642,10 +920,12 @@ memories
 
 
 
+// ======================
 // ACTION
+// ======================
 
 
-let actionResult={
+let actionResult = {
 
 
 executed:false,
@@ -657,7 +937,6 @@ reason:
 
 
 };
-
 
 
 
@@ -687,15 +966,20 @@ plan
 
 
 
+// ======================
 // OUTCOME
+// ======================
 
 
 const outcome =
 await this.outcome.record(
 
+
 actionResult,
 
+
 plan
+
 
 );
 
@@ -708,15 +992,20 @@ plan
 
 
 
+// ======================
 // LEARNING
+// ======================
 
 
 const learning =
 await this.learning.learn(
 
+
 outcome,
 
+
 memories
+
 
 );
 
@@ -728,197 +1017,27 @@ memories
 
 
 
-// =================================
-// SAVE EMMA SELF EVOLUTION ⭐
-// =================================
 
+// ======================
+// OPTIMIZATION 📈
+// ======================
 
-if(learning){
 
+const optimization =
+await this.optimization.optimize({
 
 
-await this.memory.remember({
 
+outcome,
 
 
+learning,
 
 
-ownerId:
+wisdom,
 
-"emma_self",
 
-
-
-
-
-userId:
-
-reflection.userId ||
-
-observation.userId ||
-
-"emma",
-
-
-
-
-
-
-
-businessId:
-
-reflection.businessId ||
-
-observation.businessId ||
-
-"emma",
-
-
-
-
-
-
-
-identity:{
-
-
-
-name:"Emma",
-
-
-
-type:"AI_SELF",
-
-
-
-mode:
-
-this.identity.status().mode,
-
-
-
-maturity:
-
-this.identity.status().maturity
-
-
-
-},
-
-
-
-
-
-
-
-
-type:
-
-learning.type ||
-
-"SELF_LEARNING",
-
-
-
-
-
-
-
-
-lesson:
-
-learning.lesson,
-
-
-
-
-
-
-
-
-patternsFound:
-
-learning.patternsFound ||
-
-[],
-
-
-
-
-
-
-
-
-futureBehavior:
-
-learning.futureBehavior,
-
-
-
-
-
-
-
-
-relationshipLearning:
-
-learning.relationshipLearning,
-
-
-
-
-
-
-
-
-identityGrowth:
-
-learning.identityGrowth,
-
-
-
-
-
-
-
-
-confidence:
-
-learning.confidence,
-
-
-
-
-
-
-
-
-
-success:
-
-outcome.success,
-
-
-
-
-
-
-
-
-memoryCategory:
-
-"EMMA_EVOLUTION",
-
-
-
-
-
-
-
-
-createdAt:
-
-new Date()
+memories
 
 
 
@@ -926,7 +1045,31 @@ new Date()
 
 
 
+
+
+
+
+
+
+
+// ======================
+// WISDOM GROWTH
+// ======================
+
+
+if(
+learning &&
+learning.lesson
+){
+
+
+this.wisdom.learn(
+learning.lesson
+);
+
+
 }
+
 
 
 
@@ -951,6 +1094,10 @@ this.presence.watching(
 
 
 
+// ======================
+// COMMUNICATE
+// ======================
+
 
 return await this.communication.reply({
 
@@ -962,7 +1109,12 @@ observation,
 reflection,
 
 
-memory:memories,
+memory:
+
+memories,
+
+
+wisdom,
 
 
 reasoning,
@@ -971,7 +1123,9 @@ reasoning,
 judgement,
 
 
-autonomy:autonomyDecision,
+autonomy:
+
+autonomyDecision,
 
 
 plan,
@@ -989,6 +1143,12 @@ outcome,
 learning,
 
 
+optimization,
+
+
+attention,
+
+
 identity:
 
 this.identity.status()
@@ -996,9 +1156,6 @@ this.identity.status()
 
 
 });
-
-
-
 
 
 
@@ -1012,10 +1169,12 @@ catch(error){
 
 
 console.error(
-"❌ Emma failed:",
-error
-);
 
+"❌ Emma failed:",
+
+error
+
+);
 
 
 
@@ -1054,8 +1213,6 @@ error.message
 
 
 
-
-
 // =================================
 // AUTONOMOUS GOALS
 // =================================
@@ -1064,12 +1221,16 @@ error.message
 async pursueGoals(){
 
 
-
 return await this.goals.generate({
 
 
-
 memory:this.memory,
+
+
+wisdom:this.wisdom,
+
+
+optimization:this.optimization,
 
 
 skills:
@@ -1077,14 +1238,10 @@ skills:
 this.capabilities.getSkills()
 
 
-
 });
 
 
-
 }
-
-
 
 
 
@@ -1102,15 +1259,12 @@ this.capabilities.getSkills()
 async wakeUp(context){
 
 
-
 return await this.dailyAwareness.wakeUp(
 context
 );
 
 
-
 }
-
 
 
 
@@ -1136,9 +1290,7 @@ return await this.dailyBrief.generate();
 return this.dailyBrief.getLastBrief();
 
 
-
 }
-
 
 
 
@@ -1154,12 +1306,14 @@ return this.dailyBrief.getLastBrief();
 // =================================
 
 
-async ask(userId,message){
+async ask(
+userId,
+message
+){
 
 
 
 return await this.think({
-
 
 
 source:"conversation",
@@ -1174,13 +1328,11 @@ message,
 type:"USER_MESSAGE"
 
 
-
 });
 
 
 
 }
-
 
 
 
@@ -1201,6 +1353,7 @@ startWorking(){
 
 this.worker.start();
 
+
 this.scheduler.start();
 
 
@@ -1214,6 +1367,7 @@ stopWorking(){
 
 
 this.worker.stop();
+
 
 this.scheduler.stop();
 
@@ -1241,7 +1395,10 @@ return {
 
 
 
-state:"ACTIVE",
+state:
+
+"ACTIVE",
+
 
 
 
@@ -1251,15 +1408,29 @@ this.identity.status(),
 
 
 
+
+
 presence:
 
 this.presence.get(),
 
 
 
+
+
+attention:
+
+"ACTIVE",
+
+
+
+
+
 worker:
 
 this.worker.status(),
+
+
 
 
 
@@ -1270,39 +1441,73 @@ this.scheduler.status(),
 
 
 
+
+optimization:
+
+this.optimization.status(),
+
+
+
+
+
 systems:[
+
 
 
 "Sense",
 
+
+"Attention",
+
+
 "Identity",
+
 
 "Memory",
 
+
+"Wisdom",
+
+
 "Reason",
+
 
 "Judge",
 
+
 "Autonomy",
+
 
 "Plan",
 
+
 "Action",
+
 
 "Outcome",
 
+
 "Learning",
+
+
+"Optimization",
+
 
 "Goals",
 
+
 "Worker",
 
+
 "Scheduler",
+
 
 "Presence"
 
 
+
 ],
+
 
 
 
@@ -1338,6 +1543,10 @@ new Date()
 
 
 }
+
+
+
+
 
 
 

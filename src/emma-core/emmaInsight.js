@@ -1,23 +1,43 @@
 // EmmaInsight.js
-// Emma's understanding layer
+// Emma's vision layer
 //
-// Converts judgement into human insight
+// Emma does not just answer.
 //
-// Judgement
-// → Meaning
-// → Personal Understanding
-// → Useful Insight
+// Emma notices:
+// - meaning
+// - patterns
+// - blind spots
+// - possibilities
+//
+// RULE:
+//
+// Memory tells Emma:
+// "Where have we been?"
+//
+// Wisdom tells Emma:
+// "What have we learned?"
+//
+// Insight asks:
+// "What possibility exists now?"
 
 
 
 class EmmaInsight {
 
 
+
+// ==============================
+// WAKE INSIGHT
+// ==============================
+
+
 constructor(){
+
 
 console.log(
 "💡 Emma Personal Insight online"
 );
+
 
 }
 
@@ -27,21 +47,26 @@ console.log(
 
 
 
+
+
 // ==============================
-// Create insight
+// CREATE INSIGHT
 // ==============================
 
 
 async create(
 judgement,
-memory={}
+memory={},
+wisdom={}
 ){
+
 
 
 console.log(
 "💡 Emma creating insight:",
 judgement
 );
+
 
 
 
@@ -56,8 +81,56 @@ memory?.identity ||
 
 
 
+
 // ==============================
-// If Emma recommends action
+// FIND POSSIBILITIES
+// ==============================
+
+
+const possibilities =
+
+this.findPossibilities(
+
+judgement,
+
+memory,
+
+wisdom
+
+);
+
+
+
+
+
+
+
+
+// ==============================
+// FIND PATTERNS
+// ==============================
+
+
+const patterns =
+
+this.findPatterns(
+
+memory,
+
+wisdom
+
+);
+
+
+
+
+
+
+
+
+
+// ==============================
+// ACTION INSIGHT
 // ==============================
 
 
@@ -72,17 +145,24 @@ judgement.shouldAct
 return {
 
 
+
 type:
 
 "personal_action_insight",
 
 
 
+
+
 title:
 
 this.createTitle(
-judgement
+judgement,
+possibilities
 ),
+
+
+
 
 
 
@@ -92,9 +172,14 @@ this.createPersonalMessage(
 
 judgement,
 
-identity
+identity,
+
+possibilities
 
 ),
+
+
+
 
 
 
@@ -105,9 +190,15 @@ judgement.priority,
 
 
 
+
+
+
 confidence:
 
 judgement.confidence,
+
+
+
 
 
 
@@ -120,13 +211,35 @@ judgement.reason,
 
 
 
+
+
+
+possibilities,
+
+
+
+
+
+
+
+
+patterns,
+
+
+
+
+
+
+
+
 memoryConnection:
 
 this.createMemoryConnection(
-
 memory
-
 ),
+
+
+
 
 
 
@@ -134,7 +247,10 @@ memory
 
 feeling:
 
-"Emma used what she knows about you.",
+"Emma connected your journey with what is happening now.",
+
+
+
 
 
 
@@ -143,6 +259,7 @@ feeling:
 createdAt:
 
 new Date()
+
 
 
 };
@@ -158,8 +275,11 @@ new Date()
 
 
 
+
+
+
 // ==============================
-// If Emma recommends waiting
+// OBSERVATION INSIGHT
 // ==============================
 
 
@@ -174,9 +294,19 @@ type:
 
 
 
+
+
 title:
 
-"Emma is learning",
+this.createTitle(
+
+judgement,
+
+possibilities
+
+),
+
+
 
 
 
@@ -188,9 +318,14 @@ this.createObservationMessage(
 
 judgement,
 
-identity
+identity,
+
+possibilities
 
 ),
+
+
+
 
 
 
@@ -206,9 +341,12 @@ judgement.priority ||
 
 
 
+
+
 confidence:
 
 judgement.confidence,
+
 
 
 
@@ -224,6 +362,26 @@ judgement.reason,
 
 
 
+
+
+possibilities,
+
+
+
+
+
+
+
+
+patterns,
+
+
+
+
+
+
+
+
 memoryConnection:
 
 this.createMemoryConnection(
@@ -231,6 +389,8 @@ this.createMemoryConnection(
 memory
 
 ),
+
+
 
 
 
@@ -258,20 +418,351 @@ new Date()
 
 
 
+
 // ==============================
-// Create title
+// FIND POSSIBILITIES
 // ==============================
 
 
-createTitle(judgement){
+findPossibilities(
+judgement,
+memory,
+wisdom
+){
+
+
+
+let possibilities = [];
+
+
+
+
+
+
+const text =
+
+JSON.stringify({
+
+judgement,
+
+memory,
+
+wisdom
+
+})
+.toLowerCase();
+
+
+
+
+
+
+
+
+
+// Opportunity signals
+
+
+if(
+
+text.includes("opportunity") ||
+
+text.includes("looking for") ||
+
+text.includes("need help") ||
+
+text.includes("growth") ||
+
+text.includes("customer")
+
+){
+
+
+
+possibilities.push({
+
+
+
+type:
+
+"opportunity",
+
+
+
+
+
+message:
+
+"There may be an opportunity connected to your current direction.",
+
+
+
+
+
+
+why:
+
+"Emma noticed a match between signals and your journey."
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// Repeated effort
+
+
+if(
+
+text.includes("again") ||
+
+text.includes("repeated") ||
+
+text.includes("pattern")
+
+){
+
+
+
+possibilities.push({
+
+
+
+type:
+
+"pattern",
+
+
+
+
+
+message:
+
+"A repeating pattern may be appearing.",
+
+
+
+
+
+
+why:
+
+"Emma has seen something similar before."
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// Learning based possibility
+
+
+if(
+
+wisdom?.lessons?.length
+
+){
+
+
+
+possibilities.push({
+
+
+
+type:
+
+"experience_based",
+
+
+
+
+
+message:
+
+"Past experience may help this decision.",
+
+
+
+
+
+why:
+
+"Emma found relevant learned wisdom."
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return possibilities;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// FIND USER PATTERNS
+// ==============================
+
+
+findPatterns(
+memory,
+wisdom
+){
+
+
+
+let patterns = [];
+
+
+
+
+
+if(
+memory?.identity?.decisionPatterns
+){
+
+
+
+patterns.push(
+
+...memory.identity.decisionPatterns
+
+);
+
+
+
+}
+
+
+
+
+
+
+if(
+wisdom?.patterns
+){
+
+
+
+patterns.push(
+
+...wisdom.patterns
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+return patterns;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// CREATE TITLE
+// ==============================
+
+
+createTitle(
+judgement,
+possibilities=[]
+){
+
+
+
+
+
+if(
+possibilities.length
+){
+
+
+
+return (
+
+"I noticed a possibility"
+
+);
+
+
+
+}
+
+
+
+
 
 
 
 if(
 
-judgement.priority==="high"
+judgement.priority === "high"
 
 ){
+
 
 
 return (
@@ -281,16 +772,22 @@ return (
 );
 
 
+
 }
+
+
+
+
 
 
 
 
 if(
 
-judgement.mode==="execute"
+judgement.mode === "execute"
 
 ){
+
 
 
 return (
@@ -300,7 +797,11 @@ return (
 );
 
 
+
 }
+
+
+
 
 
 
@@ -313,6 +814,7 @@ return (
 );
 
 
+
 }
 
 
@@ -323,14 +825,17 @@ return (
 
 
 
+
+
 // ==============================
-// Personal message
+// PERSONAL MESSAGE
 // ==============================
 
 
 createPersonalMessage(
 judgement,
-identity
+identity,
+possibilities=[]
 ){
 
 
@@ -340,6 +845,33 @@ let message =
 judgement.reason ||
 
 "I found something useful.";
+
+
+
+
+
+
+
+if(
+possibilities.length
+){
+
+
+
+message +=
+
+`
+
+I also noticed:
+${possibilities[0].message}
+`;
+
+
+
+}
+
+
+
 
 
 
@@ -356,6 +888,7 @@ identity.goals?.length
 message +=
 
 `
+
 This connects with your goals:
 ${identity.goals
 .slice(0,2)
@@ -365,6 +898,8 @@ ${identity.goals
 
 
 }
+
+
 
 
 
@@ -383,6 +918,7 @@ identity.workingStyle?.length
 message +=
 
 `
+
 I considered how you usually work:
 ${identity.workingStyle[0]}
 `;
@@ -397,6 +933,7 @@ ${identity.workingStyle[0]}
 
 
 
+
 return message;
 
 
@@ -411,14 +948,17 @@ return message;
 
 
 
+
+
 // ==============================
-// Observation message
+// OBSERVATION MESSAGE
 // ==============================
 
 
 createObservationMessage(
 judgement,
-identity
+identity,
+possibilities=[]
 ){
 
 
@@ -427,7 +967,35 @@ let message =
 
 judgement.reason ||
 
-"I noticed this, but I want more context before acting.";
+"I noticed this and I am learning what it means.";
+
+
+
+
+
+
+
+
+if(
+possibilities.length
+){
+
+
+
+message +=
+
+`
+
+A possible path:
+${possibilities[0].message}
+`;
+
+
+
+}
+
+
+
 
 
 
@@ -441,15 +1009,19 @@ identity.decisionPatterns?.length
 ){
 
 
+
 message +=
 
 `
-I noticed a pattern from previous decisions:
+
+I noticed a pattern from before:
 ${identity.decisionPatterns[0]}
 `;
 
 
+
 }
+
 
 
 
@@ -471,8 +1043,10 @@ return message;
 
 
 
+
+
 // ==============================
-// Connect insight to memory
+// MEMORY CONNECTION
 // ==============================
 
 
@@ -497,7 +1071,11 @@ return (
 );
 
 
+
 }
+
+
+
 
 
 
@@ -505,7 +1083,7 @@ return (
 
 return (
 
-`Based on ${memory.totalMemories} things Emma has learned about you.`
+`Based on ${memory.totalMemories} experiences Emma has shared with you.`
 
 );
 
@@ -517,6 +1095,11 @@ return (
 
 
 }
+
+
+
+
+
 
 
 
