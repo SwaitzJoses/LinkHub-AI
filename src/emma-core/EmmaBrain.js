@@ -35,7 +35,7 @@ from "./EmmaMemory";
 
 
 import EmmaIdentity
-from "./EmmaIdentity";
+from "./identity/EmmaIdentity";
 
 
 

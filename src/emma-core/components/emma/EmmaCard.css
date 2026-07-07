@@ -1,50 +1,56 @@
-/* EmmaCard.css */
-/*
- Emma visual presence layer
-
- RULE:
- CSS creates personality.
- CSS does not create intelligence.
-*/
+/* Emma Ghost UI */
 
 
 .emma-card{
 
-    position: fixed;
 
-    right: 30px;
-    bottom: 30px;
-
-    width: 330px;
-
-    background:
-    linear-gradient(
-        145deg,
-        #fffaf0,
-        #f6ead5
-    );
+position:fixed;
 
 
-    border-radius: 24px;
+right:25px;
 
-    padding: 22px;
-
-
-    box-shadow:
-    0 25px 60px rgba(0,0,0,0.18);
+bottom:25px;
 
 
-    font-family:
-    Inter,
-    system-ui,
-    sans-serif;
+width:80px;
+
+height:80px;
 
 
-    z-index: 9999;
+border-radius:50%;
 
 
-    animation:
-    emmaAppear .5s ease;
+z-index:99999;
+
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+
+background:
+
+linear-gradient(
+135deg,
+#fff4df,
+#ffffff
+);
+
+
+box-shadow:
+
+0 15px 40px rgba(0,0,0,.25);
+
+
+cursor:pointer;
+
+
+overflow:hidden;
+
+
+transition:.3s ease;
 
 
 }
@@ -53,190 +59,21 @@
 
 
 
-.emma-header{
+.emma-card:hover{
 
-    display:flex;
 
-    align-items:center;
+width:320px;
 
-    gap:15px;
+height:420px;
 
-}
 
+border-radius:30px;
 
 
+padding:20px;
 
-.emma-avatar{
 
-
-    width:58px;
-    height:58px;
-
-    border-radius:50%;
-
-
-    background:
-    linear-gradient(
-        135deg,
-        #111,
-        #3b2b18
-    );
-
-
-    color:#d9b56d;
-
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-
-    font-size:26px;
-
-    font-weight:700;
-
-
-    box-shadow:
-    0 8px 25px rgba(0,0,0,.25);
-
-}
-
-
-
-
-.emma-avatar.thinking{
-
-
-    animation:
-    pulse 1.5s infinite;
-
-}
-
-
-
-
-.emma-header h3{
-
-    margin:0;
-
-    color:#22190f;
-
-}
-
-
-
-
-.emma-status{
-
-
-    font-size:13px;
-
-    color:#8a6b3f;
-
-}
-
-
-
-
-.emma-message{
-
-
-    margin-top:22px;
-
-
-    background:white;
-
-
-    padding:15px;
-
-
-    border-radius:18px;
-
-
-    color:#3b2b18;
-
-
-    line-height:1.4;
-
-
-}
-
-
-
-
-.emma-awareness{
-
-    margin-top:18px;
-
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:5px;
-
-
-}
-
-
-
-.emma-awareness small{
-
-
-    color:#92764b;
-
-
-}
-
-
-
-.emma-awareness strong{
-
-
-    color:#2b2116;
-
-}
-
-
-
-
-.emma-timeline{
-
-
-    margin-top:20px;
-
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
-
-}
-
-
-
-
-
-.timeline-item{
-
-
-    background:
-    rgba(255,255,255,.5);
-
-
-    padding:10px 12px;
-
-
-    border-radius:14px;
-
-
-    font-size:13px;
-
-
-    color:#5c4930;
+overflow:auto;
 
 
 }
@@ -246,28 +83,37 @@
 
 
 
-@keyframes pulse{
+
+.emma-card h1,
+.emma-card h2{
 
 
-    0%{
-
-        transform:scale(1);
-
-    }
+font-size:18px;
 
 
-    50%{
-
-        transform:scale(1.08);
-
-    }
+}
 
 
-    100%{
 
-        transform:scale(1);
 
-    }
+.emma-section{
+
+
+background:white;
+
+
+padding:15px;
+
+
+border-radius:18px;
+
+
+margin-top:15px;
+
+
+box-shadow:
+
+0 5px 20px rgba(0,0,0,.1);
 
 
 }
@@ -276,27 +122,26 @@
 
 
 
-@keyframes emmaAppear{
+
+.emma-button{
 
 
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(20px);
-
-    }
+background:#7b35ff;
 
 
-    to{
+color:white;
 
-        opacity:1;
 
-        transform:
-        translateY(0);
+border:none;
 
-    }
+
+padding:12px;
+
+
+border-radius:15px;
+
+
+width:100%;
 
 
 }

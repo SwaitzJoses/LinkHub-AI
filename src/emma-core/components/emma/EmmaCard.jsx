@@ -12,8 +12,7 @@
 
 
 import { useEffect, useState } from "react";
-import Emma from "../../emma/Emma";
-
+import Emma from "../../Emma";
 import "./EmmaCard.css";
 
 

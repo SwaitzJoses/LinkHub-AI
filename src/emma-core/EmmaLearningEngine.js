@@ -20,7 +20,7 @@ from "./relationship/EmmaRelationshipMemory";
 
 
 import EmmaIdentity
-from "./EmmaIdentity";
+from "./identity/EmmaIdentity";
 
 
 

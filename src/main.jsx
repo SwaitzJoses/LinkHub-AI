@@ -14,7 +14,7 @@ import App from "./App.jsx";
 // import "./emma-core/testConnectors";
 
 
-import "./emma-core/tests/testEmmaDay12";
+// import "./emma-core/tests/testEmmaDay12";
 
 
 createRoot(
