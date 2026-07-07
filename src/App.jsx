@@ -15,6 +15,7 @@ import EmmaAI from "./pages/EmmaAI";
 
 import EmmaGmailConnect
 from "./emma-core/connectors/EmmaGmailConnect";
+import EmmaCard from "./components/emma/EmmaCard";
 
 
 
@@ -50,6 +51,7 @@ function App() {
 <>
     <EmmaGmailConnect />
     <BrowserRouter>
+     <EmmaCard />
 <Routes>
 
   <Route path="/" element={<Navigate to="/dashboard" />} />

@@ -1,12 +1,20 @@
 // EmmaJudgement.js
 // Emma's wisdom layer
 //
-// Reasoning
-// + Memory
-// + Identity
-// → Personal Judgement
-// → Right Action
-
+// PURPOSE:
+// Decide if a thought should become action.
+//
+// Reasoning thinks.
+// Judgement chooses.
+// ActionExecutor acts.
+//
+// RULE:
+// Never act only because AI suggested.
+// Use:
+// - memory
+// - confidence
+// - relationships
+// - risk
 
 
 class EmmaJudgement {
@@ -14,9 +22,11 @@ class EmmaJudgement {
 
 constructor(){
 
+
 console.log(
-"⚖️ Emma Personal Judgement online"
+"⚖️ Emma Judgement Engine online"
 );
+
 
 }
 
@@ -25,9 +35,9 @@ console.log(
 
 
 
-// ==============================
-// Main judgement engine
-// ==============================
+// =================================
+// MAIN JUDGEMENT
+// =================================
 
 
 async judge(
@@ -38,19 +48,19 @@ capabilities=[]
 
 
 console.log(
-"⚖️ Emma judging with understanding",
-{
-reasoning,
-memory
-}
+"⚖️ Emma judging...",
+reasoning
 );
 
 
 
 
+// -------------------------------
+// Load context
+// -------------------------------
+
 
 let confidence =
-
 reasoning?.confidence || 50;
 
 
@@ -65,25 +75,37 @@ Math.round(confidence * 100);
 
 
 
-
 const memories =
 
-memory?.relevantExperiences ||
+memory.relevantExperiences ||
 
-memory?.previousExperiences ||
+memory.previousExperiences ||
 
 [];
 
 
 
 
+const relationships =
+
+memory.relationships ||
+
+reasoning.memoryInfluence?.relationshipsUsed ||
+
+[];
+
+
+
+
+
 const identity =
 
-memory?.identity ||
+memory.identity ||
 
-reasoning?.memoryInfluence?.identityUsed ||
+reasoning.memoryInfluence?.identityUsed ||
 
 {};
+
 
 
 
@@ -93,10 +115,30 @@ reasoning?.memoryInfluence?.identityUsed ||
 let judgementLog=[];
 
 
+judgementLog.push(
+`Confidence ${confidence}%`
+);
+
+
+
+
+
+
+
+// -------------------------------
+// Understand relationship
+// -------------------------------
+
+const relationshipRisk =
+this.evaluateRelationship(
+relationships
+);
+
+
 
 judgementLog.push(
 
-`Confidence: ${confidence}%`
+`Relationship importance: ${relationshipRisk.level}`
 
 );
 
@@ -105,27 +147,23 @@ judgementLog.push(
 
 
 
-// ==============================
-// Understand person first
-// ==============================
+
+// -------------------------------
+// Personal alignment
+// -------------------------------
 
 
 const personalFit =
-
 this.evaluatePersonalFit(
-
 reasoning,
-
 identity
-
 );
-
 
 
 
 judgementLog.push(
 
-`Personal fit: ${personalFit.score}`
+`Personal fit ${personalFit.score}`
 
 );
 
@@ -134,26 +172,23 @@ judgementLog.push(
 
 
 
-// ==============================
-// Risk understanding
-// ==============================
+
+
+// -------------------------------
+// Situation risk
+// -------------------------------
 
 
 const risk =
-
 this.detectRisk(
-
 reasoning
-
 );
-
-
 
 
 
 judgementLog.push(
 
-`Risk level: ${risk.level}`
+`Risk ${risk.level}`
 
 );
 
@@ -163,34 +198,26 @@ judgementLog.push(
 
 
 
-// ==============================
-// Decide action
-// ==============================
+
+// -------------------------------
+// Choose possible action
+// -------------------------------
 
 
-const desiredAction =
-
+const action =
 this.chooseAction(
-
 reasoning,
-
 risk,
-
 personalFit
-
 );
-
-
-
 
 
 
 judgementLog.push(
 
-`Decision: ${desiredAction}`
+`Chosen action ${action}`
 
 );
-
 
 
 
@@ -199,51 +226,47 @@ judgementLog.push(
 
 
 const failures =
-
-this.findFailures(memories);
-
+this.findFailures(
+memories
+);
 
 
 const successes =
-
-this.findSuccess(memories);
-
-
-
+this.findSuccess(
+memories
+);
 
 
 
 
 
 
-// ==============================
-// Not enough understanding
-// ==============================
+
+
+
+// =================================
+// NOT ENOUGH KNOWLEDGE
+// =================================
 
 
 if(
 
-confidence < 45
+confidence < 50 &&
+memories.length < 3
 
 ){
 
 
 return this.wait({
 
-
 confidence,
 
-
-priority:risk.priority,
-
+priority:"medium",
 
 reason:
-
-"Emma needs to understand more before giving strong judgement.",
-
+"Emma needs more experience before acting.",
 
 judgementLog
-
 
 });
 
@@ -258,45 +281,33 @@ judgementLog
 
 
 
-// ==============================
-// Avoid old mistakes
-// ==============================
+
+// =================================
+// PREVENT OLD MISTAKES
+// =================================
 
 
 if(
 
 this.matchesPastFailure(
-
-desiredAction,
-
+action,
 failures
-
 )
 
 ){
 
 
-
 return this.wait({
-
 
 confidence,
 
-
-priority:"medium",
-
+priority:"high",
 
 reason:
-
-"Emma remembers a similar mistake and avoids repeating it.",
-
-
+"Emma remembers this approach failed before.",
 
 lesson:
-
 failures.slice(0,3),
-
-
 
 judgementLog
 
@@ -314,18 +325,12 @@ judgementLog
 
 
 
+// =================================
+// PERSONAL CONFLICT
+// =================================
 
 
-// ==============================
-// Identity conflict check
-// ==============================
-
-
-if(
-
-personalFit.warning
-
-){
+if(personalFit.warning){
 
 
 return {
@@ -333,29 +338,71 @@ return {
 
 shouldAct:false,
 
-
-action:null,
-
+action,
 
 mode:"advise",
 
-
 confidence,
 
-
-priority:"high",
-
+priority:"medium",
 
 needsApproval:false,
 
-
 reason:
-
 personalFit.warning,
-
 
 judgementLog,
 
+createdAt:
+new Date()
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// IMPORTANT PERSON SAFETY
+// =================================
+
+
+if(
+
+relationshipRisk.important &&
+risk.level==="high"
+
+){
+
+
+return {
+
+
+shouldAct:true,
+
+action,
+
+mode:"prepare",
+
+needsApproval:true,
+
+confidence,
+
+priority:"high",
+
+reason:
+"Important relationship detected. Emma prepared action but wants confirmation.",
+
+judgementLog,
 
 createdAt:new Date()
 
@@ -373,27 +420,22 @@ createdAt:new Date()
 
 
 
+// =================================
+// CAPABILITY CHECK
+// =================================
 
 
-// ==============================
-// Capability check
-// ==============================
-
-
-const skill =
-
+const capability =
 capabilities.find(
 
-c => c.name === desiredAction
+c=>c.name===action
 
 );
 
 
 
 
-
-
-if(!skill){
+if(!capability){
 
 
 return {
@@ -402,7 +444,7 @@ return {
 shouldAct:false,
 
 
-action:desiredAction,
+action,
 
 
 mode:"recommend",
@@ -411,16 +453,15 @@ mode:"recommend",
 confidence,
 
 
-priority:risk.priority,
+priority:
+risk.priority,
 
 
 needsApproval:false,
 
 
 reason:
-
-"Emma understands the situation and recommends this action.",
-
+"Emma recommends this action but has no executor.",
 
 
 judgementLog,
@@ -443,17 +484,15 @@ createdAt:new Date()
 
 
 
-
-// ==============================
-// Execution risk
-// ==============================
+// =================================
+// ACTION RISK
+// =================================
 
 
 const actionRisk =
-
 this.calculateRisk(
 
-skill,
+capability,
 
 reasoning,
 
@@ -465,32 +504,19 @@ memories
 
 
 
-
-
-if(
-
-actionRisk > confidence
-
-){
+if(actionRisk > confidence){
 
 
 return this.wait({
 
-
 confidence,
-
 
 priority:risk.priority,
 
-
 reason:
-
-"Emma thinks action risk is higher than confidence.",
-
-
+"Action risk is higher than Emma confidence.",
 
 judgementLog
-
 
 });
 
@@ -505,9 +531,9 @@ judgementLog
 
 
 
-const needsHuman =
+const needsApproval =
 
-skill.requiresApproval ||
+capability.requiresApproval ||
 
 actionRisk > 60;
 
@@ -518,8 +544,6 @@ actionRisk > 60;
 
 
 
-if(needsHuman){
-
 
 return {
 
@@ -527,29 +551,49 @@ return {
 shouldAct:true,
 
 
-action:desiredAction,
+action,
 
 
-mode:"prepare",
+mode:
+
+needsApproval
+
+?
+
+"prepare"
+
+:
+
+"execute",
 
 
-needsApproval:true,
 
-
-priority:risk.priority,
+needsApproval,
 
 
 confidence,
 
 
+priority:
+risk.priority,
+
+
 reason:
 
-"Emma prepared the action but wants confirmation.",
+needsApproval
+
+?
+
+"Emma prepared action and requests approval."
+
+:
+
+"Emma approved action using memory and judgement.",
+
 
 
 
 experienceUsed:
-
 successes.slice(0,3),
 
 
@@ -557,59 +601,10 @@ successes.slice(0,3),
 judgementLog,
 
 
-createdAt:new Date()
 
+createdAt:
 
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-return {
-
-
-shouldAct:true,
-
-
-action:desiredAction,
-
-
-mode:"execute",
-
-
-needsApproval:false,
-
-
-priority:risk.priority,
-
-
-confidence,
-
-
-reason:
-
-"Emma approved using memory, identity and judgement.",
-
-
-
-experienceUsed:
-
-successes.slice(0,3),
-
-
-
-judgementLog,
-
-
-createdAt:new Date()
+new Date()
 
 
 };
@@ -626,16 +621,96 @@ createdAt:new Date()
 
 
 
-// ==============================
-// Personal understanding
-// ==============================
+
+// =================================
+// RELATIONSHIP UNDERSTANDING
+// =================================
+
+
+evaluateRelationship(
+relationships=[]
+){
+
+
+
+if(relationships.length===0){
+
+
+return {
+
+level:"unknown",
+
+important:false
+
+};
+
+}
+
+
+
+const interactions =
+
+relationships.reduce(
+
+(total,p)=>
+
+total +
+
+(p.interactions || 0),
+
+0
+
+);
+
+
+
+
+
+return {
+
+
+level:
+
+interactions>5
+
+?
+
+"strong"
+
+:
+
+"known",
+
+
+
+important:
+
+interactions>=3
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// PERSONAL FIT
+// =================================
 
 
 evaluatePersonalFit(
 reasoning,
 identity
 ){
-
 
 
 let score=50;
@@ -645,10 +720,8 @@ let warning=null;
 
 
 const text =
-
 JSON.stringify(reasoning)
 .toLowerCase();
-
 
 
 
@@ -658,6 +731,15 @@ if(identity.goals?.length){
 score+=20;
 
 }
+
+
+
+if(identity.preferences?.length){
+
+score+=15;
+
+}
+
 
 
 
@@ -671,28 +753,24 @@ score+=15;
 
 
 
-// example:
- // fast builders adding too much
-
 if(
 
-text.includes("new") &&
+text.includes("start new") &&
 
 JSON.stringify(identity)
-
 .toLowerCase()
-
-.includes("fast execution")
+.includes("fast")
 
 ){
 
 
 warning =
 
-"Emma knows you move fast. Before starting something new, check if current priorities are complete.";
+"Emma knows speed matters, but suggests checking existing priorities first.";
 
 
 }
+
 
 
 
@@ -716,16 +794,15 @@ warning
 
 
 
-// ==============================
-// Risk detection
-// ==============================
+// =================================
+// RISK DETECTION
+// =================================
 
 
 detectRisk(reasoning){
 
 
 const text =
-
 JSON.stringify(reasoning)
 .toLowerCase();
 
@@ -734,13 +811,13 @@ JSON.stringify(reasoning)
 
 if(
 
-text.includes("risk") ||
+text.includes("cancel") ||
 
 text.includes("loss") ||
 
 text.includes("problem") ||
 
-text.includes("burnout")
+text.includes("risk")
 
 ){
 
@@ -759,11 +836,13 @@ priority:"high"
 
 
 
+
+
 if(
 
-text.includes("opportunity") ||
+text.includes("growth") ||
 
-text.includes("growth")
+text.includes("opportunity")
 
 ){
 
@@ -778,6 +857,7 @@ priority:"medium"
 
 
 }
+
 
 
 
@@ -801,9 +881,9 @@ priority:"low"
 
 
 
-// ==============================
-// Choose action
-// ==============================
+// =================================
+// ACTION CHOICE
+// =================================
 
 
 chooseAction(
@@ -815,9 +895,7 @@ personalFit
 
 
 if(
-
-reasoning?.recommendation?.action
-
+reasoning.recommendation?.action
 ){
 
 return reasoning.recommendation.action;
@@ -826,7 +904,8 @@ return reasoning.recommendation.action;
 
 
 
-if(personalFit.score>70){
+
+if(personalFit.score>=80){
 
 return "PERSONAL_GUIDANCE";
 
@@ -834,11 +913,13 @@ return "PERSONAL_GUIDANCE";
 
 
 
+
 if(risk.level==="high"){
 
-return "ANALYZE_CAREFULLY";
+return "PROTECT";
 
 }
+
 
 
 
@@ -855,25 +936,18 @@ return "CONTINUE_LEARNING";
 
 
 
+
 findSuccess(memories){
 
 
-return memories.filter(m=>
+return memories.filter(
 
-JSON.stringify(m)
-
-.toLowerCase()
-
-.includes("success")
+m=>m.memory?.success===true
 
 );
 
 
 }
-
-
-
-
 
 
 
@@ -881,32 +955,14 @@ JSON.stringify(m)
 findFailures(memories){
 
 
-return memories.filter(m=>{
+return memories.filter(
 
-
-const text =
-
-JSON.stringify(m)
-.toLowerCase();
-
-
-
-return (
-
-text.includes("failed") ||
-
-text.includes("mistake") ||
-
-text.includes("avoid")
+m=>m.memory?.success===false
 
 );
 
 
-});
-
-
 }
-
 
 
 
@@ -921,6 +977,7 @@ failures
 
 
 return failures.some(f=>
+
 
 JSON.stringify(f)
 
@@ -944,6 +1001,7 @@ action.toLowerCase()
 
 
 
+
 calculateRisk(
 skill,
 reasoning,
@@ -951,27 +1009,41 @@ memories
 ){
 
 
+
 let risk=30;
 
 
 
-if(skill.risk==="medium")
+if(skill.risk==="medium"){
+
 risk+=20;
 
+}
 
 
-if(skill.risk==="high")
+
+if(skill.risk==="high"){
+
 risk+=50;
 
+}
 
 
-if(reasoning.confidence>80)
+
+if(reasoning.confidence>80){
+
 risk-=20;
 
+}
 
 
-if(memories.length>5)
+
+if(memories.length>5){
+
 risk-=10;
+
+}
+
 
 
 
@@ -991,18 +1063,13 @@ risk,
 
 
 
+
 wait({
-
 confidence,
-
 priority,
-
 reason,
-
 lesson=[],
-
 judgementLog=[]
-
 }){
 
 

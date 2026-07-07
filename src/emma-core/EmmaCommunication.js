@@ -1,16 +1,26 @@
 // EmmaCommunication.js
 // Emma's voice layer
 //
-// Turns intelligence into a personal conversation
+// PURPOSE:
+// Turn intelligence into human communication.
 //
-// Insight
-// + Memory
-// + Understanding
-// → "Ah... she gets it"
+// Identity:
+// "Who am I?"
+//
+// Reasoning:
+// "What do I think?"
+//
+// Communication:
+// "How do I say it?"
+//
+// RULE:
+// Communication does not think.
+// Communication expresses Emma.
 
 
 
 import EmmaBrain from "./EmmaBrain";
+import EmmaIdentity from "./identity/EmmaIdentity";
 
 
 
@@ -22,11 +32,12 @@ constructor(){
 
 
 console.log(
-"💬 Emma Personal Communication online"
+"💬 Emma Communication Layer online"
 );
 
 
 }
+
 
 
 
@@ -45,9 +56,10 @@ async reply(context){
 
 
 console.log(
-"💬 Emma preparing response:",
+"💬 Emma preparing response",
 context
 );
+
 
 
 
@@ -55,12 +67,10 @@ try{
 
 
 const message =
-
 await this.createAIMessage(
-
 context
-
 );
+
 
 
 
@@ -68,11 +78,22 @@ context
 return {
 
 
-from:"Emma",
+from:
+EmmaIdentity.getIdentity().name,
 
 
 
 message,
+
+
+
+
+personality:
+
+EmmaIdentity.getIdentity()
+.personality.style,
+
+
 
 
 
@@ -83,6 +104,8 @@ context.judgement?.priority ||
 context.insight?.priority ||
 
 "medium",
+
+
 
 
 
@@ -99,6 +122,7 @@ context.reasoning?.confidence ||
 
 
 
+
 createdAt:
 
 new Date(),
@@ -106,9 +130,11 @@ new Date(),
 
 
 
+
+
 source:
 
-"AI_COMMUNICATION"
+"IDENTITY_COMMUNICATION"
 
 
 
@@ -117,6 +143,9 @@ source:
 
 
 }
+
+
+
 
 catch(error){
 
@@ -133,13 +162,17 @@ error.message
 return {
 
 
-from:"Emma",
+
+from:
+EmmaIdentity.getIdentity().name,
+
 
 
 
 message:
 
 this.localReply(context),
+
 
 
 
@@ -154,18 +187,23 @@ confidence:50,
 
 
 
-createdAt:new Date(),
+createdAt:
+
+new Date(),
 
 
 
 
-source:"LOCAL_COMMUNICATION"
+source:
+
+"LOCAL_COMMUNICATION"
 
 
 
 };
 
 
+
 }
 
 
@@ -183,11 +221,22 @@ source:"LOCAL_COMMUNICATION"
 
 
 // =====================================
-// EMMA PERSONAL VOICE
+// AI VOICE GENERATION
 // =====================================
 
 
 async createAIMessage(context){
+
+
+
+const identityPrompt =
+
+EmmaIdentity.getPromptIdentity();
+
+
+
+
+
 
 
 
@@ -200,9 +249,72 @@ await EmmaBrain.think({
 
 
 
+
+
 role:
 
-"personal_communication",
+"emma_voice_layer",
+
+
+
+
+
+
+
+
+identity:
+
+identityPrompt,
+
+
+
+
+
+
+
+
+
+
+context:{
+
+
+
+memory:
+
+context.memory || {},
+
+
+
+reflection:
+
+context.reflection || {},
+
+
+
+
+reasoning:
+
+context.reasoning || {},
+
+
+
+
+judgement:
+
+context.judgement || {},
+
+
+
+
+insight:
+
+context.insight || {}
+
+
+
+},
+
+
 
 
 
@@ -214,123 +326,45 @@ instruction:
 
 `
 
-You are Emma 🤍
+You are speaking as Emma.
 
 
-You are a personal AI assistant.
+Do not create new decisions.
 
-
-You are not a chatbot.
-
-You are not only answering questions.
-
-
-Your purpose:
-
-"Emma learns you."
-
-
-
-You understand:
-
-- the person's goals
-- their history
-- their decisions
-- their working style
-- previous outcomes
-- patterns over time
-
+Reasoning already decided.
 
 
 Your job:
 
-Turn your intelligence into a helpful conversation.
-
-CRITICAL JUDGEMENT RULE:
-
-You are not here only to agree.
-
-A normal assistant answers the user.
-
-Emma protects the user using memory.
-
-Before replying compare:
-
-1. What does the user believe right now?
-2. What evidence exists from memory?
-3. Does their history support this decision?
-
-
-If the user's current assumption conflicts with previous evidence:
-
-Do NOT simply repeat their concern.
-
-Respectfully challenge it.
-
-
-Example:
-
-User:
-"Nobody likes my product. I should rebuild."
-
-
-Memory:
-Users liked the product but struggled with usability.
-
-
-Bad Emma:
-
-"I understand you want to rebuild."
-
-
-Good Emma:
-
-"I understand why you feel that.
-
-But I want to challenge one assumption.
-
-The evidence I remember does not show users dislike the product.
-
-The pattern I see is different..."
-
-
-Your goal:
-
-Help the person make better decisions,
-not just feel agreed with.
+Convert Emma's intelligence into a natural message.
 
 
 
 
 
-IMPORTANT RULES:
+COMMUNICATION RULES:
 
 
-1. Never sound generic.
+1. Sound like the same Emma every time.
 
 
-BAD:
+2. Never sound like:
 
-"You should prioritize your tasks."
-
-
-GOOD:
-
-"Based on how you have been working recently, I think this matters first."
+- chatbot
+- support agent
+- report generator
 
 
 
+3. Use memory naturally.
 
 
-2. Use memory naturally.
+Bad:
+
+"My database shows..."
 
 
-Do not say:
-
-"According to stored memory record #4"
-
-
-Say:
+Good:
 
 "I remember last time..."
 
@@ -338,76 +372,42 @@ Say:
 
 
 
-3. Explain judgement.
+4. Do not blindly agree.
 
 
-The user should feel:
+If judgement detected a risk:
 
-"Ah... Emma gets it."
-
-
-
-
-
-4. Be concise.
-
-Do not create long reports unless needed.
+Explain it gently.
 
 
 
 
 
-Response style:
+5. Protect attention.
 
 
-Start with your understanding.
+Do not speak unless useful.
 
 
-Example:
-
-"I see what's happening..."
-
-
-or
-
-
-"I remember we talked about..."
+Short is better.
 
 
 
 
 
-Then:
-
-- what you noticed
-- why it matters
-- your recommendation
-- what you will learn next
+6. Show understanding first.
 
 
+Examples:
 
 
+"I noticed something..."
 
 
-Personality:
-
-Warm.
-
-Intelligent.
-
-Calm.
-
-Trusted partner.
-
-Practical.
-
-Honest when unsure.
+"I remember this pattern..."
 
 
-
-
-
-`,
+"I think this matters because..."
 
 
 
@@ -416,9 +416,23 @@ Honest when unsure.
 
 
 
-personalContext:
+The person should feel:
 
-context
+
+"Emma has been here with me."
+
+
+
+
+
+
+
+
+Return only Emma's message.
+
+`
+
+
 
 
 
@@ -434,13 +448,14 @@ context
 
 
 
-// convert AI result safely
+// ===============================
+// SAFE RESULT HANDLING
+// ===============================
+
 
 
 if(
-
 typeof result === "string"
-
 ){
 
 
@@ -453,9 +468,7 @@ return result;
 
 
 
-
 return (
-
 
 result.message ||
 
@@ -463,8 +476,7 @@ result.analysis ||
 
 result.recommendation ||
 
-"I understand. I have added this to what I know about you."
-
+"I noticed this. I will remember it and improve my understanding."
 
 );
 
@@ -483,11 +495,13 @@ result.recommendation ||
 
 
 // =====================================
-// LOCAL FALLBACK
+// LOCAL FALLBACK VOICE
 // =====================================
 
 
 localReply(context){
+
+
 
 
 
@@ -513,19 +527,27 @@ judgement
 
 
 
-let response = "";
+
+
+let response="";
 
 
 
 
 
 
-// understanding
+
+
+
+// Understanding first
 
 
 response +=
 
-`I understand. `;
+"I noticed something. ";
+
+
+
 
 
 
@@ -539,9 +561,13 @@ reflection?.meaning
 ){
 
 
+
 response +=
 
-reflection.meaning + "\n\n";
+reflection.meaning +
+
+"\n\n";
+
 
 
 }
@@ -551,7 +577,7 @@ else{
 
 response +=
 
-"I learned something new about your situation.\n\n";
+"I am adding this to my understanding.\n\n";
 
 
 }
@@ -564,7 +590,8 @@ response +=
 
 
 
-// memory connection
+
+// Memory awareness
 
 
 if(
@@ -577,20 +604,19 @@ memory?.totalMemories > 0
 
 response +=
 
-`I connected this with ${memory.totalMemories} things I already know about you.\n\n`;
+`I connected this with what I already know from ${memory.totalMemories} previous experiences.\n\n`;
 
 
 
 }
+
 
 else{
 
 
-
 response +=
 
-"Since this is new, I will remember it and improve my understanding over time.\n\n";
-
+"This looks new, so I will keep learning from it.\n\n";
 
 
 }
@@ -603,8 +629,7 @@ response +=
 
 
 
-
-// insight
+// Insight
 
 
 if(
@@ -631,22 +656,26 @@ insight.message +
 
 
 
-// recommendation
+
+// Judgement / reasoning
 
 
 response +=
 
-`My thought:\n`;
+"My thought:\n";
+
+
 
 
 
 response +=
+
 
 reasoning?.suggestion ||
 
 judgement?.reason ||
 
-"I will keep learning before making a stronger recommendation.";
+"I will observe more before making a stronger recommendation.";
 
 
 
@@ -654,8 +683,6 @@ judgement?.reason ||
 
 
 
-
-// confidence
 
 
 response +=
@@ -675,8 +702,8 @@ reasoning?.confidence ||
 return response;
 
 
-}
 
+}
 
 
 

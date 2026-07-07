@@ -1,15 +1,28 @@
 // EmmaObserver.js
 // Emma's eyes
 //
-// Observes user's world
-// Converts events into signals
+// PURPOSE:
+// Observe the user's world.
+// Detect signals.
+// Recognize identities.
+//
+// Observer does NOT think.
+// Observer does NOT judge.
+// Observer only notices.
 //
 // World
-// → Signals
-// → Reflection
-// → Memory
-// → Reasoning
+//   ↓
+// Observer
+//   ↓
+// Identity Memory
+//   ↓
+// Reflection
+//   ↓
+// Reasoning
 
+
+import EmmaIdentityMemory
+from "./EmmaIdentityMemory";
 
 
 class EmmaObserver {
@@ -25,14 +38,9 @@ console.log(
 
 
 
-
-
-
-
-// ===========================
-// Main observation function
-// ===========================
-
+// ===================================
+// Main observation
+// ===================================
 
 async observe({
 
@@ -43,6 +51,8 @@ business,
 source,
 
 eventType,
+
+person,
 
 data,
 
@@ -58,7 +68,7 @@ console.log(
 {
 source,
 eventType,
-data,
+person,
 message
 }
 );
@@ -66,8 +76,44 @@ message
 
 
 
-const analysis =
+// -------------------------------
+// WHO is involved?
+// -------------------------------
 
+let identity=null;
+
+
+if(person){
+
+
+identity =
+EmmaIdentityMemory.remember(
+person,
+{
+source,
+eventType
+}
+);
+
+
+console.log(
+"🧑 Identity recognized:",
+identity?.name
+);
+
+
+}
+
+
+
+
+
+// -------------------------------
+// WHAT happened?
+// -------------------------------
+
+
+const analysis =
 analyzeSignals({
 
 data:data || {},
@@ -75,6 +121,7 @@ data:data || {},
 message:
 message ||
 data?.message ||
+data?.content?.message ||
 "",
 
 history
@@ -89,7 +136,7 @@ return {
 
 
 
-// new Emma identity
+// USER OWNER
 
 userId:
 
@@ -102,7 +149,7 @@ null,
 
 
 
-// keep old support
+// BUSINESS OWNER
 
 businessId:
 
@@ -117,19 +164,23 @@ null,
 
 
 
+// WHERE
 
 source:
 
 source ||
-
 "UNKNOWN",
 
 
 
 
+// EVENT
+
 eventType:
 
 eventType ||
+
+data?.event ||
 
 data?.type ||
 
@@ -139,23 +190,35 @@ data?.type ||
 
 
 
+// WHO
+
+identity,
+
+
+
+
+
+// RAW OBSERVATION
+
 raw:{
+
+person,
 
 data:data || {},
 
-message:message || ""
+message:
+message || ""
 
 },
 
 
 
 
+// WHAT EMMA NOTICED
 
 signals:
 
 analysis.signals,
-
-
 
 
 
@@ -165,13 +228,9 @@ analysis.importance,
 
 
 
-
-
 summary:
 
 analysis.summary,
-
-
 
 
 
@@ -183,7 +242,6 @@ new Date()
 };
 
 
-
 }
 
 
@@ -198,10 +256,10 @@ new Date()
 
 
 
-// ==================================
-// Analyze everything Emma sees
-// ==================================
 
+// ===================================
+// Signal Analysis
+// ===================================
 
 function analyzeSignals({
 
@@ -234,8 +292,7 @@ message
 
 
 
-
-// PERSONAL INTELLIGENCE
+// PERSONAL SIGNALS
 
 detectGoals(
 text,
@@ -274,8 +331,7 @@ signals
 
 
 
-
-// BUSINESS INTELLIGENCE
+// BUSINESS SIGNALS
 
 detectBusinessText(
 text,
@@ -304,23 +360,17 @@ signals
 
 
 
+// importance calculation
 
 importance +=
-
 signals.length * 2;
 
 
 
 if(
-
 signals.some(
-
-s =>
-
-s.type==="risk"
-
+s=>s.type==="risk"
 )
-
 ){
 
 importance +=3;
@@ -329,15 +379,11 @@ importance +=3;
 
 
 
-
 importance =
-
 Math.min(
 importance,
 10
 );
-
-
 
 
 
@@ -348,15 +394,12 @@ signals,
 importance,
 
 summary:
-
 createSummary(signals)
 
 };
 
 
 }
-
-
 
 
 
@@ -377,11 +420,8 @@ function detectGoals(text,signals){
 if(
 
 text.includes("goal") ||
-
 text.includes("want to") ||
-
 text.includes("trying to") ||
-
 text.includes("dream")
 
 ){
@@ -390,11 +430,9 @@ text.includes("dream")
 signals.push({
 
 type:"identity",
-
 area:"goal",
-
 message:
-"User goal detected"
+"Goal signal detected"
 
 });
 
@@ -403,9 +441,6 @@ message:
 
 
 }
-
-
-
 
 
 
@@ -416,11 +451,8 @@ function detectDecisions(text,signals){
 if(
 
 text.includes("decided") ||
-
 text.includes("should i") ||
-
 text.includes("thinking about") ||
-
 text.includes("choice")
 
 ){
@@ -431,7 +463,7 @@ signals.push({
 type:"decision",
 
 message:
-"Important decision moment detected"
+"Decision moment detected"
 
 });
 
@@ -440,10 +472,6 @@ message:
 
 
 }
-
-
-
-
 
 
 
@@ -453,13 +481,9 @@ function detectWorkStyle(text,signals){
 
 if(
 
-text.includes("fast") ||
-
-text.includes("quick") ||
-
 text.includes("build") ||
-
-text.includes("ship")
+text.includes("ship") ||
+text.includes("launch")
 
 ){
 
@@ -468,10 +492,10 @@ signals.push({
 
 type:"pattern",
 
-area:"working_style",
+area:"execution",
 
 message:
-"User execution style pattern detected"
+"Execution pattern detected"
 
 });
 
@@ -480,12 +504,11 @@ message:
 
 
 
+
 if(
 
 text.includes("tired") ||
-
 text.includes("exhausted") ||
-
 text.includes("burn")
 
 ){
@@ -498,7 +521,7 @@ type:"risk",
 area:"energy",
 
 message:
-"Energy or workload concern detected"
+"Energy concern detected"
 
 });
 
@@ -506,10 +529,7 @@ message:
 }
 
 
-
 }
-
-
 
 
 
@@ -519,13 +539,10 @@ message:
 function detectEmotions(text,signals){
 
 
-
 if(
 
 text.includes("excited") ||
-
 text.includes("happy") ||
-
 text.includes("love")
 
 ){
@@ -536,7 +553,7 @@ signals.push({
 type:"emotion",
 
 message:
-"Positive emotional signal detected"
+"Positive emotion detected"
 
 });
 
@@ -549,10 +566,8 @@ message:
 if(
 
 text.includes("confused") ||
-
-text.includes("stuck") ||
-
-text.includes("worried")
+text.includes("worried") ||
+text.includes("stuck")
 
 ){
 
@@ -562,7 +577,7 @@ signals.push({
 type:"emotion",
 
 message:
-"Challenge or uncertainty detected"
+"Uncertainty detected"
 
 });
 
@@ -570,10 +585,7 @@ message:
 }
 
 
-
 }
-
-
 
 
 
@@ -583,13 +595,10 @@ message:
 function detectPriorities(text,signals){
 
 
-
 if(
 
 text.includes("important") ||
-
 text.includes("focus") ||
-
 text.includes("priority")
 
 ){
@@ -600,7 +609,7 @@ signals.push({
 type:"priority",
 
 message:
-"Priority signal detected"
+"Priority detected"
 
 });
 
@@ -608,11 +617,7 @@ message:
 }
 
 
-
 }
-
-
-
 
 
 
@@ -625,12 +630,9 @@ function detectRelationships(text,signals){
 if(
 
 text.includes("client") ||
-
 text.includes("customer") ||
-
-text.includes("team") ||
-
-text.includes("founder")
+text.includes("founder") ||
+text.includes("team")
 
 ){
 
@@ -640,7 +642,7 @@ signals.push({
 type:"relationship",
 
 message:
-"Important person or relationship detected"
+"Relationship signal detected"
 
 });
 
@@ -649,6 +651,7 @@ message:
 
 
 }
+
 
 
 
@@ -666,14 +669,11 @@ message:
 function detectBusinessText(text,signals){
 
 
-
 if(
 
 text.includes("sales dropped") ||
-
 text.includes("revenue down") ||
-
-text.includes("less sales")
+text.includes("cancel")
 
 ){
 
@@ -682,10 +682,10 @@ signals.push({
 
 type:"risk",
 
-area:"sales",
+area:"business",
 
 message:
-"Business performance issue detected"
+"Business risk detected"
 
 });
 
@@ -695,14 +695,11 @@ message:
 
 
 
-
 if(
 
 text.includes("growth") ||
-
-text.includes("more orders") ||
-
-text.includes("increased")
+text.includes("increased") ||
+text.includes("more orders")
 
 ){
 
@@ -712,7 +709,7 @@ signals.push({
 type:"growth",
 
 message:
-"Growth signal detected"
+"Growth detected"
 
 });
 
@@ -720,35 +717,7 @@ message:
 }
 
 
-
-if(
-
-text.includes("interested") ||
-
-text.includes("enquiry")
-
-){
-
-
-signals.push({
-
-type:"opportunity",
-
-message:
-"Opportunity detected"
-
-});
-
-
 }
-
-
-
-}
-
-
-
-
 
 
 
@@ -757,36 +726,20 @@ message:
 function detectGrowth(data,history,signals){
 
 
-if(
-
-!history ||
-
-history.length===0
-
-){
-
+if(!history.length){
 return;
-
 }
 
 
-
 const previous =
-
 history[history.length-1];
-
-
 
 
 if(
 
 data.views &&
-
 previous.views &&
-
-data.views >
-
-previous.views * 2
+data.views > previous.views * 2
 
 ){
 
@@ -811,19 +764,13 @@ message:
 
 
 
-
-
-
 function detectProblems(data,signals){
-
 
 
 if(
 
 data.previousSales &&
-
 data.currentSales &&
-
 data.currentSales < data.previousSales
 
 ){
@@ -834,31 +781,7 @@ signals.push({
 type:"risk",
 
 message:
-"Numbers show decline"
-
-});
-
-
-}
-
-
-
-
-if(
-
-data.views > 100 &&
-
-data.orders===0
-
-){
-
-
-signals.push({
-
-type:"risk",
-
-message:
-"Attention exists but conversion missing"
+"Decline detected"
 
 });
 
@@ -867,10 +790,6 @@ message:
 
 
 }
-
-
-
-
 
 
 
@@ -880,12 +799,7 @@ message:
 function detectOpportunities(data,signals){
 
 
-
-if(
-
-data.productViews > 100
-
-){
+if(data.productViews > 100){
 
 
 signals.push({
@@ -893,7 +807,7 @@ signals.push({
 type:"opportunity",
 
 message:
-"High interest area detected"
+"High interest detected"
 
 });
 
@@ -901,32 +815,7 @@ message:
 }
 
 
-
-
-if(
-
-data.engagementRate > 10
-
-){
-
-
-signals.push({
-
-type:"opportunity",
-
-message:
-"Strong engagement detected"
-
-});
-
-
 }
-
-
-
-}
-
-
 
 
 
@@ -944,24 +833,17 @@ function createSummary(signals){
 
 if(signals.length===0){
 
-
 return (
-
-"No strong signal yet. Emma continues learning."
-
+"No strong signal yet. Emma continues observing."
 );
 
-
 }
-
 
 
 return signals
 
 .map(
-
 s=>s.message
-
 )
 
 .join(". ");

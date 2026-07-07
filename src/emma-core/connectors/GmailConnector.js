@@ -3,7 +3,21 @@
 //
 // RULE:
 // Gmail does not think.
-// Gmail only reports what it sees.
+// Gmail does not judge.
+// Gmail does not decide importance.
+//
+// Gmail only observes and reports clean signals.
+//
+// External World
+//      ↓
+// GmailConnector
+//      ↓
+// EmmaConnectorManager
+//      ↓
+// UniversalTranslator
+//      ↓
+// Emma Brain
+
 
 import BaseConnector from "./BaseConnector";
 
@@ -24,39 +38,154 @@ console.log(
 
 
 
-// Emma receives mail signals here
-async collect(email){
+// --------------------------------------------------
+// Extract WHO created the signal
+// --------------------------------------------------
+
+extractPerson(email){
 
 
-return this.normalize({
+return {
 
-source:"gmail",
-
-event:"email_received",
-
-createdAt:
-new Date(),
+name:
+email.fromName ||
+email.name ||
+"Unknown",
 
 
-payload:{
+email:
+email.fromEmail ||
+email.from ||
+"unknown",
 
 
-from:
-email.from,
+source:
+"gmail"
 
-
-subject:
-email.subject,
-
-
-message:
-email.message
+};
 
 
 }
 
 
-});
+
+// --------------------------------------------------
+// Extract message content only
+// No understanding here
+// --------------------------------------------------
+
+extractContent(email){
+
+
+return {
+
+
+subject:
+email.subject || "",
+
+
+message:
+email.message ||
+email.body ||
+"",
+
+
+snippet:
+email.snippet ||
+null
+
+
+};
+
+
+}
+
+
+
+// --------------------------------------------------
+// Keep Gmail technical information
+// --------------------------------------------------
+
+extractMetadata(email){
+
+
+return {
+
+
+gmailId:
+email.id || null,
+
+
+threadId:
+email.threadId || null,
+
+
+labels:
+email.labels || [],
+
+
+attachments:
+email.attachments || [],
+
+
+receivedAt:
+email.receivedAt ||
+new Date()
+
+
+};
+
+
+}
+
+
+
+// --------------------------------------------------
+// Convert Gmail world → Emma signal
+// --------------------------------------------------
+
+async collect(email){
+
+
+
+const signal = {
+
+
+source:
+"gmail",
+
+
+event:
+"email_received",
+
+
+createdAt:
+new Date(),
+
+
+// WHO
+person:
+this.extractPerson(email),
+
+
+// WHAT
+content:
+this.extractContent(email),
+
+
+// RAW CONTEXT
+metadata:
+this.extractMetadata(email)
+
+
+
+};
+
+
+
+// BaseConnector normalization
+return this.normalize(signal);
+
 
 
 }

@@ -1,76 +1,67 @@
 // Emma.js
 // Emma's central nervous system
 //
+// RULE:
+// Organs do their job.
+// Emma connects them.
+//
+// Identity
+// ↓
 // World
-// → Connectors
-// → Translator
-// → Observe
-// → Reflect
-// → Remember
-// → Reason
-// → Judge
-// → Act / Observe / Wait
-// → Outcome
-// → Learn
-// → Remember
+// ↓
+// Sense
+// ↓
+// Understand
+// ↓
+// Remember
+// ↓
+// Think
+// ↓
+// Judge
+// ↓
+// Act
+// ↓
+// Learn
+// ↓
+// Presence
+//
+// Emma is not a chatbot.
+// Emma is a living intelligence loop.
 
 
-import EmmaConnectorManager
-from "./connectors/EmmaConnectorManager";
+
+import EmmaConnectorManager from "./connectors/EmmaConnectorManager";
+import UniversalTranslator from "./translators/UniversalTranslator";
 
 
-import UniversalTranslator
-from "./translators/UniversalTranslator";
+import EmmaBrain from "./EmmaBrain";
 
 
-import EmmaBrain
-from "./EmmaBrain";
+import EmmaObserver from "./EmmaObserver";
+import EmmaReflection from "./EmmaReflection";
+import EmmaMemory from "./EmmaMemory";
+import EmmaReasoning from "./EmmaReasoning";
+import EmmaJudgement from "./EmmaJudgement";
 
 
-import EmmaObserver
-from "./EmmaObserver";
+import EmmaInsight from "./EmmaInsight";
+import EmmaCommunication from "./EmmaCommunication";
 
 
-import EmmaReflection
-from "./EmmaReflection";
+import EmmaActionExecutor from "./EmmaActionExecutor";
+import EmmaOutcome from "./EmmaOutcome";
+import EmmaLearningEngine from "./EmmaLearningEngine";
 
 
-import EmmaMemory
-from "./EmmaMemory";
+import EmmaCapabilities from "./EmmaCapabilities";
 
 
-import EmmaReasoning
-from "./EmmaReasoning";
+import EmmaPresence from "./EmmaPresence";
+import EmmaDailyAwareness from "./EmmaDailyAwareness";
 
 
-import EmmaJudgement
-from "./EmmaJudgement";
-
-
-import EmmaInsight
-from "./EmmaInsight";
-
-
-import EmmaCommunication
-from "./EmmaCommunication";
-
-
-import EmmaActionExecutor
-from "./EmmaActionExecutor";
-
-
-import EmmaOutcome
-from "./EmmaOutcome";
-
-
-import EmmaLearningEngine
-from "./EmmaLearningEngine";
-
-
-import EmmaCapabilities
-from "./EmmaCapabilities";
-
-
+// DAY 12
+import EmmaDailyBrief from "./daily/EmmaDailyBrief";
 
 
 
@@ -91,6 +82,8 @@ console.log(
 
 
 
+
+
 // ======================
 // SENSES
 // ======================
@@ -104,7 +97,7 @@ new EmmaConnectorManager();
 
 
 // ======================
-// LANGUAGE
+// TRANSLATOR
 // ======================
 
 
@@ -117,8 +110,25 @@ new UniversalTranslator();
 
 
 
+
 // ======================
-// BRAIN
+// PRESENCE
+// ======================
+
+
+this.presence =
+new EmmaPresence();
+
+
+
+
+
+
+
+
+
+// ======================
+// THINKING SYSTEM
 // ======================
 
 
@@ -154,6 +164,7 @@ new EmmaJudgement();
 
 
 
+
 // ======================
 // HUMAN LAYER
 // ======================
@@ -174,6 +185,8 @@ new EmmaCommunication();
 
 
 
+
+
 // ======================
 // ACTION + LEARNING
 // ======================
@@ -183,12 +196,15 @@ this.actionExecutor =
 EmmaActionExecutor;
 
 
+
 this.outcome =
 EmmaOutcome;
 
 
+
 this.learning =
 EmmaLearningEngine;
+
 
 
 this.capabilities =
@@ -198,12 +214,56 @@ EmmaCapabilities;
 
 
 
-console.log(
-"✅ Emma is ready"
+
+
+
+
+// ======================
+// DAILY SYSTEMS
+// ======================
+
+
+this.dailyAwareness =
+new EmmaDailyAwareness(
+
+this.memory,
+
+this.reasoning,
+
+this.judgement
+
 );
 
 
+
+this.dailyBrief =
+EmmaDailyBrief;
+
+
+
+
+
+
+
+
+
+this.presence.watching(
+"Emma is awake and watching."
+);
+
+
+
+
+console.log(
+"✅ Emma fully alive"
+);
+
+
+
 }
+
+
+
 
 
 
@@ -222,12 +282,10 @@ async experience(source,data){
 
 
 
-console.log(
-"🌎 Emma sensed:",
-{
-source,
-data
-}
+this.presence.listening(
+
+`Emma received ${source} signal`
+
 );
 
 
@@ -236,16 +294,18 @@ data
 const signal =
 
 await this.connectorManager.receive(
+
 source,
+
 data
+
 );
 
 
 
 
-return await this.think(
-signal
-);
+
+return await this.think(signal);
 
 
 
@@ -262,30 +322,36 @@ signal
 
 
 // =================================
-// MAIN LIFE LOOP
+// LIFE LOOP
 // =================================
 
 
 async think(input){
 
 
+
+try{
+
+
 console.log(
-"🤍 Emma thinking..."
+"🤍 Emma life cycle started"
 );
 
 
 
 
-try{
+
+
+// TRANSLATE
+
+
+this.presence.observing(
+"Emma is understanding the signal"
+);
 
 
 
-
-
-// 1 TRANSLATE
-
-
-const translatedEvent =
+const translated =
 
 await this.translator.translate(
 input
@@ -298,13 +364,13 @@ input
 
 
 
-// 2 OBSERVE
+// OBSERVE
 
 
 const observation =
 
 await this.observer.observe(
-translatedEvent
+translated
 );
 
 
@@ -314,7 +380,13 @@ translatedEvent
 
 
 
-// 3 REFLECT
+// REFLECT
+
+
+this.presence.thinking(
+"Emma is reflecting"
+);
+
 
 
 const reflection =
@@ -330,7 +402,29 @@ observation
 
 
 
-// 4 RECALL MEMORY
+
+// MEMORY SAVE
+
+
+this.presence.remembering(
+"Emma is remembering"
+);
+
+
+
+await this.memory.remember(
+reflection
+);
+
+
+
+
+
+
+
+
+
+// MEMORY RECALL
 
 
 const memories =
@@ -341,20 +435,22 @@ await this.memory.recall({
 userId:
 
 reflection.userId ||
-observation.userId ||
-input.userId,
-
+observation.userId,
 
 
 businessId:
 
 reflection.businessId ||
-observation.businessId ||
-input.businessId,
+observation.businessId,
 
+
+identity:
+
+reflection.identity,
 
 
 context:
+
 reflection
 
 
@@ -365,26 +461,20 @@ reflection
 
 
 
-console.log(
-"🧠 Memories loaded:",
-memories
-);
 
 
 
-
-
-
-
-
-// 5 REASON
+// REASON
 
 
 const reasoning =
 
 await this.reasoning.think(
+
 reflection,
+
 memories
+
 );
 
 
@@ -394,30 +484,21 @@ memories
 
 
 
-// 6 CAPABILITIES
 
 
-const capabilities =
-
-this.capabilities.getSkills();
-
-
-
-
-
-
-
-
-
-// 7 JUDGE
+// JUDGE
 
 
 const judgement =
 
 await this.judgement.judge(
+
 reasoning,
+
 memories,
-capabilities
+
+this.capabilities.getSkills()
+
 );
 
 
@@ -428,14 +509,17 @@ capabilities
 
 
 
-// 8 INSIGHT
+// INSIGHT
 
 
 const insight =
 
 await this.insight.create(
+
 judgement,
+
 memories
+
 );
 
 
@@ -446,13 +530,22 @@ memories
 
 
 
-// 9 ACTION / OBSERVE / WAIT
+// ACTION
+
+
+this.presence.working(
+"Emma is working"
+);
+
+
 
 
 const actionResult =
 
 await this.actionExecutor.execute(
+
 judgement
+
 );
 
 
@@ -464,17 +557,17 @@ judgement
 
 
 
-// 10 OUTCOME
-// IMPORTANT:
-// learn from execution result,
-// not original judgement
+// OUTCOME
 
 
 const outcome =
 
 await this.outcome.record(
+
 actionResult,
+
 actionResult
+
 );
 
 
@@ -486,17 +579,43 @@ actionResult
 
 
 
+// LEARNING
 
-// 11 LEARNING
+
+this.presence.learning(
+"Emma is learning"
+);
+
+
 
 
 const learning =
 
 await this.learning.learn(
-{
+
+outcome,
+
+memories
+
+);
 
 
-...outcome,
+
+
+
+
+
+
+
+
+// SAVE LESSON
+
+
+if(learning){
+
+
+await this.memory.remember({
+
 
 
 userId:
@@ -509,189 +628,50 @@ observation.userId,
 businessId:
 
 reflection.businessId ||
-observation.businessId
+observation.businessId,
 
 
 
-},
+identity:
 
-memories
-
-);
+reflection.identity,
 
 
-
-
-
-
-
-
-
-
-
-// 12 PERMANENT MEMORY
-// ⭐ FINAL DAY 11 FIX
-
-
-await this.memory.remember({
-
-
-
-
-
-// preserve intelligence category
 
 type:
 
-learning?.type ||
-outcome?.type ||
-actionResult?.type,
-
-
-
-
-
-
-userId:
-
-reflection.userId ||
-observation.userId ||
-input.userId,
-
-
-
-
-
-
-businessId:
-
-reflection.businessId ||
-observation.businessId ||
-input.businessId,
-
-
-
-
-
-
-
-situation:
-
-reflection.situation,
-
-
-
-
-
-
-
-
-context:
-
-reflection,
-
-
-
-
-
-
-
-
-action:
-
-actionResult.action,
-
-
-
-
-
-
-
-
-success:
-
-outcome.success,
-
-
-
-
-
-
-
-
-result:
-
-outcome.result,
-
-
-
-
-
+learning.type,
 
 
 
 lesson:
 
-learning?.lesson,
-
-
-
-
-
+learning.lesson,
 
 
 
 patternsFound:
 
-learning?.patternsFound || [],
-
-
-
-
-
-
-
-
-
-confidenceChange:
-
-learning?.confidenceChange || 0,
-
-
-
-
-
-
+learning.patternsFound,
 
 
 
 futureBehavior:
 
-learning?.futureBehavior,
+learning.futureBehavior,
 
 
 
+success:
 
-
-
-
-
-
-
-originalOutcome:
-
-outcome
-
-
-
-
-
+outcome.success
 
 
 
 });
 
 
+}
 
 
 
@@ -700,8 +680,11 @@ outcome
 
 
 
-console.log(
-"💾 Emma learned"
+
+
+
+this.presence.watching(
+"Emma finished and continues watching."
 );
 
 
@@ -713,45 +696,29 @@ console.log(
 
 
 
-
-// 13 COMMUNICATION
-
-
 return await this.communication.reply({
-
 
 
 observation,
 
-
 reflection,
 
-
-memory:
-memories,
-
+memory:memories,
 
 reasoning,
 
-
 judgement,
-
 
 insight,
 
-
 actionResult,
 
-
 outcome,
-
 
 learning
 
 
-
 });
-
 
 
 
@@ -761,14 +728,28 @@ learning
 
 }
 
+
 catch(error){
 
 
 
 console.error(
-"❌ Emma error:",
+"❌ Emma failed:",
 error
 );
+
+
+
+
+this.presence.notify({
+
+message:
+"Emma found a problem",
+
+error:error.message
+
+});
+
 
 
 
@@ -779,23 +760,12 @@ return {
 from:"Emma",
 
 
-
 message:
-"I noticed something, but I need more context before making a decision.",
+
+"I noticed something but need more context.",
 
 
-
-priority:"low",
-
-
-
-confidence:20,
-
-
-
-error:
-error.message
-
+error:error.message
 
 
 };
@@ -819,7 +789,93 @@ error.message
 
 
 // =================================
-// DIRECT CHAT
+// DAILY AWARENESS
+// =================================
+
+
+async wakeUp(context){
+
+
+
+this.presence.thinking(
+
+"Emma is reviewing your world"
+
+);
+
+
+
+const result =
+
+await this.dailyAwareness.wakeUp(
+
+context
+
+);
+
+
+
+
+return result;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// DAILY BRIEF
+// =================================
+
+
+async getDailyBrief(){
+
+
+
+console.log(
+"🌅 Emma preparing daily brief"
+);
+
+
+
+
+if(
+this.dailyBrief.needsBrief()
+){
+
+
+return await this.dailyBrief.generate();
+
+
+}
+
+
+
+
+return this.dailyBrief.getLastBrief();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// CHAT
 // =================================
 
 
@@ -830,18 +886,13 @@ async ask(userId,message){
 return await this.think({
 
 
-source:
-"conversation",
-
+source:"conversation",
 
 userId,
 
-
 message,
 
-
-type:
-"USER_MESSAGE"
+type:"USER_MESSAGE"
 
 
 });
@@ -858,25 +909,30 @@ type:
 
 
 
-
 // =================================
-// LINKHUB SUPPORT
+// UI ACCESS
 // =================================
 
 
-async analyzeLinkHub(
-businessData
-){
+getPresence(){
 
 
-return await this.experience(
-"LINKHUB",
-businessData
-);
+return this.presence.get();
 
 
 }
 
+
+
+
+
+getTimeline(){
+
+
+return this.presence.getHistory();
+
+
+}
 
 
 
@@ -895,47 +951,58 @@ businessData
 status(){
 
 
+
 return {
 
 
-
-state:
-"ACTIVE",
-
-
+state:"ACTIVE",
 
 
 
 identity:
-"AI Personal Assistant that learns you",
+
+"AI employee that learns and works with you",
 
 
 
 
+presence:
+
+this.getPresence(),
 
 
-brain:[
 
-"Observer",
 
-"Reflection",
+dailyBrief:
+
+this.dailyBrief.getLastBrief(),
+
+
+
+
+systems:[
+
+
+"Sense",
+
+"Identity",
+
+"Relationship",
 
 "Memory",
 
-"Reasoning",
+"Reason",
 
-"Judgement",
+"Judge",
 
-"Insight",
+"Learn",
 
-"Action",
+"Daily Brief",
 
-"Learning"
+"Presence"
+
 
 ],
-
-
-
 
 
 
@@ -947,14 +1014,9 @@ this.connectorManager.getConnectors(),
 
 
 
-
-
-
 skills:
 
 this.capabilities.getSkills(),
-
-
 
 
 
@@ -974,10 +1036,6 @@ new Date()
 
 
 }
-
-
-
-
 
 
 
