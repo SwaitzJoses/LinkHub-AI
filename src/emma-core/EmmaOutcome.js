@@ -1,17 +1,26 @@
 // EmmaOutcome.js
 // Emma's experience engine
 //
-// Action
-// → Result
-// → Understanding
-// → Personal Learning
-// → Memory
+// PURPOSE:
+//
+// Understand what happened after Emma worked.
+//
+// Plan
+// ↓
+// Execution
+// ↓
+// Outcome
+// ↓
+// Lesson
+// ↓
+// Memory
 //
 // RULE:
-// Acting can succeed/fail.
-// Observing is learning.
-// Waiting is intelligence.
-
+//
+// Success teaches.
+// Failure teaches.
+// Waiting teaches.
+// Observing teaches.
 
 
 class EmmaOutcome {
@@ -21,11 +30,11 @@ constructor(){
 
 
 console.log(
-"📊 Emma Personal Outcome Learning online"
+"📊 Emma Outcome Intelligence online"
 );
 
 
-this.outcomes=[];
+this.outcomes = [];
 
 
 }
@@ -38,66 +47,99 @@ this.outcomes=[];
 
 
 
-// =============================
-// Main learning entry
-// =============================
+// =================================
+// MAIN EXPERIENCE ENTRY
+// =================================
 
 
 async record(
-decision,
-result={}
+execution,
+plan={}
 ){
 
 
 console.log(
-"📊 Emma studying outcome:",
+"📊 Emma reviewing experience:",
 {
-decision,
-result
+execution,
+plan
 }
 );
 
 
 
 
-// =============================
-// WAITING IS NOT FAILURE
-// =============================
+// -----------------------------
+// NOTHING HAPPENED
+// -----------------------------
+
+
+if(!execution){
+
+
+return this.store({
+
+
+type:"NO_RESULT",
+
+
+success:null,
+
+
+lesson:
+"Emma had nothing to evaluate.",
+
+
+memoryReady:false
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+// -----------------------------
+// WAITING / APPROVAL
+// -----------------------------
 
 
 if(
-decision?.type === "WAIT"
+execution.status === "WAITING_FOR_APPROVAL" ||
+execution.type === "PLAN_READY"
 ){
 
 
-const outcome={
+
+return this.store({
 
 
-outcomeId:
-crypto.randomUUID(),
+type:"WAITING",
 
 
-type:
-"MONITORING",
+success:null,
 
 
-success:
-null,
+goal:
+plan.goal,
 
 
 analysis:{
 
 
 reason:
-"Emma intentionally waited for more information",
+"Emma prepared work but waited safely.",
 
 
 pattern:
-"continue_monitoring",
-
-
-futureUse:
-"Observe future signals before acting"
+"responsible_autonomy"
 
 
 },
@@ -106,44 +148,25 @@ futureUse:
 learning:{
 
 
-type:
-"MONITORING_EXPERIENCE",
+type:"SAFE_AUTONOMY",
 
 
 lesson:
-"Waiting was intentional. No success or failure assigned.",
+"Preparing without acting builds trust.",
 
 
 futureRule:
-"Continue watching this situation"
+"Ask approval for sensitive actions"
 
 
 },
 
 
-memoryReady:false,
+memoryReady:true
 
 
-createdAt:
-new Date()
+});
 
-
-};
-
-
-
-
-this.outcomes.push(outcome);
-
-
-
-console.log(
-"👀 Emma continues monitoring",
-outcome
-);
-
-
-return outcome;
 
 
 }
@@ -156,46 +179,32 @@ return outcome;
 
 
 
-// =============================
-// OBSERVATION IS LEARNING
-// =============================
+
+// -----------------------------
+// BLOCKED ACTION
+// -----------------------------
 
 
 if(
-decision?.type === "OBSERVE_ONLY"
+execution.status === "NOT_EXECUTED"
 ){
 
 
 
-const outcome={
-
-
-outcomeId:
-crypto.randomUUID(),
+return this.store({
 
 
 
-userId:
-decision?.userId || null,
-
-
-businessId:
-decision?.businessId || null,
+type:"PREVENTED_ACTION",
 
 
 
-type:
-"OBSERVED_PATTERN",
+success:true,
 
 
 
-success:
-null,
-
-
-
-observation:
-decision.reason,
+goal:
+plan.goal,
 
 
 
@@ -203,15 +212,11 @@ analysis:{
 
 
 reason:
-"Emma discovered a possible pattern",
+"Emma avoided unsafe execution",
 
 
 pattern:
-"needs_more_evidence",
-
-
-futureUse:
-"Compare with future events"
+"risk_prevention"
 
 
 },
@@ -222,67 +227,27 @@ futureUse:
 learning:{
 
 
-type:
-"OBSERVATION_EXPERIENCE",
+type:"SAFETY_LEARNING",
 
 
 lesson:
-"Pattern stored. More evidence required before action.",
-
-
-rememberFor:[
-decision.reason,
-"observed"
-],
+"Not acting was the correct action.",
 
 
 futureRule:
-"Use if pattern repeats"
+"Respect autonomy limits"
 
 
 },
 
 
 
-
-memoryTags:[
-
-"observation",
-decision.reason,
-"pattern"
-
-]
-.filter(Boolean),
+memoryReady:true
 
 
 
-memoryReady:true,
+});
 
-
-
-createdAt:
-new Date()
-
-
-};
-
-
-
-
-
-this.outcomes.push(outcome);
-
-
-
-
-console.log(
-"🧠 Emma learned observation:",
-outcome
-);
-
-
-
-return outcome;
 
 
 }
@@ -296,20 +261,18 @@ return outcome;
 
 
 
-// =============================
-// ACTION OUTCOME
-// =============================
-
-
-const action =
-decision;
-
+// -----------------------------
+// NORMAL ACTION RESULT
+// -----------------------------
 
 
 
 const impact =
+
 this.calculateImpact(
-result?.metrics || {}
+
+execution
+
 );
 
 
@@ -317,39 +280,32 @@ result?.metrics || {}
 
 
 const analysis =
-this.analyzeReason(
-action,
-result,
+
+this.analyze(
+
+execution,
+
+plan,
+
 impact
+
 );
-
-
-
-
-
-const personalLearning =
-this.learnAboutPerson(
-action,
-result
-);
-
 
 
 
 
 
 const learning =
+
 this.createLearning(
 
-action,
+execution,
 
-result,
+plan,
 
 impact,
 
-analysis,
-
-personalLearning
+analysis
 
 );
 
@@ -360,79 +316,35 @@ personalLearning
 
 
 
-
-const outcome={
-
-
-
-outcomeId:
-
-crypto.randomUUID(),
+return this.store({
 
 
 
-
-type:
-
-"ACTION_RESULT",
-
-
-
-
-
-userId:
-
-action?.userId ||
-
-result?.userId ||
-
-null,
-
-
-
-
-
-
-businessId:
-
-action?.businessId ||
-
-result?.businessId ||
-
-null,
-
-
-
-
-
-
-
-action:
-
-action?.action,
-
-
-
-
+type:"ACTION_EXPERIENCE",
 
 
 
 success:
 
-result?.success === true,
+execution.success === true,
 
 
 
+goal:
 
+plan.goal,
+
+
+
+plan,
+
+
+
+execution,
 
 
 
 impact,
-
-
-
-
-
 
 
 
@@ -440,128 +352,31 @@ analysis,
 
 
 
-
-
-
-
-
-personalLearning,
-
-
-
-
-
-
-
-
-originalDecision:
-
-action,
-
-
-
-
-
-
-
-
-result:
-
-result?.result ||
-
-result,
-
-
-
-
-
-
-
-
-
 learning,
-
-
-
-
-
-
-
 
 
 
 memoryTags:
 
-this.createMemoryTags(
+this.createTags(
 
-action,
+plan,
 
-impact,
+execution,
 
-learning,
-
-personalLearning
+learning
 
 ),
 
 
 
+memoryReady:true
 
 
 
+});
 
 
-
-memoryReady:true,
-
-
-
-
-
-
-
-
-
-createdAt:
-
-new Date()
-
-
-
-};
-
-
-
-
-
-
-
-
-this.outcomes.push(
-
-outcome
-
-);
-
-
-
-
-
-
-
-
-console.log(
-"🧠 Emma became smarter:",
-outcome
-);
-
-
-
-
-
-
-
-return outcome;
 
 
 }
@@ -574,608 +389,231 @@ return outcome;
 
 
 
+// =================================
+// ANALYSIS ENGINE
+// =================================
 
 
-// =============================
-// Learn about person
-// =============================
-
-
-learnAboutPerson(
-action,
-result
+analyze(
+execution,
+plan,
+impact
 ){
+
+
+
+if(execution.success){
+
+
+
+return {
+
+
+reason:
+
+"Emma completed the planned work.",
+
+
+pattern:
+
+"repeat_candidate",
+
+
+futureUse:
+
+"Use similar approach when context matches"
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+return {
+
+
+reason:
+
+"Execution did not create expected result.",
+
+
+pattern:
+
+"needs_adjustment",
+
+
+futureUse:
+
+"Change approach next time"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE EXPERIENCE
+// =================================
+
+
+createLearning(
+execution,
+plan,
+impact,
+analysis
+){
+
+
+
+if(execution.success){
+
+
+
+return {
+
+
+type:"POSITIVE_EXPERIENCE",
+
+
+confidenceImpact:
+
+this.confidenceChange(impact),
+
+
+
+lesson:
+
+`${plan.goal || "Action"} worked with ${impact} impact.`,
+
+
+
+futureRule:
+
+"Repeat when similar conditions appear",
+
+
+
+rememberFor:[
+
+
+plan.category,
+
+
+impact,
+
+
+"successful"
+
+
+]
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return {
+
+
+type:"FAILED_EXPERIENCE",
+
+
+
+confidenceImpact:-5,
+
+
+
+lesson:
+
+`${plan.goal || "Action"} needs improvement.`,
+
+
+
+futureRule:
+
+"Adjust before repeating",
+
+
+
+rememberFor:[
+
+
+plan.category,
+
+
+"failed"
+
+
+]
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// IMPACT SCORE
+// =================================
+
+
+calculateImpact(execution){
 
 
 
 const text =
 
-JSON.stringify({
+JSON.stringify(execution)
 
-action,
-
-result
-
-})
 .toLowerCase();
 
 
 
 
 
-let learning={
-
-
-preferences:[],
-
-
-workingStyle:[],
-
-
-decisionPatterns:[],
-
-
-futureSupport:[]
-
-
-};
-
-
-
-
-
-
 
 if(
-
-text.includes("approved") ||
-
-text.includes("liked")
-
-){
-
-
-learning.preferences.push(
-
-"User responded positively to this approach"
-
-);
-
-
-}
-
-
-
-
-
-
-if(
-
-text.includes("fast") ||
-
-text.includes("quick")
-
-){
-
-
-
-learning.workingStyle.push(
-
-"User prefers fast movement"
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-if(
-
-text.includes("delayed") ||
-
-text.includes("ignored")
-
-){
-
-
-
-learning.decisionPatterns.push(
-
-"User may need better timing or reminders"
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-if(result?.success){
-
-
-
-learning.futureSupport.push(
-
-"Similar help may be useful again"
-
-);
-
-
-
-}
-
-else{
-
-
-
-learning.futureSupport.push(
-
-"Adjust approach next time"
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-return learning;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =============================
-// Understand why outcome happened
-// =============================
-
-
-analyzeReason(
-action,
-result,
-impact
-){
-
-
-
-
-
-if(
-
-result?.success &&
-
-impact !== "negative"
-
-){
-
-
-
-return {
-
-
-
-reason:
-
-"Action created a positive result",
-
-
-
-
-pattern:
-
-"repeat_possible",
-
-
-
-
-futureUse:
-
-"Use when similar personal context appears"
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-return {
-
-
-
-reason:
-
-"Action did not create expected result",
-
-
-
-
-pattern:
-
-"adjust_next_time",
-
-
-
-
-futureUse:
-
-"Improve before repeating"
-
-
-
-};
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =============================
-// Create memory lesson
-// =============================
-
-
-createLearning(
-
-action,
-
-result,
-
-impact,
-
-analysis,
-
-personalLearning
-
-){
-
-
-
-
-
-
-
-if(
-
-result?.success &&
-
-impact !== "negative"
-
-){
-
-
-
-
-
-return {
-
-
-
-type:
-
-"POSITIVE_EXPERIENCE",
-
-
-
-
-
-
-
-confidenceImpact:
-
-this.confidenceChange(
-
-impact
-
-),
-
-
-
-
-
-
-
-
-lesson:
-
-this.successLesson(
-
-action,
-
-impact,
-
-analysis
-
-),
-
-
-
-
-
-
-
-
-
-personalLesson:
-
-personalLearning,
-
-
-
-
-
-
-
-
-
-rememberFor:[
-
-
-
-action?.action,
-
-"worked",
-
-impact
-
-
-
-],
-
-
-
-
-
-
-
-
-
-futureRule:
-
-"Use this approach when a similar situation appears"
-
-
-
-
-};
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-return {
-
-
-
-
-type:
-
-"FAILED_EXPERIENCE",
-
-
-
-
-
-
-
-
-confidenceImpact:
-
--5,
-
-
-
-
-
-
-
-
-
-lesson:
-
-this.failureLesson(
-
-action,
-
-analysis
-
-),
-
-
-
-
-
-
-
-
-
-personalLesson:
-
-personalLearning,
-
-
-
-
-
-
-
-
-
-rememberFor:[
-
-
-
-action?.action,
-
-
-"needs_adjustment"
-
-
-
-],
-
-
-
-
-
-
-
-
-
-
-futureRule:
-
-"Adapt strategy before trying again"
-
-
-
-
-};
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-successLesson(
-action,
-impact,
-analysis
-){
-
-
-
-return (
-
-`${action?.action} created ${impact} impact. ` +
-
-`${analysis.reason}. ` +
-
-"Emma should remember why this helped."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-failureLesson(
-action,
-analysis
-){
-
-
-
-return (
-
-`${action?.action} needs improvement. ` +
-
-`${analysis.reason}. ` +
-
-"Emma should adjust next time."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-calculateImpact(metrics={}){
-
-
-
-
-
-if(
-
-metrics.revenueIncrease > 0 ||
-
-metrics.salesIncrease > 0 ||
-
-metrics.goalCompleted
-
+text.includes("revenue") ||
+text.includes("saved") ||
+text.includes("completed")
 ){
 
 
@@ -1189,15 +627,10 @@ return "high";
 
 
 
-
 if(
-
-metrics.timeSaved ||
-
-metrics.progress ||
-
-metrics.engagementIncrease
-
+text.includes("created") ||
+text.includes("generated") ||
+text.includes("prepared")
 ){
 
 
@@ -1212,13 +645,8 @@ return "medium";
 
 
 
-
 if(
-
-metrics.problem ||
-
-metrics.loss
-
+execution.success === false
 ){
 
 
@@ -1247,45 +675,32 @@ return "low";
 
 
 
+
 confidenceChange(impact){
 
 
 
-switch(impact){
+const score={
+
+
+high:20,
+
+
+medium:10,
+
+
+low:5,
+
+
+negative:-10
+
+
+};
 
 
 
-case "high":
 
-return 20;
-
-
-
-case "medium":
-
-return 10;
-
-
-
-case "low":
-
-return 5;
-
-
-
-case "negative":
-
-return -10;
-
-
-
-default:
-
-return 0;
-
-
-
-}
+return score[impact] || 0;
 
 
 
@@ -1299,11 +714,16 @@ return 0;
 
 
 
-createMemoryTags(
-action,
-impact,
-learning,
-personal
+
+// =================================
+// MEMORY TAGGING
+// =================================
+
+
+createTags(
+plan,
+execution,
+learning
 ){
 
 
@@ -1311,32 +731,232 @@ personal
 return [
 
 
-action?.action,
+plan.category,
 
 
-impact,
+plan.goal,
+
+
+execution.type,
 
 
 learning.type,
 
 
-...(learning.rememberFor || []),
-
-
-...(personal.preferences || []),
-
-
-...(personal.workingStyle || [])
+...(learning.rememberFor || [])
 
 
 ]
-
 .filter(Boolean);
 
 
 
 }
 
+
+
+
+
+
+
+
+
+// =================================
+// STORE EXPERIENCE
+// =================================
+
+
+store(data){
+
+
+
+const outcome={
+
+
+
+outcomeId:
+
+crypto.randomUUID(),
+
+
+
+...data,
+
+
+
+createdAt:
+
+new Date()
+
+
+
+};
+
+
+
+
+
+this.outcomes.unshift(
+
+outcome
+
+);
+
+
+
+
+
+this.outcomes =
+
+this.outcomes.slice(
+
+0,
+
+500
+
+);
+
+
+
+
+
+
+console.log(
+"🧠 Emma learned:",
+outcome
+);
+
+
+
+
+return outcome;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE SEARCH
+// =================================
+
+
+findSimilar(context){
+
+
+
+const search =
+
+JSON.stringify(context)
+
+.toLowerCase();
+
+
+
+
+return this.outcomes.filter(
+
+memory => {
+
+
+
+const text =
+
+JSON.stringify(memory)
+
+.toLowerCase();
+
+
+
+
+return search
+
+.split(" ")
+
+.some(
+
+word =>
+
+word.length > 5 &&
+
+text.includes(word)
+
+);
+
+
+
+}
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// INSIGHTS
+// =================================
+
+
+getSuccessfulActions(){
+
+
+
+return this.outcomes.filter(
+
+x=>
+
+x.learning?.type ===
+
+"POSITIVE_EXPERIENCE"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+getFailures(){
+
+
+
+return this.outcomes.filter(
+
+x=>
+
+x.learning?.type ===
+
+"FAILED_EXPERIENCE"
+
+);
+
+
+
+}
 
 
 
@@ -1361,100 +981,42 @@ return this.outcomes;
 
 
 
-getSuccessfulActions(){
 
+status(){
 
 
-return this.outcomes.filter(
 
-x =>
+return {
 
-x.learning.type ===
 
-"POSITIVE_EXPERIENCE"
+state:"ACTIVE",
 
-);
 
+role:
 
+"Turns Emma experiences into learning",
 
-}
 
 
+totalExperiences:
 
+this.outcomes.length,
 
 
 
+successes:
 
+this.getSuccessfulActions().length,
 
 
-getFailures(){
 
+failures:
 
+this.getFailures().length
 
-return this.outcomes.filter(
 
-x =>
 
-x.learning.type ===
-
-"FAILED_EXPERIENCE"
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-findSimilar(context){
-
-
-
-const search =
-
-JSON.stringify(context)
-
-.toLowerCase();
-
-
-
-
-return this.outcomes.filter(item=>{
-
-
-
-const memory =
-
-JSON.stringify(item)
-
-.toLowerCase();
-
-
-
-
-return search
-
-.split(" ")
-
-.some(word =>
-
-word.length>5 &&
-
-memory.includes(word)
-
-);
-
-
-
-});
+};
 
 
 

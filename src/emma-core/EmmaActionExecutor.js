@@ -1,34 +1,47 @@
-// EmmaActionExecutioner.js
+// EmmaActionExecutor.js
 // Emma's hands
 //
 // PURPOSE:
-// Convert approved judgement into action.
+// Execute approved plans.
 //
 // RULE:
+//
 // Action does not think.
 // Action does not decide.
-// Action only executes.
 //
-// Intelligence → Action → Outcome → Learning
+// Brain thinks.
+// Judgement decides.
+// Autonomy permits.
+// Planner creates.
+// Action executes.
+//
+// Plan → Execute → Outcome → Learning
 
 
-class EmmaActionExecutioner {
+class EmmaActionExecutor {
 
 
 constructor(){
 
 
 console.log(
-"🖐️ Emma Action Engine online"
+"🖐️ Emma Action Executor online"
 );
 
 
-this.history=[];
+this.history = [];
 
-this.activeActions=[];
+
+this.activeActions = [];
+
+
+this.connectedTools = [];
 
 
 }
+
+
+
 
 
 
@@ -40,39 +53,44 @@ this.activeActions=[];
 // =================================
 
 
-async execute(decision){
+async execute(plan){
+
 
 
 console.log(
-"🖐️ Emma received execution request:",
-decision
+"🖐️ Emma received plan:",
+plan
 );
 
 
 
 
-// -------------------------------
-// Nothing to execute
-// -------------------------------
+// -----------------------------
+// NO PLAN
+// -----------------------------
 
 
-if(!decision){
+if(!plan){
 
 
 return this.recordOutcome({
 
 
-type:"NO_ACTION",
+type:"NO_PLAN",
+
 
 status:"WAITING",
 
+
 success:null,
 
+
 reason:
-"No judgement received",
+"No executable plan received",
+
 
 learning:
-"Waiting is better than random action"
+"Emma waits instead of acting randomly"
 
 
 });
@@ -85,90 +103,83 @@ learning:
 
 
 
-// -------------------------------
-// Observation mode
-// -------------------------------
+// -----------------------------
+// AUTONOMY SAFETY
+// -----------------------------
 
 
-if(
-decision.shouldAct===false ||
-decision.mode==="observe"
-){
+if(plan.requiresApproval){
+
 
 
 return this.recordOutcome({
 
 
-type:"OBSERVATION",
+type:"PLAN_READY",
 
-status:"OBSERVED",
-
-success:null,
-
-
-reason:
-
-decision.reason || 
-"Emma decided not to act",
-
-
-judgement:
-
-decision,
-
-
-learning:
-"Observation added experience"
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-// -------------------------------
-// Approval safety gate
-// -------------------------------
-
-
-if(decision.needsApproval){
-
-
-return this.recordOutcome({
-
-
-type:"PREPARED_ACTION",
 
 status:"WAITING_FOR_APPROVAL",
+
 
 success:true,
 
 
-action:
-decision.action,
+goal:
+plan.goal,
+
+
+plan,
 
 
 message:
-"Action prepared. Human approval required.",
 
-
-payload:
-this.preparePayload(decision),
-
-
-judgement:
-decision,
+"Emma prepared the work but needs approval.",
 
 
 learning:
-"Trust is built through safe execution"
+
+"Safe autonomy builds trust"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+if(plan.canExecute === false){
+
+
+
+return this.recordOutcome({
+
+
+type:"BLOCKED",
+
+
+status:"NOT_EXECUTED",
+
+
+success:false,
+
+
+goal:
+plan.goal,
+
+
+reason:
+
+"Autonomy prevented execution",
+
+
+plan
 
 
 });
@@ -183,179 +194,55 @@ learning:
 
 
 
-// -------------------------------
-// Execute allowed action
-// -------------------------------
+
+// -----------------------------
+// EXECUTE PLAN
+// -----------------------------
 
 
-let result;
+const results=[];
+
 
 
 
 try{
 
 
+
 this.startAction(
-decision.action
+plan.goal
 );
 
 
 
 
-switch(decision.action){
 
 
+for(
+const step of plan.steps || []
+){
 
-case "PERSONAL_GUIDANCE":
 
-result =
-await this.personalGuidance(decision);
 
-break;
+const result =
 
+await this.executeStep(
 
+step,
 
+plan
 
-
-case "PREPARE_RESPONSE":
-
-result =
-await this.prepareResponse(decision);
-
-break;
-
-
-
-
-
-case "CREATE_TASK":
-
-result =
-await this.createTask(decision);
-
-break;
-
-
-
-
-
-case "CREATE_REMINDER":
-
-result =
-await this.createReminder(decision);
-
-break;
-
-
-
-
-
-case "ORGANIZE_CONTEXT":
-
-result =
-await this.organizeContext(decision);
-
-break;
-
-
-
-
-
-case "GENERATE_REPORT":
-
-result =
-await this.generateReport(decision);
-
-break;
-
-
-
-
-
-case "PROTECT":
-
-result =
-await this.protect(decision);
-
-break;
-
-
-
-
-
-case "CONTINUE_LEARNING":
-
-result =
-await this.continueLearning(decision);
-
-break;
-
-
-
-
-
-
-default:
-
-
-result={
-
-
-success:false,
-
-status:"ABILITY_MISSING",
-
-action:
-decision.action,
-
-
-message:
-"Emma understands but this ability is not connected yet"
-
-
-};
-
-
-}
-
-
-
-}
-
-
-catch(error){
-
-
-result={
-
-
-success:false,
-
-status:"FAILED",
-
-action:
-decision.action,
-
-error:
-error.message
-
-
-};
-
-
-}
-
-
-
-finally{
-
-
-this.finishAction(
-decision.action
 );
 
 
+
+
+results.push(result);
+
+
+
 }
+
 
 
 
@@ -368,26 +255,84 @@ return this.recordOutcome({
 
 type:"EXECUTION",
 
-...result,
+
+status:"COMPLETED",
 
 
-judgement:{
+success:true,
 
 
-confidence:
-decision.confidence,
+goal:
+plan.goal,
 
 
-reason:
-decision.reason
+stepsCompleted:
+
+results.length,
 
 
-}
+results,
+
+
+plan
 
 
 });
 
 
+
+
+}
+
+
+
+catch(error){
+
+
+
+return this.recordOutcome({
+
+
+type:"EXECUTION_FAILED",
+
+
+success:false,
+
+
+goal:
+plan.goal,
+
+
+error:
+error.message,
+
+
+plan
+
+
+});
+
+
+
+}
+
+
+
+
+finally{
+
+
+
+this.finishAction(
+plan.goal
+);
+
+
+
+}
+
+
+
 }
 
 
@@ -401,46 +346,127 @@ decision.reason
 
 
 // =================================
-// ACTION SKILLS
+// EXECUTE SINGLE STEP
 // =================================
 
 
-async personalGuidance(decision){
+async executeStep(step,plan){
+
+
+
+console.log(
+
+"⚙️ Emma executing step:",
+
+step.task
+
+);
+
+
+
+
+
+// Future:
+// Gmail
+// Calendar
+// Slack
+// Browser
+// APIs
+
+
+switch(step.task){
+
+
+
+
+
+
+case "Prepare helpful response":
+
+
+return await this.prepareResponse(
+plan
+);
+
+
+
+
+
+
+
+
+case "Create improvement idea":
+
+
+return await this.createIdea(
+plan
+);
+
+
+
+
+
+
+
+
+case "Save lesson":
+
+
+return await this.saveLesson(
+plan
+);
+
+
+
+
+
+
+
+
+case "Generate report":
+
+
+return await this.generateReport(
+plan
+);
+
+
+
+
+
+
+
+
+default:
+
 
 
 return {
 
 
-success:true,
+step:
+step.task,
+
 
 status:"COMPLETED",
 
-action:"PERSONAL_GUIDANCE",
 
-
-result:{
-
-
-id:this.createId(),
+mode:"SIMULATED",
 
 
 message:
-decision.reason,
 
-
-createdBy:"Emma",
-
-
-createdAt:
-new Date()
-
-
-}
+"Step completed internally"
 
 
 };
 
 
+
+}
+
+
+
 }
 
 
@@ -451,39 +477,43 @@ new Date()
 
 
 
+// =================================
+// SKILLS
+// =================================
 
-async prepareResponse(decision){
+
+async prepareResponse(plan){
+
 
 
 return {
 
 
-success:true,
-
-status:"COMPLETED",
-
-action:"PREPARE_RESPONSE",
-
-
-result:{
-
-
 id:this.createId(),
 
 
-draft:
-"Response prepared using Emma memory context",
+type:"RESPONSE_DRAFT",
 
 
-createdBy:"Emma"
+status:"CREATED",
 
 
-}
+content:
+
+"Emma prepared a response using memory context.",
+
+
+goal:
+plan.goal,
+
+
+createdAt:new Date()
 
 
 };
 
 
+
 }
 
 
@@ -494,39 +524,35 @@ createdBy:"Emma"
 
 
 
+async createIdea(plan){
 
-async createTask(decision){
 
 
 return {
 
 
-success:true,
-
-status:"COMPLETED",
-
-action:"CREATE_TASK",
-
-
-result:{
-
-
 id:this.createId(),
 
 
-task:
-decision.reason,
+type:"IDEA",
 
 
-createdBy:"Emma"
+status:"CREATED",
 
 
-}
+idea:
+
+"Emma created an improvement suggestion.",
+
+
+goal:
+plan.goal
 
 
 };
 
 
+
 }
 
 
@@ -538,39 +564,31 @@ createdBy:"Emma"
 
 
 
-async createReminder(decision){
+async saveLesson(plan){
+
 
 
 return {
 
 
-success:true,
-
-status:"COMPLETED",
-
-action:"CREATE_REMINDER",
-
-
-result:{
-
-
 id:this.createId(),
 
 
-reminder:
-decision.reason,
+type:"LESSON",
 
 
-createdAt:
-new Date()
+status:"RECORDED",
 
 
-}
+message:
+
+"Learning prepared for memory system"
 
 
 };
 
 
+
 }
 
 
@@ -581,154 +599,33 @@ new Date()
 
 
 
-async organizeContext(decision){
+
+async generateReport(plan){
+
 
 
 return {
 
 
-success:true,
-
-status:"COMPLETED",
-
-action:"ORGANIZE_CONTEXT",
-
-
-result:{
-
-
 id:this.createId(),
+
+
+type:"REPORT",
+
+
+status:"GENERATED",
 
 
 summary:
-"Context organized"
 
-
-}
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-async generateReport(decision){
-
-
-return {
-
-
-success:true,
-
-status:"COMPLETED",
-
-action:"GENERATE_REPORT",
-
-
-result:{
-
-
-id:this.createId(),
-
-
-report:
-"Insight report generated"
-
-
-}
+"Emma generated an intelligence report"
 
 
 };
 
 
-}
-
-
-
-
-
-
-
-
-
-
-async protect(decision){
-
-
-return {
-
-
-success:true,
-
-status:"COMPLETED",
-
-action:"PROTECT",
-
-
-result:{
-
-
-message:
-"Emma prevented a risky action",
-
-
-reason:
-decision.reason
-
 
 }
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-
-async continueLearning(decision){
-
-
-return {
-
-
-success:true,
-
-status:"LEARNING",
-
-action:"CONTINUE_LEARNING",
-
-
-result:{
-
-
-message:
-"Emma continues observing"
-
-
-}
-
-
-};
-
-
-}
-
 
 
 
@@ -739,36 +636,30 @@ message:
 
 
 // =================================
-// PREPARE ONLY
+// TOOL CONNECTION SYSTEM
 // =================================
 
 
-preparePayload(decision){
+connectTool(tool){
 
 
-return {
+
+this.connectedTools.push(tool);
 
 
-action:
-decision.action,
 
+console.log(
 
-reason:
-decision.reason,
+"🔌 Emma gained tool:",
 
+tool.name
 
-confidence:
-decision.confidence,
+);
 
-
-createdAt:
-new Date()
-
-
-};
 
 
 }
+
 
 
 
@@ -786,10 +677,23 @@ new Date()
 startAction(action){
 
 
-this.activeActions.push(action);
+
+this.activeActions.push({
+
+
+action,
+
+
+startedAt:new Date()
+
+
+});
+
 
 
 }
+
+
 
 
 
@@ -798,13 +702,15 @@ this.activeActions.push(action);
 finishAction(action){
 
 
+
 this.activeActions =
 
 this.activeActions.filter(
 
-a=>a!==action
+x=>x.action !== action
 
 );
+
 
 
 }
@@ -817,15 +723,18 @@ a=>a!==action
 
 
 
+
 // =================================
-// EXPERIENCE RECORDING
+// EXPERIENCE STORAGE
 // =================================
 
 
-recordOutcome(execution){
+recordOutcome(data){
+
 
 
 const record={
+
 
 
 executionId:
@@ -834,19 +743,16 @@ this.createId(),
 
 
 
-...execution,
+...data,
 
 
 
-needsLearning:
-
-true,
+needsLearning:true,
 
 
 
-createdAt:
+createdAt:new Date()
 
-new Date()
 
 
 };
@@ -854,18 +760,41 @@ new Date()
 
 
 
-this.history.push(record);
+
+this.history.unshift(record);
 
 
 
-console.log(
-"📚 Action experience stored:",
-record
+
+this.history =
+
+this.history.slice(
+
+0,
+
+100
+
 );
 
 
 
+
+
+
+console.log(
+
+"📚 Emma action memory:",
+
+record
+
+);
+
+
+
+
+
 return record;
+
 
 
 }
@@ -878,14 +807,15 @@ return record;
 
 
 
+
 // =================================
-// REAL WORLD RESULT UPDATE
+// REAL WORLD FEEDBACK
 // =================================
 
 
 updateOutcome(
 executionId,
-realOutcome
+result
 ){
 
 
@@ -902,32 +832,33 @@ x=>x.executionId===executionId
 
 if(!item){
 
+
 return null;
+
 
 }
 
 
 
-item.realOutcome =
-realOutcome;
+
+item.realWorldResult =
+result;
+
 
 
 item.learningComplete=true;
 
 
-item.learnedAt =
+
+item.updatedAt =
 new Date();
 
 
 
-console.log(
-"🧠 Emma learned action result",
-item
-);
-
 
 
 return item;
+
 
 
 }
@@ -949,10 +880,63 @@ return item;
 createId(){
 
 
+
 return crypto.randomUUID();
 
 
+
 }
+
+
+
+
+
+
+status(){
+
+
+
+return {
+
+
+state:"ACTIVE",
+
+
+role:
+
+"Executes Emma approved plans",
+
+
+
+active:
+
+this.activeActions,
+
+
+
+history:
+
+this.history.length,
+
+
+
+tools:
+
+this.connectedTools.map(
+
+x=>x.name
+
+)
+
+
+
+};
+
+
+
+}
+
+
 
 
 
@@ -960,7 +944,9 @@ return crypto.randomUUID();
 
 getHistory(){
 
+
 return this.history;
+
 
 }
 
@@ -968,14 +954,18 @@ return this.history;
 
 getActiveActions(){
 
+
 return this.activeActions;
 
-}
-
-
 
 }
 
 
 
-export default new EmmaActionExecutioner();
+}
+
+
+
+
+
+export default new EmmaActionExecutor();

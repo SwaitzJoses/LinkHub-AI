@@ -3,21 +3,24 @@
 //
 // PURPOSE:
 //
-// Convert experience into:
+// Turn experience into wisdom.
 //
-// 1. Lessons
-// 2. Future behaviour rules
-// 3. Relationship understanding
+// Events create memories.
+// Outcomes create lessons.
+// Repetition creates personality.
 //
 // RULE:
 //
-// Events teach memory.
-// Outcomes teach wisdom.
-// Repetition teaches personality.
+// Learning does not decide.
+// Learning changes future Emma.
 
 
 import EmmaRelationshipMemory
 from "./relationship/EmmaRelationshipMemory";
+
+
+import EmmaIdentity
+from "./EmmaIdentity";
 
 
 
@@ -32,9 +35,20 @@ console.log(
 );
 
 
+this.identity =
+EmmaIdentity;
+
+
 this.lessons=[];
 
+
 this.behaviourRules=[];
+
+
+this.experiencePatterns=[];
+
+
+this.confidence=50;
 
 
 }
@@ -52,13 +66,17 @@ this.behaviourRules=[];
 // =================================
 
 
-async learn(outcome,memory={}){
+async learn(
+outcome,
+memories=[]
+){
 
 
 console.log(
-"📚 Emma studying outcome:",
+"📚 Emma studying experience:",
 outcome
 );
+
 
 
 
@@ -72,15 +90,45 @@ return null;
 
 
 
-// ===============================
-// LEARN ABOUT RELATIONSHIP
-// ===============================
+
+// ==============================
+// UNDERSTAND RESULT
+// ==============================
+
+
+const evaluation =
+this.evaluate(outcome);
+
+
+
+
+
+
+// ==============================
+// RELATIONSHIP LEARNING
+// ==============================
 
 
 const relationshipLearning =
 this.learnRelationship(
 outcome,
-memory
+evaluation
+);
+
+
+
+
+
+
+// ==============================
+// FIND PATTERNS
+// ==============================
+
+
+const patterns =
+this.findPatterns(
+outcome,
+memories
 );
 
 
@@ -89,134 +137,79 @@ memory
 
 
 
+// ==============================
+// CREATE LESSON
+// ==============================
+
+
+const lesson =
+this.createLesson({
+
+outcome,
+evaluation,
+patterns
+
+});
 
 
 
-// ===============================
-// WAITING / OBSERVATION
-// ===============================
-
-
-if(
-outcome.status==="WAITING" ||
-outcome.type==="OBSERVATION"
-){
 
 
 
-return this.storeLearning({
+
+// ==============================
+// FUTURE BEHAVIOUR
+// ==============================
+
+
+const futureBehavior =
+this.createBehaviorRule({
+
+evaluation,
+outcome,
+patterns
+
+});
+
+
+
+
+
+
+
+
+// ==============================
+// UPDATE EMMA HERSELF ⭐
+// ==============================
+
+
+const identityGrowth =
+this.identity.learnFromExperience({
+
+
+success:
+outcome.success,
 
 
 type:
-"PATIENCE_LESSON",
+futureBehavior.rule,
 
 
-
-
-evaluation:{
-
-
-result:
-"INTELLIGENT_WAIT",
-
-
-score:1,
-
-
-shouldRepeat:true,
-
-
-reason:
-"Observation was better than unnecessary action"
-
-
-},
-
-
-
-
-relationshipLearning,
-
-
-
-
-lesson:
-"Sometimes the best action is to wait and understand more.",
-
-
-
-
-
-
-futureBehavior:{
-
-
-rule:
-"OBSERVE_BEFORE_ACTING",
-
-
-message:
-"Understand context before interrupting"
-
-
-}
-
+goal:
+outcome.goal
 
 
 });
 
 
-}
 
 
 
 
 
 
-
-
-
-// ===============================
-// NORMAL EXPERIENCE
-// ===============================
-
-
-const evaluation =
-this.evaluateOutcome(
-outcome
-);
-
-
-
-
-
-const patterns =
-this.detectPatterns(
-memory,
-outcome
-);
-
-
-
-
-
-const lesson =
-this.createLesson(
-outcome,
-evaluation,
-relationshipLearning
-);
-
-
-
-
-
-const futureRule =
-this.createFutureRule(
-evaluation,
-outcome,
-patterns,
-relationshipLearning
+this.updateConfidence(
+evaluation
 );
 
 
@@ -226,57 +219,36 @@ relationshipLearning
 
 
 
-
-
-return this.storeLearning({
+return this.store({
 
 
 
 type:
-"EXPERIENCE_LESSON",
-
-
-
-
-originalAction:
-outcome.action,
-
-
-
-
-relationshipLearning,
-
-
-
-
-evaluation,
-
+"SELF_IMPROVEMENT",
 
 
 
 lesson,
 
 
+evaluation,
 
 
 patternsFound:
 patterns,
 
 
+relationshipLearning,
 
 
-confidenceChange:
-
-this.calculateConfidenceChange(
-evaluation
-),
+identityGrowth,
 
 
+futureBehavior,
 
 
-
-futureBehavior:
-futureRule
+confidence:
+this.confidence
 
 
 
@@ -294,30 +266,22 @@ futureRule
 
 
 
-
-
-
 // =================================
-// RELATIONSHIP INTELLIGENCE
+// RELATIONSHIP LEARNING
 // =================================
 
 
 learnRelationship(
 outcome,
-memory
+evaluation
 ){
 
 
 
-let learning={};
+const learning={};
 
 
 
-
-
-
-
-// goals
 
 
 if(outcome.goal){
@@ -334,96 +298,13 @@ outcome.goal;
 
 
 
+if(evaluation.result==="SUCCESS"){
 
 
-// preferences
 
-
-if(outcome.preference){
-
-
-
-learning.preference =
-outcome.preference;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// repeated behaviour
-
-
-if(outcome.pattern){
-
-
-
-learning.pattern =
-outcome.pattern;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// difficulty
-
-
-if(
-outcome.success===false
-){
-
-
-
-learning.struggle =
-
-
-outcome.action ||
-
-"Unknown challenge";
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// strength
-
-
-if(
-outcome.success===true
-){
-
-
-
-learning.strength =
-
-
-outcome.action ||
-
-"Successful behaviour";
-
+learning.successPattern =
+outcome.goal ||
+"successful help";
 
 
 
@@ -440,22 +321,13 @@ EmmaRelationshipMemory
 
 
 
-
-
-// decision history
-
-
-if(outcome.action){
+if(evaluation.result==="FAILURE"){
 
 
 
-learning.decision =
-outcome.action;
-
-
-
-learning.result =
-outcome.success;
+learning.challenge =
+outcome.goal ||
+"needs improvement";
 
 
 
@@ -466,22 +338,15 @@ outcome.success;
 
 
 
-
-
-
-// communication preference
 
 
 if(
-memory.communicationStyle
+outcome.learning?.futureRule
 ){
 
 
-
-learning.communicationStyle =
-
-memory.communicationStyle;
-
+learning.preference =
+outcome.learning.futureRule;
 
 
 }
@@ -493,10 +358,7 @@ memory.communicationStyle;
 
 
 
-
-const updatedProfile =
-
-
+const profile =
 EmmaRelationshipMemory.learn(
 learning
 );
@@ -512,15 +374,126 @@ return {
 
 
 learned:
-
 learning,
 
 
-
 relationshipNow:
+profile
 
-updatedProfile
 
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE EVALUATION
+// =================================
+
+
+evaluate(outcome){
+
+
+
+
+
+if(
+outcome.success===true
+){
+
+
+
+return {
+
+
+result:"SUCCESS",
+
+
+score:10,
+
+
+repeat:true,
+
+
+message:
+
+"Emma should remember this successful behaviour"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+outcome.success===false
+){
+
+
+
+return {
+
+
+result:"FAILURE",
+
+
+score:-10,
+
+
+repeat:false,
+
+
+message:
+
+"Emma should adapt this behaviour"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+return {
+
+
+result:"OBSERVATION",
+
+
+score:2,
+
+
+repeat:false,
+
+
+message:
+
+"Emma collected useful information"
 
 
 };
@@ -539,17 +512,408 @@ updatedProfile
 
 
 
+// =================================
+// PATTERN DETECTION
+// =================================
+
+
+findPatterns(
+outcome,
+memories
+){
+
+
+
+const patterns=[];
+
+
+
+
+const text =
+JSON.stringify({
+
+outcome,
+memories
+
+})
+.toLowerCase();
+
+
+
+
+
+
+
+if(text.includes("success")){
+
+
+patterns.push(
+"SUCCESS_PATTERN"
+);
+
+
+}
+
+
+
+
+
+if(
+text.includes("fail") ||
+text.includes("negative")
+){
+
+
+patterns.push(
+"FAILURE_PATTERN"
+);
+
+
+}
+
+
+
+
+
+
+if(text.includes("customer")){
+
+
+patterns.push(
+"RELATIONSHIP_PATTERN"
+);
+
+
+}
+
+
+
+
+
+
+if(text.includes("approval")){
+
+
+patterns.push(
+"TRUST_PATTERN"
+);
+
+
+}
+
+
+
+
+
+
+if(text.includes("repeat")){
+
+
+patterns.push(
+"HABIT_PATTERN"
+);
+
+
+}
+
+
+
+
+
+
+
+const unique =
+[...new Set(patterns)];
+
+
+
+
+
+
+this.experiencePatterns.push(
+...unique
+);
+
+
+
+
+
+
+return unique;
+
+
+
+}
+
+
+
+
+
+
+
+
+
 
 // =================================
-// SAVE LEARNING
+// HUMAN READABLE LESSON
 // =================================
 
 
-storeLearning(data){
+createLesson({
+
+outcome,
+evaluation
+
+}){
+
+
+
+
+
+if(
+evaluation.result==="SUCCESS"
+){
+
+
+return (
+
+`${outcome.goal || "This action"} worked. `+
+
+"Emma will remember this approach."
+
+);
+
+
+}
+
+
+
+
+
+
+
+if(
+evaluation.result==="FAILURE"
+){
+
+
+
+return (
+
+`${outcome.goal || "This action"} failed. `+
+
+"Emma will change strategy next time."
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+return (
+
+"Emma observed without judging too early."
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE FUTURE PERSONALITY RULE
+// =================================
+
+
+createBehaviorRule({
+
+evaluation,
+outcome,
+patterns
+
+}){
+
+
+
+
+
+
+if(evaluation.repeat){
+
+
+
+return {
+
+
+rule:
+
+"REPEAT_WHAT_WORKS",
+
+
+basedOn:
+outcome.goal,
+
+
+patterns,
+
+
+message:
+
+"Prefer proven approaches"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+evaluation.result==="FAILURE"
+){
+
+
+
+return {
+
+
+rule:
+
+"AVOID_OLD_MISTAKE",
+
+
+basedOn:
+outcome.goal,
+
+
+patterns,
+
+
+message:
+
+"Do not repeat failed behaviour"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return {
+
+
+rule:
+
+"OBSERVE_AND_LEARN",
+
+
+patterns,
+
+
+message:
+
+"Collect more experience first"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CONFIDENCE UPDATE
+// =================================
+
+
+updateConfidence(
+evaluation
+){
+
+
+
+this.confidence +=
+evaluation.score;
+
+
+
+
+
+this.confidence =
+Math.max(
+0,
+Math.min(
+100,
+this.confidence
+)
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// STORE LEARNING
+// =================================
+
+
+store(data){
 
 
 
 const learning={
+
 
 
 learningId:
@@ -578,7 +942,7 @@ new Date()
 
 
 
-this.lessons.push(
+this.lessons.unshift(
 learning
 );
 
@@ -593,9 +957,13 @@ learning.futureBehavior
 ){
 
 
-this.behaviourRules.push(
+
+this.behaviourRules.unshift(
+
 learning.futureBehavior
+
 );
+
 
 
 }
@@ -606,10 +974,30 @@ learning.futureBehavior
 
 
 
-console.log(
-"🧠 Emma upgraded herself:",
-learning
+
+this.lessons =
+this.lessons.slice(
+0,
+500
 );
+
+
+
+
+
+
+
+
+console.log(
+
+"🧠 Emma evolved:",
+
+learning
+
+);
+
+
+
 
 
 
@@ -631,486 +1019,6 @@ return learning;
 
 
 // =================================
-// OUTCOME EVALUATION
-// =================================
-
-
-evaluateOutcome(outcome){
-
-
-
-if(outcome.success===true){
-
-
-
-return {
-
-
-result:
-"SUCCESS_PATTERN",
-
-
-score:5,
-
-
-shouldRepeat:true,
-
-
-reason:
-"This action created a positive outcome"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-if(outcome.success===false){
-
-
-
-return {
-
-
-result:
-"FAILED_PATTERN",
-
-
-score:-5,
-
-
-shouldRepeat:false,
-
-
-reason:
-"This approach failed"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-return {
-
-
-result:
-"UNKNOWN_RESULT",
-
-
-score:0,
-
-
-shouldRepeat:false,
-
-
-reason:
-"More experience required"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// CREATE LESSON
-// =================================
-
-
-createLesson(
-outcome,
-evaluation,
-relationship
-){
-
-
-
-if(
-evaluation.shouldRepeat
-){
-
-
-
-return `Emma learned ${outcome.action} works for this relationship.`;
-
-
-
-}
-
-
-
-
-
-if(
-evaluation.score < 0
-){
-
-
-
-return `Emma learned ${outcome.action} needs a different approach.`;
-
-
-
-}
-
-
-
-
-
-
-
-return (
-
-"Emma stored this experience for future understanding."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// PATTERN DISCOVERY
-// =================================
-
-
-detectPatterns(
-memory,
-outcome
-){
-
-
-
-const patterns=[];
-
-
-
-const text =
-JSON.stringify({
-
-memory,
-outcome
-
-})
-.toLowerCase();
-
-
-
-
-
-
-
-if(text.includes("success")){
-
-
-patterns.push(
-"SUCCESS_PATTERN"
-);
-
-
-}
-
-
-
-
-if(
-text.includes("fail") ||
-text.includes("mistake")
-){
-
-
-patterns.push(
-"FAILURE_PATTERN"
-);
-
-
-}
-
-
-
-
-
-
-if(text.includes("customer")){
-
-
-patterns.push(
-"CUSTOMER_PATTERN"
-);
-
-
-}
-
-
-
-
-
-if(text.includes("preference")){
-
-
-patterns.push(
-"PREFERENCE_PATTERN"
-);
-
-
-}
-
-
-
-
-
-
-
-return [
-
-...new Set(patterns)
-
-];
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// FUTURE RULE CREATION
-// =================================
-
-
-createFutureRule(
-evaluation,
-outcome,
-patterns,
-relationship
-){
-
-
-
-if(
-evaluation.shouldRepeat
-){
-
-
-
-return {
-
-
-rule:
-"REPEAT_SUCCESSFUL_PATTERN",
-
-
-
-basedOn:
-outcome.action,
-
-
-
-patterns,
-
-
-
-relationshipAware:true,
-
-
-
-message:
-"Reuse because this worked before"
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-if(
-evaluation.score < 0
-){
-
-
-
-return {
-
-
-rule:
-"AVOID_FAILED_PATTERN",
-
-
-
-basedOn:
-outcome.action,
-
-
-
-patterns,
-
-
-
-relationshipAware:true,
-
-
-
-message:
-"Change strategy next time"
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-return {
-
-
-rule:
-"KEEP_LEARNING",
-
-
-
-patterns,
-
-
-
-message:
-"Collect more evidence"
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// CONFIDENCE UPDATE
-// =================================
-
-
-calculateConfidenceChange(
-evaluation
-){
-
-
-
-if(
-evaluation.shouldRepeat
-){
-
-return 10;
-
-}
-
-
-
-if(
-evaluation.score < 0
-){
-
-return -10;
-
-}
-
-
-
-return 0;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
 // ACCESS FOR REASONING
 // =================================
 
@@ -1120,9 +1028,7 @@ getRelevantLessons(context){
 
 
 const search =
-
 JSON.stringify(context)
-
 .toLowerCase();
 
 
@@ -1134,19 +1040,17 @@ lesson=>{
 
 
 const text =
-
 JSON.stringify(lesson)
-
 .toLowerCase();
 
 
 
 
 return search
-
 .split(" ")
+.some(
 
-.some(word=>
+word =>
 
 word.length>5 &&
 text.includes(word)
@@ -1158,8 +1062,8 @@ text.includes(word)
 });
 
 
-
 }
+
 
 
 
@@ -1177,12 +1081,75 @@ return this.behaviourRules;
 
 
 
-
 getLessons(){
 
 return this.lessons;
 
 }
+
+
+
+
+getPatterns(){
+
+
+return [
+...new Set(
+this.experiencePatterns
+)
+];
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+status(){
+
+
+return {
+
+
+state:"EVOLVING",
+
+
+identity:
+this.identity.status(),
+
+
+lessons:
+this.lessons.length,
+
+
+rules:
+this.behaviourRules.length,
+
+
+patterns:
+this.getPatterns(),
+
+
+confidence:
+this.confidence
+
+
+};
+
+
+}
+
+
+
+
+
 
 
 
@@ -1194,6 +1161,10 @@ reset(){
 this.lessons=[];
 
 this.behaviourRules=[];
+
+this.experiencePatterns=[];
+
+this.confidence=50;
 
 
 }
