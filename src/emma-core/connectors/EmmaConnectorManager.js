@@ -1,24 +1,16 @@
 // EmmaConnectorManager.js
 // Emma's nervous system
 //
-// External World
-//        ↓
-// Connectors (senses)
-//        ↓
-// Nervous System
-//        ↓
-// Universal Translator
-//        ↓
-// Emma
-//
 // RULE:
 //
 // Connectors collect.
 // Manager routes.
 // Translator converts.
-// Emma decides attention.
+// Emma decides.
 // Emma thinks.
-
+//
+// Manager is NOT the brain.
+// Manager only keeps senses alive.
 
 
 import LinkHubConnector
@@ -45,7 +37,6 @@ import InternetConnector
 from "./InternetConnector";
 
 
-
 import UniversalTranslator
 from "../translators/UniversalTranslator";
 
@@ -61,7 +52,6 @@ class EmmaConnectorManager {
 
 
 
-
 // ==============================
 // INITIALIZE NERVOUS SYSTEM
 // ==============================
@@ -70,11 +60,9 @@ class EmmaConnectorManager {
 constructor(){
 
 
-
 console.log(
 "🔌 Emma nervous system online"
 );
-
 
 
 
@@ -83,53 +71,93 @@ this.connectors =
 
 
 
-
 this.translator =
 new UniversalTranslator();
 
 
 
+// Emma callback
+
+this.emmaReceiver =
+null;
+
+
+
+
+this.loadDefaultConnectors();
+
+
+}
+
+
+
+
+
 
 
 
 
 // ==============================
-// CONNECT SENSES
+// CONNECT TO EMMA CORE
 // ==============================
 
 
-this.register(
-new LinkHubConnector()
+attachEmma(callback){
+
+
+this.emmaReceiver =
+callback;
+
+
+console.log(
+"🧠 Nervous system connected to Emma brain"
 );
 
 
-
-this.register(
-new GmailConnector()
-);
+}
 
 
 
-this.register(
-new DriveConnector()
-);
 
 
 
-this.register(
-new CalendarConnector()
-);
 
 
 
-this.register(
-new BrowserConnector()
-);
+// ==============================
+// LOAD DEFAULT CONNECTORS
+// ==============================
+
+
+loadDefaultConnectors(){
 
 
 
-this.register(
+const senses =
+[
+
+new LinkHubConnector(),
+
+new GmailConnector(),
+
+new DriveConnector(),
+
+new CalendarConnector(),
+
+new BrowserConnector(),
+
 new InternetConnector()
+
+];
+
+
+
+senses.forEach(
+
+sense =>
+
+this.register(sense)
+
 );
 
 
@@ -145,13 +173,11 @@ new InternetConnector()
 
 
 // ==============================
-// REGISTER NEW SENSE
+// REGISTER SENSE
 // ==============================
 
 
-register(
-connector
-){
+register(connector){
 
 
 
@@ -164,19 +190,12 @@ connector.name;
 
 
 
-
-if(
-!source
-){
-
+if(!source){
 
 
 throw new Error(
-
-"Sense must have a source name"
-
+"Connector needs a source"
 );
-
 
 
 }
@@ -184,16 +203,8 @@ throw new Error(
 
 
 
-
-
-
-this.connectors[
-source
-] =
+this.connectors[source] =
 connector;
-
-
-
 
 
 
@@ -216,27 +227,161 @@ console.log(
 
 
 
+
 // ==============================
-// REMOVE SENSE
+// START ALL LIVING SENSES
 // ==============================
 
 
-disconnect(
-source
+startSenses(){
+
+
+
+console.log(
+"🌎 Emma opening senses..."
+);
+
+
+
+
+Object.values(
+this.connectors
+)
+.forEach(connector=>{
+
+
+
+
+
+// heartbeat based connectors
+
+if(
+connector.startWatching
 ){
 
 
 
-delete this.connectors[
-source
-];
+connector.startWatching(
 
+async(signal)=>{
 
 
 
 console.log(
 
-`❌ Sense disconnected: ${source}`
+`⚡ ${connector.source} detected change`
+
+);
+
+
+
+
+
+const emmaSignal =
+
+await this.receive(
+
+connector.source,
+
+signal
+
+);
+
+
+
+
+
+if(
+this.emmaReceiver
+){
+
+
+await this.emmaReceiver(
+
+emmaSignal
+
+);
+
+
+}
+
+
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+});
+
+
+
+
+console.log(
+"✅ All available senses running"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// STOP SENSE
+// ==============================
+
+
+disconnect(source){
+
+
+
+const connector =
+this.connectors[source];
+
+
+
+
+if(
+connector?.stopWatching
+){
+
+
+connector.stopWatching();
+
+
+}
+
+
+
+
+if(connector){
+
+
+delete this.connectors[source];
+
+
+}
+
+
+
+console.log(
+
+`❌ Sense removed: ${source}`
 
 );
 
@@ -252,68 +397,42 @@ console.log(
 
 
 
-
 // ==============================
-// RECEIVE SIGNAL FROM WORLD
-// ==============================
-//
-// IMPORTANT:
-//
-// This does NOT call EmmaBrain.
-//
-// Eyes don't think.
-// Nerves don't think.
-//
-// Emma decides what deserves thought.
-//
+// RECEIVE WORLD SIGNAL
 // ==============================
 
 
 async receive(
 source,
-rawData
+rawData={}
 ){
 
 
 
 console.log(
 
-"🌎 World signal detected:",
+"🌎 Signal arrived:",
 
 source
 
 );
-
-
-
-
-
 
 
 
 const connector =
-
-this.connectors[
-source
-];
+this.connectors[source];
 
 
 
 
-
-
-if(
-!connector
-){
-
+if(!connector){
 
 
 throw new Error(
 
-`Emma has no ${source} sense`
+`Emma does not have ${source} sense`
 
 );
-
 
 
 }
@@ -323,31 +442,25 @@ throw new Error(
 
 
 
+try{
 
 
 
-// ==============================
-// 1. CONNECTOR STAGE
-// ==============================
-
-
-let cleanSignal;
+let collected;
 
 
 
 
-
-
-if(
-connector.receive
-){
+if(connector.receive){
 
 
 
-cleanSignal =
+collected =
 
 await connector.receive(
+
 rawData
+
 );
 
 
@@ -356,17 +469,16 @@ rawData
 
 
 
-
-else if(
-connector.collect
-){
+else if(connector.collect){
 
 
 
-cleanSignal =
+collected =
 
 await connector.collect(
+
 rawData
+
 );
 
 
@@ -375,21 +487,17 @@ rawData
 
 
 
-
-else {
-
+else{
 
 
 throw new Error(
 
-`${source} connector cannot receive`
+`${source} cannot collect`
 
 );
 
 
-
 }
-
 
 
 
@@ -403,51 +511,36 @@ const nerveSignal =
 {
 
 
-
 source:
 
-cleanSignal.source ||
+collected.source ||
+
 source,
-
-
-
 
 
 
 type:
 
-cleanSignal.type ||
+collected.type ||
+
 "UNKNOWN_SIGNAL",
 
 
 
-
-
-
-
-timestamp:
+createdAt:
 
 new Date()
 .toISOString(),
 
 
 
-
-
-
-
-
 payload:
 
-cleanSignal.payload ||
+collected.data ||
 
-cleanSignal.data ||
+collected.payload ||
 
-{},
-
-
-
-
+collected,
 
 
 
@@ -455,14 +548,14 @@ cleanSignal.data ||
 meta:{
 
 
+route:
 
-path:
-
-`${source} → nervous_system → translator → Emma`,
-
+`${source} → manager → translator → Emma`,
 
 
+connector:
 
+connector.name || source,
 
 
 processedBy:
@@ -470,10 +563,7 @@ processedBy:
 "EmmaConnectorManager"
 
 
-
-
 }
-
 
 
 
@@ -484,29 +574,13 @@ processedBy:
 
 
 
-
-
-
-
 console.log(
-
-"🧬 Signal travelling:",
-
-nerveSignal
-
+"⚡ Nerve signal created"
 );
 
 
 
 
-
-
-
-
-
-// ==============================
-// 2. TRANSLATION STAGE
-// ==============================
 
 
 const emmaSignal =
@@ -522,53 +596,9 @@ nerveSignal
 
 
 
-
-
-
-
 console.log(
-
-"🌎 Emma language created:",
-
-emmaSignal
-
+"📨 Delivered to Emma"
 );
-
-
-
-
-
-
-
-
-
-
-// ==============================
-// 3. RETURN TO EMMA
-// ==============================
-//
-// STOP HERE.
-//
-// Emma.js continues:
-//
-// Attention
-// Observer
-// Reflection
-// Memory
-// Wisdom
-//
-// ==============================
-
-
-
-console.log(
-
-"📨 Signal delivered to Emma"
-
-);
-
-
-
 
 
 
@@ -582,13 +612,169 @@ return emmaSignal;
 
 
 
+catch(error){
+
+
+
+console.error(
+
+"❌ Connector error:",
+
+error
+
+);
+
+
+
+
+return {
+
+
+source,
+
+
+type:
+
+"CONNECTOR_ERROR",
+
+
+error:
+
+error.message,
+
+
+createdAt:
+
+new Date()
+.toISOString()
+
+
+};
+
+
+
+}
+
+
+
+}
+
+
+
+
+
 
 
 
 
 
 // ==============================
-// SYNC OLD DATA
+// ASK ALL SENSES
+// ==============================
+
+
+async collectFromAll(){
+
+
+
+const signals =
+[];
+
+
+
+
+for(
+const source in this.connectors
+){
+
+
+
+const connector =
+this.connectors[source];
+
+
+
+
+if(
+connector.active === false
+){
+
+continue;
+
+}
+
+
+
+
+try{
+
+
+
+if(connector.collect){
+
+
+
+const signal =
+
+await this.receive(
+
+source,
+
+{}
+
+);
+
+
+
+signals.push(
+signal
+);
+
+
+
+}
+
+
+
+}
+
+
+catch(error){
+
+
+console.warn(
+
+`${source} skipped`
+
+);
+
+
+}
+
+
+
+}
+
+
+
+
+return signals;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// SYNC HISTORY
 // ==============================
 
 
@@ -600,12 +786,7 @@ items=[]
 
 
 const connector =
-
-this.connectors[
-source
-];
-
-
+this.connectors[source];
 
 
 
@@ -615,20 +796,17 @@ if(
 ){
 
 
-
 return [];
-
 
 
 }
 
 
 
-
-
-
 return await connector.sync(
+
 items
+
 );
 
 
@@ -643,8 +821,9 @@ items
 
 
 
+
 // ==============================
-// AVAILABLE SENSES
+// GET CONNECTORS
 // ==============================
 
 
@@ -657,37 +836,24 @@ return Object.values(
 this.connectors
 
 )
-.map(connector => {
+.map(connector=>{
 
 
 
+return connector.getInfo
 
-if(
-connector.getInfo
-){
+?
 
+connector.getInfo()
 
-return connector.getInfo();
+:
 
-
-}
-
-
-
-
-
-
-return {
-
+{
 
 
 source:
 
-connector.source ||
-connector.name,
-
-
-
+connector.source,
 
 
 type:
@@ -695,11 +861,9 @@ type:
 connector.type,
 
 
+active:
 
-
-
-active:true
-
+true
 
 
 };
@@ -711,6 +875,7 @@ active:true
 
 
 }
+
 
 
 
@@ -737,28 +902,15 @@ this.connectors
 .flatMap(connector=>{
 
 
+return connector.getCapabilities
 
+?
 
+connector.getCapabilities()
 
+:
 
-if(
-connector.getCapabilities
-){
-
-
-
-return connector.getCapabilities();
-
-
-
-}
-
-
-
-
-
-return [];
-
+[];
 
 
 });
@@ -785,54 +937,38 @@ async healthCheck(){
 
 
 
-return await Promise.all(
-
+return Promise.all(
 
 
 
 Object.values(
+
 this.connectors
+
 )
 .map(connector=>{
 
 
 
+return connector.testConnection
 
+?
 
+connector.testConnection()
 
-if(
-connector.testConnection
-){
+:
 
-
-
-return connector.testConnection();
-
-
-
-}
-
-
-
-
-
-
-
-return {
-
+{
 
 
 source:
 
-connector.source ||
-connector.name,
+connector.source,
 
 
+status:
 
-
-healthy:true
-
-
+"unknown"
 
 
 };
@@ -857,6 +993,7 @@ healthy:true
 
 
 
+
 // ==============================
 // STATUS
 // ==============================
@@ -869,45 +1006,35 @@ status(){
 return {
 
 
-
 state:
 
-"Emma senses connected",
-
-
-
+"Emma nervous system active",
 
 
 
 connected:
 
 Object.keys(
+
 this.connectors
+
 ),
-
-
-
-
 
 
 
 count:
 
 Object.keys(
+
 this.connectors
+
 ).length,
-
-
-
-
 
 
 
 capabilities:
 
 this.getCapabilities()
-
-
 
 
 

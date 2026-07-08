@@ -1,20 +1,23 @@
 // EmmaGmailConnect.jsx
 // Opens Emma's Gmail eye
 //
-// Gmail → Connector → Emma Brain
+// RULE:
+//
+// Gmail login only gives permission.
+// Emma owns the connector.
+// Emma owns the brain.
 
 
 import { useGoogleLogin }
 from "@react-oauth/google";
 
 
-import EmmaConnectorManager
-from "./EmmaConnectorManager";
+import Emma
+from "../Emma";
 
 
 
-const manager =
-new EmmaConnectorManager();
+
 
 
 
@@ -23,7 +26,10 @@ function EmmaGmailConnect(){
 
 
 
+
+
 const login = useGoogleLogin({
+
 
 
 scope:
@@ -34,155 +40,51 @@ scope:
 
 
 
+
+
 onSuccess:
 
 async(token)=>{
 
 
-console.log(
-"👁️ Gmail eye opened"
-);
-
-
-
-// ===========================
-// GET LATEST EMAIL LIST
-// ===========================
-
-
-const listResponse =
-await fetch(
-
-"https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1",
-
-{
-
-headers:{
-
-Authorization:
-
-`Bearer ${token.access_token}`
-
-}
-
-}
-
-);
-
-
-
-const listData =
-await listResponse.json();
-
-
 
 console.log(
-"📨 Gmail list:",
-listData
+"👁️ Gmail permission granted"
 );
-
-
-
-
-const messageId =
-listData.messages[0].id;
-
-
 
 
 
 
 // ===========================
-// GET EMAIL DETAILS
+// GIVE TOKEN TO REAL EMMA
 // ===========================
 
 
-const mailResponse =
-await fetch(
+const gmail =
 
-`https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
-
-{
-
-headers:{
-
-
-Authorization:
-
-`Bearer ${token.access_token}`
-
-
-}
-
-
-}
-
-);
-
-
-
-
-const email =
-await mailResponse.json();
-
-
-
-
-console.log(
-"📧 Real Gmail received:",
-email
-);
+Emma.connectorManager
+.connectors
+.gmail;
 
 
 
 
 
+gmail.connect({
 
 
 
-// ===========================
-// SEND INTO EMMA
-// ===========================
+access_token:
 
-
-const experience =
-
-await manager.receive(
-
-"gmail",
-
-email
-
-);
+token.access_token,
 
 
 
+connectedAt:
 
+new Date()
+.toISOString()
 
-console.log(
-"🧠 Emma experienced Gmail:",
-experience
-);
-
-
-
-},
-
-
-
-
-
-
-onError:(error)=>{
-
-
-console.error(
-"❌ Gmail failed",
-error
-);
-
-
-}
 
 
 });
@@ -193,7 +95,211 @@ error
 
 
 
+// ===========================
+// START GMAIL WATCHING
+// ===========================
+
+
+gmail.startWatching(
+
+async(signal)=>{
+
+
+
+await Emma.think(
+
+signal
+
+);
+
+
+
+}
+
+);
+
+
+
+
+
+
+console.log(
+
+"🤍 Emma Gmail sense activated"
+
+);
+
+
+
+
+
+
+
+// ===========================
+// OPTIONAL FIRST SYNC
+// ===========================
+
+
+const response =
+
+await fetch(
+
+"https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1",
+
+{
+
+
+headers:{
+
+
+
+Authorization:
+
+`Bearer ${token.access_token}`
+
+
+
+}
+
+
+
+}
+
+);
+
+
+
+
+
+
+const data =
+
+await response.json();
+
+
+
+
+
+if(
+data.messages?.length
+){
+
+
+
+const id =
+
+data.messages[0].id;
+
+
+
+
+
+
+
+const mailResponse =
+
+await fetch(
+
+`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}`,
+
+{
+
+
+headers:{
+
+
+Authorization:
+
+`Bearer ${token.access_token}`
+
+
+}
+
+
+
+}
+
+);
+
+
+
+
+
+
+const email =
+
+await mailResponse.json();
+
+
+
+
+
+
+
+await Emma.experience(
+
+"gmail",
+
+email
+
+);
+
+
+
+
+console.log(
+
+"🧠 First Gmail memory created"
+
+);
+
+
+
+}
+
+
+
+
+},
+
+
+
+
+
+
+
+
+
+onError:(error)=>{
+
+
+
+console.error(
+
+"❌ Gmail failed",
+
+error
+
+);
+
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
 return(
+
 
 <button
 
@@ -201,7 +307,9 @@ onClick={()=>login()}
 
 >
 
+
 🤍 Connect Gmail
+
 
 </button>
 
@@ -209,7 +317,10 @@ onClick={()=>login()}
 );
 
 
+
 }
+
+
 
 
 

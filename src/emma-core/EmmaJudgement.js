@@ -4,20 +4,23 @@
 // PURPOSE:
 // Decide if a thought should become action.
 //
-// Reasoning thinks.
-// Judgement chooses.
-// ActionExecutor acts.
-//
 // RULE:
-// Never act only because AI suggested.
-// Use:
-// - memory
-// - confidence
-// - relationships
-// - risk
+//
+// Reasoning thinks.
+// Judgement decides.
+// Executor acts.
+//
+// Judgement must be calm.
+// Never crash because one organ gives different format.
 
 
 class EmmaJudgement {
+
+
+
+// ==============================
+// WAKE
+// ==============================
 
 
 constructor(){
@@ -35,16 +38,129 @@ console.log(
 
 
 
+
+
+
+// ==============================
+// NORMALIZE CAPABILITIES
+// ==============================
+
+
+normalizeCapabilities(
+capabilities
+){
+
+
+
+if(
+Array.isArray(capabilities)
+){
+
+
+return capabilities;
+
+
+}
+
+
+
+
+
+if(
+typeof capabilities === "object" &&
+capabilities !== null
+){
+
+
+
+return Object.keys(
+capabilities
+)
+.map(name=>{
+
+
+const value =
+capabilities[name];
+
+
+
+if(
+typeof value === "object"
+){
+
+
+return {
+
+
+name,
+
+...value
+
+
+};
+
+
+}
+
+
+
+
+return {
+
+
+name,
+
+available:
+
+!!value,
+
+
+risk:
+
+"low",
+
+
+requiresApproval:
+
+false
+
+
+};
+
+
+
+});
+
+
+}
+
+
+
+
+return [];
+
+
+}
+
+
+
+
+
+
+
+
+
 // =================================
 // MAIN JUDGEMENT
 // =================================
 
 
 async judge(
-reasoning,
+reasoning={},
 memory={},
 capabilities=[]
 ){
+
 
 
 console.log(
@@ -55,44 +171,80 @@ reasoning
 
 
 
-// -------------------------------
-// Load context
-// -------------------------------
+// make sure capabilities are usable
+
+capabilities =
+
+this.normalizeCapabilities(
+capabilities
+);
+
+
+
+
+
 
 
 let confidence =
-reasoning?.confidence || 50;
+
+reasoning?.confidence ||
+
+50;
 
 
 
-if(confidence <= 1){
+
+
+if(
+confidence <= 1
+){
+
 
 confidence =
-Math.round(confidence * 100);
+
+Math.round(
+confidence * 100
+);
+
 
 }
 
 
 
 
+
+
+
 const memories =
+
 
 memory.relevantExperiences ||
 
+
 memory.previousExperiences ||
 
+
 [];
+
+
+
 
 
 
 
 const relationships =
 
+
 memory.relationships ||
+
 
 reasoning.memoryInfluence?.relationshipsUsed ||
 
+
 [];
+
+
+
 
 
 
@@ -100,9 +252,12 @@ reasoning.memoryInfluence?.relationshipsUsed ||
 
 const identity =
 
+
 memory.identity ||
 
+
 reasoning.memoryInfluence?.identityUsed ||
+
 
 {};
 
@@ -112,11 +267,18 @@ reasoning.memoryInfluence?.identityUsed ||
 
 
 
-let judgementLog=[];
+
+
+let judgementLog =
+[];
+
+
 
 
 judgementLog.push(
+
 `Confidence ${confidence}%`
+
 );
 
 
@@ -125,14 +287,22 @@ judgementLog.push(
 
 
 
-// -------------------------------
-// Understand relationship
-// -------------------------------
+
+
+// ==============================
+// RELATIONSHIP
+// ==============================
+
 
 const relationshipRisk =
+
 this.evaluateRelationship(
+
 relationships
+
 );
+
+
 
 
 
@@ -148,16 +318,26 @@ judgementLog.push(
 
 
 
-// -------------------------------
-// Personal alignment
-// -------------------------------
+
+
+
+// ==============================
+// PERSONAL FIT
+// ==============================
 
 
 const personalFit =
+
 this.evaluatePersonalFit(
+
 reasoning,
+
 identity
+
 );
+
+
+
 
 
 
@@ -174,15 +354,22 @@ judgementLog.push(
 
 
 
-// -------------------------------
-// Situation risk
-// -------------------------------
+
+
+// ==============================
+// RISK
+// ==============================
 
 
 const risk =
+
 this.detectRisk(
+
 reasoning
+
 );
+
+
 
 
 
@@ -199,17 +386,26 @@ judgementLog.push(
 
 
 
-// -------------------------------
-// Choose possible action
-// -------------------------------
+
+
+// ==============================
+// ACTION
+// ==============================
 
 
 const action =
+
 this.chooseAction(
+
 reasoning,
+
 risk,
+
 personalFit
+
 );
+
+
 
 
 
@@ -225,15 +421,26 @@ judgementLog.push(
 
 
 
+
+
 const failures =
+
 this.findFailures(
+
 memories
+
 );
+
+
+
 
 
 const successes =
+
 this.findSuccess(
+
 memories
+
 );
 
 
@@ -244,31 +451,41 @@ memories
 
 
 
-// =================================
-// NOT ENOUGH KNOWLEDGE
-// =================================
+
+// ==============================
+// NEED EXPERIENCE
+// ==============================
 
 
 if(
 
 confidence < 50 &&
+
 memories.length < 3
 
 ){
 
 
+
 return this.wait({
+
 
 confidence,
 
+
 priority:"medium",
 
+
 reason:
+
 "Emma needs more experience before acting.",
+
 
 judgementLog
 
+
 });
+
 
 
 }
@@ -282,39 +499,53 @@ judgementLog
 
 
 
-// =================================
-// PREVENT OLD MISTAKES
-// =================================
+// ==============================
+// AVOID FAILED PATTERNS
+// ==============================
 
 
 if(
 
 this.matchesPastFailure(
+
 action,
+
 failures
+
 )
 
 ){
 
 
+
 return this.wait({
+
+
 
 confidence,
 
+
 priority:"high",
 
+
 reason:
-"Emma remembers this approach failed before.",
+
+"Emma remembers this failed before.",
+
 
 lesson:
+
 failures.slice(0,3),
 
+
 judgementLog
+
 
 
 });
 
 
+
 }
 
 
@@ -325,39 +556,56 @@ judgementLog
 
 
 
-// =================================
+
+// ==============================
 // PERSONAL CONFLICT
-// =================================
+// ==============================
 
 
-if(personalFit.warning){
+if(
+personalFit.warning
+){
+
 
 
 return {
 
 
+
 shouldAct:false,
+
 
 action,
 
+
 mode:"advise",
+
 
 confidence,
 
+
 priority:"medium",
+
 
 needsApproval:false,
 
+
 reason:
+
 personalFit.warning,
+
 
 judgementLog,
 
+
 createdAt:
+
 new Date()
 
 
+
 };
+
 
 
 }
@@ -371,43 +619,59 @@ new Date()
 
 
 
-// =================================
-// IMPORTANT PERSON SAFETY
-// =================================
+// ==============================
+// IMPORTANT + RISKY
+// ==============================
 
 
 if(
 
 relationshipRisk.important &&
-risk.level==="high"
+
+risk.level === "high"
 
 ){
+
 
 
 return {
 
 
+
 shouldAct:true,
+
 
 action,
 
+
 mode:"prepare",
+
 
 needsApproval:true,
 
+
 confidence,
+
 
 priority:"high",
 
+
 reason:
-"Important relationship detected. Emma prepared action but wants confirmation.",
+
+"Important relationship detected. Approval needed.",
+
 
 judgementLog,
 
-createdAt:new Date()
+
+createdAt:
+
+new Date()
+
 
 
 };
+
 
 
 }
@@ -420,25 +684,36 @@ createdAt:new Date()
 
 
 
-// =================================
+
+// ==============================
 // CAPABILITY CHECK
-// =================================
+// ==============================
 
 
 const capability =
+
 capabilities.find(
 
-c=>c.name===action
+c =>
+
+c.name === action
 
 );
 
 
 
 
-if(!capability){
+
+
+
+if(
+!capability
+){
+
 
 
 return {
+
 
 
 shouldAct:false,
@@ -454,6 +729,7 @@ confidence,
 
 
 priority:
+
 risk.priority,
 
 
@@ -461,35 +737,32 @@ needsApproval:false,
 
 
 reason:
-"Emma recommends this action but has no executor.",
+
+"Emma understands but has no executor for this action.",
 
 
 judgementLog,
 
 
-createdAt:new Date()
+createdAt:
+
+new Date()
+
 
 
 };
 
 
+
 }
 
-
-
-
-
-
-
-
-
-
-// =================================
+// ==============================
 // ACTION RISK
-// =================================
+// ==============================
 
 
 const actionRisk =
+
 this.calculateRisk(
 
 capability,
@@ -504,21 +777,38 @@ memories
 
 
 
-if(actionRisk > confidence){
+
+if(
+
+actionRisk > confidence
+
+){
+
 
 
 return this.wait({
 
+
+
 confidence,
 
-priority:risk.priority,
+
+priority:
+
+risk.priority,
+
 
 reason:
+
 "Action risk is higher than Emma confidence.",
+
 
 judgementLog
 
+
+
 });
+
 
 
 }
@@ -530,10 +820,11 @@ judgementLog
 
 
 
-
 const needsApproval =
 
+
 capability.requiresApproval ||
+
 
 actionRisk > 60;
 
@@ -546,6 +837,7 @@ actionRisk > 60;
 
 
 return {
+
 
 
 shouldAct:true,
@@ -568,6 +860,7 @@ needsApproval
 
 
 
+
 needsApproval,
 
 
@@ -575,10 +868,14 @@ confidence,
 
 
 priority:
+
 risk.priority,
 
 
+
+
 reason:
+
 
 needsApproval
 
@@ -594,11 +891,20 @@ needsApproval
 
 
 experienceUsed:
-successes.slice(0,3),
+
+successes.slice(
+
+0,
+
+3
+
+),
+
 
 
 
 judgementLog,
+
 
 
 
@@ -607,11 +913,14 @@ createdAt:
 new Date()
 
 
+
 };
 
 
 
+
 }
+
 
 
 
@@ -633,18 +942,41 @@ relationships=[]
 
 
 
-if(relationships.length===0){
+if(
+
+!relationships ||
+
+relationships.length === 0
+
+){
+
 
 
 return {
 
-level:"unknown",
 
-important:false
+
+level:
+
+"unknown",
+
+
+
+important:
+
+false
+
+
 
 };
 
+
+
 }
+
+
+
+
 
 
 
@@ -652,15 +984,23 @@ const interactions =
 
 relationships.reduce(
 
+
 (total,p)=>
+
 
 total +
 
+
 (p.interactions || 0),
+
 
 0
 
+
 );
+
+
+
 
 
 
@@ -669,29 +1009,42 @@ total +
 return {
 
 
+
 level:
 
-interactions>5
+
+interactions > 5
+
 
 ?
 
+
 "strong"
 
+
 :
+
 
 "known",
 
 
 
+
+
+
 important:
 
-interactions>=3
+
+interactions >= 3
+
 
 
 };
 
 
+
 }
+
 
 
 
@@ -708,46 +1061,37 @@ interactions>=3
 
 
 evaluatePersonalFit(
-reasoning,
-identity
+reasoning={},
+identity={}
 ){
 
 
-let score=50;
 
-let warning=null;
+let score =
+50;
+
+
+
+let warning =
+null;
+
+
+
 
 
 
 const text =
-JSON.stringify(reasoning)
+
+JSON.stringify(
+
+reasoning
+
+)
+
 .toLowerCase();
 
 
 
-
-if(identity.goals?.length){
-
-score+=20;
-
-}
-
-
-
-if(identity.preferences?.length){
-
-score+=15;
-
-}
-
-
-
-
-if(identity.workingStyle?.length){
-
-score+=15;
-
-}
 
 
 
@@ -755,21 +1099,99 @@ score+=15;
 
 if(
 
-text.includes("start new") &&
-
-JSON.stringify(identity)
-.toLowerCase()
-.includes("fast")
+identity.goals?.length
 
 ){
 
 
-warning =
-
-"Emma knows speed matters, but suggests checking existing priorities first.";
+score += 20;
 
 
 }
+
+
+
+
+
+
+
+if(
+
+identity.preferences?.length
+
+){
+
+
+score += 15;
+
+
+}
+
+
+
+
+
+
+
+if(
+
+identity.workingStyle?.length
+
+){
+
+
+score += 15;
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+
+text.includes(
+
+"start new"
+
+) &&
+
+
+JSON.stringify(
+
+identity
+
+)
+
+.toLowerCase()
+
+.includes(
+
+"fast"
+
+)
+
+
+){
+
+
+
+warning =
+
+"Emma knows speed matters, but suggests checking priorities first.";
+
+
+
+}
+
+
+
 
 
 
@@ -777,14 +1199,20 @@ warning =
 
 return {
 
+
 score,
 
+
 warning
+
 
 };
 
 
+
 }
+
+
 
 
 
@@ -799,39 +1227,65 @@ warning
 // =================================
 
 
-detectRisk(reasoning){
+detectRisk(
+reasoning={}
+){
+
+
+
 
 
 const text =
-JSON.stringify(reasoning)
+
+JSON.stringify(
+
+reasoning
+
+)
+
 .toLowerCase();
 
 
 
 
+
+
+
 if(
+
 
 text.includes("cancel") ||
 
+
 text.includes("loss") ||
+
 
 text.includes("problem") ||
 
+
 text.includes("risk")
+
 
 ){
 
 
+
 return {
+
 
 level:"high",
 
+
 priority:"high"
+
 
 };
 
 
+
 }
+
+
 
 
 
@@ -840,23 +1294,35 @@ priority:"high"
 
 if(
 
+
 text.includes("growth") ||
 
+
 text.includes("opportunity")
+
 
 ){
 
 
+
 return {
+
 
 level:"medium",
 
+
 priority:"medium"
+
 
 };
 
 
+
 }
+
+
+
+
 
 
 
@@ -864,14 +1330,20 @@ priority:"medium"
 
 return {
 
+
 level:"low",
 
+
 priority:"low"
+
 
 };
 
 
+
 }
+
+
 
 
 
@@ -887,38 +1359,74 @@ priority:"low"
 
 
 chooseAction(
-reasoning,
+reasoning={},
 risk,
 personalFit
 ){
 
 
 
+
+
 if(
+
 reasoning.recommendation?.action
+
 ){
+
+
 
 return reasoning.recommendation.action;
 
+
+
 }
 
 
 
 
-if(personalFit.score>=80){
+
+
+
+
+if(
+
+personalFit.score >= 80
+
+){
+
+
 
 return "PERSONAL_GUIDANCE";
 
+
+
 }
 
 
 
 
-if(risk.level==="high"){
+
+
+
+
+if(
+
+risk.level === "high"
+
+){
+
+
 
 return "PROTECT";
 
+
+
 }
+
+
+
+
 
 
 
@@ -926,6 +1434,7 @@ return "PROTECT";
 return "CONTINUE_LEARNING";
 
 
+
 }
 
 
@@ -937,14 +1446,28 @@ return "CONTINUE_LEARNING";
 
 
 
-findSuccess(memories){
+
+// =================================
+// FIND SUCCESS
+// =================================
+
+
+findSuccess(
+memories=[]
+){
+
 
 
 return memories.filter(
 
-m=>m.memory?.success===true
+m =>
+
+
+m.memory?.success === true
+
 
 );
+
 
 
 }
@@ -952,14 +1475,34 @@ m=>m.memory?.success===true
 
 
 
-findFailures(memories){
+
+
+
+
+
+
+
+// =================================
+// FIND FAILURES
+// =================================
+
+
+findFailures(
+memories=[]
+){
+
 
 
 return memories.filter(
 
-m=>m.memory?.success===false
+m =>
+
+
+m.memory?.success === false
+
 
 );
+
 
 
 }
@@ -968,18 +1511,56 @@ m=>m.memory?.success===false
 
 
 
+
+
+
+
+
+
+// =================================
+// PAST FAILURE CHECK
+// =================================
 
 
 matchesPastFailure(
 action,
-failures
+failures=[]
 ){
 
 
-return failures.some(f=>
 
 
-JSON.stringify(f)
+
+if(
+
+!action
+
+){
+
+
+return false;
+
+
+}
+
+
+
+
+
+
+
+
+return failures.some(
+
+failure =>
+
+
+
+JSON.stringify(
+
+failure
+
+)
 
 .toLowerCase()
 
@@ -989,7 +1570,10 @@ action.toLowerCase()
 
 )
 
+
+
 );
+
 
 
 }
@@ -1002,55 +1586,112 @@ action.toLowerCase()
 
 
 
+
+
+// =================================
+// CALCULATE ACTION RISK
+// =================================
+
+
 calculateRisk(
-skill,
-reasoning,
-memories
+skill={},
+reasoning={},
+memories=[]
 ){
 
 
 
-let risk=30;
+let risk =
+30;
 
 
 
-if(skill.risk==="medium"){
 
-risk+=20;
+
+
+if(
+
+skill.risk === "medium"
+
+){
+
+
+risk += 20;
+
 
 }
 
 
 
-if(skill.risk==="high"){
 
-risk+=50;
+
+
+
+if(
+
+skill.risk === "high"
+
+){
+
+
+risk += 50;
+
 
 }
 
 
 
-if(reasoning.confidence>80){
 
-risk-=20;
+
+
+
+
+if(
+
+reasoning.confidence > 80
+
+){
+
+
+risk -= 20;
+
 
 }
 
 
 
-if(memories.length>5){
 
-risk-=10;
+
+
+
+
+if(
+
+memories.length > 5
+
+){
+
+
+risk -= 10;
+
 
 }
+
+
+
+
 
 
 
 
 return Math.max(
+
 risk,
+
 0
+
 );
+
 
 
 }
@@ -1062,6 +1703,12 @@ risk,
 
 
 
+
+
+
+// =================================
+// WAIT / OBSERVE
+// =================================
 
 
 wait({
@@ -1073,47 +1720,70 @@ judgementLog=[]
 }){
 
 
+
+
+
 return {
+
 
 
 shouldAct:false,
 
 
+
 action:null,
+
 
 
 mode:"observe",
 
 
+
 confidence,
+
 
 
 priority,
 
 
+
 needsApproval:false,
+
 
 
 reason,
 
 
+
 lesson,
+
 
 
 judgementLog,
 
 
-createdAt:new Date()
+
+createdAt:
+
+new Date()
+
 
 
 };
 
 
+
+}
+
+
+
+
 }
 
 
 
-}
+
+
 
 
 

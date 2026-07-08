@@ -1,23 +1,10 @@
 // EmmaDailyAwareness.js
 // Emma's daily consciousness
 //
-// PURPOSE:
-// Emma works even when nobody asks.
-//
-// It does NOT observe the world directly.
-// It studies memory.
-//
-// Memory
-//   ↓
-// Awareness
-//   ↓
-// Reasoning
-//   ↓
-// Judgement
-//   ↓
-// Daily Brief
-//
 // RULE:
+//
+// Connectors collect.
+// Attention filters.
 // Awareness notices.
 // Reasoning thinks.
 // Judgement decides.
@@ -27,11 +14,20 @@
 class EmmaDailyAwareness {
 
 
+
+// ==============================
+// WAKE CONSCIOUSNESS
+// ==============================
+
+
 constructor(
 memory,
 reasoning,
-judgement
+judgement,
+attention=null,
+connectors=null
 ){
+
 
 
 this.memory =
@@ -46,9 +42,210 @@ this.judgement =
 judgement;
 
 
+this.attention =
+attention;
+
+
+this.connectors =
+connectors;
+
+
+
 
 console.log(
 "🌅 Emma Daily Awareness online"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// WAKE UP
+// ==============================
+
+
+async wakeUp(
+context={}
+){
+
+
+
+console.log(
+"🌅 Emma is waking up..."
+);
+
+
+
+
+
+
+
+
+// ==============================
+// 1. RECALL MEMORY
+// ==============================
+
+
+const memories =
+
+await this.memory.recall({
+
+
+userId:
+
+context.userId || null,
+
+
+businessId:
+
+context.businessId || null,
+
+
+context:
+
+"DAILY_REVIEW"
+
+
+});
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// 2. CHECK WORLD THROUGH SENSES
+// ==============================
+
+
+let worldSignals =
+[];
+
+
+
+
+if(
+this.connectors
+){
+
+
+
+console.log(
+"🌎 Checking connected senses..."
+);
+
+
+
+worldSignals =
+
+await this.connectors.collectFromAll();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ==============================
+// 3. ATTENTION FILTER
+// ==============================
+
+
+const importantSignals =
+[];
+
+
+
+
+if(
+this.attention
+){
+
+
+
+for(
+const signal of worldSignals
+){
+
+
+
+const focus =
+
+await this.attention.evaluate(
+
+signal,
+
+memories
+
+);
+
+
+
+
+
+if(
+focus.attention
+){
+
+
+
+importantSignals.push({
+
+
+
+signal,
+
+
+focus
+
+
+
+});
+
+
+
+}
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+else {
+
+
+importantSignals.push(
+
+...worldSignals
+
 );
 
 
@@ -62,62 +259,19 @@ console.log(
 
 
 
-// =================================
-// WAKE UP
-// =================================
 
 
-async wakeUp(context={}){
+// ==============================
+// 4. SCAN EXISTING EXPERIENCE
+// ==============================
 
-
-console.log(
-"🌅 Emma is reviewing the day..."
-);
-
-
-
-
-// 1. Recall everything Emma knows
-
-const memories =
-
-await this.memory.recall({
-
-
-
-userId:
-
-context.userId || null,
-
-
-
-businessId:
-
-context.businessId || null,
-
-
-
-context:
-
-"DAILY_REVIEW"
-
-
-
-});
-
-
-
-
-
-
-
-
-// 2. Find what deserves attention
 
 const awareness =
 
 this.scanMemory(
+
 memories
+
 );
 
 
@@ -127,32 +281,48 @@ memories
 
 
 
-// 3. Think about today
+
+// ==============================
+// 5. THINK ONLY ABOUT IMPORTANT
+// ==============================
 
 
 const reasoning =
 
 await this.reasoning.think(
+
 {
 
 
 eventType:
+
 "DAILY_AWARENESS",
 
 
 
 message:
-"Review my world and tell me what matters today",
+
+"What changed and what matters today?",
 
 
 
-awareness
+memoryAwareness:
+
+awareness,
+
+
+
+worldAwareness:
+
+importantSignals
 
 
 
 },
 
+
 memories
+
 
 );
 
@@ -163,7 +333,11 @@ memories
 
 
 
-// 4. Judge importance
+
+
+// ==============================
+// 6. JUDGE
+// ==============================
 
 
 const judgement =
@@ -174,7 +348,7 @@ reasoning,
 
 memories,
 
-[]
+importantSignals
 
 );
 
@@ -186,16 +360,24 @@ memories,
 
 
 
+
+// ==============================
+// 7. CREATE EMMA REPORT
+// ==============================
+
+
 return {
 
 
 from:
+
 "Emma",
 
 
 
 type:
-"DAILY_AWARENESS",
+
+"EMMA_DAILY_REPORT",
 
 
 
@@ -206,10 +388,19 @@ this.createGreeting(),
 
 
 
+report:{
+
+
+
 summary:
 
 awareness.summary,
 
+
+
+noticed:
+
+importantSignals,
 
 
 
@@ -219,17 +410,19 @@ awareness.attention,
 
 
 
-
-opportunities:
-
-awareness.opportunities,
-
-
-
-
 risks:
 
 awareness.risks,
+
+
+
+opportunities:
+
+awareness.opportunities
+
+
+
+},
 
 
 
@@ -249,10 +442,12 @@ judgement,
 createdAt:
 
 new Date()
+.toISOString()
 
 
 
 };
+
 
 
 }
@@ -265,20 +460,25 @@ new Date()
 
 
 
-// =================================
+
+
+// ==============================
 // MEMORY SCANNER
-// =================================
+// ==============================
 
 
-scanMemory(memory){
+scanMemory(memory={}){
 
 
 
 let attention=[];
 
+
 let risks=[];
 
+
 let opportunities=[];
+
 
 
 
@@ -293,17 +493,19 @@ memory.relationships
 ?.forEach(person=>{
 
 
+
 if(
-
-person.interactions >=3
-
+person.interactions >= 3
 ){
+
 
 
 attention.push({
 
 
+
 type:
+
 "RELATIONSHIP",
 
 
@@ -313,17 +515,20 @@ message:
 `${person.name} has been important recently`,
 
 
+
 person
 
 
+
 });
+
 
 
 }
 
 
-});
 
+});
 
 
 
@@ -340,11 +545,15 @@ memory.failures
 ?.forEach(item=>{
 
 
+
 risks.push({
 
 
+
 type:
+
 "PAST_FAILURE",
+
 
 
 message:
@@ -354,13 +563,12 @@ item.memory?.lesson ||
 "Previous mistake needs attention"
 
 
-});
-
 
 });
 
 
 
+});
 
 
 
@@ -368,17 +576,23 @@ item.memory?.lesson ||
 
 
 
-// Success
+
+
+
+// Success patterns
 
 
 memory.successes
 ?.forEach(item=>{
 
 
+
 opportunities.push({
 
 
+
 type:
+
 "SUCCESS_PATTERN",
 
 
@@ -390,13 +604,12 @@ item.memory?.futureRule ||
 "Successful pattern found"
 
 
-});
-
 
 });
 
 
 
+});
 
 
 
@@ -404,28 +617,39 @@ item.memory?.futureRule ||
 
 
 
-// Rules Emma learned
+
+
+
+// Learned rules
 
 
 memory.rules
 ?.forEach(rule=>{
 
 
+
 attention.push({
 
 
+
 type:
+
 "LEARNED_RULE",
 
 
+
 message:
+
 rule
 
 
+
 });
 
 
+
 });
+
 
 
 
@@ -461,7 +685,9 @@ risks,
 opportunities
 
 
+
 };
+
 
 
 }
@@ -474,9 +700,11 @@ opportunities
 
 
 
-// =================================
-// SUMMARY
-// =================================
+
+
+// ==============================
+// CREATE SUMMARY
+// ==============================
 
 
 createSummary(
@@ -506,6 +734,7 @@ return (
 );
 
 
+
 }
 
 
@@ -516,7 +745,7 @@ return (
 
 return (
 
-`Emma found ${attention.length} things needing attention, ` +
+`Emma noticed ${attention.length} important patterns, ` +
 
 `${risks.length} risks, and ` +
 
@@ -525,6 +754,7 @@ return (
 );
 
 
+
 }
 
 
@@ -535,9 +765,9 @@ return (
 
 
 
-// =================================
-// GREETING
-// =================================
+// ==============================
+// HUMAN GREETING
+// ==============================
 
 
 createGreeting(){
@@ -545,37 +775,22 @@ createGreeting(){
 
 
 const hour =
+
 new Date()
 .getHours();
 
 
 
 
-if(hour < 12){
 
-
-return "Good morning. I reviewed what happened while you were away.";
-
-
-}
-
-
-
-
-if(hour < 18){
-
-
-return "Good afternoon. Here is what I noticed.";
-
-
-}
-
-
+if(
+hour < 12
+){
 
 
 return (
 
-"Good evening. I reviewed your important updates."
+"Good morning. I reviewed what changed while you were away."
 
 );
 
@@ -584,7 +799,43 @@ return (
 
 
 
+
+
+if(
+hour < 18
+){
+
+
+return (
+
+"Good afternoon. Here is what I noticed today."
+
+);
+
+
 }
+
+
+
+
+
+return (
+
+"Good evening. I reviewed your world and prepared your update."
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
 
 
 

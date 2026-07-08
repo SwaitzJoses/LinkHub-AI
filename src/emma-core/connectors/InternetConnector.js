@@ -5,8 +5,7 @@
 // Internet does not think.
 // Internet observes.
 //
-// The world speaks.
-// InternetConnector listens.
+// Internet collects.
 // Emma understands.
 
 
@@ -16,7 +15,7 @@ class InternetConnector {
 
 
 // ==============================
-// INITIALIZE WORLD SENSE
+// INITIALIZE INTERNET SENSE
 // ==============================
 
 
@@ -40,6 +39,11 @@ true;
 
 
 
+this.apiKey =
+import.meta.env.VITE_SEARCH_API_KEY || null;
+
+
+
 console.log(
 "🌎 Internet Connector ready"
 );
@@ -56,18 +60,11 @@ console.log(
 
 
 // ==============================
-// RECEIVE WORLD SIGNAL
-// ==============================
-// Standard connector method
-// used by EmmaConnectorManager
-//
-// No thinking here.
-// Only normalize the signal.
+// STANDARD CONNECTOR ENTRY
 // ==============================
 
 
-async receive(data){
-
+async receive(data = {}){
 
 
 return await this.collect(
@@ -75,9 +72,208 @@ data
 );
 
 
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// SEARCH THE WORLD
+// ==============================
+//
+// Real internet eyes
+//
+// NO reasoning
+// NO decisions
+//
+// ==============================
+
+
+async searchWorld(query){
+
+
+
+console.log(
+"🌎 Searching world:",
+query
+);
+
+
+
+try{
+
+
+
+const response =
+await fetch(
+
+`https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${this.apiKey}`
+
+);
+
+
+
+const result =
+await response.json();
+
+
+
+
+
+const items =
+result.organic_results ||
+
+[];
+
+
+
+
+
+return await this.collectMany(
+
+
+items.map(item => ({
+
+
+
+topic:
+
+query,
+
+
+
+category:
+
+"search",
+
+
+
+eventType:
+
+"web_result",
+
+
+
+summary:
+
+item.title || "",
+
+
+
+content:
+
+item.snippet || "",
+
+
+
+url:
+
+item.link || null,
+
+
+
+domain:
+
+item.source || null,
+
+
+
+raw:
+
+item
+
+
+
+}))
+
+
+);
+
+
 
 }
 
+
+
+catch(error){
+
+
+
+console.error(
+"🌎 Internet search failed",
+error
+);
+
+
+
+return [];
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// WATCH A TOPIC
+// ==============================
+
+
+async watchTopic(topic){
+
+
+
+return await this.searchWorld(
+
+topic
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// WATCH COMPANY
+// ==============================
+
+
+async watchCompany(company){
+
+
+
+return await this.searchWorld(
+
+`${company} latest news updates`
+
+);
+
+
+
+}
 
 
 
@@ -106,14 +302,15 @@ this.source,
 
 
 
+connector:
+
+this.name,
+
 
 
 type:
 
 "WORLD_SIGNAL",
-
-
-
 
 
 
@@ -125,10 +322,9 @@ new Date()
 
 
 
-
-
-
 data:{
+
+
 
 
 
@@ -137,7 +333,6 @@ topic:
 data.topic ||
 
 "unknown",
-
 
 
 
@@ -153,12 +348,79 @@ data.category ||
 
 
 
+eventType:
+
+data.eventType ||
+
+"information",
+
+
+
+
 
 summary:
 
 data.summary ||
 
 "",
+
+
+
+
+
+content:
+
+data.content ||
+
+"",
+
+
+
+
+
+
+
+
+
+url:
+
+data.url ||
+
+null,
+
+
+
+
+
+domain:
+
+data.domain ||
+
+null,
+
+
+
+
+
+author:
+
+data.author ||
+
+null,
+
+
+
+
+
+publishedAt:
+
+data.publishedAt ||
+
+null,
+
+
+
+
 
 
 
@@ -175,8 +437,6 @@ data.people ||
 
 
 
-
-
 companies:
 
 data.companies ||
@@ -187,13 +447,24 @@ data.companies ||
 
 
 
+products:
 
-
-links:
-
-data.links ||
+data.products ||
 
 [],
+
+
+
+
+
+keywords:
+
+data.keywords ||
+
+[],
+
+
+
 
 
 
@@ -211,23 +482,66 @@ data.signals ||
 
 
 
+metrics:
+
+data.metrics ||
+
+{},
 
 
 
-importance:
 
-data.importance ||
 
-"normal"
 
+
+
+
+previousValue:
+
+data.previousValue ||
+
+null,
+
+
+
+
+
+currentValue:
+
+data.currentValue ||
+
+null,
+
+
+
+
+
+changeType:
+
+data.changeType ||
+
+null,
+
+
+
+
+
+
+
+
+
+
+raw:
+
+data.raw ||
+
+data
 
 
 
 
 
 }
-
-
 
 
 
@@ -245,10 +559,111 @@ data.importance ||
 
 
 
+// ==============================
+// COLLECT MULTIPLE
+// ==============================
+
+
+async collectMany(items=[]){
+
+
+
+const results =
+[];
+
+
+
+
+for(
+const item of items
+){
+
+
+
+results.push(
+
+await this.collect(item)
+
+);
+
+
+
+}
+
+
+
+return results;
+
+
+
+}
+
+
+
+
+
+
+
 
 
 // ==============================
-// WHAT CAN INTERNET SEE?
+// DAILY WORLD SCAN
+// ==============================
+
+
+async dailyScan(topics=[]){
+
+
+
+let signals =
+[];
+
+
+
+
+for(
+const topic of topics
+){
+
+
+
+const result =
+await this.watchTopic(
+topic
+);
+
+
+
+signals = [
+
+...signals,
+
+...result
+
+];
+
+
+
+}
+
+
+
+return signals;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// CAPABILITIES
 // ==============================
 
 
@@ -260,23 +675,27 @@ return [
 
 
 
-"observe_world_trends",
+"search_world",
 
 
 
-"discover_public_information",
+"watch_topics",
 
 
 
-"track_market_changes",
+"watch_companies",
 
 
 
-"detect_opportunities",
+"collect_news",
 
 
 
-"collect_external_signals"
+"collect_market_changes",
+
+
+
+"collect_competitor_updates"
 
 
 
@@ -294,8 +713,9 @@ return [
 
 
 
+
 // ==============================
-// CONNECTOR INFO
+// INFO
 // ==============================
 
 
@@ -307,38 +727,21 @@ return {
 
 
 
-source:
-
-this.source,
+source:this.source,
 
 
+name:this.name,
 
 
-name:
-
-this.name,
+type:this.type,
 
 
-
-
-type:
-
-this.type,
-
-
-
-
-active:
-
-this.active,
-
-
+active:this.active,
 
 
 role:
 
-"Emma's awareness of the outside world"
-
+"Emma's live internet awareness"
 
 
 
@@ -347,8 +750,6 @@ role:
 
 
 }
-
-
 
 
 
@@ -377,18 +778,19 @@ this.source,
 
 
 
-
 status:
 
-"healthy",
-
+this.active
+?
+"healthy"
+:
+"disabled",
 
 
 
 message:
 
-"Internet sense is listening"
-
+"Internet connector online"
 
 
 
@@ -406,11 +808,34 @@ message:
 
 
 
+enable(){
 
 
-// ==============================
-// STATUS
-// ==============================
+this.active=true;
+
+
+}
+
+
+
+
+
+
+disable(){
+
+
+this.active=false;
+
+
+}
+
+
+
+
+
+
+
+
 
 
 status(){
@@ -421,31 +846,16 @@ return {
 
 
 
-source:
-
-this.source,
+source:this.source,
 
 
+name:this.name,
 
 
-name:
-
-this.name,
+type:this.type,
 
 
-
-
-type:
-
-this.type,
-
-
-
-
-active:
-
-this.active
-
+active:this.active
 
 
 
@@ -458,8 +868,6 @@ this.active
 
 
 }
-
-
 
 
 

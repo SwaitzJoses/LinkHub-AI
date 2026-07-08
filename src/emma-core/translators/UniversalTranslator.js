@@ -1,18 +1,19 @@
 // UniversalTranslator.js
 // Converts outside systems into Emma's common language
 //
-// External language
-//        ↓
-// Universal Translator
-//        ↓
-// Emma language
-//
 // RULE:
+//
 // Translator understands structure.
 // Emma creates intelligence.
+//
+// Connector sees.
+// Translator converts.
+// Emma thinks.
+
 
 
 class UniversalTranslator {
+
 
 
 constructor(){
@@ -34,11 +35,11 @@ console.log(
 
 
 // ==============================
-// Translate any platform event
+// TRANSLATE ANY WORLD SIGNAL
 // ==============================
 
 
-async translate(input){
+async translate(input = {}){
 
 
 
@@ -49,6 +50,11 @@ input
 
 
 
+
+
+// ==============================
+// RAW PAYLOAD
+// ==============================
 
 
 const payload =
@@ -69,41 +75,73 @@ input.raw ||
 
 
 
+
 // ==============================
 // EXTRACT MESSAGE
+// ==============================
+//
+// DO NOT judge.
+// Only collect human words.
+//
 // ==============================
 
 
 const message =
 
-
-input.message ||
-
-input.text ||
-
-input.description ||
+[
 
 
-// Gmail
+// direct
 
-payload.snippet ||
+input.message,
 
-payload.subject ||
+input.text,
 
-payload.body ||
+input.description,
+
+
+
+// GmailConnector format ⭐
+
+payload.content?.subject,
+
+payload.content?.message,
+
+payload.content?.snippet,
+
+
+
+// old Gmail formats
+
+payload.subject,
+
+payload.body,
+
+payload.snippet,
+
+
+
+// generic formats
+
+payload.message,
+
+payload.text,
 
 
 // nested
 
-payload.message ||
+payload.data?.message,
 
-payload.text ||
+payload.data?.text,
 
-payload.data?.message ||
+payload.data?.summary
 
-payload.data?.text ||
 
-"";
+]
+
+.filter(Boolean)
+
+.join(" ");
 
 
 
@@ -166,6 +204,7 @@ payload.source ||
 
 
 
+
 // ==============================
 // EVENT TYPE
 // ==============================
@@ -194,18 +233,24 @@ payload.type ||
 
 
 // ==============================
-// SIMPLE INTENT EXTRACTION
-// (translation only)
+// LIGHT STRUCTURAL LABEL
+//
+// Not thinking.
+// Only routing.
+//
 // ==============================
 
 
 let intent =
+
 "GENERAL_ACTIVITY";
 
 
 
 let importance =
+
 "normal";
+
 
 
 
@@ -217,9 +262,13 @@ message.toLowerCase();
 
 
 
+
+
 if(
 
 lowerMessage.includes("price") ||
+
+lowerMessage.includes("pricing") ||
 
 lowerMessage.includes("cost") ||
 
@@ -234,20 +283,15 @@ lowerMessage.includes("service")
 ){
 
 
-
 intent =
+
 "CUSTOMER_INQUIRY";
 
 
 
 importance =
+
 "high";
-
-
-
-eventType =
-"CUSTOMER_SIGNAL";
-
 
 
 }
@@ -256,6 +300,14 @@ eventType =
 
 
 
+
+
+
+
+
+// ==============================
+// SOURCE NORMALIZATION
+// ==============================
 
 
 if(
@@ -267,20 +319,10 @@ source === "gmail"
 
 eventType =
 
-intent === "CUSTOMER_INQUIRY"
-
-?
-
-"CUSTOMER_EMAIL"
-
-:
-
 "EMAIL_RECEIVED";
 
 
 }
-
-
 
 
 
@@ -308,12 +350,9 @@ businessId,
 
 
 
-
 // source
 
 source,
-
-
 
 
 
@@ -322,9 +361,16 @@ source,
 
 eventType,
 
-type:eventType,
+
+type:
+
+eventType,
+
+
 
 intent,
+
+
 
 importance,
 
@@ -333,21 +379,52 @@ importance,
 
 
 
-// human meaning
+
+
+// human readable signal
 
 message,
 
 
+
 description:
 
-message || "External activity detected",
+message ||
+
+"External activity detected",
 
 
 
 
 
 
-// affected object
+
+
+// people
+
+person:
+
+payload.person ||
+
+null,
+
+
+
+people:
+
+payload.people ||
+
+[],
+
+
+
+
+
+
+
+
+
+// original object
 
 object:
 
@@ -363,29 +440,38 @@ source,
 
 
 
-// preserve everything
+
+
+// keep everything
 
 data:{
+
 
 
 ...payload,
 
 
+
 businessId,
+
 
 
 message,
 
 
+
 intent,
+
 
 
 importance,
 
 
+
 originalType:
 
 input.type
+
 
 
 },
@@ -408,7 +494,7 @@ input,
 
 
 
-// Emma understanding seed
+// structural hint only
 
 meaning:{
 
@@ -443,7 +529,6 @@ importance === "high"
 
 
 
-
 time:
 
 
@@ -451,7 +536,9 @@ input.time ||
 
 input.createdAt ||
 
-new Date(),
+new Date()
+.toISOString(),
+
 
 
 
@@ -460,12 +547,13 @@ new Date(),
 
 translatedAt:
 
+
 new Date()
+.toISOString()
 
 
 
 };
-
 
 
 
