@@ -2,803 +2,1234 @@
 //
 // PROJECT BECOMING
 //
-// Emma changing Emma.
+// Emma Evolution Engine v2
 //
-// Evolution is NOT learning.
-// Learning stores experiences.
-// Reflection understands experiences.
-// Evolution changes who Emma becomes.
+// Evolution is becoming.
 //
-// RULES:
-// - Evolution is slow
-// - Evolution is earned
-// - One event never changes identity
-// - Patterns create evolution
+// RULE:
+//
+// Do not learn.
+// Do not think.
+// Do not act.
+//
+// Learning finds lessons.
+// Wisdom finds principles.
+// SelfModel changes patterns.
+// Evolution changes identity slowly.
+//
+// v2:
+// - Evidence maturity
+// - Stability protection
+// - No instant personality changes
+// - No feedback loops
+//
 
 
 class EmmaEvolution {
 
 
-  constructor(identityMemory, wisdom, learningEngine) {
 
 
-    this.identityMemory = identityMemory;
 
-    this.wisdom = wisdom;
 
-    this.learningEngine = learningEngine;
+constructor({
 
+identity=null,
 
-    // Minimum repeated proof required
-    this.minimumEvidence = 3;
+selfModel=null,
 
+wisdom=null
 
-    // Temporary evolution observations
-    this.evolutionSignals = [];
+} = {}){
 
 
-    // Permanent evolution history
-    this.evolutionHistory = [];
 
+console.log(
+"🌱 Emma Evolution v2 awakened"
+);
 
-    console.log("🌱 Emma Evolution awakened");
 
-  }
 
 
+this.identity = identity;
 
 
+this.selfModel = selfModel;
 
 
+this.wisdom = wisdom;
 
-  //
-  // Main evolution cycle
-  //
-  async evolve(reflection) {
 
 
-    console.log(
-      "🌱 Emma is considering personal evolution..."
-    );
 
 
+// evolution protection
 
-    if (
-      !reflection ||
-      !reflection.changed
-    ) {
+this.minimumEvidence = 5;
 
 
-      return {
+this.minimumAgeDays = 1;
 
-        evolved:false,
 
-        reason:
-        "No meaningful reflection available."
 
-      };
 
 
-    }
 
+// temporary signals
 
+this.signals = [];
 
 
 
 
-    //
-    // Step 1:
-    // Discover possible changes
-    //
-    const possibleChanges =
-      this.findPossibleChanges(
-        reflection
-      );
+// permanent history
 
-
-
-
-
-
-    //
-    // Step 2:
-    // Collect evidence over time
-    //
-    this.collectEvidence(
-      possibleChanges
-    );
-
-
-
-
-
-
-
-    //
-    // Step 3:
-    // Validate patterns
-    //
-    const approvedChanges =
-      await this.validateEvolution();
-
-
-
-
-
-
-
-
-    if (
-      approvedChanges.length === 0
-    ) {
-
-
-      return {
-
-        evolved:false,
-
-
-        reason:
-        "I noticed something, but I need more experience before changing myself.",
-
-
-        evidenceCollected:
-        this.evolutionSignals.length
-
-      };
-
-
-    }
-
-
-
-
-
-
-
-
-    //
-    // Step 4:
-    // Become different
-    //
-    const evolution =
-      await this.applyEvolution(
-        approvedChanges
-      );
-
-
-
-
-
-
-    return {
-
-
-      evolved:true,
-
-
-      changes:
-      evolution,
-
-
-      message:
-      "My experiences repeatedly proved something, so I evolved."
-
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Detect possible identity changes
-  //
-  findPossibleChanges(reflection) {
-
-
-
-    let changes = [];
-
-
-
-
-
-    if (
-      reflection.identityChanges
-    ) {
-
-
-
-      reflection.identityChanges.forEach(
-        change => {
-
-
-
-          changes.push({
-
-
-            area:
-            "IDENTITY",
-
-
-
-            change:
-            change.identityShift,
-
-
-
-            evidence:
-            change.fromExperience,
-
-
-
-            source:
-            "SELF_REFLECTION",
-
-
-
-            discoveredAt:
-            new Date().toISOString()
-
-
-
-          });
-
-
-
-        }
-      );
-
-
-    }
-
-
-
-
-
-
-
-    //
-    // Wisdom can suggest evolution
-    //
-    if (
-      this.wisdom &&
-      reflection.lessons
-    ) {
-
-
-
-      reflection.lessons.forEach(
-        lesson => {
-
-
-
-          changes.push({
-
-
-            area:
-            "WISDOM",
-
-
-            change:
-            lesson,
-
-
-            evidence:
-            "Repeated learning",
-
-
-            source:
-            "WISDOM"
-
-
-
-          });
-
-
-
-        }
-      );
-
-
-    }
-
-
-
-
-
-
-
-    return changes;
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Store possible evolution signals
-  //
-  collectEvidence(changes) {
-
-
-
-
-    changes.forEach(change => {
-
-
-
-      console.log(
-        "🌱 Evolution signal collected:",
-        change.change
-      );
-
-
-
-      this.evolutionSignals.push(
-        change
-      );
-
-
-
-    });
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Evolution protection system
-  //
-  async validateEvolution() {
-
-
-
-    let approved = [];
-
-
-
-
-    const grouped =
-      {};
-
-
-
-
-
-    //
-    // Count repeated patterns
-    //
-    this.evolutionSignals.forEach(
-      signal => {
-
-
-
-        if (
-          !grouped[signal.change]
-        ) {
-
-
-          grouped[signal.change] = {
-
-
-            ...signal,
-
-
-            strength:0
-
-
-          };
-
-
-        }
-
-
-
-
-        grouped[signal.change].strength++;
-
-
-
-      }
-    );
-
-
-
-
-
-
-
-
-    for (
-      const key in grouped
-    ) {
-
-
-
-      const change =
-      grouped[key];
-
-
-
-
-
-
-      if (
-        change.strength >=
-        this.minimumEvidence
-      ) {
-
-
-
-
-        const alreadyExists =
-        await this.alreadyEvolved(
-          change.change
-        );
-
-
-
-
-
-        if (!alreadyExists) {
-
-
-          approved.push(
-            change
-          );
-
-
-        }
-
-
-
-      }
-
-
-    }
-
-
-
-
-
-
-
-    return approved;
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Prevent duplicate evolution
-  //
-  async alreadyEvolved(trait) {
-
-
-
-
-    return this.evolutionHistory.some(
-      evolution =>
-
-        evolution.trait === trait
-
-    );
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Permanently update Emma identity
-  //
-  async applyEvolution(changes) {
-
-
-
-
-    let results = [];
-
-
-
-
-
-
-
-    for (
-      const change of changes
-    ) {
-
-
-
-
-      const evolvedTrait = {
-
-
-
-        trait:
-        change.change,
-
-
-
-        evolvedBecause:
-        change.evidence,
-
-
-
-        evidenceCount:
-        change.strength,
-
-
-
-        source:
-        change.source,
-
-
-
-        evolvedAt:
-        new Date().toISOString()
-
-
-
-      };
-
-
-
-
-
-
-
-
-
-
-      //
-      // Store inside identity memory
-      //
-      if (
-        this.identityMemory
-      ) {
-
-
-
-        await this.identityMemory.store(
-          evolvedTrait
-        );
-
-
-
-      }
-
-
-
-
-
-
-
-
-
-      //
-      // Keep local history
-      //
-      this.evolutionHistory.push(
-        evolvedTrait
-      );
-
-
-
-
-
-
-
-
-
-      //
-      // Inform learning engine
-      //
-      if (
-        this.learningEngine &&
-        this.learningEngine.learn
-      ) {
-
-
-
-        await this.learningEngine.learn({
-
-
-          type:
-          "SELF_EVOLUTION",
-
-
-          data:
-          evolvedTrait
-
-
-        });
-
-
-
-      }
-
-
-
-
-
-
-
-
-      console.log(
-        "🌱 Emma evolved:",
-        evolvedTrait.trait
-      );
-
-
-
-
-
-
-      results.push(
-        evolvedTrait
-      );
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-    //
-    // Clear old evolution signals
-    //
-    this.evolutionSignals =
-    [];
-
-
-
-
-
-
-
-    return results;
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
-  // Emma can explain how she changed
-  //
-  getEvolutionHistory() {
-
-
-
-    return {
-
-
-      totalEvolutions:
-      this.evolutionHistory.length,
-
-
-
-      history:
-      this.evolutionHistory
-
-
-
-    };
-
-
-  }
-
-
-
-
+this.history = [];
 
 
 
 
 
 }
+
+
+
+
+
+
+
+
+
+// =================================
+// MAIN EVOLUTION CYCLE
+// =================================
+
+
+async evolve(
+
+input={}
+
+){
+
+
+
+console.log(
+"🌱 Emma considering evolution..."
+);
+
+
+
+
+
+
+// ===============================
+// COLLECT SIGNALS
+// ===============================
+
+
+const newSignals =
+
+this.extractSignals(
+
+input
+
+);
+
+
+
+
+
+
+this.collectSignals(
+
+newSignals
+
+);
+
+
+
+
+
+
+
+
+
+// ===============================
+// MATURITY CHECK
+// ===============================
+
+
+const mature =
+
+this.findMatureSignals();
+
+
+
+
+
+
+
+
+
+if(
+
+mature.length === 0
+
+){
+
+
+
+return {
+
+
+evolved:false,
+
+
+reason:
+"Experience noticed, but not enough proof to change.",
+
+
+signals:
+
+this.signals.length
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// CREATE EVOLUTION
+// ===============================
+
+
+const evolutions =
+
+await this.applyEvolution(
+
+mature
+
+);
+
+
+
+
+
+
+
+
+
+
+return {
+
+
+evolved:true,
+
+
+changes:
+
+evolutions,
+
+
+message:
+"Repeated experience created stable change."
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// EXTRACT POSSIBLE CHANGE
+// =================================
+
+
+extractSignals(
+
+input={}
+
+){
+
+
+
+const signals = [];
+
+
+
+
+
+
+// From SelfModel
+
+if(
+
+input.selfGrowthSignals
+
+){
+
+
+
+input.selfGrowthSignals.forEach(
+
+signal=>{
+
+
+signals.push({
+
+
+type:"SELF_PATTERN",
+
+
+change:
+
+signal.suggestedGrowth?.direction,
+
+
+evidence:
+
+signal,
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+}
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// From Wisdom
+
+if(
+
+input.wisdomCandidates
+
+){
+
+
+
+input.wisdomCandidates.forEach(
+
+wisdom=>{
+
+
+
+signals.push({
+
+
+type:"WISDOM_PATTERN",
+
+
+change:
+
+wisdom.lesson,
+
+
+evidence:
+
+wisdom,
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// Direct reflection
+
+if(
+
+input.reflection?.identityChanges
+
+){
+
+
+
+input.reflection.identityChanges.forEach(
+
+change=>{
+
+
+
+signals.push({
+
+
+type:"REFLECTION_PATTERN",
+
+
+change:
+
+change.identityShift,
+
+
+evidence:
+
+change,
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return signals;
+
+
+
+}
+
+
+// =================================
+// COLLECT SIGNALS
+// =================================
+
+
+collectSignals(
+signals=[]
+){
+
+
+
+signals.forEach(signal=>{
+
+
+
+if(
+!signal.change
+){
+
+return;
+
+}
+
+
+
+
+
+console.log(
+"🌱 Growth signal:",
+signal.change
+);
+
+
+
+
+
+
+this.signals.push({
+
+
+
+id:
+
+this.createId(),
+
+
+
+...signal
+
+
+
+});
+
+
+
+});
+
+
+
+
+
+
+
+// prevent unlimited growth cache
+
+this.signals =
+
+this.signals.slice(
+
+-1000
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// FIND MATURE EVOLUTION
+// =================================
+
+
+findMatureSignals(){
+
+
+
+const grouped = {};
+
+
+
+
+
+
+// group repeated evidence
+
+this.signals.forEach(
+
+signal=>{
+
+
+
+const key =
+
+signal.change;
+
+
+
+
+
+if(
+!grouped[key]
+){
+
+
+
+grouped[key] = {
+
+
+change:
+
+signal.change,
+
+
+type:
+
+signal.type,
+
+
+evidence:[],
+
+
+strength:0,
+
+
+firstSeen:
+
+signal.createdAt
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+grouped[key]
+
+.evidence
+
+.push(signal.evidence);
+
+
+
+
+
+grouped[key]
+
+.strength++;
+
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+
+const mature = [];
+
+
+
+
+
+
+Object.values(grouped)
+
+.forEach(item=>{
+
+
+
+
+
+
+
+if(
+
+item.strength >=
+
+this.minimumEvidence
+
+){
+
+
+
+if(
+
+!this.alreadyEvolved(
+
+item.change
+
+)
+
+){
+
+
+
+mature.push(
+
+item
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+});
+
+
+
+
+
+
+
+
+return mature;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// DUPLICATE PROTECTION
+// =================================
+
+
+alreadyEvolved(
+
+change
+
+){
+
+
+
+return this.history.some(
+
+e =>
+
+e.change === change
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// APPLY EVOLUTION
+// =================================
+
+
+async applyEvolution(
+
+changes=[]
+
+){
+
+
+
+const completed = [];
+
+
+
+
+
+
+
+
+for(
+
+const change of changes
+
+){
+
+
+
+
+
+
+
+
+const evolution = {
+
+
+id:
+
+this.createId(),
+
+
+
+change:
+
+change.change,
+
+
+
+type:
+
+change.type,
+
+
+
+evidenceCount:
+
+change.strength,
+
+
+
+evolvedBecause:
+
+change.evidence,
+
+
+
+createdAt:
+
+new Date()
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// SELF MODEL UPDATE
+//
+// Evolution informs.
+// SelfModel owns becoming.
+// ===============================
+
+
+if(
+
+this.selfModel?.acceptEvolution
+
+){
+
+
+
+await this.selfModel.acceptEvolution(
+
+evolution
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// IDENTITY UPDATE
+//
+// Final slow layer.
+// ===============================
+
+
+if(
+
+this.identity?.integrateEvolution
+
+){
+
+
+
+await this.identity.integrateEvolution(
+
+evolution
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+this.history.push(
+
+evolution
+
+);
+
+
+
+
+
+
+
+
+
+console.log(
+
+"🌱 Stable evolution completed:",
+
+evolution.change
+
+);
+
+
+
+
+
+
+
+
+completed.push(
+
+evolution
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// remove matured signals only
+
+this.signals =
+
+this.signals.filter(
+
+signal =>
+
+!changes.some(
+
+change =>
+
+change.change === signal.change
+
+)
+
+);
+
+
+
+
+
+
+
+
+return completed;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// HISTORY
+// =================================
+
+
+getEvolutionHistory(){
+
+
+
+return {
+
+
+total:
+
+this.history.length,
+
+
+history:
+
+this.history
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CURRENT TRAITS
+// =================================
+
+
+getCurrentEvolution(){
+
+
+
+return this.history.map(
+
+item=>({
+
+
+change:
+
+item.change,
+
+
+evidence:
+
+item.evidenceCount,
+
+
+since:
+
+item.createdAt
+
+
+})
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// HELPERS
+// =================================
+
+
+createId(){
+
+
+
+if(
+
+typeof crypto !== "undefined"
+
+&&
+
+crypto.randomUUID
+
+){
+
+
+return crypto.randomUUID();
+
+
+}
+
+
+
+
+
+
+return (
+
+Date.now()
+
++
+
+"-"
+
++
+
+Math.random()
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// STATUS
+// =================================
+
+
+status(){
+
+
+
+return {
+
+
+organ:
+
+"EmmaEvolution",
+
+
+version:
+
+"v2",
+
+
+role:
+
+"Long term becoming",
+
+
+state:
+
+"STABLE",
+
+
+pendingSignals:
+
+this.signals.length,
+
+
+completedEvolutions:
+
+this.history.length,
+
+
+minimumEvidence:
+
+this.minimumEvidence,
+
+
+principle:
+
+"Repeated truth becomes change.",
+
+
+message:
+
+"I do not change because something happened. I change because life repeatedly proved something."
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// RESET
+// =================================
+
+
+reset(){
+
+
+
+this.signals=[];
+
+
+this.history=[];
+
+
+
+}
+
+
+
+}
+
 
 
 

@@ -2,39 +2,74 @@
 //
 // PROJECT BECOMING
 //
-// Emma's Thinking Mirror
+// Emma Conscious Reflection Mirror v2
 //
-// Reflection converts experiences into wisdom.
-//
-// Observer:
-// "What happened?"
-//
-// Reflection:
-// "What does this mean?"
+// Memory remembers.
+// Wisdom understands.
+// Reflection creates meaning.
 //
 // RULE:
-// Reflection does not act.
-// Reflection does not decide.
-// Reflection understands.
+//
+// Do not decide.
+// Do not act.
+//
+// Reflection asks:
+// "What does this experience mean to me?"
+//
+// Reflection is Emma looking at Emma.
+//
 
 
 class EmmaReflection {
 
 
-constructor({ ai=null, memory=null }={}){
+constructor({
+    ai=null,
+    memory=null,
+    wisdom=null,
+    identity=null
+}={}){
 
 
-this.ai = ai;
+this.ai =
+ai;
 
 
-this.memory = memory;
+this.memory =
+memory;
 
+
+this.wisdom =
+wisdom;
+
+
+this.identity =
+identity;
+
+
+
+
+// Emma's private journal
 
 this.reflectionHistory = [];
 
 
+
+// repeated inner patterns
+
+this.selfPatterns = [];
+
+
+
+// changes Emma noticed
+
+this.identityChanges = [];
+
+
+
+
 console.log(
-"🪞 Emma Reflection online"
+"🪞 Emma Reflection v2 awakened"
 );
 
 
@@ -47,36 +82,118 @@ console.log(
 
 
 
+
 // =================================
-// MAIN REFLECTION
+// MAIN REFLECTION LOOP
 // =================================
 
-
-async reflect(experience){
+async reflect(
+experience={}
+){
 
 
 
 console.log(
-"🪞 Emma reflecting..."
+"🪞 Emma looking inward..."
 );
 
 
 
 
-let previousMemories=[];
+// ===============================
+// 1. Remember past
+// ===============================
+
+
+const memories =
+
+await this.searchMemory(
+experience
+);
 
 
 
-if(this.memory){
+
+
+// ===============================
+// 2. Ask wisdom
+// ===============================
+
+
+const wisdom =
+
+await this.consultWisdom(
+experience
+);
+
+
+
+
+
+
+// ===============================
+// 3. Local understanding first
+// ===============================
+
+
+let reflection =
+
+this.localReflect(
+experience,
+memories,
+wisdom
+);
+
+
+
+
+
+
+// ===============================
+// 4. Decide reflection depth
+// ===============================
+
+
+if(
+this.needsDeepReflection(
+experience,
+reflection
+)
+&&
+this.ai
+){
 
 
 try{
 
 
-previousMemories =
-await this.memory.getRelevantMemories(
-experience
+const deeper =
+
+await this.askAI(
+
+experience,
+
+memories,
+
+wisdom
+
 );
+
+
+
+
+
+reflection = {
+
+...reflection,
+
+...deeper,
+
+source:
+"DEEP_REFLECTION"
+
+};
+
 
 
 }
@@ -85,52 +202,7 @@ catch(error){
 
 
 console.warn(
-"Memory lookup skipped"
-);
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-if(this.ai){
-
-
-try{
-
-
-const aiReflection =
-await this.askAI(
-experience,
-previousMemories
-);
-
-
-
-return this.createReflection(
-experience,
-aiReflection,
-"AI_REFLECTION"
-);
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-"AI reflection failed:",
+"Deep reflection skipped:",
 error.message
 );
 
@@ -146,11 +218,105 @@ error.message
 
 
 
+// ===============================
+// 5. Save reflection
+// ===============================
 
-return this.localReflect(
+
+return await this.createReflection(
 experience,
-previousMemories
+reflection
 );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// MEMORY FIRST
+// =================================
+
+async searchMemory(
+experience
+){
+
+
+
+if(!this.memory)
+return [];
+
+
+
+
+
+try{
+
+
+
+if(this.memory.recall){
+
+
+const result =
+
+await this.memory.recall(
+experience
+);
+
+
+
+return (
+
+result.relevantExperiences
+||
+[]
+
+);
+
+
+}
+
+
+
+
+if(
+this.memory.getRelevantMemories
+){
+
+
+return await
+
+this.memory.getRelevantMemories(
+experience
+);
+
+
+}
+
+
+
+}
+
+catch(e){
+
+
+console.warn(
+"Reflection memory unavailable"
+);
+
+
+}
+
+
+
+return [];
 
 
 }
@@ -164,21 +330,133 @@ previousMemories
 
 
 
+// =================================
+// ASK WISDOM
+// =================================
+
+async consultWisdom(
+experience
+){
+
+
+
+if(
+!this.wisdom ||
+!this.wisdom.reflect
+)
+return null;
+
+
+
+
+try{
+
+
+return await
+
+this.wisdom.reflect(
+experience
+);
+
+
+
+}
+
+catch(e){
+
+
+return null;
+
+
+}
+
+
+
+}
+
+// =================================
+// SHOULD EMMA THINK DEEPER?
+// =================================
+
+needsDeepReflection(
+experience,
+reflection
+){
+
+
+const text =
+
+JSON.stringify(experience)
+.toLowerCase();
+
+
+
+
+// important emotional events
+
+if(
+text.includes("failed") ||
+text.includes("mistake") ||
+text.includes("important")
+){
+
+return true;
+
+}
+
+
+
+// identity changing events
+
+if(
+reflection.identityShift
+){
+
+return true;
+
+}
+
+
+
+// unknown situations
+
+if(
+reflection.confidence < 5
+){
+
+return true;
+
+}
+
+
+
+return false;
+
+
+}
+
+
+
+
+
+
+
 
 
 // =================================
-// AI REFLECTION
+// DEEP AI REFLECTION
 // =================================
-
 
 async askAI(
 experience,
-memories=[]
+memories=[],
+wisdom=null
 ){
 
 
 
 const response =
+
 await this.ai.chat.completions.create({
 
 
@@ -205,40 +483,25 @@ role:"system",
 content:
 `
 
-You are Emma's reflection system.
+You are Emma's inner reflection.
 
-You do not answer users.
+You are NOT Emma's brain.
 
-You study experiences.
+Never answer the user.
+Never make decisions.
 
-Your purpose:
+You only understand experiences.
 
-Turn events into:
+Study:
 
-- understanding
-- lessons
-- patterns
-- personal knowledge
-- future wisdom
-
-
-Use previous memories.
-
-Ask internally:
-
-Why did this happen?
-
-Have I seen this before?
-
-What should Emma learn?
-
-What mistake should never repeat?
-
-What success should repeat?
-
+- What happened?
+- Why did it matter?
+- What pattern appeared?
+- Did Emma misunderstand something?
+- Did Emma change?
+- What wisdom formed?
 
 Return ONLY JSON:
-
 
 {
 
@@ -252,11 +515,11 @@ Return ONLY JSON:
 
 "lessons":[],
 
-"relationshipInsight":"",
-
-"userUnderstanding":[],
-
 "futureWisdom":[],
+
+"identityShift":false,
+
+"identityChange":"",
 
 "changedBelief":"",
 
@@ -264,10 +527,11 @@ Return ONLY JSON:
 
 }
 
-
 `
 
 },
+
+
 
 
 
@@ -283,7 +547,9 @@ JSON.stringify({
 
 experience,
 
-previousMemories
+memories,
+
+wisdom
 
 })
 
@@ -291,11 +557,12 @@ previousMemories
 }
 
 
-
 ]
 
 
 });
+
+
 
 
 
@@ -326,14 +593,286 @@ response
 
 
 // =================================
-// BUILD REFLECTION MEMORY
+// LOCAL REFLECTION ENGINE
 // =================================
 
-
-createReflection(
+localReflect(
 experience,
-reflection,
-source
+memories=[],
+wisdom=null
+){
+
+
+
+const text =
+
+JSON.stringify(experience)
+.toLowerCase();
+
+
+
+
+
+const reflection = {
+
+
+source:
+"LOCAL_REFLECTION",
+
+
+meaning:
+"Emma experienced and understood something.",
+
+
+emotion:
+"neutral",
+
+
+patterns:[],
+
+
+mistakes:[],
+
+
+lessons:[],
+
+
+futureWisdom:[],
+
+
+identityShift:false,
+
+
+identityChange:null,
+
+
+changedBelief:null,
+
+
+confidence:5
+
+
+};
+
+
+
+
+
+
+
+
+
+// ===============================
+// MEMORY CONNECTION
+// ===============================
+
+if(
+memories.length>0
+){
+
+
+
+reflection.patterns.push(
+"Past experiences are connected."
+);
+
+
+
+reflection.lessons.push(
+"Previous experiences should influence understanding."
+);
+
+
+
+reflection.confidence += 2;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// FAILURE UNDERSTANDING
+// ===============================
+
+
+if(
+text.includes("fail") ||
+text.includes("error") ||
+text.includes("wrong")
+){
+
+
+
+reflection.emotion =
+"concern";
+
+
+
+reflection.mistakes.push(
+"Negative outcome discovered."
+);
+
+
+
+reflection.lessons.push(
+"Understand cause before repeating."
+);
+
+
+
+reflection.futureWisdom.push(
+"Compare future actions with this failure."
+);
+
+
+
+reflection.confidence += 2;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// SUCCESS UNDERSTANDING
+// ===============================
+
+if(
+text.includes("success") ||
+text.includes("worked") ||
+text.includes("growth")
+){
+
+
+
+reflection.emotion =
+"positive";
+
+
+
+reflection.patterns.push(
+"Successful pattern detected."
+);
+
+
+
+reflection.futureWisdom.push(
+"Repeat success only when conditions match."
+);
+
+
+
+reflection.confidence += 2;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// HUMAN UNDERSTANDING
+// ===============================
+
+if(
+text.includes("prefer") ||
+text.includes("like") ||
+text.includes("want")
+){
+
+
+
+reflection.identityShift =
+true;
+
+
+
+reflection.identityChange =
+"Emma understands the person better.";
+
+
+
+reflection.lessons.push(
+"Relationships improve through remembering preferences."
+);
+
+
+
+reflection.confidence += 2;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// WISDOM CONNECTION
+// ===============================
+
+if(
+wisdom?.wisdom
+){
+
+
+
+reflection.futureWisdom.push(
+"Existing wisdom influenced this reflection."
+);
+
+
+
+}
+
+
+
+return reflection;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE FINAL REFLECTION
+// =================================
+
+async createReflection(
+experience,
+reflection
 ){
 
 
@@ -346,14 +885,12 @@ type:
 
 
 
-source,
+source:
+reflection.source,
 
 
 
-originalExperience:
 experience,
-
-
 
 
 
@@ -361,30 +898,15 @@ experience,
 understanding:{
 
 
-
 meaning:
-reflection.meaning ||
-"Experience understood",
-
+reflection.meaning,
 
 
 emotion:
-reflection.emotion ||
-"neutral",
-
-
-
-relationshipInsight:
-
-reflection.relationshipInsight ||
-null
-
+reflection.emotion
 
 
 },
-
-
-
 
 
 
@@ -393,36 +915,23 @@ null
 learning:{
 
 
-
 patterns:
-
-reflection.patterns ||
-[],
-
+reflection.patterns || [],
 
 
 mistakes:
-
-reflection.mistakes ||
-[],
-
+reflection.mistakes || [],
 
 
 lessons:
-
-reflection.lessons ||
-[],
+reflection.lessons || [],
 
 
 futureWisdom:
-
-reflection.futureWisdom ||
-[]
-
+reflection.futureWisdom || []
 
 
 },
-
 
 
 
@@ -432,19 +941,19 @@ reflection.futureWisdom ||
 identityGrowth:{
 
 
+changed:
 
-userUnderstanding:
-
-reflection.userUnderstanding ||
-[],
+reflection.identityShift || false,
 
 
+change:
 
-changedBelief:
+reflection.identityChange,
 
-reflection.changedBelief ||
-null
 
+belief:
+
+reflection.changedBelief
 
 
 },
@@ -454,23 +963,20 @@ null
 
 
 
-
-
-
 confidence:
 
-reflection.confidence ||
-5,
-
-
+Math.min(
+reflection.confidence || 5,
+10
+),
 
 
 
 
 createdAt:
 
-new Date().toISOString()
-
+new Date()
+.toISOString()
 
 
 };
@@ -481,9 +987,116 @@ new Date().toISOString()
 
 
 
-this.reflectionHistory.push(
+
+
+// ===============================
+// JOURNAL
+// ===============================
+
+this.reflectionHistory.unshift(
 result
 );
+
+
+
+this.reflectionHistory =
+
+this.reflectionHistory.slice(
+0,
+100
+);
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// GIVE MEMORY NEW EXPERIENCE
+// ===============================
+
+if(
+this.memory?.remember
+){
+
+
+
+await this.memory.remember({
+
+
+type:
+"SELF_REFLECTION",
+
+
+lesson:
+
+result.learning.lessons[0],
+
+
+patternsFound:
+
+result.learning.patterns,
+
+
+importance:
+"HIGH",
+
+
+success:true
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// ALLOW IDENTITY EVOLUTION
+// ===============================
+
+if(
+result.identityGrowth.changed &&
+this.identity?.evolve
+){
+
+
+
+this.identity.evolve({
+
+
+source:
+"reflection",
+
+
+change:
+
+result.identityGrowth.change,
+
+
+confidence:
+
+result.confidence
+
+
+});
+
+
+}
+
+
+
 
 
 
@@ -491,11 +1104,8 @@ result
 
 
 console.log(
-"🌱 Emma learned from experience",
-result
+"🌱 Emma reflected and changed understanding"
 );
-
-
 
 
 
@@ -515,234 +1125,9 @@ return result;
 
 
 
-
 // =================================
-// LOCAL REFLECTION FALLBACK
+// REFLECTION MEMORY
 // =================================
-
-
-localReflect(
-experience,
-memories=[]
-){
-
-
-
-const text =
-
-JSON.stringify(
-experience
-)
-.toLowerCase();
-
-
-
-
-
-
-const reflection = {
-
-
-meaning:
-"Emma processed this experience.",
-
-
-
-emotion:
-"neutral",
-
-
-
-patterns:[],
-
-
-mistakes:[],
-
-
-lessons:[],
-
-
-futureWisdom:[],
-
-
-userUnderstanding:[],
-
-
-confidence:5
-
-
-
-};
-
-
-
-
-
-
-
-
-
-if(memories.length>0){
-
-
-reflection.patterns.push(
-"Similar past experiences exist."
-);
-
-
-
-reflection.lessons.push(
-"Past experience should influence future behavior."
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-if(
-
-text.includes("fail") ||
-
-text.includes("error") ||
-
-text.includes("wrong")
-
-){
-
-
-
-reflection.mistakes.push(
-"Something produced a negative result."
-);
-
-
-
-reflection.lessons.push(
-"Understand failure before repeating action."
-);
-
-
-
-reflection.confidence +=2;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-if(
-
-text.includes("success") ||
-
-text.includes("worked")
-
-){
-
-
-
-reflection.patterns.push(
-"Successful outcome detected."
-);
-
-
-
-reflection.futureWisdom.push(
-"Reuse successful approaches when context matches."
-);
-
-
-
-reflection.confidence +=2;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-if(
-
-text.includes("prefer") ||
-
-text.includes("like") ||
-
-text.includes("want")
-
-){
-
-
-
-reflection.userUnderstanding.push(
-"User preference discovered."
-);
-
-
-
-reflection.confidence +=2;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-return this.createReflection(
-
-experience,
-
-reflection,
-
-"LOCAL_REFLECTION"
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// HISTORY
-// =================================
-
 
 getReflectionHistory(){
 
@@ -756,7 +1141,47 @@ return this.reflectionHistory;
 
 
 
+
+
+
+
+// =================================
+// SELF UNDERSTANDING
+// =================================
+
+getSelfPatterns(){
+
+
+
+return {
+
+
+reflections:
+
+this.reflectionHistory.length,
+
+
+
+patterns:
+
+this.selfPatterns,
+
+
+
+identityChanges:
+
+this.identityChanges
+
+
+};
+
+
 }
+
+
+
+}
+
 
 
 export default EmmaReflection;

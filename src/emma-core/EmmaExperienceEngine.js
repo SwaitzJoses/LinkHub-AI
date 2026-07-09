@@ -2,43 +2,41 @@
 //
 // PROJECT BECOMING
 //
-// Emma Experience Engine v3
+// Emma Experience Engine v7
 //
-// This is Emma's spinal cord.
+// Emma's spinal cord.
 //
 // RULE:
 //
-// Do not think here.
-// Do not remember here.
-// Do not evolve here.
+// Do not think.
+// Do not decide.
+// Do not learn.
 //
-// Only move experience through organs.
-//
-// Flow:
+// Only move life between organs.
 //
 // World
 //  ↓
 // Experience
 //  ↓
-// Attention
-//  ↓
 // Memory
 //  ↓
-// Reflection
+// Wisdom
 //  ↓
-// Learning
-//  ↓
-// Evolution
+// SelfModel
 //  ↓
 // Reasoning
+//  ↓
+// Judgement
 //
-
+// Action outcomes return here.
+//
 
 class EmmaExperienceEngine {
 
 
-
 constructor({
+
+stream,
 
 attention,
 
@@ -52,68 +50,72 @@ learning,
 
 wisdom,
 
+selfModel,
+
+curiosity,
+
 evolution,
 
 reasoning,
 
-choice
+judgement
 
 } = {}){
 
+
+
+this.stream =
+stream;
 
 
 this.attention =
 attention;
 
 
-
 this.memory =
 memory;
-
 
 
 this.reflection =
 reflection;
 
 
-
 this.selfReflection =
 selfReflection;
-
 
 
 this.learning =
 learning;
 
 
-
 this.wisdom =
 wisdom;
 
+
+this.selfModel =
+selfModel;
+
+
+this.curiosity =
+curiosity;
 
 
 this.evolution =
 evolution;
 
 
-
 this.reasoning =
 reasoning;
 
 
-
-this.choice =
-choice;
-
-
-
+this.judgement =
+judgement;
 
 
 
 console.log(
-"🧬 Emma Experience Engine v3 alive"
+"🧬 Emma Experience Engine v7 alive"
 );
-
 
 
 }
@@ -127,14 +129,11 @@ console.log(
 
 
 // =================================
-// LIFE EVENT PIPELINE
+// LIFE PIPELINE
 // =================================
 
 
-async process(
-event={}
-){
-
+async process(event={}){
 
 
 console.log(
@@ -143,65 +142,21 @@ console.log(
 
 
 
-
-
-// ===============================
-// 1. FORM EXPERIENCE
-//
-// Raw signal becomes something
-// Emma experienced
-// ===============================
-
-
 const experience =
 
-this.createExperience(
-event
-);
+this.createExperience(event);
 
 
 
-
-
-let timeline = [
-
-{
-stage:"EXPERIENCE_CREATED",
-time:new Date()
-}
-
-];
-
-
-
-
-
-
-
-
-// ===============================
-// 2. ATTENTION
-//
-// Should this enter awareness?
-// ===============================
-
-
-const attention =
-
-await this.attention.evaluate(
-experience
-);
-
-
+const timeline = [];
 
 
 
 timeline.push({
 
-stage:"ATTENTION",
+stage:"EXPERIENCE",
 
-result:
-attention.decision
+time:new Date()
 
 });
 
@@ -212,8 +167,95 @@ attention.decision
 
 
 
+
+
+// =================================
+// EXPERIENCE STREAM
+// =================================
+
+
+if(this.stream){
+
+
+await this.stream.record(
+
+experience
+
+);
+
+
+
+timeline.push({
+
+stage:"STREAM"
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// ATTENTION
+// =================================
+
+
+let attention = null;
+
+
+
+if(this.attention){
+
+
+attention =
+
+await this.attention.evaluate(
+
+experience
+
+);
+
+
+}
+
+
+
+
+
+timeline.push({
+
+stage:"ATTENTION",
+
+result:attention
+
+});
+
+
+
+
+
+
+
+
+
+// =================================
+// IF EXPERIENCE PASSES BY
+// =================================
+
+
 if(
-!attention.payAttention
+
+attention &&
+
+attention.payAttention === false
+
 ){
 
 
@@ -230,22 +272,15 @@ integrated:false,
 experience,
 
 
-attention,
-
-
 timeline,
 
 
 message:
 
-"I noticed this experience, but let it pass.",
+"Experience passed through awareness.",
 
 
-
-createdAt:
-
-new Date()
-
+createdAt:new Date()
 
 
 };
@@ -263,30 +298,16 @@ new Date()
 
 
 
-// ===============================
-// 3. MEMORY
-//
-// Only meaningful experience survives
-// ===============================
+// =================================
+// MEMORY
+// =================================
 
 
-let memory =
-null;
+let memory = null;
 
 
 
-
-if(
-
-attention.decision === "REMEMBER"
-
-||
-
-attention.decision === "THINK"
-
-){
-
-
+if(this.memory){
 
 
 
@@ -295,28 +316,10 @@ memory =
 await this.memory.store({
 
 
-
 ...experience,
 
 
-
-importance:
-
-attention.score > 85
-
-?
-
-"HIGH"
-
-:
-
-"NORMAL",
-
-
-
-
 attention
-
 
 
 });
@@ -324,18 +327,11 @@ attention
 
 
 
-
-
 timeline.push({
 
+stage:"MEMORY",
 
-stage:"MEMORY_FORMED",
-
-
-memoryId:
-
-memory?.id
-
+formed:true
 
 });
 
@@ -346,22 +342,28 @@ memory?.id
 
 
 
+
+
+
+
+
+
 // =================================
-// 4. REFLECTION
-//
-// What does this experience mean?
+// REFLECTION
 // =================================
 
 
-let reflection =
-null;
+let reflection=null;
+
 
 
 
 if(
-memory
-&&
+
+memory &&
+
 this.reflection
+
 ){
 
 
@@ -371,6 +373,54 @@ reflection =
 await this.reflection.reflect({
 
 
+experience,
+
+
+memory
+
+
+});
+
+
+
+
+timeline.push({
+
+stage:"REFLECTION"
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// WISDOM
+// =================================
+
+
+let wisdom=null;
+
+
+
+
+if(this.wisdom){
+
+
+
+wisdom =
+
+await this.wisdom.reflect({
+
 
 experience,
 
@@ -378,8 +428,59 @@ experience,
 memory,
 
 
-attention
+reflection
 
+
+});
+
+
+
+
+timeline.push({
+
+stage:"WISDOM"
+
+});
+
+
+
+}
+
+
+
+
+
+// =================================
+// SELF MODEL 🧬
+//
+// What did this experience
+// do to Emma?
+// =================================
+
+
+let self = null;
+
+
+
+if(this.selfModel){
+
+
+
+self =
+
+await this.selfModel.observe({
+
+
+experience,
+
+
+memory,
+
+
+reflection,
+
+
+wisdom
 
 
 });
@@ -391,12 +492,10 @@ attention
 timeline.push({
 
 
-stage:
-"REFLECTION",
+stage:"SELF_MODEL",
 
 
-completed:
-true
+changed:true
 
 
 });
@@ -415,81 +514,24 @@ true
 
 
 // =================================
-// 5. WISDOM
+// LEARNING 🌱
 //
-// Understanding from experience
+// Learning observes,
+// does not force identity.
 // =================================
 
 
-let wisdom =
-null;
+let learning = null;
 
 
 
 
 if(
-reflection
-&&
-this.wisdom
-){
 
+reflection &&
 
-
-wisdom =
-
-await this.wisdom.reflect(
-reflection
-);
-
-
-
-
-
-
-timeline.push({
-
-
-stage:
-"WISDOM_CREATED",
-
-
-completed:
-true
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// 6. LEARNING
-//
-// Update internal patterns
-// =================================
-
-
-let learning =
-null;
-
-
-
-
-if(
-reflection
-&&
 this.learning
+
 ){
 
 
@@ -499,15 +541,16 @@ learning =
 await this.learning.learn({
 
 
-
 experience,
 
 
 reflection,
 
 
-wisdom
+wisdom,
 
+
+self
 
 
 });
@@ -516,16 +559,10 @@ wisdom
 
 
 
-
 timeline.push({
 
 
-stage:
-"LEARNING",
-
-
-completed:
-true
+stage:"LEARNING"
 
 
 });
@@ -543,33 +580,102 @@ true
 
 
 
+// =================================
+// CURIOSITY
+// =================================
+
+
+let curiosity = null;
+
+
+
+
+if(this.curiosity){
+
+
+
+curiosity =
+
+await this.curiosity.explore({
+
+
+experience,
+
+
+memory,
+
+
+wisdom,
+
+
+self,
+
+
+learning
+
+
+});
+
+
+
+
+
+timeline.push({
+
+
+stage:"CURIOSITY"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
 
 // =================================
-// 7. EVOLUTION
+// EVOLUTION
 //
-// Emma changes herself
+// Identity changes only after
+// experience is understood.
 // =================================
 
 
-let evolution =
-null;
+let evolution = null;
 
 
 
 
-if(
-reflection
-&&
-this.evolution
-){
+if(this.evolution){
 
 
 
 evolution =
 
-await this.evolution.evolve(
-reflection
-);
+await this.evolution.evolve({
+
+
+experience,
+
+
+wisdom,
+
+
+self,
+
+
+learning
+
+
+});
 
 
 
@@ -579,13 +685,7 @@ reflection
 timeline.push({
 
 
-stage:
-"EVOLUTION",
-
-
-changed:
-
-!!evolution
+stage:"EVOLUTION"
 
 
 });
@@ -603,140 +703,46 @@ changed:
 
 
 
-
-
 // =================================
-// 8. REASONING
+// REASONING
 //
-// Expensive thinking only
-// when attention requests it
+// Understand meaning.
 // =================================
 
 
-let thought =
-null;
+let reasoning = null;
 
 
 
 
-
-if(
-attention.decision === "THINK"
-&&
-this.reasoning
-){
+if(this.reasoning){
 
 
 
-
-
-thought =
+reasoning =
 
 await this.reasoning.think({
 
 
-
 experience,
 
 
 memory,
 
 
-reflection,
-
-
 wisdom,
 
 
-evolution
-
-
-
-});
-
-
-
-
-
-
-
-
-timeline.push({
-
-
-stage:
-"REASONING",
-
-
-aiUsed:
-true
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// 9. CHOICE
-//
-// Decide response/action
-// =================================
-
-
-let choice =
-null;
-
-
-
-
-if(
-this.choice
-){
-
-
-
-choice =
-
-await this.choice.decide({
-
-
-
-experience,
-
-
-attention,
-
-
-memory,
-
-
-reflection,
-
-
-wisdom,
+self,
 
 
 learning,
 
 
-evolution,
+curiosity,
 
 
-thought
-
+evolution
 
 
 });
@@ -745,15 +751,11 @@ thought
 
 
 
+
 timeline.push({
 
 
-stage:
-"CHOICE",
-
-
-completed:
-true
+stage:"REASONING"
 
 
 });
@@ -771,10 +773,69 @@ true
 
 
 
+// =================================
+// JUDGEMENT ⚖️
+//
+// Should understanding move?
+// =================================
+
+
+let judgement = null;
+
+
+
+
+if(this.judgement){
+
+
+
+judgement =
+
+await this.judgement.judge({
+
+
+reasoning,
+
+
+wisdom,
+
+
+self,
+
+
+memory
+
+
+});
+
+
+
+
+
+
+
+timeline.push({
+
+
+stage:"JUDGEMENT"
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
 
 
 // =================================
-// FINAL EXPERIENCE RESULT
+// EXPERIENCE COMPLETE
 // =================================
 
 
@@ -783,11 +844,13 @@ return {
 
 
 experienced:
+
 true,
 
 
 
 integrated:
+
 true,
 
 
@@ -795,28 +858,42 @@ true,
 experience,
 
 
-attention,
-
 
 memory,
+
 
 
 reflection,
 
 
+
 wisdom,
+
+
+
+self,
+
 
 
 learning,
 
 
+
+curiosity,
+
+
+
 evolution,
 
 
-thought,
+
+thought:
+
+reasoning,
 
 
-choice,
+
+judgement,
 
 
 
@@ -826,8 +903,7 @@ timeline,
 
 message:
 
-"Experience became part of me.",
-
+"Experience moved through Emma and shaped understanding.",
 
 
 
@@ -855,15 +931,10 @@ new Date()
 
 // =================================
 // CREATE EXPERIENCE
-//
-// Raw world signal
-// becomes Emma experience
 // =================================
 
 
-createExperience(
-event={}
-){
+createExperience(event={}){
 
 
 
@@ -874,14 +945,7 @@ return {
 
 id:
 
-
-crypto.randomUUID?.()
-
-||
-
-Date.now(),
-
-
+this.createId(),
 
 
 
@@ -889,12 +953,9 @@ Date.now(),
 
 type:
 
-
 event.type ||
 
-"UNKNOWN_EXPERIENCE",
-
-
+"EXPERIENCE",
 
 
 
@@ -902,7 +963,6 @@ event.type ||
 
 
 source:
-
 
 event.source ||
 
@@ -914,18 +974,15 @@ event.source ||
 
 
 
-
 person:
-
 
 event.person ||
 
-event.customer ||
-
 event.user ||
 
-null,
+event.userId ||
 
+null,
 
 
 
@@ -935,29 +992,33 @@ null,
 
 situation:
 
-
 event.situation ||
 
 event.message ||
 
 event.description ||
 
-null,
-
-
-
-
-
-
-
-
-emotion:
-
-
-event.emotion ||
+event.text ||
 
 null,
 
+
+
+
+
+
+
+
+// Action outcomes return here
+
+
+outcome:
+
+event.outcome ||
+
+event.result ||
+
+null,
 
 
 
@@ -967,7 +1028,6 @@ null,
 
 
 raw:
-
 
 event,
 
@@ -980,10 +1040,7 @@ event,
 
 createdAt:
 
-
-new Date()
-.toISOString()
-
+new Date().toISOString()
 
 
 
@@ -1004,8 +1061,66 @@ new Date()
 
 
 
+
 // =================================
-// HEALTH CHECK
+// CREATE ID
+// =================================
+
+
+createId(){
+
+
+
+if(
+
+typeof crypto !== "undefined"
+
+&&
+
+crypto.randomUUID
+
+){
+
+
+
+return crypto.randomUUID();
+
+
+
+}
+
+
+
+
+
+return (
+
+Date.now()
+
++
+
+"-"
+
++
+
+Math.random()
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// STATUS
 // =================================
 
 
@@ -1017,9 +1132,17 @@ return {
 
 
 
+
 name:
 
 "EmmaExperienceEngine",
+
+
+
+
+version:
+
+"v7",
 
 
 
@@ -1031,6 +1154,12 @@ state:
 
 
 
+role:
+
+"Spinal cord",
+
+
+
 
 pipeline:[
 
@@ -1039,28 +1168,48 @@ pipeline:[
 "Experience",
 
 
+
+"Stream",
+
+
+
 "Attention",
+
 
 
 "Memory",
 
 
+
 "Reflection",
+
 
 
 "Wisdom",
 
 
+
+"SelfModel",
+
+
+
 "Learning",
+
+
+
+"Curiosity",
+
 
 
 "Evolution",
 
 
+
 "Reasoning",
 
 
-"Choice"
+
+"Judgement"
 
 
 
@@ -1071,9 +1220,19 @@ pipeline:[
 
 
 
+principle:
+
+"Move experiences. Never become the brain.",
+
+
+
+
+
+
 message:
 
-"I turn life events into growth."
+"World experiences flow through Emma and shape what she becomes."
+
 
 
 
@@ -1088,6 +1247,7 @@ message:
 
 
 }
+
 
 
 

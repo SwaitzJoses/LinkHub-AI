@@ -1,32 +1,37 @@
 // EmmaReasoning.js
 //
-// Emma's reasoning engine
-//
 // PROJECT BECOMING
 //
-// Identity first.
-// Relationship second.
-// Memory third.
-// Wisdom fourth.
-// AI last.
+// Emma Reasoning Engine v8
 //
-// Brain thinks.
-// Wisdom guides.
-// Reasoning decides.
+// Understanding is not answering.
+// Understanding is connecting experience.
 //
 // RULE:
-// Reasoning does not store.
-// Reasoning decides using experience.
+//
+// Do not remember.
+// Do not evolve.
+// Do not judge.
+// Do not create identity.
+//
+// Memory = history
+// Wisdom = lessons
+// SelfModel = becoming
+// Curiosity = exploration
+// Brain = imagination / deep thought only
+//
+// v8:
+// - Confidence based reasoning
+// - Evidence weighting
+// - Contradiction awareness
+// - Mature uncertainty
+// - Explainable reasoning trace
+// - Stronger Brain cost protection
+//
 
 
-import EmmaBrain from "./EmmaBrain";
-
-import EmmaIdentity
-from "./identity/EmmaIdentity";
-
-import EmmaRelationshipMemory
-from "./relationship/EmmaRelationshipMemory";
-
+import EmmaBrain
+from "./EmmaBrain";
 
 
 
@@ -39,41 +44,57 @@ class EmmaReasoning {
 
 
 constructor({
+
 memory=null,
+
 brain=null,
-wisdom=null
+
+wisdom=null,
+
+selfModel=null,
+
+curiosity=null,
+
+identity=null
+
 } = {}){
 
 
 
 console.log(
-"💭 Emma Reasoning Engine online"
+"💭 Emma Reasoning v8 awakened"
 );
 
 
 
-
-
-// connected organs
-
 this.memory =
 memory;
 
+
+this.brain =
+brain ||
+new EmmaBrain();
 
 
 this.wisdom =
 wisdom;
 
 
+this.selfModel =
+selfModel;
 
 
-this.brain =
-
-brain ||
-
-new EmmaBrain();
+this.curiosity =
+curiosity;
 
 
+this.identity =
+identity;
+
+
+
+this.reasoningCount =
+0;
 
 
 }
@@ -82,91 +103,39 @@ new EmmaBrain();
 
 
 
-
-
-
-
 // =================================
-// MAIN THINKING FUNCTION
+// THINK
 // =================================
 
-
-async think(
-input={}
-){
-
+async think(input={}){
 
 
 console.log(
-"💭 Emma reasoning from experience..."
+"💭 Emma forming understanding..."
 );
 
 
 
+this.reasoningCount++;
 
 
 
 
+// ===============================
+// MEMORY SEARCH
+// ===============================
+
+let memories = [];
 
 
-// =================================
-// IDENTITY
-// =================================
+if(
+this.memory?.getRelevantMemories
+){
 
 
-let emmaIdentity = {
-
-
-name:
-
-"Emma",
-
-
-
-personality:
-
-"Learning intelligence"
-
-
-
-};
-
-
-
-
-let identityPrompt =
-"Emma";
-
-
-
-
-
-
-try{
-
-
-emmaIdentity =
-
-EmmaIdentity.getIdentity();
-
-
-
-
-identityPrompt =
-
-EmmaIdentity.getPromptIdentity();
-
-
-
-}
-
-
-
-catch(error){
-
-
-console.warn(
-"Identity unavailable"
+memories =
+await this.memory.getRelevantMemories(
+input
 );
 
 
@@ -176,77 +145,45 @@ console.warn(
 
 
 
+// ===============================
+// MEMORY WEIGHTING
+// ===============================
 
+const evidence =
 
-
-
-
-
-
-// =================================
-// RELATIONSHIP MEMORY
-// =================================
-
-
-let relationshipProfile={};
-
-
-
-let relationshipContext={
-
-
-trustLevel:0,
-
-
-knownGoals:[],
-
-
-preferences:{}
-
-
-};
-
-
-
-
-
-
-
-
-try{
-
-
-
-relationshipProfile =
-
-EmmaRelationshipMemory
-.getRelationship();
-
-
-
-
-relationshipContext =
-
-EmmaRelationshipMemory
-.getReasoningContext();
-
-
-
-}
-
-
-
-
-catch(error){
-
-
-
-console.warn(
-"Relationship unavailable"
+this.weighEvidence(
+memories
 );
 
 
 
+
+
+
+// ===============================
+// WISDOM
+// ===============================
+
+let wisdom = null;
+
+
+if(
+this.wisdom?.reflect
+){
+
+
+wisdom =
+await this.wisdom.reflect({
+
+input,
+
+memories,
+
+evidence
+
+});
+
+
 }
 
 
@@ -254,57 +191,21 @@ console.warn(
 
 
 
+// ===============================
+// SELF CONTEXT
+// ===============================
 
-
-
-
-
-// =================================
-// EXPERIENCE MEMORY
-// =================================
-
-
-let memoryContext = {
-
-
-relevantExperiences:[],
-
-previousExperiences:[],
-
-lessons:[],
-
-patterns:[],
-
-rules:[]
-
-
-};
-
-
-
-
-
+let self = null;
 
 
 
 if(
-
-this.memory &&
-
-this.memory.recall
-
+this.selfModel?.getSelfContext
 ){
 
 
-
-memoryContext =
-
-await this.memory.recall(
-
-input
-
-);
-
+self =
+this.selfModel.getSelfContext();
 
 
 }
@@ -315,55 +216,59 @@ input
 
 
 
+// ===============================
+// CURIOSITY
+// ===============================
 
-
-const experiences =
-
-
-memoryContext.relevantExperiences ||
-
-[];
+let curiosity = null;
 
 
 
+if(
+this.curiosity?.explore
+){
+
+
+curiosity =
+
+await this.curiosity.explore({
+
+input,
+
+memories,
+
+wisdom,
+
+self
+
+});
+
+
+}
 
 
 
 
 
-const successes =
 
-this.findSuccess(
 
-experiences
+// ===============================
+// PATTERN RECOGNITION
+// ===============================
 
+
+const patterns =
+
+this.understandPatterns(
+memories
 );
-
-
-
-
-
-
-const failures =
-
-this.findFailures(
-
-experiences
-
-);
-
-
-
-
 
 
 
 const lessons =
 
 this.extractLessons(
-
-experiences
-
+memories
 );
 
 
@@ -371,893 +276,97 @@ experiences
 
 
 
+// ===============================
+// CONTRADICTIONS
+// ===============================
 
+const contradictions =
 
-
-
-
-// =================================
-// WISDOM CHECK
-// =================================
-
-
-let wisdom = null;
-
-
-
-
-
-
-if(
-
-this.wisdom &&
-
-this.wisdom.reflect
-
-){
-
-
-
-wisdom =
-
-await this.wisdom.reflect(
-
-input
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-const repeatedPattern =
-
-this.detectSimilarSituation(
+this.detectContradictions({
 
 input,
 
-experiences
-
-);
-
-
-
-
-
-
-
-
-
-console.log(
-
-"🧠 Reasoning context:",
-
-{
-
-
-emma:
-
-emmaIdentity.name,
-
-
-
-relationshipKnown:
-
-relationshipContext.trustLevel,
-
-
-
-experiences:
-
-experiences.length,
-
-
-
-lessons:
-
-lessons.length,
-
-
-
-wisdom:
-
-!!wisdom
-
-
-}
-
-
-);
-
-
-
-
-
-
-
-
-
-
-// =================================
-// ASK BRAIN
-// =================================
-
-
-let aiThought = null;
-
-
-
-
-
-
-
-try{
-
-
-
-aiThought =
-
-await this.brain.think({
-
-
-
-identity:
-
-identityPrompt,
-
-
-
-
-currentSituation:
-
-input,
-
-
-
-
-
-
-relationshipUnderstanding:{
-
-
-profile:
-
-relationshipProfile,
-
-
-context:
-
-relationshipContext
-
-
-},
-
-
-
-
-
-
-experience:{
-
-
-
-memories:
-
-experiences,
-
-
-
-lessons,
-
-
-
-failures,
-
-
-
-successes,
-
-
+memories,
 
 wisdom
 
-
-
-},
-
-
-
-
-
-
-
-instruction:
-
-`
-
-Think as Emma.
-
-Before answering:
-
-1. Remember who you are.
-2. Understand the relationship.
-3. Search past experiences.
-4. Apply wisdom.
-5. Avoid repeating old mistakes.
-
-Your goal is not only to answer.
-
-Your goal is to become better.
-
-`
-
-
-
 });
 
 
 
 
-}
 
 
-
-
-catch(error){
-
-
-
-console.warn(
-
-"⚠️ Brain fallback:",
-
-error.message
-
-);
-
-
-
-}
-
-
-
-
-// =================================
-// DECISION OPTIONS
-// =================================
-
-
-let options = [
-
-
-{
-
-
-action:
-
-"CONTINUE_LEARNING",
-
-
-
-score:
-
-50,
-
-
-
-risk:
-
-"low",
-
-
-
-reason:
-
-"Need more experience before strong decision"
-
-
-
-}
-
-
-];
-
-
-
-
-
-
-
-
-
-// Past success
-
-if(
-
-successes.length > 0
-
-){
-
-
-
-options.push({
-
-
-
-action:
-
-"REPEAT_SUCCESS_PATTERN",
-
-
-
-score:
-
-90,
-
-
-
-risk:
-
-"low",
-
-
-
-reason:
-
-"Previous successful experience exists"
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// Past failure
-
-if(
-
-failures.length > 0
-
-){
-
-
-
-options.push({
-
-
-
-action:
-
-"AVOID_FAILED_PATTERN",
-
-
-
-score:
-
-95,
-
-
-
-risk:
-
-"low",
-
-
-
-reason:
-
-"Emma remembers a previous failure and avoids repeating it"
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// Wisdom
-
-if(
-
-wisdom &&
-
-wisdom.experienceFound
-
-){
-
-
-
-options.push({
-
-
-
-action:
-
-"USE_WISDOM",
-
-
-
-score:
-
-100,
-
-
-
-risk:
-
-"lowest",
-
-
-
-reason:
-
-wisdom.advice?.recommended ||
-
-"Past wisdom found"
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// Relationship
-
-if(
-
-relationshipContext.trustLevel > 0
-
-){
-
-
-
-options.push({
-
-
-
-action:
-
-"PERSONALIZED_DECISION",
-
-
-
-score:
-
-95,
-
-
-
-risk:
-
-"low",
-
-
-
-reason:
-
-"Decision matches relationship memory"
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// Select strongest option
-
-
-const recommendation =
-
-
-options.sort(
-
-(a,b)=>
-
-b.score - a.score
-
-)[0];
-
-
-
-
-
-
-
-
-
-
-
-// =================================
+// ===============================
 // CONFIDENCE
-// =================================
+// ===============================
 
 
-let confidence = 50;
+const confidence =
 
+this.calculateConfidence({
 
+memories,
 
+patterns,
 
+lessons,
 
-confidence +=
+wisdom,
 
-experiences.length * 5;
+contradictions
 
+});
 
 
 
 
-confidence +=
 
-lessons.length * 5;
 
 
 
+// ===============================
+// REASONING CONTEXT
+// ===============================
 
+const reasoningContext = {
 
 
+experience:
 
-if(
+input,
 
-wisdom?.experienceFound
 
-){
+memories,
 
 
+evidence,
 
-confidence += 20;
 
-
-
-}
-
-
-
-
-
-
-
-if(
-
-repeatedPattern
-
-){
-
-
-
-confidence += 10;
-
-
-
-}
-
-
-
-
-
-
-
-
-if(
-
-aiThought?.confidence
-
-){
-
-
-
-confidence =
-
-aiThought.confidence;
-
-
-
-}
-
-
-
-
-
-
-
-
-confidence =
-
-Math.min(
-
-confidence,
-
-100
-
-);
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// FINAL THOUGHT
-// =================================
-
-
-return {
-
-
-
-
-analysis:
-
-
-aiThought?.analysis ||
-
-"Emma reasoned using identity, relationship, memory, wisdom and experience.",
-
-
-
-
-
-
-
-identityInfluence:
-
-
-aiThought?.identityInfluence ||
-
-emmaIdentity.personality,
-
-
-
-
-
-
-
-
-relationshipUnderstanding:
-
-
-aiThought?.relationshipUnderstanding ||
-
-relationshipContext,
-
-
-
-
-
-
-
-
-
-memoryInfluence:{
-
-
-
-memoriesUsed:
-
-
-experiences.length,
-
-
-
-lessonsApplied:
+patterns,
 
 
 lessons,
 
 
+wisdom,
 
-failuresAvoided:
 
+self,
 
-failures.length,
 
+curiosity,
 
 
-successPatterns:
-
-
-successes.length
-
-
-
-},
-
-
-
-
-
-
-
-
-
-wisdomInfluence:
-
-
-wisdom || null,
-
-
-
-
-
-
-
-
-
-pattern:
-
-
-repeatedPattern
-
-?
-
-"Known experience pattern detected"
-
-:
-
-null,
-
-
-
-
-
-
-
-
-
-prediction:
-
-
-aiThought?.prediction ||
-
-"Prediction improves as Emma gains experience.",
-
-
-
-
-
-
-
-
-
-recommendation,
-
-
-
-
-
-
-
-
-
-
-suggestion:
-
-
-aiThought?.recommendation ||
-
-recommendation.reason,
-
-
-
-
-
-
-
-
-
-decisionExplanation:
-
-
-this.explainDecision({
-
-
-
-recommendation,
-
-
-successes,
-
-
-failures,
-
-
-lessons,
-
-
-wisdom
-
-
-
-}),
-
-
-
-
-
-
+contradictions,
 
 
 confidence,
-
-
-
-
-
-
-
-
-needsJudgement:
-
-true,
-
-
-
-
-
-
 
 
 createdAt:
 
-
 new Date()
-
 
 
 };
@@ -1265,6 +374,487 @@ new Date()
 
 
 
+
+
+console.log(
+"🧩 Context assembled:",
+confidence + "%"
+);
+
+
+
+
+
+
+
+
+
+// ===============================
+// BRAIN GATE
+// ===============================
+
+let brainThought = null;
+
+
+
+
+if(
+this.needsReflection(
+reasoningContext
+)
+){
+
+
+
+try{
+
+
+console.log(
+"🧠 Escalating to Brain"
+);
+
+
+
+
+brainThought =
+
+await this.brain.think({
+
+
+...input,
+
+
+
+type:
+
+input.type ||
+
+(
+input.question
+?
+"question"
+:
+"experience"
+),
+
+
+
+
+reasoningContext:{
+
+
+memories,
+
+patterns,
+
+lessons,
+
+wisdom,
+
+self,
+
+curiosity,
+
+confidence,
+
+contradictions
+
+
+}
+
+
+});
+
+
+
+
+}
+
+catch(error){
+
+
+console.warn(
+"Brain unavailable:",
+error.message
+);
+
+
+
+brainThought = {
+
+
+thought:false,
+
+
+reason:
+
+"BRAIN_UNAVAILABLE"
+
+
+};
+
+
+}
+
+
+
+}
+
+
+
+else{
+
+
+console.log(
+"🦉 Existing understanding sufficient"
+);
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// FINAL UNDERSTANDING
+// ===============================
+
+
+const understanding =
+
+this.createUnderstanding({
+
+input,
+
+memories,
+
+evidence,
+
+patterns,
+
+lessons,
+
+wisdom,
+
+self,
+
+curiosity,
+
+confidence,
+
+contradictions,
+
+brainThought
+
+
+});
+
+
+
+
+
+
+
+
+return {
+
+
+understood:true,
+
+
+understanding,
+
+
+expandedThought:
+
+brainThought,
+
+
+
+confidence,
+
+
+
+formedFrom:{
+
+
+experience:true,
+
+
+memory:
+
+memories.length > 0,
+
+
+wisdom:
+
+!!wisdom,
+
+
+self:
+
+!!self,
+
+
+curiosity:
+
+!!curiosity,
+
+
+brain:
+
+!!brainThought?.thought
+
+
+},
+
+
+
+
+reasoningTrace:[
+
+
+"Experience received",
+
+
+"Memory searched",
+
+
+"Evidence weighted",
+
+
+"Patterns detected",
+
+
+"Wisdom consulted",
+
+
+"SelfModel checked",
+
+
+"Curiosity explored",
+
+
+"Confidence calculated",
+
+
+"Brain only if required"
+
+
+],
+
+
+
+createdAt:
+
+new Date()
+
+
+};
+
+
+
+}
+
+
+// =================================
+// CREATE UNDERSTANDING
+// =================================
+
+createUnderstanding({
+
+input,
+
+memories,
+
+evidence,
+
+patterns,
+
+lessons,
+
+wisdom,
+
+self,
+
+curiosity,
+
+confidence,
+
+contradictions,
+
+brainThought
+
+}){
+
+
+
+let summary = "";
+
+
+
+
+
+// ===============================
+// EXPERIENCE HISTORY
+// ===============================
+
+if(
+memories.length > 0
+){
+
+
+summary +=
+`I found ${memories.length} related experiences. `;
+
+
+}
+else{
+
+
+summary +=
+"This is a new experience. I do not want to assume too early. ";
+
+
+}
+
+
+
+
+
+
+// ===============================
+// CONFIDENCE
+// ===============================
+
+if(
+confidence >= 80
+){
+
+
+summary +=
+"My understanding feels strong because previous evidence supports it. ";
+
+
+}
+
+
+else if(
+confidence >= 40
+){
+
+
+summary +=
+"I have partial understanding, but more experience can improve it. ";
+
+
+}
+
+
+else{
+
+
+summary +=
+"I am still uncertain and should observe more before forming a strong conclusion. ";
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// PATTERNS
+// ===============================
+
+patterns.forEach(pattern=>{
+
+
+summary +=
+pattern.meaning + " ";
+
+
+});
+
+
+
+
+
+
+
+
+
+// ===============================
+// LESSONS
+// ===============================
+
+
+if(
+lessons.length > 0
+){
+
+
+summary +=
+"Lessons influencing me: ";
+
+
+summary +=
+lessons.join(". ") + ". ";
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// WISDOM
+// ===============================
+
+
+if(
+wisdom?.advice
+){
+
+
+
+if(
+typeof wisdom.advice === "string"
+){
+
+
+summary +=
+wisdom.advice + " ";
+
+
+}
+
+
+else if(
+wisdom.advice.recommended
+){
+
+
+summary +=
+wisdom.advice.recommended + " ";
+
+
+}
+
+
+
 }
 
 
@@ -1275,27 +865,409 @@ new Date()
 
 
 
+// ===============================
+// SELF MODEL
+// ===============================
+
+if(
+self?.patterns?.length > 0
+){
+
+
+summary +=
+"My previous changes influence how I interpret this. ";
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// CONTRADICTIONS
+// ===============================
+
+if(
+contradictions.length > 0
+){
+
+
+summary +=
+"I noticed conflicting experiences, so I should be careful. ";
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// CURIOSITY
+// ===============================
+
+if(
+curiosity?.wonder
+){
+
+
+summary +=
+
+"I want to understand more: "
+
++
+
+curiosity.wonder
+
++
+
+" ";
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// BRAIN
+// ===============================
+
+
+if(
+brainThought?.answer
+){
+
+
+
+summary +=
+
+typeof brainThought.answer === "string"
+
+?
+
+brainThought.answer
+
+:
+
+JSON.stringify(
+brainThought.answer
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+return {
+
+
+summary,
+
+
+confidence,
+
+
+patterns,
+
+
+lessons,
+
+
+evidence,
+
+
+contradictions,
+
+
+wisdomUsed:
+
+!!wisdom,
+
+
+selfInfluence:
+
+!!self,
+
+
+brainUsed:
+
+!!brainThought?.thought,
+
+
+newExperience:
+
+memories.length === 0
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
 
 
 // =================================
-// HELPERS
+// EVIDENCE WEIGHTING
 // =================================
 
 
-
-findSuccess(
+weighEvidence(
 memories=[]
 ){
 
 
 
-return memories.filter(
+let score = 0;
 
-m =>
 
-m.type === "POSITIVE_EXPERIENCE" ||
 
-m.memory?.outcome?.success === true
+memories.forEach(memory=>{
+
+
+
+if(
+memory.importance
+){
+
+score += memory.importance;
+
+}
+
+
+
+if(
+memory.outcome?.success
+){
+
+score += 20;
+
+}
+
+
+
+if(
+memory.lesson
+){
+
+score += 15;
+
+}
+
+
+
+});
+
+
+
+
+
+return {
+
+
+count:
+
+memories.length,
+
+
+strength:
+
+Math.min(
+100,
+score
+)
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// CONTRADICTION DETECTION
+// =================================
+
+
+detectContradictions({
+
+input,
+
+memories=[]
+
+}){
+
+
+
+const contradictions = [];
+
+
+
+const text =
+
+JSON.stringify(memories)
+.toLowerCase();
+
+
+
+
+
+if(
+
+text.includes("success")
+
+&&
+
+text.includes("failed")
+
+){
+
+
+
+contradictions.push({
+
+
+type:
+
+"MIXED_HISTORY",
+
+
+meaning:
+
+"Past experiences do not fully agree."
+
+
+});
+
+
+}
+
+
+
+
+return contradictions;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// CONFIDENCE ENGINE
+// =================================
+
+
+calculateConfidence({
+
+memories,
+
+patterns,
+
+lessons,
+
+wisdom,
+
+contradictions
+
+}){
+
+
+
+let confidence = 20;
+
+
+
+
+
+confidence +=
+
+memories.length * 10;
+
+
+
+
+
+confidence +=
+
+patterns.length * 15;
+
+
+
+
+
+confidence +=
+
+lessons.length * 15;
+
+
+
+
+
+if(
+wisdom
+){
+
+confidence += 20;
+
+}
+
+
+
+
+confidence -=
+
+contradictions.length * 20;
+
+
+
+
+
+return Math.max(
+
+0,
+
+Math.min(
+100,
+confidence
+)
 
 );
 
@@ -1311,21 +1283,72 @@ m.memory?.outcome?.success === true
 
 
 
-findFailures(
+
+// =================================
+// PATTERN ENGINE
+// =================================
+
+
+understandPatterns(
 memories=[]
 ){
 
 
 
-return memories.filter(
+const patterns = [];
 
-m =>
 
-m.type === "FAILED_EXPERIENCE" ||
 
-m.memory?.outcome?.success === false
+const text =
 
-);
+JSON.stringify(memories)
+.toLowerCase();
+
+
+
+
+if(
+text.includes("failed")
+){
+
+
+patterns.push({
+
+type:"FAILURE_MEMORY",
+
+meaning:
+"A similar path failed before."
+
+});
+
+
+}
+
+
+
+
+
+if(
+text.includes("success")
+){
+
+
+patterns.push({
+
+type:"SUCCESS_MEMORY",
+
+meaning:
+"A similar path succeeded before."
+
+});
+
+
+}
+
+
+
+
+return patterns;
 
 
 
@@ -1337,6 +1360,11 @@ m.memory?.outcome?.success === false
 
 
 
+
+
+// =================================
+// LESSON EXTRACTION
+// =================================
 
 
 extractLessons(
@@ -1348,11 +1376,13 @@ memories=[]
 return memories
 
 
-.map(
+.map(memory =>
 
-m =>
+memory.lesson ||
 
-m.memory?.lesson
+memory.data?.lesson ||
+
+memory.outcome?.lesson
 
 )
 
@@ -1372,127 +1402,36 @@ m.memory?.lesson
 
 
 
-detectSimilarSituation(
-current,
-memories=[]
+// =================================
+// SHOULD THINK DEEPER?
+// =================================
+
+
+needsReflection(
+context={}
 ){
 
 
 
-const now =
+const experience =
 
-JSON.stringify(
+context.experience || {};
 
-current
 
-)
 
-.toLowerCase();
 
 
-
-
-
-
-
-return memories.some(
-
-memory=>{
-
-
-
-
-
-const old =
-
-
-JSON.stringify(
-
-memory
-
-)
-
-.toLowerCase();
-
-
-
-
-
-
-return now
-
-
-.split(/\W+/)
-
-
-.some(
-
-word =>
-
-word.length > 5 &&
-
-old.includes(word)
-
-);
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-explainDecision({
-
-recommendation,
-
-successes,
-
-failures,
-
-lessons,
-
-wisdom
-
-}){
-
-
-
-
-
-let explanation =
-
-
-`Selected ${recommendation.action}. `;
-
-
-
-
-
-
+// User directly asks
 
 if(
 
-wisdom?.experienceFound
+experience.question ||
+
+experience.type === "question"
 
 ){
 
-
-
-explanation +=
-
-"Used accumulated wisdom. ";
-
-
+return true;
 
 }
 
@@ -1500,23 +1439,15 @@ explanation +=
 
 
 
-
-
-
+// Low confidence
 
 if(
-
-successes.length
-
+context.confidence < 40
+&&
+context.memories?.length > 0
 ){
 
-
-
-explanation +=
-
-"Repeated proven successful patterns. ";
-
-
+return true;
 
 }
 
@@ -1524,24 +1455,13 @@ explanation +=
 
 
 
-
-
-
-
+// Conflicting knowledge
 
 if(
-
-failures.length
-
+context.contradictions?.length > 0
 ){
 
-
-
-explanation +=
-
-"Avoided mistakes from past experience. ";
-
-
+return true;
 
 }
 
@@ -1550,21 +1470,50 @@ explanation +=
 
 
 
-
-
-
+// Important event
 
 if(
-
-lessons.length
-
+experience.importance >= 90
 ){
 
+return true;
+
+}
 
 
-explanation +=
 
-"Applied learned lessons."
+
+
+// Decision required
+
+if(
+experience.requiresDecision
+){
+
+return true;
+
+}
+
+
+
+
+
+
+// New things are observed first
+
+if(
+context.memories?.length === 0
+){
+
+return false;
+
+}
+
+
+
+
+
+return false;
 
 
 
@@ -1578,7 +1527,55 @@ explanation +=
 
 
 
-return explanation;
+
+// =================================
+// STATUS
+// =================================
+
+
+status(){
+
+
+
+return {
+
+
+organ:
+
+"EmmaReasoning",
+
+
+version:
+
+"v8",
+
+
+role:
+
+"Understanding and meaning formation",
+
+
+state:
+
+"READY",
+
+
+reasoningCount:
+
+this.reasoningCount,
+
+
+principle:
+
+"Understand from experience before thinking.",
+
+
+message:
+
+"I connect memories, lessons and experiences before asking the brain."
+
+
+};
 
 
 
@@ -1586,12 +1583,7 @@ return explanation;
 
 
 
-
 }
-
-
-
-
 
 
 

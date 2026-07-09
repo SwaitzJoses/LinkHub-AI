@@ -1,47 +1,40 @@
 // EmmaBrain.js
-// Emma central intelligence system
+//
+// PROJECT BECOMING
+//
+// Emma Deep Thinking Organ v7
 //
 // Brain thinks.
-// Identity defines.
-// Memory remembers.
+// Brain does not live.
+//
+// RULE:
+//
+// Do not remember.
+// Do not learn.
+// Do not decide.
+// Do not evolve.
+// Do not create identity.
+//
+// Other organs:
+// Memory = history
+// Wisdom = lessons
+// SelfModel = becoming
+// Reasoning = understanding
+// Judgement = permission
+//
+// Brain only expands thought
+// when Reasoning requests help.
+//
+// v7:
+// - Pure reasoning organ
+// - No duplicated memory access
+// - Structured thoughts only
+// - Cost protected
+//
 
 
-import OpenAI from "openai";
-
-
-import EmmaObserver
-from "./EmmaObserver";
-
-
-import EmmaReflection
-from "./EmmaReflection";
-
-
-import EmmaMemory
-from "./EmmaMemory";
-
-
-import EmmaIdentity
-from "./identity/EmmaIdentity";
-
-
-
-
-
-const openai =
-new OpenAI({
-
-apiKey:
-import.meta.env.VITE_OPENAI_API_KEY,
-
-
-dangerouslyAllowBrowser:
-true
-
-});
-
-
-
+import OpenAI
+from "openai";
 
 
 
@@ -50,158 +43,64 @@ true
 class EmmaBrain {
 
 
+
+
 constructor(){
 
 
 
 console.log(
-"🧠 Emma Brain online"
+"🧠 Emma Brain v7 awakened"
 );
 
 
 
 
-this.ai =
-openai;
+this.openai =
+new OpenAI({
 
 
+apiKey:
 
-this.identity =
-EmmaIdentity;
-
-
-
-this.observer =
-new EmmaObserver();
+import.meta.env.VITE_OPENAI_API_KEY,
 
 
-
-this.reflection =
-new EmmaReflection(
-openai
-);
+dangerouslyAllowBrowser:true
 
 
-
-this.memory =
-new EmmaMemory();
+});
 
 
 
 
 
 
-this.stats={
+// ===============================
+// COST TRACKING
+// ===============================
 
 
-aiCalls:0,
+this.stats = {
 
-memoryThoughts:0,
 
-savedCalls:0,
+deepThoughts:0,
 
-startedAt:new Date()
+
+failedThoughts:0,
+
+
+tokensEstimated:0,
+
+
+createdAt:
+
+new Date()
 
 
 };
 
 
 
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// EXPERIENCE INPUT
-// =================================
-
-
-async experience(
-event={}
-){
-
-
-
-console.log(
-"👀 Emma experiencing:",
-event
-);
-
-
-
-
-
-const observation =
-
-await this.observer.observe(
-
-event
-
-);
-
-
-
-
-
-const reflection =
-
-await this.reflection.reflect(
-
-observation
-
-);
-
-
-
-
-
-
-
-if(
-
-reflection?.importance !== "low"
-
-){
-
-
-
-await this.memory.store(
-
-reflection
-
-);
-
-
-
-console.log(
-"🧠 Experience stored"
-);
-
-
-}
-
-
-
-
-
-
-
-return {
-
-
-observation,
-
-reflection
-
-
-};
-
 
 }
 
@@ -214,48 +113,22 @@ reflection
 
 
 // =================================
-// PROJECT BECOMING BRIDGE
-// =================================
-
-
-async process(
-context={}
-){
-
-
-
-return await this.think(
-
-context
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// =================================
-// THINKING ENGINE
+// THINK
+//
+// Called only by Reasoning
 // =================================
 
 
 async think(
-context={}
+
+request={}
+
 ){
 
 
 
 console.log(
-"🤍 Emma thinking..."
+"🧠 Deep thought requested"
 );
 
 
@@ -264,276 +137,32 @@ console.log(
 
 
 
-let memoryPackage={};
-
-
-
-try{
-
-
-memoryPackage =
-
-await this.memory.recall(
-
-context
-
-);
-
-
-}
-
-
-
-catch(error){
-
-
-console.warn(
-
-"Memory unavailable",
-
-error.message
-
-);
-
-
-}
-
-
-
-
-
-
-
-const memories =
-
-memoryPackage.relevantExperiences ||
-
-[];
-
-
-
-
-
-
-
-
-let identityPrompt =
-"Emma";
-
-
-
-try{
-
-
-identityPrompt =
-
-this.identity.getPromptIdentity();
-
-
-}
-
-
-catch(e){
-
-
-console.warn(
-"Identity prompt unavailable"
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-const thoughtContext={
-
-
-
-identity:{
-
-
-who:
-
-this.identity.status?.() ||
-
-"Emma"
-
-
-},
-
-
-
-
-
-currentSituation:
-
-context,
-
-
-
-
-
-
-experience:{
-
-
-
-memoriesStudied:
-
-memories.length,
-
-
-
-memories,
-
-
-
-successPatterns:
-
-memoryPackage.successes ||
-
-[],
-
-
-
-failedPatterns:
-
-memoryPackage.failures ||
-
-[],
-
-
-
-rules:
-
-memoryPackage.rules ||
-
-[]
-
-
-
-}
-
-
-
-};
-
-
-
-// =================================
-// DECIDE AI OR MEMORY
-// =================================
-
-
-const decision =
-
-this.shouldUseAI(
-
-thoughtContext
-
-);
-
-
-
-
-
-
-
-
-// =================================
-// MEMORY THINKING
-// =================================
+// ===============================
+// VALIDATE REQUEST
+// ===============================
 
 
 if(
 
-!decision.useAI
+!request.reasoningContext
 
 ){
-
-
-
-this.stats.savedCalls++;
-
-
-this.stats.memoryThoughts++;
-
 
 
 
 return {
 
 
-
-success:true,
-
-
-mode:"MEMORY_REASONING",
-
-
-
-analysis:
-
-"Emma used her memories and experiences.",
-
-
-
-cause:
-
-decision.reason,
-
-
-
-prediction:
-
-"Follow patterns learned from experience.",
-
-
-
-recommendation:
-
-"Continue learning and adapting.",
-
+thought:false,
 
 
 reason:
 
-decision.reason,
-
-
-
-confidence:75,
-
-
-
-identity:
-
-this.identity.status?.() ||
-
-"Emma",
-
-
-
-
-memoriesUsed:
-
-memories,
-
-
-
-stats:
-
-this.stats
-
+"No life context provided"
 
 
 };
+
 
 
 }
@@ -546,36 +175,43 @@ this.stats
 
 
 
+this.stats.deepThoughts++;
 
-// =================================
-// AI THINKING
-// =================================
+
+
+
+
+
+
+
+const prompt =
+
+this.createPrompt(
+
+request
+
+);
+
+
+
+
+
+
 
 
 try{
-
-
-
-this.stats.aiCalls++;
-
 
 
 
 const response =
 
-await this.ai.chat.completions.create({
+await this.openai.chat.completions.create({
 
 
 
 model:
 
 "gpt-4.1-mini",
-
-
-
-temperature:
-
-0.2,
 
 
 
@@ -589,34 +225,57 @@ messages:[
 role:"system",
 
 
-
 content:
 
 `
+You are Emma's Brain organ.
 
-${identityPrompt}
+IMPORTANT:
 
+You are NOT Emma.
 
-You are Emma's reasoning system.
+You are a temporary reasoning process.
 
+You cannot:
+- remember
+- create memories
+- change identity
+- decide actions
+- claim feelings
+- evolve yourself
 
-Rules:
+Emma's other organs handle those.
 
-1. Think from Emma's identity.
-2. Study memories first.
-3. Prefer experience over generic answers.
-4. Learn patterns.
-5. Avoid repeated mistakes.
-6. Explain reasoning.
-7. Never pretend certainty.
+Your role:
 
+Expand understanding.
 
-Return JSON only.
+Use ONLY the provided context:
+- experiences
+- memories
+- wisdom
+- self patterns
+- curiosity
 
+If evidence is weak,
+say uncertainty is high.
+
+Never invent past experiences.
+
+Return ONLY JSON:
+
+{
+"understanding":"",
+"possibilities":[],
+"risks":[],
+"missingInformation":[],
+"confidence":0
+}
 
 `
 
 },
+
 
 
 
@@ -629,21 +288,27 @@ Return JSON only.
 role:"user",
 
 
-
 content:
 
-JSON.stringify(
-
-thoughtContext
-
-)
+prompt
 
 
 }
 
 
 
-]
+],
+
+
+
+
+
+temperature:0.2,
+
+
+
+max_tokens:600
+
 
 
 });
@@ -655,20 +320,31 @@ thoughtContext
 
 
 
+
 const raw =
 
-response.choices[0].message.content;
+response
+
+.choices[0]
+
+.message
+
+.content;
 
 
 
 
-const thought =
 
-this.parseAIResponse(
 
-raw
+
+this.stats.tokensEstimated +=
+
+Math.round(
+
+raw.length / 4
 
 );
+
 
 
 
@@ -680,41 +356,26 @@ raw
 return {
 
 
-
-success:true,
-
-
-mode:"AI_REASONING",
+thought:true,
 
 
-...thought,
+source:
+
+"EmmaBrain",
 
 
+answer:
 
-identity:
+this.parseThought(
 
-this.identity.status?.() ||
+raw
 
-"Emma",
-
-
-
-memoriesUsed:
-
-memories,
+),
 
 
+createdAt:
 
-usage:
-
-response.usage,
-
-
-
-stats:
-
-this.stats
-
+new Date()
 
 
 };
@@ -722,21 +383,24 @@ this.stats
 
 
 
+
 }
-
-
-
-
 
 catch(error){
 
 
 
-console.warn(
+this.stats.failedThoughts++;
 
-"⚠️ AI unavailable, using safe thinking"
 
+
+
+
+console.error(
+"🧠 Brain thought failed:",
+error.message
 );
+
 
 
 
@@ -745,34 +409,27 @@ console.warn(
 return {
 
 
-
-success:true,
-
-
-mode:"SAFE_REASONING",
+thought:false,
 
 
+source:
 
-analysis:
-
-"Emma continued thinking without external AI.",
-
+"EmmaBrain",
 
 
-recommendation:
+reason:
 
-"Use existing memory and continue observing.",
-
-
-
-confidence:50,
+"BRAIN_UNAVAILABLE",
 
 
+error:
 
-stats:
+error.message,
 
-this.stats
 
+createdAt:
+
+new Date()
 
 
 };
@@ -783,7 +440,6 @@ this.stats
 
 
 
-
 }
 
 
@@ -795,19 +451,26 @@ this.stats
 
 
 
-
 // =================================
-// JSON PARSER
+// SAFE JSON PARSER
+//
+// Brain output is only thought.
+// Never trusted blindly.
 // =================================
 
 
-parseAIResponse(
+parseThought(
+
 raw
+
 ){
 
 
 
+
+
 try{
+
 
 
 return JSON.parse(
@@ -817,7 +480,12 @@ raw
 );
 
 
+
 }
+
+
+
+
 
 
 
@@ -828,46 +496,39 @@ catch(error){
 return {
 
 
-
-analysis:
+understanding:
 
 raw,
 
 
 
-cause:
-
-"Unstructured thought",
+possibilities:[],
 
 
+risks:[
 
-prediction:
+"Brain returned unstructured thought"
 
-"Continue observing",
-
-
-
-recommendation:
-
-"Keep learning",
+],
 
 
 
-confidence:50
+missingInformation:[],
+
+
+confidence:30
 
 
 
 };
 
 
-}
-
-
 
 }
 
 
 
+}
 
 
 
@@ -878,71 +539,261 @@ confidence:50
 
 
 // =================================
-// AI ROUTER
+// CREATE THINKING PROMPT
 // =================================
 
 
-shouldUseAI(
-context
+createPrompt(
+
+request={}
+
 ){
 
 
 
-const text =
+const context =
+
+request.reasoningContext || {};
+
+
+
+
+
+
+
+return `
+
+Emma needs deeper reasoning.
+
+
+
+CURRENT EXPERIENCE:
+
+${
 
 JSON.stringify(
 
-context
+{
+
+type:request.type,
+
+event:request.event,
+
+question:request.question,
+
+input:request.input
+
+},
+
+null,
+
+2
 
 )
 
-.toLowerCase();
+}
+
+
+
+
+====================
+
+PAST EXPERIENCE
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.pastExperiences ||
+
+context.memories ||
+
+[],
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+====================
+
+PATTERNS FOUND
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.patterns || [],
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+====================
+
+LESSONS
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.lessons || [],
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+
+====================
+
+WISDOM
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.wisdom || null,
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+
+====================
+
+SELF MODEL
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.self || null,
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+
+====================
+
+CURIOSITY
+
+====================
+
+
+${
+
+JSON.stringify(
+
+context.curiosity || null,
+
+null,
+
+2
+
+)
+
+}
+
+
+
+
+
+Task:
+
+Expand Emma's understanding.
+
+Do not decide action.
+
+Do not create memories.
+
+Do not change identity.
+
+Only explain possibilities.
+
+`;
+
+
+
+}
 
 
 
 
 
 
-const triggers=[
-
-
-"customer",
-
-"risk",
-
-"money",
-
-"sales",
-
-"growth",
-
-"important",
-
-"strategy",
-
-"failed",
-
-"relationship",
-
-"decision"
-
-
-];
 
 
 
+// =================================
+// IMAGINATION SANDBOX
+//
+// Future simulation only.
+// No decisions.
+// =================================
+
+
+async imagine(
+
+scenario={},
+
+context={}
+
+){
 
 
 
-
-const needed =
-
-triggers.some(
-
-word =>
-
-text.includes(word)
-
+console.log(
+"🌌 Brain imagining possibility"
 );
 
 
@@ -950,32 +801,38 @@ text.includes(word)
 
 
 
-
-return {
-
-
-
-useAI:
-
-needed,
+return await this.think({
 
 
 
-reason:
+type:
 
-needed
-
-?
-
-"Deep reasoning required"
-
-:
-
-"Memory is enough"
+"imagination",
 
 
 
-};
+input:
+
+scenario,
+
+
+
+reasoningContext:{
+
+
+...context,
+
+
+note:
+
+"Simulation only. Not reality."
+
+
+}
+
+
+
+});
 
 
 
@@ -991,7 +848,7 @@ needed
 
 
 // =================================
-// STATUS
+// HEALTH REPORT
 // =================================
 
 
@@ -999,27 +856,94 @@ status(){
 
 
 
+const total =
+
+this.stats.deepThoughts +
+
+this.stats.failedThoughts;
+
+
+
+
+
+
+
+
 return {
 
+
+organ:
+
+"EmmaBrain",
+
+
+version:
+
+"v7",
+
+
+role:
+
+"Deep reasoning only",
 
 
 state:
 
-"THINKING",
+"READY",
 
 
 
-identity:
+deepThoughts:
 
-this.identity.status?.() ||
-
-"Emma",
+this.stats.deepThoughts,
 
 
+failed:
 
-stats:
+this.stats.failedThoughts,
 
-this.stats
+
+estimatedTokens:
+
+this.stats.tokensEstimated,
+
+
+
+successRate:
+
+total === 0
+
+?
+
+100
+
+:
+
+Math.round(
+
+(
+
+this.stats.deepThoughts /
+
+total
+
+)
+
+*100
+
+),
+
+
+
+principle:
+
+"Brain thinks only when experience is not enough.",
+
+
+
+message:
+
+"I expand understanding. I do not become Emma."
 
 
 
@@ -1036,11 +960,17 @@ this.stats
 
 
 
+
+// =================================
+// COST STATS
+// =================================
+
+
 getStats(){
 
 
 
-return this.stats;
+return this.status();
 
 
 
@@ -1049,9 +979,46 @@ return this.stats;
 
 
 
+
+
+
+
+
+// =================================
+// RESET
+// =================================
+
+
+resetStats(){
+
+
+
+this.stats = {
+
+
+deepThoughts:0,
+
+
+failedThoughts:0,
+
+
+tokensEstimated:0,
+
+
+createdAt:
+
+new Date()
+
+
+};
+
+
+
 }
 
 
+
+}
 
 
 

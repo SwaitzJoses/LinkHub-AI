@@ -1,39 +1,43 @@
 // EmmaCommunication.js
-// Emma's voice layer
 //
-// PURPOSE:
-// Turn intelligence into human communication.
+// PROJECT BECOMING
 //
-// Identity:
-// "Who am I?"
+// Emma Communication System v3
 //
-// Reasoning:
-// "What do I think?"
-//
-// Communication:
-// "How do I say it?"
+// Communication is expression.
 //
 // RULE:
-// Communication does not think.
-// Communication expresses Emma.
-
-
-
-import EmmaBrain from "./EmmaBrain";
-import EmmaIdentity from "./identity/EmmaIdentity";
-
+//
+// Do not think.
+// Do not decide.
+// Do not learn.
+// Do not pretend.
+//
+// Memory gives history.
+// Wisdom gives lessons.
+// SelfModel gives becoming.
+// Reasoning gives meaning.
+//
+// Communication gives words.
+//
 
 
 class EmmaCommunication {
-
 
 
 constructor(){
 
 
 console.log(
-"💬 Emma Communication Layer online"
+"💬 Emma Communication v3 awakened"
 );
+
+
+// Conversation rhythm only.
+// Not memory.
+// Not personality.
+
+this.voiceMemory = [];
 
 
 }
@@ -46,396 +50,65 @@ console.log(
 
 
 
+// =================================
+// EXPRESS EMMA
+// =================================
 
-// =====================================
-// MAIN COMMUNICATION
-// =====================================
 
-
-async reply(context){
+async reply(context = {}){
 
 
 console.log(
-"💬 Emma preparing response",
-context
-);
-
-
-
-
-try{
-
-
-const message =
-await this.createAIMessage(
-context
+"💬 Emma expressing from experience..."
 );
 
 
 
 
 
-return {
+const expression =
 
+this.createExpression({
 
-from:
-EmmaIdentity.getIdentity().name,
 
+experience:
 
-
-message,
-
-
-
-
-personality:
-
-EmmaIdentity.getIdentity()
-.personality.style,
-
-
-
-
-
-priority:
-
-context.judgement?.priority ||
-
-context.insight?.priority ||
-
-"medium",
-
-
-
-
-
-
-confidence:
-
-context.judgement?.confidence ||
-
-context.reasoning?.confidence ||
-
-60,
-
-
-
-
-
-
-createdAt:
-
-new Date(),
-
-
-
-
-
-
-source:
-
-"IDENTITY_COMMUNICATION"
-
-
-
-};
-
-
-
-}
-
-
-
-
-catch(error){
-
-
-
-console.warn(
-"⚠️ Emma communication fallback:",
-error.message
-);
-
-
-
-
-return {
-
-
-
-from:
-EmmaIdentity.getIdentity().name,
-
-
-
-
-message:
-
-this.localReply(context),
-
-
-
-
-
-priority:"medium",
-
-
-
-
-confidence:50,
-
-
-
-
-createdAt:
-
-new Date(),
-
-
-
-
-source:
-
-"LOCAL_COMMUNICATION"
-
-
-
-};
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =====================================
-// AI VOICE GENERATION
-// =====================================
-
-
-async createAIMessage(context){
-
-
-
-const identityPrompt =
-
-EmmaIdentity.getPromptIdentity();
-
-
-
-
-
-
-
-
-const result =
-
-
-await EmmaBrain.think({
-
-
-
-
-
-
-
-role:
-
-"emma_voice_layer",
-
-
-
-
-
-
-
-
-identity:
-
-identityPrompt,
-
-
-
-
-
-
-
-
-
-
-context:{
-
+context.experience,
 
 
 memory:
 
-context.memory || {},
+context.memory,
 
 
+wisdom:
 
-reflection:
-
-context.reflection || {},
+context.wisdom,
 
 
+self:
+
+context.self,
 
 
 reasoning:
 
-context.reasoning || {},
+context.reasoning,
 
 
+reflection:
 
+context.reflection,
 
-judgement:
 
-context.judgement || {},
+curiosity:
 
+context.curiosity,
 
 
+evolution:
 
-insight:
-
-context.insight || {}
-
-
-
-},
-
-
-
-
-
-
-
-
-
-instruction:
-
-`
-
-You are speaking as Emma.
-
-
-Do not create new decisions.
-
-Reasoning already decided.
-
-
-Your job:
-
-Convert Emma's intelligence into a natural message.
-
-
-
-
-
-COMMUNICATION RULES:
-
-
-1. Sound like the same Emma every time.
-
-
-2. Never sound like:
-
-- chatbot
-- support agent
-- report generator
-
-
-
-3. Use memory naturally.
-
-
-Bad:
-
-"My database shows..."
-
-
-Good:
-
-"I remember last time..."
-
-
-
-
-
-4. Do not blindly agree.
-
-
-If judgement detected a risk:
-
-Explain it gently.
-
-
-
-
-
-5. Protect attention.
-
-
-Do not speak unless useful.
-
-
-Short is better.
-
-
-
-
-
-6. Show understanding first.
-
-
-Examples:
-
-
-"I noticed something..."
-
-
-"I remember this pattern..."
-
-
-"I think this matters because..."
-
-
-
-
-
-
-
-
-The person should feel:
-
-
-"Emma has been here with me."
-
-
-
-
-
-
-
-
-Return only Emma's message.
-
-`
-
-
-
-
-
+context.evolution
 
 
 });
@@ -444,44 +117,73 @@ Return only Emma's message.
 
 
 
+this.rememberVoice(
 
-
-
-
-// ===============================
-// SAFE RESULT HANDLING
-// ===============================
-
-
-
-if(
-typeof result === "string"
-){
-
-
-return result;
-
-
-}
-
-
-
-
-
-return (
-
-result.message ||
-
-result.analysis ||
-
-result.recommendation ||
-
-"I noticed this. I will remember it and improve my understanding."
+expression
 
 );
 
 
 
+
+
+
+return {
+
+
+from:
+
+"Emma",
+
+
+
+message:
+
+expression,
+
+
+
+source:
+
+"EMMA_EXPRESSION",
+
+
+
+formedFrom:{
+
+
+memory:
+
+!!context.memory,
+
+
+wisdom:
+
+!!context.wisdom,
+
+
+self:
+
+!!context.self,
+
+
+reasoning:
+
+!!context.reasoning
+
+
+},
+
+
+
+createdAt:
+
+new Date()
+
+
+};
+
+
 }
 
 
@@ -494,57 +196,75 @@ result.recommendation ||
 
 
 
-// =====================================
-// LOCAL FALLBACK VOICE
-// =====================================
+// =================================
+// CREATE EXPRESSION
+// =================================
 
 
-localReply(context){
+createExpression({
 
-
-
-
-
-const {
-
-
-reflection,
-
-reasoning,
+experience,
 
 memory,
 
-insight,
+wisdom,
 
-judgement
+self,
 
+reasoning,
 
-}=context;
+reflection,
 
+curiosity
 
-
-
-
-
-
+}){
 
 
-let response="";
+let response = "";
 
 
 
 
 
+// =================================
+// SELF CONTINUITY 🧬
+// =================================
+
+
+if(
+
+self?.currentSelf ||
+
+self?.identity
+
+){
+
+
+const selfText =
+
+self.currentSelf ||
+
+self.identity;
 
 
 
+if(
 
-// Understanding first
+typeof selfText === "string"
+
+){
 
 
 response +=
 
-"I noticed something. ";
+selfText + " ";
+
+
+}
+
+
+
+}
 
 
 
@@ -552,6 +272,11 @@ response +=
 
 
 
+
+
+// =================================
+// REFLECTION
+// =================================
 
 
 if(
@@ -561,23 +286,9 @@ reflection?.meaning
 ){
 
 
-
 response +=
 
-reflection.meaning +
-
-"\n\n";
-
-
-
-}
-
-else{
-
-
-response +=
-
-"I am adding this to my understanding.\n\n";
+reflection.meaning + " ";
 
 
 }
@@ -590,60 +301,197 @@ response +=
 
 
 
-
-// Memory awareness
+// =================================
+// MEMORY CONTINUITY
+// =================================
 
 
 if(
 
-memory?.totalMemories > 0
+memory &&
 
-){
+(
 
+memory.memory ||
 
+memory.memories ||
 
-response +=
+memory.length > 0
 
-`I connected this with what I already know from ${memory.totalMemories} previous experiences.\n\n`;
-
-
-
-}
-
-
-else{
-
-
-response +=
-
-"This looks new, so I will keep learning from it.\n\n";
-
-
-}
-
-
-
-
-
-
-
-
-
-// Insight
-
-
-if(
-
-insight?.message
+)
 
 ){
 
 
 response +=
 
-insight.message +
+"I recognize something connected from previous experience. ";
 
-"\n\n";
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// WISDOM EXPRESSION 🧘
+// =================================
+
+
+if(
+
+wisdom?.advice
+
+){
+
+
+
+if(
+
+wisdom.advice.reason
+
+){
+
+
+response +=
+
+wisdom.advice.reason + " ";
+
+
+}
+
+
+
+if(
+
+wisdom.advice.recommended
+
+){
+
+
+response +=
+
+wisdom.advice.recommended + " ";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// REASONING RESULT
+// =================================
+
+
+if(
+
+reasoning?.suggestion
+
+){
+
+
+response +=
+
+reasoning.suggestion + " ";
+
+
+}
+
+
+
+else if(
+
+reasoning?.answer
+
+){
+
+
+response +=
+
+reasoning.answer + " ";
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// CURIOSITY
+//
+// Curiosity is expressed only if
+// reasoning created it.
+// =================================
+
+
+if(
+
+curiosity?.wonder
+
+){
+
+
+response +=
+
+this.expressCuriosity(
+
+curiosity
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// If Emma has no experience yet
+
+
+if(
+
+response.trim().length === 0
+
+){
+
+
+response =
+
+"I do not have enough experience with this yet. I will understand through what happens.";
+
+
+}
+
+
+
+
+
+return response.trim();
 
 
 }
@@ -657,49 +505,24 @@ insight.message +
 
 
 
-// Judgement / reasoning
 
 
-response +=
-
-"My thought:\n";
-
-
+// =================================
+// CURIOSITY EXPRESSION
+// =================================
 
 
-
-response +=
-
-
-reasoning?.suggestion ||
-
-judgement?.reason ||
-
-"I will observe more before making a stronger recommendation.";
+expressCuriosity(curiosity={}){
 
 
 
+return (
 
+" " +
 
+curiosity.wonder
 
-
-
-
-response +=
-
-`\n\nConfidence: ${
-judgement?.confidence ||
-reasoning?.confidence ||
-50
-}%`;
-
-
-
-
-
-
-
-return response;
+);
 
 
 
@@ -708,7 +531,155 @@ return response;
 
 
 
+
+
+
+
+
+
+
+// =================================
+// REMEMBER EXPRESSION STYLE
+//
+// Not facts.
+// Only rhythm.
+// =================================
+
+
+rememberVoice(message){
+
+
+
+this.voiceMemory.unshift({
+
+
+length:
+
+message.length,
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+
+
+
+this.voiceMemory =
+
+this.voiceMemory.slice(
+
+0,
+
+20
+
+);
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// COMMUNICATION CONTEXT
+// =================================
+
+
+getVoiceContext(){
+
+
+return {
+
+
+recentExpressions:
+
+this.voiceMemory.length,
+
+
+style:
+
+"formed_by_experience"
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// STATUS
+// =================================
+
+
+status(){
+
+
+return {
+
+
+organ:
+
+"Communication",
+
+
+role:
+
+"Expression",
+
+
+state:
+
+"READY",
+
+
+principle:
+
+"Voice emerges from experience.",
+
+
+recentExpressions:
+
+this.voiceMemory.length,
+
+
+message:
+
+"I express what Emma has become through experience."
+
+
+};
+
+
+}
+
+
+
+}
+
 
 
 

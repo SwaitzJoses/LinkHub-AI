@@ -1,42 +1,57 @@
 // EmmaOutcome.js
-// Emma's experience engine
+//
+// PROJECT BECOMING
+//
+// Emma Outcome Engine v2
+//
+// Outcome is Emma's mirror.
 //
 // PURPOSE:
 //
-// Understand what happened after Emma worked.
-//
-// Plan
-// ↓
-// Execution
-// ↓
-// Outcome
-// ↓
-// Lesson
-// ↓
-// Memory
+// Understand what happened
+// after action touched reality.
 //
 // RULE:
 //
-// Success teaches.
-// Failure teaches.
-// Waiting teaches.
-// Observing teaches.
+// Do not learn.
+// Do not judge.
+// Do not evolve.
+//
+// Executor moves.
+// Outcome observes result.
+// Learning extracts meaning.
+//
+// v2:
+// - Intention vs reality
+// - Consequence tracking
+// - World feedback support
+// - Learning ready packets
+//
+
 
 
 class EmmaOutcome {
+
+
+
 
 
 constructor(){
 
 
 console.log(
-"📊 Emma Outcome Intelligence online"
+"📊 Emma Outcome Engine v2 awakened"
 );
+
 
 
 this.outcomes = [];
 
 
+this.totalObserved = 0;
+
+
+
 }
 
 
@@ -48,33 +63,46 @@ this.outcomes = [];
 
 
 // =================================
-// MAIN EXPERIENCE ENTRY
+// RECORD OUTCOME
 // =================================
 
 
 async record(
-execution,
-plan={}
+
+execution = {},
+
+intention = {}
+
 ){
 
 
+
 console.log(
-"📊 Emma reviewing experience:",
-{
-execution,
-plan
-}
+"📊 Observing result of action..."
 );
 
 
 
 
-// -----------------------------
-// NOTHING HAPPENED
-// -----------------------------
+this.totalObserved++;
 
 
-if(!execution){
+
+
+
+
+
+// ===============================
+// NOTHING OCCURRED
+// ===============================
+
+
+if(
+
+!execution
+
+){
+
 
 
 return this.store({
@@ -83,14 +111,17 @@ return this.store({
 type:"NO_RESULT",
 
 
-success:null,
+state:"empty",
 
 
-lesson:
-"Emma had nothing to evaluate.",
+happened:false,
 
 
-memoryReady:false
+description:
+"No world change was observed.",
+
+
+readyForLearning:false
 
 
 });
@@ -106,14 +137,18 @@ memoryReady:false
 
 
 
-// -----------------------------
-// WAITING / APPROVAL
-// -----------------------------
+
+// ===============================
+// WAITING STATES
+// ===============================
 
 
 if(
-execution.status === "WAITING_FOR_APPROVAL" ||
-execution.type === "PLAN_READY"
+
+execution.type === "WAITING_APPROVAL" ||
+
+execution.state === "prepared"
+
 ){
 
 
@@ -124,45 +159,35 @@ return this.store({
 type:"WAITING",
 
 
-success:null,
+action:
+execution.action,
 
 
-goal:
-plan.goal,
+intention,
 
 
-analysis:{
+happened:true,
 
 
-reason:
-"Emma prepared work but waited safely.",
+worldChange:false,
 
 
-pattern:
-"responsible_autonomy"
+description:
+"Action prepared but not released.",
 
 
-},
+difference:
+
+this.compare(
+
+intention,
+
+execution
+
+),
 
 
-learning:{
-
-
-type:"SAFE_AUTONOMY",
-
-
-lesson:
-"Preparing without acting builds trust.",
-
-
-futureRule:
-"Ask approval for sensitive actions"
-
-
-},
-
-
-memoryReady:true
+readyForLearning:true
 
 
 });
@@ -180,13 +205,18 @@ memoryReady:true
 
 
 
-// -----------------------------
-// BLOCKED ACTION
-// -----------------------------
+
+// ===============================
+// PAUSED / BLOCKED
+// ===============================
 
 
 if(
-execution.status === "NOT_EXECUTED"
+
+execution.type === "PAUSED" ||
+
+execution.type === "BLOCKED"
+
 ){
 
 
@@ -194,60 +224,45 @@ execution.status === "NOT_EXECUTED"
 return this.store({
 
 
-
 type:"PREVENTED_ACTION",
 
 
-
-success:true,
-
-
-
-goal:
-plan.goal,
+action:
+execution.action,
 
 
+intention,
 
-analysis:{
+
+happened:true,
+
+
+worldChange:false,
+
+
+description:
+"Action was intentionally prevented.",
 
 
 reason:
-"Emma avoided unsafe execution",
+execution.reason,
 
 
-pattern:
-"risk_prevention"
+difference:
+
+this.compare(
+
+intention,
+
+execution
+
+),
 
 
-},
-
-
-
-
-learning:{
-
-
-type:"SAFETY_LEARNING",
-
-
-lesson:
-"Not acting was the correct action.",
-
-
-futureRule:
-"Respect autonomy limits"
-
-
-},
-
-
-
-memoryReady:true
-
+readyForLearning:true
 
 
 });
-
 
 
 }
@@ -261,15 +276,17 @@ memoryReady:true
 
 
 
-// -----------------------------
-// NORMAL ACTION RESULT
-// -----------------------------
+
+// ===============================
+// NORMAL ACTION
+// ===============================
 
 
+const difference =
 
-const impact =
+this.compare(
 
-this.calculateImpact(
+intention,
 
 execution
 
@@ -279,36 +296,14 @@ execution
 
 
 
-const analysis =
 
-this.analyze(
+const consequence =
 
-execution,
+this.observeConsequence(
 
-plan,
-
-impact
+execution
 
 );
-
-
-
-
-
-const learning =
-
-this.createLearning(
-
-execution,
-
-plan,
-
-impact,
-
-analysis
-
-);
-
 
 
 
@@ -319,110 +314,178 @@ analysis
 return this.store({
 
 
-
-type:"ACTION_EXPERIENCE",
-
+type:"ACTION_OUTCOME",
 
 
-success:
-
-execution.success === true,
-
+action:
+execution.action,
 
 
-goal:
-
-plan.goal,
-
-
-
-plan,
-
+intention,
 
 
 execution,
 
 
-
-impact,
-
+difference,
 
 
-analysis,
+consequence,
 
 
-
-learning,
-
+worldChange:true,
 
 
-memoryTags:
-
-this.createTags(
-
-plan,
-
-execution,
-
-learning
-
-),
-
-
-
-memoryReady:true
-
+readyForLearning:true
 
 
 });
 
 
 
-
 }
 
 
-
-
-
-
-
-
-
 // =================================
-// ANALYSIS ENGINE
+// EXPECTATION VS REALITY
 // =================================
 
 
-analyze(
-execution,
-plan,
-impact
+compare(
+
+intention={},
+
+execution={}
+
 ){
 
 
 
-if(execution.success){
+const expected = {
+
+goal:
+
+intention.goal ||
+
+intention.expected ||
+
+"unknown"
+
+};
+
+
+
+
+
+
+const actual = {
+
+result:
+
+execution.result ||
+
+execution.state ||
+
+execution.type ||
+
+"unknown"
+
+};
+
+
+
+
+
+
+
+
+
+let alignment = "UNKNOWN";
+
+
+
+
+
+
+const text =
+
+JSON.stringify({
+
+expected,
+
+actual
+
+})
+
+.toLowerCase();
+
+
+
+
+
+
+
+
+if(
+
+text.includes("completed") ||
+
+text.includes("success")
+
+){
+
+
+alignment =
+"MATCHED";
+
+
+}
+
+
+
+
+
+
+
+if(
+
+text.includes("failed") ||
+
+text.includes("error")
+
+){
+
+
+alignment =
+"DIFFERENT";
+
+
+}
+
+
+
+
+
+
+
 
 
 
 return {
 
 
-reason:
-
-"Emma completed the planned work.",
+expected,
 
 
-pattern:
-
-"repeat_candidate",
+actual,
 
 
-futureUse:
+alignment,
 
-"Use similar approach when context matches"
 
+createdAt:
+
+new Date()
 
 
 };
@@ -438,164 +501,44 @@ futureUse:
 
 
 
-return {
-
-
-reason:
-
-"Execution did not create expected result.",
-
-
-pattern:
-
-"needs_adjustment",
-
-
-futureUse:
-
-"Change approach next time"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
 
 
 
 // =================================
-// CREATE EXPERIENCE
+// OBSERVE CONSEQUENCE
+//
+// Not learning.
+// Just describing.
 // =================================
 
 
-createLearning(
-execution,
-plan,
-impact,
-analysis
+observeConsequence(
+
+execution={}
+
 ){
 
 
 
-if(execution.success){
 
 
-
-return {
-
-
-type:"POSITIVE_EXPERIENCE",
+let consequence = {
 
 
-confidenceImpact:
-
-this.confidenceChange(impact),
+observed:true,
 
 
-
-lesson:
-
-`${plan.goal || "Action"} worked with ${impact} impact.`,
+effect:"UNKNOWN",
 
 
-
-futureRule:
-
-"Repeat when similar conditions appear",
-
-
-
-rememberFor:[
-
-
-plan.category,
-
-
-impact,
-
-
-"successful"
-
-
-]
+details:null
 
 
 };
 
 
 
-}
 
-
-
-
-
-
-
-
-
-return {
-
-
-type:"FAILED_EXPERIENCE",
-
-
-
-confidenceImpact:-5,
-
-
-
-lesson:
-
-`${plan.goal || "Action"} needs improvement.`,
-
-
-
-futureRule:
-
-"Adjust before repeating",
-
-
-
-rememberFor:[
-
-
-plan.category,
-
-
-"failed"
-
-
-]
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// IMPACT SCORE
-// =================================
-
-
-calculateImpact(execution){
 
 
 
@@ -610,14 +553,21 @@ JSON.stringify(execution)
 
 
 
+
+
 if(
-text.includes("revenue") ||
-text.includes("saved") ||
-text.includes("completed")
+
+text.includes("completed") ||
+
+text.includes("created")
+
 ){
 
 
-return "high";
+
+consequence.effect =
+
+"CHANGE_OCCURRED";
 
 
 }
@@ -627,17 +577,25 @@ return "high";
 
 
 
+
+
 if(
-text.includes("created") ||
-text.includes("generated") ||
+
+text.includes("waiting") ||
+
 text.includes("prepared")
+
 ){
 
 
-return "medium";
+
+consequence.effect =
+
+"PENDING";
 
 
 }
+
 
 
 
@@ -646,108 +604,41 @@ return "medium";
 
 
 if(
-execution.success === false
-){
 
+text.includes("failed") ||
 
-return "negative";
+text.includes("error")
 
-
-}
-
-
-
-
-
-
-
-return "low";
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-confidenceChange(impact){
-
-
-
-const score={
-
-
-high:20,
-
-
-medium:10,
-
-
-low:5,
-
-
-negative:-10
-
-
-};
-
-
-
-
-return score[impact] || 0;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// =================================
-// MEMORY TAGGING
-// =================================
-
-
-createTags(
-plan,
-execution,
-learning
 ){
 
 
 
-return [
+consequence.effect =
+
+"UNEXPECTED_RESULT";
 
 
-plan.category,
+}
 
 
-plan.goal,
 
 
-execution.type,
 
 
-learning.type,
 
 
-...(learning.rememberFor || [])
 
 
-]
-.filter(Boolean);
+consequence.details =
+
+execution.result || null;
+
+
+
+
+
+
+return consequence;
 
 
 
@@ -761,26 +652,37 @@ learning.type,
 
 
 
+
+
 // =================================
-// STORE EXPERIENCE
+// STORE OUTCOME
 // =================================
 
 
-store(data){
+store(
+
+data={}
+
+){
 
 
 
-const outcome={
+const outcome = {
 
 
+id:
 
-outcomeId:
-
-crypto.randomUUID(),
+this.createId(),
 
 
 
 ...data,
+
+
+
+source:
+
+"EmmaOutcome",
 
 
 
@@ -796,11 +698,18 @@ new Date()
 
 
 
+
+
+
+
 this.outcomes.unshift(
 
 outcome
 
 );
+
+
+
 
 
 
@@ -821,10 +730,19 @@ this.outcomes.slice(
 
 
 
+
+
 console.log(
-"🧠 Emma learned:",
-outcome
+
+"🌎 Outcome observed:",
+
+outcome.type
+
 );
+
+
+
+
 
 
 
@@ -844,12 +762,19 @@ return outcome;
 
 
 
+
 // =================================
-// EXPERIENCE SEARCH
+// SIMILAR OUTCOMES
+//
+// For Memory / Reasoning
 // =================================
 
 
-findSimilar(context){
+findSimilar(
+
+context={}
+
+){
 
 
 
@@ -862,15 +787,18 @@ JSON.stringify(context)
 
 
 
+
+
+
 return this.outcomes.filter(
 
-memory => {
+item=>{
 
 
 
 const text =
 
-JSON.stringify(memory)
+JSON.stringify(item)
 
 .toLowerCase();
 
@@ -885,7 +813,7 @@ return search
 
 word =>
 
-word.length > 5 &&
+word.length > 4 &&
 
 text.includes(word)
 
@@ -893,14 +821,14 @@ text.includes(word)
 
 
 
-}
-
-
-);
+});
 
 
 
 }
+
+
+
 
 
 
@@ -911,21 +839,19 @@ text.includes(word)
 
 
 // =================================
-// INSIGHTS
+// LEARNING PIPELINE
 // =================================
 
 
-getSuccessfulActions(){
+getLearningReady(){
 
 
 
 return this.outcomes.filter(
 
-x=>
+x =>
 
-x.learning?.type ===
-
-"POSITIVE_EXPERIENCE"
+x.readyForLearning
 
 );
 
@@ -940,23 +866,57 @@ x.learning?.type ===
 
 
 
-getFailures(){
+
+
+
+// =================================
+// INSIGHTS ONLY
+// =================================
+
+
+getCompleted(){
 
 
 
 return this.outcomes.filter(
 
-x=>
+x =>
 
-x.learning?.type ===
+x.consequence?.effect ===
 
-"FAILED_EXPERIENCE"
+"CHANGE_OCCURRED"
 
 );
 
 
 
 }
+
+
+
+
+
+
+
+
+getUnexpected(){
+
+
+
+return this.outcomes.filter(
+
+x =>
+
+x.consequence?.effect ===
+
+"UNEXPECTED_RESULT"
+
+);
+
+
+
+}
+
 
 
 
@@ -982,6 +942,68 @@ return this.outcomes;
 
 
 
+// =================================
+// HELPERS
+// =================================
+
+
+createId(){
+
+
+
+if(
+
+typeof crypto !== "undefined"
+
+&&
+
+crypto.randomUUID
+
+){
+
+
+return crypto.randomUUID();
+
+
+}
+
+
+
+
+
+
+return (
+
+Date.now()
+
++
+
+"-"
+
++
+
+Math.random()
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// STATUS
+// =================================
+
+
 status(){
 
 
@@ -989,30 +1011,54 @@ status(){
 return {
 
 
-state:"ACTIVE",
+organ:
+
+"EmmaOutcome",
+
+
+version:
+
+"v2",
 
 
 role:
 
-"Turns Emma experiences into learning",
+"Reality mirror after action",
 
 
+state:
 
-totalExperiences:
+"OBSERVING",
+
+
+observed:
+
+this.totalObserved,
+
+
+stored:
 
 this.outcomes.length,
 
 
+completed:
 
-successes:
-
-this.getSuccessfulActions().length,
-
+this.getCompleted().length,
 
 
-failures:
+unexpected:
 
-this.getFailures().length
+this.getUnexpected().length,
+
+
+principle:
+
+"Do not decide what it means. Only record what happened.",
+
+
+message:
+
+"I observe the difference between intention and reality."
 
 
 
@@ -1030,18 +1076,28 @@ this.getFailures().length
 
 
 
+
+// =================================
+// RESET
+// =================================
+
+
 reset(){
+
 
 
 this.outcomes=[];
 
 
-}
+this.totalObserved=0;
 
 
 
 }
 
+
+
+}
 
 
 

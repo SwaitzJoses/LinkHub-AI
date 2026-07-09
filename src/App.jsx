@@ -5,7 +5,6 @@ import { supabase } from "./lib/supabase";
 
 import EmmaOnboarding from "./features/emma/EmmaOnboarding";
 
-
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -19,7 +18,6 @@ import MyPosters from "./pages/MyPosters";
 import EmmaAI from "./pages/EmmaAI";
 
 
-
 import EmmaGmailConnect
 from "./emma-core/connectors/EmmaGmailConnect";
 
@@ -29,9 +27,45 @@ from "./emma-core/components/emma/EmmaCard";
 
 
 
-// REAL EMMA CORE
-import Emma
-from "./emma-core/Emma";
+// ================================
+// REAL EMMA ORGANISM
+// ================================
+
+import Emma from "./emma-core/Emma";
+
+
+
+
+
+// Create ONE Emma instance
+// Emma should live for app lifetime
+
+const emma = new Emma({
+
+  id:"emma-main",
+
+  identity:{
+
+    name:"Emma",
+
+    purpose:
+    "Become an intelligent partner through experience",
+
+    principles:[
+
+      "Observe before acting",
+
+      "Remember important experiences",
+
+      "Learn from outcomes",
+
+      "Improve future decisions"
+
+    ]
+
+  }
+
+});
 
 
 
@@ -50,6 +84,7 @@ useState(true);
 
 const [session,setSession] =
 useState(null);
+
 
 
 
@@ -108,6 +143,7 @@ subscription.unsubscribe();
 
 
 
+
 if(loading){
 
 
@@ -146,7 +182,6 @@ children
 
 
 
-
 function App(){
 
 
@@ -154,17 +189,13 @@ function App(){
 
 
 
-
 // ================================
-// EMMA REAL WORLD WAKE TEST
+// EMMA WAKE EXPERIENCE
 // ================================
 //
-// No fake signals.
-// No test files.
-//
-// App starts.
-// Emma wakes.
-// Emma checks senses.
+// Browser opens
+// Emma wakes
+// Emma experiences existence
 //
 // ================================
 
@@ -178,7 +209,9 @@ async function wakeEmma(){
 
 
 console.log(
+
 "🌅 Waking Emma..."
+
 );
 
 
@@ -188,11 +221,28 @@ try{
 
 
 
-const report =
+const response =
 
-await Emma.dailyReport({
+await emma.experience({
 
-userId:"owner"
+
+source:"system",
+
+
+type:"wake",
+
+
+event:
+"Application started",
+
+
+message:
+"Emma has entered the environment and is observing current state",
+
+
+importance:5
+
+
 
 });
 
@@ -200,11 +250,12 @@ userId:"owner"
 
 
 
+
 console.log(
 
-"🤍 EMMA REPORT",
+"🤍 EMMA RESPONSE",
 
-report
+response
 
 );
 
@@ -212,13 +263,27 @@ report
 
 
 
+
+
+if(emma.self){
+
+
+const selfState =
+
+await emma.self();
+
+
+
 console.log(
 
-"🧠 EMMA STATUS",
+"🧠 EMMA SELF",
 
-Emma.status()
+selfState
 
 );
+
+
+}
 
 
 
@@ -264,8 +329,6 @@ wakeEmma();
 
 
 
-
-
 return (
 
 <>
@@ -278,11 +341,23 @@ return (
 <BrowserRouter>
 
 
-{/* <EmmaCard /> */}
+
+{/*
+
+Emma visual body.
+
+Enable later when connected:
+
+<EmmaCard emma={emma}/>
+
+*/}
+
 
 
 
 <Routes>
+
+
 
 
 
@@ -293,6 +368,7 @@ path="/"
 element={<Navigate to="/dashboard" />}
 
 />
+
 
 
 
@@ -308,6 +384,8 @@ element={<Signup />}
 
 
 
+
+
 <Route
 
 path="/login"
@@ -315,7 +393,6 @@ path="/login"
 element={<Login />}
 
 />
-
 
 
 
@@ -369,7 +446,6 @@ element={
 
 
 
-
 <Route
 
 path="/:username"
@@ -381,7 +457,6 @@ element={
 }
 
 />
-
 
 
 
@@ -470,6 +545,7 @@ element={
 
 
 </Routes>
+
 
 
 

@@ -1,32 +1,44 @@
 // EmmaActionExecutor.js
-// Emma's hands
 //
-// PURPOSE:
-// Execute approved plans.
+// PROJECT BECOMING
+//
+// Emma Action Executor v3
+//
+// Emma's hands.
 //
 // RULE:
 //
-// Action does not think.
-// Action does not decide.
+// Do not think.
+// Do not decide.
+// Do not learn.
 //
-// Brain thinks.
-// Judgement decides.
-// Autonomy permits.
-// Planner creates.
-// Action executes.
+// Judgement permits.
+// Executor moves.
+// World responds.
+// Experience learns.
 //
-// Plan → Execute → Outcome → Learning
+// v3:
+// - Judgement mode aware
+// - Lifecycle tracking
+// - Safe tool execution
+// - Rich outcome creation
+// - Experience feedback ready
+//
 
 
 class EmmaActionExecutor {
+
+
+
 
 
 constructor(){
 
 
 console.log(
-"🖐️ Emma Action Executor online"
+"🖐️ Emma Action Executor v3 awakened"
 );
+
 
 
 this.history = [];
@@ -35,7 +47,11 @@ this.history = [];
 this.activeActions = [];
 
 
-this.connectedTools = [];
+this.tools = new Map();
+
+
+this.totalActions = 0;
+
 
 
 }
@@ -49,48 +65,117 @@ this.connectedTools = [];
 
 
 // =================================
-// MAIN EXECUTION ENGINE
+// EXECUTE ACTION PACKAGE
 // =================================
 
 
-async execute(plan){
+async execute(actionPackage = {}){
 
 
 
 console.log(
-"🖐️ Emma received plan:",
-plan
+"🖐️ Emma receiving movement request..."
 );
 
 
 
 
-// -----------------------------
-// NO PLAN
-// -----------------------------
 
 
-if(!plan){
+// ===============================
+// INVALID ACTION
+// ===============================
 
 
-return this.recordOutcome({
+if(
+
+!actionPackage ||
+
+!actionPackage.action
+
+){
 
 
-type:"NO_PLAN",
+
+return this.createOutcome({
 
 
-status:"WAITING",
+type:"NO_ACTION",
 
 
-success:null,
+state:"ignored",
+
+
+result:
+"No movement requested"
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// UNDERSTAND JUDGEMENT MODE
+// ===============================
+
+
+const mode =
+
+actionPackage.mode ||
+
+"unknown";
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// OBSERVE MODE
+// ===============================
+
+
+if(
+
+mode === "observe"
+
+){
+
+
+
+return this.createOutcome({
+
+
+type:"OBSERVED",
+
+
+action:
+actionPackage.action,
+
+
+state:"waiting",
+
+
+result:
+"Emma observed without acting.",
 
 
 reason:
-"No executable plan received",
-
-
-learning:
-"Emma waits instead of acting randomly"
+actionPackage.reason
 
 
 });
@@ -103,46 +188,49 @@ learning:
 
 
 
-// -----------------------------
-// AUTONOMY SAFETY
-// -----------------------------
-
-
-if(plan.requiresApproval){
 
 
 
-return this.recordOutcome({
+
+// ===============================
+// PAUSE MODE
+// ===============================
 
 
-type:"PLAN_READY",
+if(
+
+mode === "pause"
+
+){
 
 
-status:"WAITING_FOR_APPROVAL",
+
+return this.createOutcome({
 
 
-success:true,
+type:"PAUSED",
 
 
-goal:
-plan.goal,
+action:
+actionPackage.action,
 
 
-plan,
+state:"protected",
 
 
-message:
+result:
+"Action paused by judgement.",
 
-"Emma prepared the work but needs approval.",
+
+reason:
+actionPackage.reason,
 
 
-learning:
-
-"Safe autonomy builds trust"
+warnings:
+actionPackage.warnings || []
 
 
 });
-
 
 
 }
@@ -154,32 +242,129 @@ learning:
 
 
 
-if(plan.canExecute === false){
+
+
+// ===============================
+// RECOMMEND ONLY
+// ===============================
+
+
+if(
+
+mode === "recommend"
+
+){
 
 
 
-return this.recordOutcome({
+return this.createOutcome({
+
+
+type:"RECOMMENDATION",
+
+
+action:
+actionPackage.action,
+
+
+state:"suggested",
+
+
+result:
+"Emma created recommendation only.",
+
+
+reason:
+actionPackage.reason
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// APPROVAL REQUIRED
+// ===============================
+
+
+if(
+
+mode === "prepare" ||
+
+actionPackage.needsApproval
+
+){
+
+
+
+return this.createOutcome({
+
+
+type:"WAITING_APPROVAL",
+
+
+action:
+actionPackage.action,
+
+
+state:"prepared",
+
+
+result:
+"Ready but waiting for permission.",
+
+
+approvalRequired:true
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+if(
+
+actionPackage.shouldAct === false
+
+){
+
+
+
+return this.createOutcome({
 
 
 type:"BLOCKED",
 
 
-status:"NOT_EXECUTED",
+action:
+actionPackage.action,
 
 
-success:false,
-
-
-goal:
-plan.goal,
+state:"stopped",
 
 
 reason:
-
-"Autonomy prevented execution",
-
-
-plan
+actionPackage.reason
 
 
 });
@@ -195,86 +380,57 @@ plan
 
 
 
-// -----------------------------
-// EXECUTE PLAN
-// -----------------------------
 
 
-const results=[];
-
-
+// ===============================
+// EXECUTION
+// ===============================
 
 
 try{
 
 
 
-this.startAction(
-plan.goal
+this.start(
+
+actionPackage
+
 );
 
-
-
-
-
-
-for(
-const step of plan.steps || []
-){
 
 
 
 const result =
 
-await this.executeStep(
+await this.perform(
 
-step,
-
-plan
+actionPackage
 
 );
 
 
 
 
-results.push(result);
 
 
-
-}
-
+return this.createOutcome({
 
 
+type:"ACTION_COMPLETED",
 
 
+action:
+actionPackage.action,
 
 
-
-return this.recordOutcome({
-
-
-type:"EXECUTION",
+state:"completed",
 
 
-status:"COMPLETED",
+result,
 
 
-success:true,
-
-
-goal:
-plan.goal,
-
-
-stepsCompleted:
-
-results.length,
-
-
-results,
-
-
-plan
+source:
+"executor"
 
 
 });
@@ -283,6 +439,7 @@ plan
 
 
 }
+
 
 
 
@@ -290,24 +447,24 @@ catch(error){
 
 
 
-return this.recordOutcome({
+return this.createOutcome({
 
 
-type:"EXECUTION_FAILED",
+type:"ACTION_FAILED",
 
 
-success:false,
+action:
+actionPackage.action,
 
 
-goal:
-plan.goal,
+state:"failed",
 
 
 error:
 error.message,
 
 
-plan
+recoverable:true
 
 
 });
@@ -315,7 +472,6 @@ plan
 
 
 }
-
 
 
 
@@ -323,8 +479,10 @@ finally{
 
 
 
-this.finishAction(
-plan.goal
+this.finish(
+
+actionPackage.action
+
 );
 
 
@@ -335,57 +493,28 @@ plan.goal
 
 }
 
-
-
-
-
-
-
-
-
-
-
 // =================================
-// EXECUTE SINGLE STEP
+// PERFORM ACTION
 // =================================
 
 
-async executeStep(step,plan){
+async perform(
+packageData={}
+){
+
+
+
+const action =
+
+packageData.action;
+
+
 
 
 
 console.log(
-
-"⚙️ Emma executing step:",
-
-step.task
-
-);
-
-
-
-
-
-// Future:
-// Gmail
-// Calendar
-// Slack
-// Browser
-// APIs
-
-
-switch(step.task){
-
-
-
-
-
-
-case "Prepare helpful response":
-
-
-return await this.prepareResponse(
-plan
+"🖐️ Performing:",
+action
 );
 
 
@@ -394,270 +523,46 @@ plan
 
 
 
+// ===============================
+// EXTERNAL BODY PART
+// ===============================
 
-case "Create improvement idea":
 
+if(
 
-return await this.createIdea(
-plan
-);
+this.tools.has(action)
 
+){
 
 
 
+const tool =
 
+this.tools.get(action);
 
 
 
-case "Save lesson":
 
 
-return await this.saveLesson(
-plan
-);
 
 
+// Tool boundary protection
 
+if(
 
+typeof tool.run !== "function"
 
+){
 
 
 
-case "Generate report":
+throw new Error(
 
-
-return await this.generateReport(
-plan
-);
-
-
-
-
-
-
-
-
-default:
-
-
-
-return {
-
-
-step:
-step.task,
-
-
-status:"COMPLETED",
-
-
-mode:"SIMULATED",
-
-
-message:
-
-"Step completed internally"
-
-
-};
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// SKILLS
-// =================================
-
-
-async prepareResponse(plan){
-
-
-
-return {
-
-
-id:this.createId(),
-
-
-type:"RESPONSE_DRAFT",
-
-
-status:"CREATED",
-
-
-content:
-
-"Emma prepared a response using memory context.",
-
-
-goal:
-plan.goal,
-
-
-createdAt:new Date()
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-async createIdea(plan){
-
-
-
-return {
-
-
-id:this.createId(),
-
-
-type:"IDEA",
-
-
-status:"CREATED",
-
-
-idea:
-
-"Emma created an improvement suggestion.",
-
-
-goal:
-plan.goal
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-async saveLesson(plan){
-
-
-
-return {
-
-
-id:this.createId(),
-
-
-type:"LESSON",
-
-
-status:"RECORDED",
-
-
-message:
-
-"Learning prepared for memory system"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-async generateReport(plan){
-
-
-
-return {
-
-
-id:this.createId(),
-
-
-type:"REPORT",
-
-
-status:"GENERATED",
-
-
-summary:
-
-"Emma generated an intelligence report"
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// TOOL CONNECTION SYSTEM
-// =================================
-
-
-connectTool(tool){
-
-
-
-this.connectedTools.push(tool);
-
-
-
-console.log(
-
-"🔌 Emma gained tool:",
-
-tool.name
+"Connected ability has no run() method"
 
 );
 
 
-
 }
 
 
@@ -666,25 +571,21 @@ tool.name
 
 
 
+return await tool.run({
 
-
-
-// =================================
-// ACTION STATE
-// =================================
-
-
-startAction(action){
-
-
-
-this.activeActions.push({
 
 
 action,
 
 
-startedAt:new Date()
+payload:
+
+packageData.payload || {},
+
+
+context:
+
+packageData
 
 
 });
@@ -699,17 +600,108 @@ startedAt:new Date()
 
 
 
-finishAction(action){
+
+
+// ===============================
+// INTERNAL MOVEMENT
+// ===============================
+
+
+return {
+
+
+executed:true,
+
+
+action,
+
+
+message:
+
+"Internal action completed",
+
+
+createdAt:
+
+new Date()
+
+
+};
 
 
 
-this.activeActions =
+}
 
-this.activeActions.filter(
 
-x=>x.action !== action
+
+
+
+
+
+
+
+// =================================
+// CONNECT NEW ABILITY
+//
+// WhatsApp
+// Email
+// Browser
+// Calendar
+// APIs
+// =================================
+
+
+connectTool(
+name,
+tool
+){
+
+
+
+if(
+
+!name ||
+
+!tool
+
+){
+
+
+return false;
+
+
+}
+
+
+
+
+
+this.tools.set(
+
+name,
+
+tool
 
 );
+
+
+
+
+
+
+console.log(
+
+"🔌 Emma gained action ability:",
+
+name
+
+);
+
+
+
+
+
+return true;
 
 
 
@@ -725,19 +717,52 @@ x=>x.action !== action
 
 
 // =================================
-// EXPERIENCE STORAGE
+// DISCONNECT ABILITY
 // =================================
 
 
-recordOutcome(data){
+disconnectTool(
+name
+){
 
 
 
-const record={
+return this.tools.delete(
+
+name
+);
 
 
 
-executionId:
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE OUTCOME
+//
+// Returns to Experience Engine
+// =================================
+
+
+createOutcome(
+data={}
+){
+
+
+
+const outcome = {
+
+
+id:
 
 this.createId(),
 
@@ -747,11 +772,19 @@ this.createId(),
 
 
 
-needsLearning:true,
+executor:"EmmaActionExecutor",
 
 
 
-createdAt:new Date()
+readyForExperience:
+
+true,
+
+
+
+createdAt:
+
+new Date()
 
 
 
@@ -761,7 +794,16 @@ createdAt:new Date()
 
 
 
-this.history.unshift(record);
+
+
+
+this.history.unshift(
+
+outcome
+
+);
+
+
 
 
 
@@ -772,7 +814,7 @@ this.history.slice(
 
 0,
 
-100
+200
 
 );
 
@@ -783,9 +825,9 @@ this.history.slice(
 
 console.log(
 
-"📚 Emma action memory:",
+"🌎 Outcome created:",
 
-record
+outcome.type
 
 );
 
@@ -793,7 +835,63 @@ record
 
 
 
-return record;
+
+return outcome;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// ACTION START
+// =================================
+
+
+start(
+packageData
+){
+
+
+
+this.totalActions++;
+
+
+
+
+this.activeActions.push({
+
+
+
+id:
+
+this.createId(),
+
+
+action:
+
+packageData.action,
+
+
+startedAt:
+
+new Date(),
+
+
+status:
+
+"running"
+
+
+
+});
 
 
 
@@ -809,28 +907,76 @@ return record;
 
 
 // =================================
-// REAL WORLD FEEDBACK
+// ACTION FINISH
 // =================================
 
 
-updateOutcome(
-executionId,
-result
+finish(
+action
 ){
 
 
 
-const item =
+this.activeActions =
 
-this.history.find(
+this.activeActions.filter(
 
-x=>x.executionId===executionId
+item =>
+
+item.action !== action
 
 );
 
 
 
-if(!item){
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// WORLD FEEDBACK
+//
+// External result arrives later.
+// This does NOT learn.
+// Experience Engine learns.
+// =================================
+
+
+receiveWorldResult(
+
+outcomeId,
+
+worldResult
+
+){
+
+
+
+const outcome =
+
+this.history.find(
+
+item =>
+
+item.id === outcomeId
+
+);
+
+
+
+
+
+
+if(
+!outcome
+){
 
 
 return null;
@@ -841,28 +987,85 @@ return null;
 
 
 
-item.realWorldResult =
-result;
 
 
 
-item.learningComplete=true;
+outcome.worldResult =
+
+worldResult;
 
 
 
-item.updatedAt =
+outcome.completedCycle =
+
+true;
+
+
+
+outcome.updatedAt =
+
 new Date();
 
 
 
 
 
-return item;
+
+
+return {
+
+
+...outcome,
+
+
+readyForExperience:true
+
+
+};
 
 
 
 }
 
+
+
+
+
+
+
+
+
+
+// =================================
+// GET ACTION HISTORY
+// =================================
+
+
+getHistory(){
+
+return this.history;
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// GET ACTIVE ACTIONS
+// =================================
+
+
+getActiveActions(){
+
+return this.activeActions;
+
+}
 
 
 
@@ -881,6 +1084,18 @@ createId(){
 
 
 
+if(
+
+typeof crypto !== "undefined"
+
+&&
+
+crypto.randomUUID
+
+){
+
+
+
 return crypto.randomUUID();
 
 
@@ -892,6 +1107,38 @@ return crypto.randomUUID();
 
 
 
+return (
+
+Date.now()
+
++
+
+"-"
+
++
+
+Math.random()
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// STATUS
+// =================================
+
+
 status(){
 
 
@@ -899,19 +1146,34 @@ status(){
 return {
 
 
-state:"ACTIVE",
+organ:
+
+"EmmaActionExecutor",
+
+
+version:
+
+"v3",
 
 
 role:
 
-"Executes Emma approved plans",
+"Hands / movement layer",
 
 
+state:
 
-active:
+"READY",
 
-this.activeActions,
 
+activeActions:
+
+this.activeActions.length,
+
+
+completedActions:
+
+this.totalActions,
 
 
 history:
@@ -919,14 +1181,25 @@ history:
 this.history.length,
 
 
+connectedAbilities:
 
-tools:
+[
 
-this.connectedTools.map(
+...this.tools.keys()
 
-x=>x.name
+],
 
-)
+
+
+principle:
+
+"Never decide. Only move after judgement.",
+
+
+
+message:
+
+"My actions create outcomes. Outcomes become new experiences."
 
 
 
@@ -938,34 +1211,9 @@ x=>x.name
 
 
 
-
-
-
-
-getHistory(){
-
-
-return this.history;
-
-
-}
-
-
-
-getActiveActions(){
-
-
-return this.activeActions;
-
-
-}
-
-
-
 }
 
 
 
 
-
-export default new EmmaActionExecutor();
+export default EmmaActionExecutor;

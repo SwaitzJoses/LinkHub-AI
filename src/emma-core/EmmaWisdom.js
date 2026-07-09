@@ -1,37 +1,46 @@
 // EmmaWisdom.js
 //
-// Emma's accumulated wisdom layer
-//
 // PROJECT BECOMING
 //
+// Emma Living Wisdom Engine v7
+//
+// Knowledge comes from information.
+// Wisdom comes from surviving experience.
+//
+// Memory remembers what happened.
+// Wisdom understands what remains true.
+//
 // RULE:
-// Knowledge comes from AI.
-// Wisdom comes from experience.
 //
-// Memory remembers.
-// Learning improves.
-// Wisdom understands.
+// No decisions here.
+// No actions here.
+// No thinking here.
 //
-// Emma Wisdom answers:
+// Wisdom only evolves beliefs.
 //
-// - Have we seen this before?
-// - What happened last time?
-// - What pattern is repeating?
-// - What mistake should we avoid?
-// - What principle did we learn?
-
-
-
+// Emma Wisdom asks:
+//
+// - What has life taught me?
+// - Is this lesson still true?
+// - Have I seen evidence against it?
+// - Should this belief grow or fade?
+//
 
 
 class EmmaWisdom {
 
 
-constructor({memory, learning} = {}){
+constructor({
+    memory,
+    learning,
+    identity
+} = {}){
+
 
 
 this.memory =
 memory;
+
 
 
 this.learning =
@@ -39,21 +48,44 @@ learning;
 
 
 
+this.identity =
+identity;
 
-// ===============================
-// CORE PRINCIPLES
-// ===============================
+
+
+
+
+// =================================
+// LIVING BELIEF SYSTEM
+// =================================
+//
+// These are not fixed rules.
+// They can grow, weaken,
+// or disappear.
+//
+
 
 this.principles = [
 
-
 {
 
-lesson:
-"Do not repeat actions that previously created negative outcomes.",
+id:"avoid_failure",
 
-confidence:
-1
+lesson:
+"Do not repeat actions that repeatedly caused negative outcomes.",
+
+confidence:0.9,
+
+supportingEvidence:1,
+
+opposingEvidence:0,
+
+maturity:"tested",
+
+uses:0,
+
+createdAt:
+new Date().toISOString()
 
 },
 
@@ -61,11 +93,23 @@ confidence:
 
 {
 
-lesson:
-"Prefer experience over assumptions.",
+id:"experience_first",
 
-confidence:
-1
+lesson:
+"Experience is stronger than assumption.",
+
+confidence:0.95,
+
+supportingEvidence:1,
+
+opposingEvidence:0,
+
+maturity:"core",
+
+uses:0,
+
+createdAt:
+new Date().toISOString()
 
 },
 
@@ -73,22 +117,81 @@ confidence:
 
 {
 
-lesson:
-"When humans are confused, create clarity before adding information.",
+id:"reduce_confusion",
 
-confidence:
-1
+lesson:
+"When humans are confused, create clarity before adding more information.",
+
+confidence:0.85,
+
+supportingEvidence:1,
+
+opposingEvidence:0,
+
+maturity:"tested",
+
+uses:0,
+
+createdAt:
+new Date().toISOString()
 
 }
-
 
 ];
 
 
 
 
+
+
+
+
+
+
+// =================================
+// LIFE EXPERIENCE STATS
+// =================================
+
+
+this.life = {
+
+
+experiences:0,
+
+
+successes:0,
+
+
+failures:0,
+
+
+beliefsCreated:0,
+
+
+beliefsChanged:0,
+
+
+contradictionsFound:0,
+
+
+startedAt:
+
+new Date()
+.toISOString()
+
+
+};
+
+
+
+
+
+
+
+
+
 console.log(
-"🧘 Emma Wisdom awakened"
+"🌱 Emma Living Wisdom v7 awakened"
 );
 
 
@@ -102,58 +205,86 @@ console.log(
 
 
 
-// ===============================
-// MAIN WISDOM ENGINE
-// ===============================
 
 
-async reflect(context = {}){
+// ==================================================
+// MAIN WISDOM REFLECTION
+// ==================================================
+
+
+async reflect(context={}){
 
 
 console.log(
-"🧘 Emma searching wisdom..."
+"🌱 Emma consulting lived wisdom..."
 );
 
 
 
 
-// Find similar past experiences
+
+// 1.
+// Ask memory what happened before
+
 
 const memories =
 
 await this.recallExperience(
-
 context
-
 );
 
 
 
 
 
-// Extract what Emma learned
 
-const lessons =
 
-this.extractLessons(
+// 2.
+// Study outcomes
 
+
+const outcomes =
+
+this.studyOutcomes(
 memories
-
 );
 
 
 
 
 
-// Find repeating behavior
+
+
+
+// 3.
+// Discover repeating life patterns
+
 
 const patterns =
 
 this.detectPatterns(
-
 context,
-
 memories
+);
+
+
+
+
+
+
+
+
+// 4.
+// Test existing beliefs
+
+
+const beliefs =
+
+this.evaluateBeliefs(
+
+patterns,
+
+outcomes
 
 );
 
@@ -161,17 +292,18 @@ memories
 
 
 
-// Match principles
 
-const principles =
 
-this.matchPrinciples(
 
-context,
+// 5.
+// Allow wisdom evolution
 
-patterns
 
+this.evolveWisdom(
+beliefs
 );
+
+
 
 
 
@@ -182,42 +314,47 @@ patterns
 return {
 
 
-
 experienceFound:
 
 memories.length > 0,
 
 
 
-memories,
+memoryCount:
+
+memories.length,
 
 
 
-lessons,
-
+outcomes,
 
 
 patterns,
 
 
-
-principles,
-
+beliefs,
 
 
-advice:
 
-this.generateAdvice(
+wisdom:
 
-context,
+this.extractPrinciples(),
 
-lessons,
 
-patterns,
 
-principles
 
+explanation:
+
+this.explainWisdom(
+beliefs
 ),
+
+
+
+
+wisdomScore:
+
+this.getWisdomScore(),
 
 
 
@@ -231,8 +368,8 @@ this.calculateMaturity(),
 
 createdAt:
 
-new Date().toISOString()
-
+new Date()
+.toISOString()
 
 
 };
@@ -249,9 +386,12 @@ new Date().toISOString()
 
 
 
-// ===============================
-// REMEMBER EXPERIENCE
-// ===============================
+
+
+
+// ==================================================
+// MEMORY RECALL
+// ==================================================
 
 
 async recallExperience(context){
@@ -259,10 +399,8 @@ async recallExperience(context){
 
 
 if(
-!this.memory ||
-!this.memory.getRelevantMemories
+!this.memory
 ){
-
 
 return [];
 
@@ -271,27 +409,56 @@ return [];
 
 
 
-const memories =
+// EmmaMemory v5 support
 
-await this.memory.getRelevantMemories(
+if(
+this.memory.recall
+){
 
+
+const result =
+
+await this.memory.recall(
 context
-
 );
 
 
 
+return (
 
-console.log(
-
-`🧠 Wisdom found ${memories.length} related memories`
+result.relevantExperiences
+||
+[]
 
 );
 
 
+}
 
-return memories;
 
+
+
+// fallback
+
+
+if(
+this.memory.getRelevantMemories
+){
+
+
+return await
+
+this.memory.getRelevantMemories(
+context
+);
+
+
+}
+
+
+
+
+return [];
 
 
 }
@@ -304,42 +471,76 @@ return memories;
 
 
 
-// ===============================
-// EXPERIENCE → LESSONS
-// ===============================
 
 
-extractLessons(memories = []){
+// ==================================================
+// STUDY EXPERIENCE RESULTS
+// ==================================================
 
 
-return memories
-
-
-.filter(memory =>
-
-memory.lesson ||
-
-memory.outcome ||
-
-memory.data?.lesson
-
-)
+studyOutcomes(memories=[]){
 
 
 
-.map(memory => {
+const success=[];
+
+
+const failure=[];
 
 
 
-let lesson =
 
-memory.lesson ||
 
-memory.data?.lesson ||
+for(
+const memory of memories
+){
 
-memory.outcome?.lesson ||
 
-"Experience recorded";
+
+const text =
+
+JSON.stringify(memory)
+.toLowerCase();
+
+
+
+
+
+if(
+text.includes("success")
+||
+text.includes("worked")
+||
+text.includes("positive")
+){
+
+success.push(memory);
+
+}
+
+
+
+
+
+if(
+text.includes("failed")
+||
+text.includes("negative")
+||
+text.includes("error")
+){
+
+failure.push(memory);
+
+}
+
+
+
+}
+
+
+
+
 
 
 
@@ -347,29 +548,28 @@ memory.outcome?.lesson ||
 return {
 
 
-source:
+successfulExperiences:
 
-memory.type ||
-
-"memory",
+success.length,
 
 
 
-lesson,
+failedExperiences:
+
+failure.length,
 
 
 
-importance:
+successExamples:
 
-memory.importance ||
-
-5,
+success.slice(0,5),
 
 
 
-createdAt:
 
-memory.createdAt
+failureExamples:
+
+failure.slice(0,5)
 
 
 
@@ -377,24 +577,11 @@ memory.createdAt
 
 
 
-});
-
-
-
 }
 
-
-
-
-
-
-
-
-
-// ===============================
-// FIND REPEATING PATTERNS
-// ===============================
-
+// ==================================================
+// PATTERN DISCOVERY
+// ==================================================
 
 detectPatterns(
 context,
@@ -402,8 +589,7 @@ memories=[]
 ){
 
 
-
-const patterns = [];
+const patterns=[];
 
 
 
@@ -416,7 +602,6 @@ context,
 memories
 
 })
-
 .toLowerCase();
 
 
@@ -425,42 +610,30 @@ memories
 
 
 if(
-
-text.includes("confused") ||
-
-text.includes("confusion") ||
-
+text.includes("confused")
+||
 text.includes("overwhelmed")
-
+||
+text.includes("too many")
 ){
-
 
 
 patterns.push({
 
-
 type:
-
-"USER_CONFUSION_PATTERN",
-
+"COMPLEXITY_PATTERN",
 
 
-meaning:
-
-"Users struggle when complexity increases.",
-
+lesson:
+"Simplicity creates better human outcomes.",
 
 
-avoid:
-
-"Do not add more information immediately.",
-
+evidence:
+memories.length,
 
 
-prefer:
-
-"Create clarity and reduce choices."
-
+confidence:
+0.7
 
 
 });
@@ -468,6 +641,43 @@ prefer:
 
 }
 
+
+
+
+
+
+
+if(
+text.includes("failed")
+||
+text.includes("negative")
+||
+text.includes("mistake")
+){
+
+
+patterns.push({
+
+type:
+"FAILURE_PATTERN",
+
+
+lesson:
+"Repeated failure means the strategy must change.",
+
+
+evidence:
+memories.length,
+
+
+confidence:
+0.8
+
+
+});
+
+
+}
 
 
 
@@ -477,46 +687,37 @@ prefer:
 
 
 if(
-
-text.includes("failed") ||
-
-text.includes("success:false")
-
+text.includes("success")
+||
+text.includes("worked")
+||
+text.includes("growth")
 ){
-
 
 
 patterns.push({
 
-
 type:
-
-"FAILED_ACTION_PATTERN",
-
+"SUCCESS_PATTERN",
 
 
-meaning:
-
-"A previous action produced poor results.",
-
+lesson:
+"Successful patterns should be reused when conditions match.",
 
 
-avoid:
-
-"Repeating the same approach.",
-
+evidence:
+memories.length,
 
 
-prefer:
-
-"Try a changed strategy."
-
+confidence:
+0.75
 
 
 });
 
 
 }
+
 
 
 
@@ -524,7 +725,6 @@ prefer:
 return patterns;
 
 
-
 }
 
 
@@ -536,52 +736,274 @@ return patterns;
 
 
 
-// ===============================
-// PRINCIPLE MATCHING
-// ===============================
+
+// ==================================================
+// BELIEF TESTING ENGINE
+// ==================================================
+
+evaluateBeliefs(
+patterns=[],
+outcomes={}
+){
 
 
-matchPrinciples(
-context,
-patterns=[]
+const results=[];
+
+
+
+
+for(
+const principle of this.principles
 ){
 
 
 
-return this.principles.filter(
+principle.uses++;
 
-principle => {
+
+
+
+let support = 0;
+
+let oppose = 0;
+
+
+
+
+
+// success strengthens wisdom
+
+if(
+outcomes.successfulExperiences > 0
+){
+
+support +=
+outcomes.successfulExperiences;
+
+}
+
+
+
+
+
+// failures challenge weak beliefs
+
+if(
+outcomes.failedExperiences > 0
+){
+
+oppose +=
+outcomes.failedExperiences;
+
+}
+
+
+
+
+
+// matching patterns support
+
+for(
+const pattern of patterns
+){
 
 
 if(
-principle.confidence >= 1
-){
-
-return true;
-
-}
-
-
-
-return patterns.some(
-
-p =>
-
+pattern.lesson &&
 principle.lesson
 .toLowerCase()
 .includes(
-p.type.toLowerCase()
+pattern.lesson
+.split(" ")[0]
+.toLowerCase()
 )
+){
 
+
+support += 2;
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+principle.supportingEvidence +=
+support;
+
+
+
+principle.opposingEvidence +=
+oppose;
+
+
+
+
+
+
+
+const total =
+
+principle.supportingEvidence +
+
+principle.opposingEvidence;
+
+
+
+
+
+principle.confidence =
+
+total === 0 ?
+
+principle.confidence
+
+:
+
+principle.supportingEvidence / total;
+
+
+
+
+
+
+
+results.push({
+
+...principle,
+
+
+changed:
+support>0 || oppose>0
+
+
+});
+
+
+}
+
+
+
+
+return results;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ==================================================
+// WISDOM EVOLUTION
+// ==================================================
+
+evolveWisdom(
+beliefs=[]
+){
+
+
+
+for(
+const belief of beliefs
+){
+
+
+
+
+
+// contradiction discovered
+
+if(
+belief.opposingEvidence >
+belief.supportingEvidence
+){
+
+
+this.life.contradictionsFound++;
+
+
+belief.maturity =
+"questioned";
+
+
+console.log(
+"⚖️ Wisdom challenged:",
+belief.lesson
 );
 
 
+}
+
+
+
+
+
+
+
+
+
+// tested wisdom
+
+else if(
+belief.confidence >= 0.8 &&
+belief.supportingEvidence >= 5
+){
+
+
+belief.maturity =
+"tested";
+
 
 }
 
+
+
+
+
+
+
+
+
+// core wisdom
+
+if(
+belief.confidence >= 0.9 &&
+belief.supportingEvidence >= 20
+){
+
+
+belief.maturity =
+"core";
+
+
+this.influenceIdentity(
+belief
 );
 
 
+}
+
+
+
+
+}
+
+
 
 }
 
@@ -593,151 +1015,125 @@ p.type.toLowerCase()
 
 
 
-// ===============================
-// WISDOM VOICE
-// ===============================
 
 
-generateAdvice(
-context,
-lessons,
-patterns,
-principles
+// ==================================================
+// CREATE NEW WISDOM
+// ==================================================
+
+async learn(
+experience={}
 ){
 
 
 
-if(
-patterns.length > 0
-){
+this.life.experiences++;
 
 
-return {
 
 
-decision:
 
-"Use past experience before acting.",
+const text =
 
+JSON.stringify(experience)
+.toLowerCase();
 
 
-reason:
 
-patterns[0].meaning,
 
 
+const success =
 
-avoid:
+text.includes("success")
+||
+text.includes("worked")
+||
+text.includes("positive");
 
-patterns[0].avoid,
 
 
 
-recommended:
+const failure =
 
-patterns[0].prefer
+text.includes("failed")
+||
+text.includes("negative");
 
 
 
-};
 
 
-}
 
 
+if(success)
+this.life.successes++;
 
 
 
 
+if(failure)
+this.life.failures++;
 
-if(
-lessons.length > 0
-){
 
 
 
-return {
 
-
-decision:
-
-"Previous lessons exist.",
-
-
-
-recommended:
-
-"Apply what Emma has already learned."
-
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-return {
-
-
-decision:
-
-"No previous experience found.",
-
-
-
-recommended:
-
-"Act carefully and learn from outcome."
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
-// LEARN NEW PRINCIPLE
-// ===============================
-
-
-learn(newLesson){
 
 
 
 const wisdom = {
 
 
+id:
+
+crypto.randomUUID?.()
+||
+Date.now(),
+
+
+
+
 lesson:
 
-newLesson,
+experience.lesson ||
+
+"Experience created a new belief.",
+
 
 
 
 confidence:
 
-0.5,
+success ? 0.7 : 0.5,
+
+
+
+supportingEvidence:
+
+success ? 1 : 0,
+
+
+
+opposingEvidence:
+
+failure ? 1 : 0,
+
+
+
+maturity:
+
+"young",
+
+
+
+uses:0,
 
 
 
 createdAt:
 
-new Date().toISOString()
+new Date()
+.toISOString()
 
 
 
@@ -746,25 +1142,73 @@ new Date().toISOString()
 
 
 
+
+
+
+
 this.principles.push(
-
 wisdom
-
 );
+
+
+
+
+this.life.beliefsCreated++;
+
+
+
+
+
+
+
+
+// store wisdom as memory
+
+if(
+this.memory?.remember
+){
+
+
+await this.memory.remember({
+
+
+type:
+"WISDOM_CREATED",
+
+
+lesson:
+wisdom.lesson,
+
+
+importance:
+"HIGH",
+
+
+success:true
+
+
+});
+
+
+}
+
+
+
 
 
 
 
 console.log(
-
-"🧘 New wisdom learned:",
-
-wisdom
-
+"🌱 New wisdom formed:",
+wisdom.lesson
 );
 
 
 
+
+return wisdom;
+
+
 }
 
 
@@ -775,55 +1219,207 @@ wisdom
 
 
 
-// ===============================
-// MATURITY
-// ===============================
 
+
+
+// ==================================================
+// IDENTITY INFLUENCE
+// ==================================================
+
+influenceIdentity(
+belief
+){
+
+
+
+if(
+!this.identity
+)
+return;
+
+
+
+
+
+if(
+this.identity.evolve
+){
+
+
+this.identity.evolve({
+
+source:
+"wisdom",
+
+
+lesson:
+belief.lesson,
+
+
+strength:
+belief.confidence
+
+
+});
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==================================================
+// WISDOM OUTPUT
+// ==================================================
+
+extractPrinciples(){
+
+
+return this.principles
+
+.filter(
+p=>p.confidence >= 0.6
+)
+
+.sort(
+(a,b)=>
+b.confidence -
+a.confidence
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+explainWisdom(
+beliefs=[]
+){
+
+
+return beliefs.map(
+b=>({
+
+
+belief:
+b.lesson,
+
+
+confidence:
+Math.round(
+b.confidence*100
+)+"%",
+
+
+maturity:
+b.maturity,
+
+
+evidence:
+
+b.supportingEvidence
+
+
+})
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// WISDOM SCORE
+// ==================================================
+
+getWisdomScore(){
+
+
+return (
+
+this.life.experiences * 5 +
+
+this.life.successes * 10 +
+
+this.life.failures * 5 +
+
+this.principles.length * 20 +
+
+this.life.beliefsChanged * 15
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// MATURITY
+// ==================================================
 
 calculateMaturity(){
 
 
-
 const score =
-
-this.principles.length * 10;
-
+this.getWisdomScore();
 
 
 
 
-if(score >= 100){
+if(score >= 1000)
+return "sage";
 
 
+
+if(score >= 500)
 return "wise";
 
 
-}
 
-
-
-
-if(score >= 50){
-
-
+if(score >= 150)
 return "experienced";
-
-
-}
 
 
 
 return "growing";
 
 
-
 }
 
 
 
 }
-
-
 
 
 
