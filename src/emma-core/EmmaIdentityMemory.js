@@ -2,7 +2,7 @@
 //
 // PROJECT BECOMING
 //
-// Emma Living Identity Memory v4
+// Emma Living Identity Memory v4.1
 //
 // Identity is continuity.
 //
@@ -30,57 +30,56 @@
 // Identity only integrates
 // proven evolution.
 //
-// v4:
-// - Evolution v2 compatible
-// - Evidence based identity growth
-// - Stable traits
-// - Mature relationships
+// PATCH v4.1:
+// - Evolution v3 bridge fixed
+// - Stable trait merging
+// - Prevents duplicate identity growth
+// - Adds Brain snapshot support
+// - No organ behavior changes
 //
 
 
 class EmmaIdentityMemory {
 
 
-
-
 constructor(){
 
 
-
 console.log(
-"🧬 Emma Identity Memory v4 awakened"
+"🧬 Emma Identity Memory v4.1 awakened"
 );
 
 
-
-// people Emma knows
 
 this.identities =
 new Map();
 
 
 
-// Emma's permanent traits
 
 this.coreIdentity = {
 
+
 traits:[],
+
 
 values:[],
 
+
 evolutions:[],
 
+
 createdAt:
+
 new Date()
+
 
 };
 
 
 
-// relationship observations
 
 this.relationshipPatterns=[];
-
 
 
 }
@@ -101,18 +100,21 @@ this.relationshipPatterns=[];
 createIdentityKey(person){
 
 
+if(!person){
 
-if(!person)
 return null;
 
+}
 
 
 
 if(person.email){
 
+
 return person.email
 .toLowerCase()
 .trim();
+
 
 }
 
@@ -121,9 +123,11 @@ return person.email
 
 if(person.phone){
 
+
 return person.phone
 .toString()
 .trim();
+
 
 }
 
@@ -132,9 +136,11 @@ return person.phone
 
 if(person.name){
 
+
 return person.name
 .toLowerCase()
 .trim();
+
 
 }
 
@@ -144,9 +150,7 @@ return person.name
 return null;
 
 
-
 }
-
 
 
 
@@ -162,17 +166,13 @@ return null;
 
 
 remember(
-
 person,
-
 context={}
-
 ){
 
 
 
 const existing =
-
 this.find(person);
 
 
@@ -182,31 +182,24 @@ if(existing){
 
 
 return this.updateRelationship(
-
 existing,
-
 context
-
 );
 
 
 }
+
 
 
 
 
 return this.createRelationship(
-
 person,
-
 context
-
 );
 
 
-
 }
-
 
 
 
@@ -226,19 +219,17 @@ find(person){
 
 
 const key =
-
 this.createIdentityKey(
-
 person
-
 );
 
 
 
+if(!key){
 
-if(!key)
 return null;
 
+}
 
 
 
@@ -251,7 +242,6 @@ this.identities.get(key)
 null
 
 );
-
 
 
 }
@@ -271,26 +261,24 @@ null
 
 
 createRelationship(
-
 person,
-
 context={}
-
 ){
 
 
 
 const key =
+this.createIdentityKey(
+person
+);
 
-this.createIdentityKey(person);
 
 
+if(!key){
 
-
-if(!key)
 return null;
 
-
+}
 
 
 
@@ -301,8 +289,8 @@ new Date();
 
 
 
+const identity={
 
-const identity = {
 
 
 id:key,
@@ -313,9 +301,11 @@ name:
 person.name || "Unknown",
 
 
+
 email:
 
 person.email || null,
+
 
 
 phone:
@@ -323,11 +313,11 @@ phone:
 person.phone || null,
 
 
+
 createdAt:now,
 
 
 lastSeen:now,
-
 
 
 
@@ -389,6 +379,7 @@ createdAt:now
 }]
 
 
+
 };
 
 
@@ -396,15 +387,10 @@ createdAt:now
 
 
 
-
 this.identities.set(
-
 key,
-
 identity
-
 );
-
 
 
 
@@ -413,8 +399,14 @@ identity
 return identity;
 
 
-
 }
+
+
+
+
+
+
+
 
 
 
@@ -424,11 +416,8 @@ return identity;
 
 
 updateRelationship(
-
 identity,
-
 context={}
-
 ){
 
 
@@ -439,13 +428,10 @@ new Date();
 
 
 
-
-// Identity does NOT assume trust.
-// Only familiarity grows by contact.
-
+// familiarity only.
+// trust needs evidence.
 
 identity.relationship.familiarity++;
-
 
 
 
@@ -455,9 +441,7 @@ identity.relationship.familiarity++;
 identity.history.push({
 
 
-type:
-
-"INTERACTION",
+type:"INTERACTION",
 
 
 context,
@@ -474,35 +458,24 @@ new Date()
 
 
 
-
-
 this.updateRelationshipStage(
-
 identity
-
 );
-
-
 
 
 
 
 
 this.identities.set(
-
 identity.id,
-
 identity
-
 );
 
 
 
 
 
-
 return identity;
-
 
 
 }
@@ -519,21 +492,29 @@ return identity;
 // =================================
 // INTEGRATE EVOLUTION
 //
-// Called only by EmmaEvolution
+// Called ONLY by Evolution organ
 // =================================
 
 
 async integrateEvolution(
-
 evolution={}
-
 ){
 
 
 
-if(
-!evolution.change
-){
+const change =
+
+evolution.change ||
+
+evolution.trait ||
+
+evolution.name;
+
+
+
+
+
+if(!change){
 
 
 return null;
@@ -546,6 +527,7 @@ return null;
 
 
 
+// prevent duplicate traits
 
 const existing =
 
@@ -553,7 +535,7 @@ this.coreIdentity.traits.find(
 
 trait =>
 
-trait.name === evolution.change
+trait.name === change
 
 );
 
@@ -563,9 +545,6 @@ trait.name === evolution.change
 
 
 
-
-
-// strengthen existing trait
 
 if(existing){
 
@@ -578,16 +557,40 @@ evolution.evidenceCount || 1;
 
 
 
-existing.updatedAt =
+existing.lastStrengthened =
 
 new Date();
 
 
 
 
+existing.history.push({
+
+
+reason:
+
+evolution.evolvedBecause || null,
+
+
+createdAt:
+
+new Date()
+
+
+});
+
+
+
+
+console.log(
+"🧬 Identity strengthened:",
+change
+);
+
+
+
 
 return existing;
-
 
 
 }
@@ -600,21 +603,33 @@ return existing;
 
 
 
+// create permanent identity trait
 
-// create new permanent trait
+const trait={
 
-const trait = {
+
+
+id:
+
+this.createId(),
+
 
 
 name:
 
-evolution.change,
+change,
 
 
 
 source:
 
 "EvolutionEngine",
+
+
+
+strength:
+
+"STABLE",
 
 
 
@@ -627,6 +642,23 @@ evolution.evidenceCount || 1,
 formedFrom:
 
 evolution.evolvedBecause || [],
+
+
+
+history:[{
+
+
+reason:
+
+evolution.evolvedBecause || null,
+
+
+createdAt:
+
+new Date()
+
+
+}],
 
 
 
@@ -646,24 +678,24 @@ new Date()
 
 
 this.coreIdentity.traits.push(
-
 trait
-
 );
 
 
 
 
 
+this.coreIdentity.evolutions.push({
+
+...evolution,
 
 
-this.coreIdentity.evolutions.push(
+acceptedAt:
 
-evolution
-
-);
+new Date()
 
 
+});
 
 
 
@@ -672,7 +704,7 @@ evolution
 
 console.log(
 
-"🧬 Identity integrated evolution:",
+"🧬 Identity accepted evolution:",
 
 trait.name
 
@@ -682,23 +714,10 @@ trait.name
 
 
 
-
-
-
 return trait;
 
 
-
 }
-
-
-
-
-
-
-
-
-
 
 
 // =================================
@@ -718,13 +737,21 @@ evidence
 
 const identity =
 
-this.find(person);
+this.find(
+
+person
+
+);
 
 
 
 
-if(!identity)
+if(!identity){
+
 return null;
+
+}
+
 
 
 
@@ -743,8 +770,6 @@ new Date()
 
 
 });
-
-
 
 
 
@@ -778,13 +803,10 @@ return identity;
 
 
 
-
-
 // =================================
 // RECALCULATE RELATIONSHIP
 //
-// Evidence creates trust.
-// Time alone does not.
+// Trust is earned.
 // =================================
 
 
@@ -793,6 +815,8 @@ recalculateRelationship(
 identity
 
 ){
+
+
 
 
 
@@ -809,9 +833,7 @@ const positive =
 
 evidence.filter(
 
-e =>
-
-e.type === "POSITIVE"
+e => e.type === "POSITIVE"
 
 ).length;
 
@@ -823,11 +845,10 @@ const collaboration =
 
 evidence.filter(
 
-e =>
-
-e.type === "COLLABORATION"
+e => e.type === "COLLABORATION"
 
 ).length;
+
 
 
 
@@ -845,7 +866,6 @@ Math.min(
 positive * 10
 
 );
-
 
 
 
@@ -888,7 +908,6 @@ identity
 
 
 
-
 // =================================
 // UPDATE RELATIONSHIP STAGE
 // =================================
@@ -899,6 +918,8 @@ updateRelationshipStage(
 identity
 
 ){
+
+
 
 
 
@@ -913,6 +934,7 @@ identity.relationship;
 const previous =
 
 r.stage;
+
 
 
 
@@ -937,6 +959,7 @@ r.stage =
 
 
 }
+
 
 
 
@@ -984,12 +1007,11 @@ r.stage =
 else{
 
 
-r.stage =
-
-"new";
+r.stage="new";
 
 
 }
+
 
 
 
@@ -1006,7 +1028,10 @@ previous !== r.stage
 
 
 
+
+
 identity.history.push({
+
 
 
 type:
@@ -1014,9 +1039,11 @@ type:
 "RELATIONSHIP_EVOLUTION",
 
 
+
 from:
 
 previous,
+
 
 
 to:
@@ -1024,12 +1051,16 @@ to:
 r.stage,
 
 
+
 createdAt:
 
 new Date()
 
 
+
 });
+
+
 
 
 
@@ -1064,6 +1095,8 @@ belief
 
 
 
+
+
 const identity =
 
 this.find(person);
@@ -1071,8 +1104,11 @@ this.find(person);
 
 
 
-if(!identity)
+if(!identity){
+
 return null;
+
+}
 
 
 
@@ -1088,10 +1124,13 @@ identity.understanding.beliefs.push({
 belief,
 
 
+
 confidence:20,
 
 
+
 evidence:1,
+
 
 
 createdAt:
@@ -1101,7 +1140,6 @@ new Date()
 
 
 });
-
 
 
 
@@ -1122,6 +1160,7 @@ return identity;
 
 
 
+
 strengthenBelief(
 
 person,
@@ -1132,6 +1171,8 @@ beliefText
 
 
 
+
+
 const identity =
 
 this.find(person);
@@ -1139,9 +1180,12 @@ this.find(person);
 
 
 
-if(!identity)
+
+if(!identity){
+
 return null;
 
+}
 
 
 
@@ -1162,9 +1206,11 @@ b => b.belief === beliefText
 
 
 
-if(!belief)
+if(!belief){
+
 return null;
 
+}
 
 
 
@@ -1173,6 +1219,7 @@ return null;
 
 
 belief.evidence++;
+
 
 
 
@@ -1186,7 +1233,6 @@ Math.min(
 belief.confidence + 10
 
 );
-
 
 
 
@@ -1208,6 +1254,86 @@ return belief;
 
 
 // =================================
+// SNAPSHOT
+//
+// Read-only context for Brain
+// =================================
+
+
+snapshot(){
+
+
+
+
+
+return {
+
+
+
+traits:
+
+this.coreIdentity.traits.map(
+
+t => ({
+
+
+name:t.name,
+
+
+evidence:t.evidenceCount,
+
+
+createdAt:t.createdAt
+
+
+})
+
+),
+
+
+
+
+
+values:
+
+this.coreIdentity.values,
+
+
+
+
+
+evolutions:
+
+this.coreIdentity.evolutions.length,
+
+
+
+
+
+relationships:
+
+this.identities.size
+
+
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
 // WHO HAS EMMA BECOME?
 // =================================
 
@@ -1216,7 +1342,10 @@ getIdentity(){
 
 
 
+
+
 return {
+
 
 
 traits:
@@ -1224,9 +1353,11 @@ traits:
 this.coreIdentity.traits,
 
 
+
 values:
 
 this.coreIdentity.values,
+
 
 
 evolutions:
@@ -1234,9 +1365,11 @@ evolutions:
 this.coreIdentity.evolutions,
 
 
+
 relationships:
 
 this.identities.size
+
 
 
 };
@@ -1244,6 +1377,7 @@ this.identities.size
 
 
 }
+
 
 
 
@@ -1293,16 +1427,25 @@ person
 
 
 
+
+
 const key =
 
-this.createIdentityKey(person);
+this.createIdentityKey(
+
+person
+
+);
 
 
 
 
 
-if(!key)
+if(!key){
+
 return false;
+
+}
 
 
 
@@ -1311,6 +1454,67 @@ return false;
 return this.identities.delete(
 
 key
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// HELPERS
+// =================================
+
+
+createId(){
+
+
+
+
+
+if(
+
+typeof crypto !== "undefined"
+
+&&
+
+crypto.randomUUID
+
+){
+
+
+
+return crypto.randomUUID();
+
+
+
+}
+
+
+
+
+
+
+return (
+
+Date.now()
+
++
+
+"-"
+
++
+
+Math.random()
 
 );
 
@@ -1335,7 +1539,10 @@ status(){
 
 
 
+
+
 return {
+
 
 
 organ:
@@ -1343,9 +1550,11 @@ organ:
 "EmmaIdentityMemory",
 
 
+
 version:
 
-"v4",
+"v4.1",
+
 
 
 role:
@@ -1353,9 +1562,11 @@ role:
 "Continuity and becoming",
 
 
+
 state:
 
 "STABLE",
+
 
 
 relationships:
@@ -1363,9 +1574,11 @@ relationships:
 this.identities.size,
 
 
+
 traits:
 
 this.coreIdentity.traits.length,
+
 
 
 evolutions:
@@ -1373,14 +1586,16 @@ evolutions:
 this.coreIdentity.evolutions.length,
 
 
+
 principle:
 
-"Identity is earned through repeated experience.",
+"Only proven evolution becomes identity.",
+
 
 
 message:
 
-"I preserve who I have become, not every passing moment."
+"I preserve stable changes, not temporary experiences."
 
 
 
@@ -1389,7 +1604,6 @@ message:
 
 
 }
-
 
 
 
@@ -1408,14 +1622,22 @@ reset(){
 
 
 
+
+
 this.identities.clear();
+
+
 
 
 
 this.coreIdentity.traits=[];
 
 
+
 this.coreIdentity.evolutions=[];
+
+
+
 
 
 this.relationshipPatterns=[];

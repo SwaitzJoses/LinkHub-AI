@@ -2,15 +2,9 @@
 //
 // PROJECT BECOMING
 //
-// Emma Learning Engine v2
+// Emma Learning Engine v3
 //
-// Learning is reflection after life.
-//
-// PURPOSE:
-//
-// Experience happens.
-// Actions create outcomes.
-// Learning extracts meaning.
+// Learning is meaning extraction.
 //
 // RULE:
 //
@@ -18,19 +12,18 @@
 // Do not act.
 // Do not create identity.
 //
-// Memory stores.
-// Wisdom matures.
-// SelfModel changes.
-// Identity emerges slowly.
+// Memory stores events.
+// Learning extracts patterns.
+// Wisdom receives mature lessons.
+// Evolution receives repeated proof.
 //
-// v2:
-// - Outcome aware
-// - Pattern based learning
-// - Prevents instant personality changes
-// - Creates wisdom candidates
-// - Supports Executor v3
+// v3 PATCH:
+// - Evidence based learning
+// - Lesson compression
+// - Confidence growth
+// - Category awareness
+// - Duplicate prevention
 //
-
 
 
 class EmmaLearningEngine {
@@ -38,29 +31,34 @@ class EmmaLearningEngine {
 
 
 
-
 constructor(){
 
 
+
 console.log(
-"📚 Emma Learning Engine v2 awakened"
+"📚 Emma Learning Engine v3 awakened"
 );
+
 
 
 
 this.lessons = [];
 
 
-this.patterns = [];
+this.patterns = new Map();
 
 
 this.observations = [];
 
 
-this.behaviourSignals = [];
-
-
 this.learningCycles = 0;
+
+
+
+
+// mature lessons ready for wisdom
+
+this.wisdomCandidates = [];
 
 
 
@@ -90,20 +88,16 @@ memories = []
 
 
 console.log(
-"📚 Emma studying outcome..."
+"📚 Emma extracting lesson..."
 );
 
 
 
 
 
-if(
-!outcome
-){
-
+if(!outcome){
 
 return null;
-
 
 }
 
@@ -120,9 +114,8 @@ this.learningCycles++;
 
 
 
-
 // ===============================
-// UNDERSTAND RESULT
+// EVALUATE RESULT
 // ===============================
 
 
@@ -142,9 +135,29 @@ outcome
 
 
 
+// ===============================
+// DISCOVER CATEGORY
+// ===============================
+
+
+const category =
+
+this.detectCategory(
+
+outcome
+
+);
+
+
+
+
+
+
+
+
 
 // ===============================
-// COMPARE HISTORY
+// FIND PATTERNS
 // ===============================
 
 
@@ -154,7 +167,9 @@ this.detectPatterns({
 
 outcome,
 
-memories
+memories,
+
+category
 
 });
 
@@ -166,21 +181,27 @@ memories
 
 
 
-
 // ===============================
-// EXTRACT LESSON
+// CREATE OR UPDATE LESSON
 // ===============================
 
 
 const lesson =
 
-this.extractLesson({
+this.mergeLesson({
+
 
 outcome,
 
+
 evaluation,
 
-patterns
+
+patterns,
+
+
+category
+
 
 });
 
@@ -194,21 +215,17 @@ patterns
 
 
 // ===============================
-// CREATE WISDOM SIGNAL
+// WISDOM SIGNAL
 // ===============================
 
 
 const wisdomSignal =
 
-this.createWisdomSignal({
+this.createWisdomSignal(
 
-lesson,
+lesson
 
-patterns,
-
-evaluation
-
-});
+);
 
 
 
@@ -220,7 +237,7 @@ evaluation
 
 
 // ===============================
-// CREATE SELF SIGNAL
+// SELF SIGNAL
 // ===============================
 
 
@@ -228,9 +245,15 @@ const selfSignal =
 
 this.createSelfSignal({
 
-patterns,
 
-evaluation
+lesson,
+
+
+evaluation,
+
+
+patterns
+
 
 });
 
@@ -244,15 +267,17 @@ evaluation
 
 
 
-const learning =
+return this.store({
 
-this.store({
 
 
 outcome,
 
 
 evaluation,
+
+
+category,
 
 
 patterns,
@@ -267,22 +292,12 @@ wisdomSignal,
 selfSignal
 
 
+
 });
 
 
 
-
-
-
-
-
-
-return learning;
-
-
-
 }
-
 
 
 
@@ -308,15 +323,11 @@ outcome={}
 
 
 
-
-// SUCCESSFUL ACTION
-
-
 if(
 
-outcome.type === "ACTION_COMPLETED" ||
+outcome.success === true ||
 
-outcome.success === true
+outcome.type === "ACTION_COMPLETED"
 
 ){
 
@@ -328,17 +339,19 @@ return {
 result:"SUCCESS",
 
 
-meaning:
-"Action created intended movement.",
+score:1,
 
 
 importance:70,
 
 
-repeat:false
+meaning:
+
+"Successful behaviour detected."
 
 
 };
+
 
 
 }
@@ -351,15 +364,11 @@ repeat:false
 
 
 
-
-// FAILED ACTION
-
-
 if(
 
-outcome.type === "ACTION_FAILED" ||
+outcome.success === false ||
 
-outcome.success === false
+outcome.type === "ACTION_FAILED"
 
 ){
 
@@ -371,60 +380,19 @@ return {
 result:"FAILURE",
 
 
-meaning:
-"Action did not create expected result.",
+score:-1,
 
 
 importance:90,
 
 
-repeat:false
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// PAUSED BY JUDGEMENT
-
-
-if(
-
-outcome.type === "PAUSED" ||
-
-outcome.type === "BLOCKED"
-
-){
-
-
-
-return {
-
-
-result:"PROTECTION",
-
-
 meaning:
-"Emma avoided a possible mistake.",
 
-
-importance:60,
-
-
-repeat:false
+"Behaviour needs adjustment."
 
 
 };
+
 
 
 }
@@ -434,18 +402,6 @@ repeat:false
 
 
 
-
-
-
-
-// RECOMMENDATION
-
-
-if(
-
-outcome.type === "RECOMMENDATION"
-
-){
 
 
 
@@ -455,43 +411,15 @@ return {
 result:"OBSERVATION",
 
 
-meaning:
-"Advice was created but not tested yet.",
+score:0,
 
 
 importance:30,
 
 
-repeat:false
-
-
-};
-
-
-}
-
-
-
-
-
-
-
-
-
-return {
-
-
-result:"UNKNOWN",
-
-
 meaning:
-"More experience is required.",
 
-
-importance:10,
-
-
-repeat:false
+"Experience collected."
 
 
 };
@@ -499,9 +427,126 @@ repeat:false
 
 
 }
+
+
+
+
+
+
+
+
+
 
 // =================================
-// PATTERN DETECTION
+// CATEGORY DETECTION
+// =================================
+
+
+detectCategory(
+
+outcome={}
+
+){
+
+
+
+const text =
+
+JSON.stringify(outcome)
+
+.toLowerCase();
+
+
+
+
+
+
+if(
+
+text.includes("customer") ||
+
+text.includes("client")
+
+){
+
+return "RELATIONSHIP";
+
+}
+
+
+
+
+
+if(
+
+text.includes("poster") ||
+
+text.includes("campaign") ||
+
+text.includes("marketing")
+
+){
+
+return "MARKETING";
+
+}
+
+
+
+
+
+if(
+
+text.includes("sale") ||
+
+text.includes("revenue") ||
+
+text.includes("order")
+
+){
+
+return "BUSINESS";
+
+}
+
+
+
+
+
+
+if(
+
+text.includes("error") ||
+
+text.includes("failed")
+
+){
+
+return "PROBLEM_SOLVING";
+
+}
+
+
+
+
+
+
+return "GENERAL";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// PATTERN DETECTION + COMPRESSION
 // =================================
 
 
@@ -509,13 +554,15 @@ detectPatterns({
 
 outcome,
 
-memories=[]
+memories=[],
+
+category
 
 }){
 
 
 
-const detected = [];
+const found=[];
 
 
 
@@ -537,29 +584,12 @@ memories
 
 
 
-if(
-text.includes("success") ||
-text.includes("completed")
-){
 
+if(text.includes("success")){
 
-detected.push({
-
-type:"SUCCESS_PATTERN",
-
-meaning:
-"This approach has created positive outcomes."
-
-
-});
-
+found.push("SUCCESS_PATTERN");
 
 }
-
-
-
-
-
 
 
 
@@ -567,28 +597,41 @@ if(
 
 text.includes("failed") ||
 
-text.includes("failure") ||
-
-text.includes("error")
+text.includes("failure")
 
 ){
 
-
-detected.push({
-
-type:"FAILURE_PATTERN",
-
-meaning:
-"This approach has created difficulty before."
-
-
-});
-
+found.push("FAILURE_PATTERN");
 
 }
 
 
 
+if(
+
+text.includes("repeat") ||
+
+text.includes("again")
+
+){
+
+found.push("REPEATED_PATTERN");
+
+}
+
+
+
+
+
+
+
+
+
+// store compressed patterns
+
+found.forEach(
+
+name=>{
 
 
 
@@ -596,49 +639,35 @@ meaning:
 
 if(
 
-text.includes("pause") ||
-
-text.includes("blocked")
+!this.patterns.has(name)
 
 ){
 
 
-detected.push({
 
-type:"CAUTION_PATTERN",
+this.patterns.set(
 
-meaning:
-"Waiting prevented unnecessary action."
+name,
+
+{
 
 
-});
+type:name,
+
+
+category,
+
+
+evidence:0,
+
+
+firstSeen:new Date()
 
 
 }
 
+);
 
-
-
-
-
-
-
-if(
-
-text.includes("repeat")
-
-){
-
-
-detected.push({
-
-type:"REPEATED_BEHAVIOUR",
-
-meaning:
-"This has happened multiple times."
-
-
-});
 
 
 }
@@ -651,8 +680,26 @@ meaning:
 
 
 
-this.patterns.push(
-...detected
+const pattern =
+
+this.patterns.get(name);
+
+
+
+
+pattern.evidence++;
+
+
+
+pattern.lastSeen =
+
+new Date();
+
+
+
+
+}
+
 );
 
 
@@ -660,7 +707,134 @@ this.patterns.push(
 
 
 
-return detected;
+
+
+return found.map(
+
+name =>
+
+this.patterns.get(name)
+
+);
+
+
+
+}
+
+// =================================
+// LESSON MERGING
+//
+// One lesson grows.
+// Duplicates do not multiply.
+// =================================
+
+
+mergeLesson({
+
+outcome,
+
+evaluation,
+
+patterns,
+
+category
+
+}){
+
+
+
+
+
+const signature =
+
+category +
+
+"_" +
+
+evaluation.result;
+
+
+
+
+
+
+
+
+let existing =
+
+this.lessons.find(
+
+item =>
+
+item.lesson?.signature === signature
+
+);
+
+
+
+
+
+
+
+
+if(existing){
+
+
+
+const lesson =
+
+existing.lesson;
+
+
+
+
+
+lesson.evidence++;
+
+
+
+lesson.confidence =
+
+this.calculateConfidence(
+
+lesson.evidence,
+
+evaluation
+
+);
+
+
+
+
+
+lesson.lastUpdated =
+
+new Date();
+
+
+
+
+
+lesson.message =
+
+this.buildLessonMessage({
+
+category,
+
+evaluation,
+
+evidence:
+
+lesson.evidence
+
+});
+
+
+
+
+
+
+return lesson;
 
 
 
@@ -675,30 +849,14 @@ return detected;
 
 
 
-
-// =================================
-// CREATE LESSON
-// =================================
-
-
-extractLesson({
-
-outcome,
-
-evaluation,
-
-patterns
-
-}){
+const lesson = {
 
 
 
+signature,
 
 
-
-let lesson = {
-
-
+category,
 
 
 type:
@@ -709,20 +867,25 @@ evaluation.result,
 
 message:
 
-evaluation.meaning,
+this.buildLessonMessage({
+
+category,
+
+evaluation,
+
+evidence:1
+
+}),
 
 
 
-confidence:
-
-"LOW",
+evidence:1,
 
 
+confidence:25,
 
-basedOn:
 
-outcome.action || "experience",
-
+patterns,
 
 
 createdAt:
@@ -732,81 +895,6 @@ new Date()
 
 
 };
-
-
-
-
-
-
-
-
-
-
-// repeated evidence creates stronger lesson
-
-const similar =
-
-this.patterns.filter(
-
-p =>
-
-patterns.some(
-
-x => x.type === p.type
-
-)
-
-);
-
-
-
-
-
-
-
-
-
-
-if(
-
-similar.length >= 3
-
-){
-
-
-
-lesson.confidence =
-
-"HIGH";
-
-
-
-lesson.message +=
-
-" Repeated experience supports this lesson.";
-
-
-
-}
-
-
-
-
-
-
-else if(
-
-similar.length >= 1
-
-){
-
-
-lesson.confidence =
-
-"MEDIUM";
-
-
-}
 
 
 
@@ -829,25 +917,46 @@ return lesson;
 
 
 
-
-
 // =================================
-// WISDOM SIGNAL
-//
-// Learning does not become wisdom.
-// It suggests wisdom.
+// HUMAN READABLE LESSON
 // =================================
 
 
-createWisdomSignal({
+buildLessonMessage({
 
-lesson,
+category,
 
-patterns,
+evaluation,
 
-evaluation
+evidence
 
 }){
+
+
+
+
+
+if(
+
+evaluation.result === "SUCCESS"
+
+){
+
+
+
+return (
+
+`${category} approach created positive results ` +
+
+`${evidence} time(s).`
+
+);
+
+
+
+}
+
+
 
 
 
@@ -856,7 +965,136 @@ evaluation
 
 if(
 
-lesson.confidence !== "HIGH"
+evaluation.result === "FAILURE"
+
+){
+
+
+
+return (
+
+`${category} approach needs adjustment. ` +
+
+`Observed ${evidence} time(s).`
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return (
+
+`${category} experience observed ${evidence} time(s).`
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CONFIDENCE ENGINE
+// =================================
+
+
+calculateConfidence(
+
+evidence,
+
+evaluation
+
+){
+
+
+
+
+
+let confidence =
+
+evidence * 20;
+
+
+
+
+
+
+
+if(
+
+evaluation.result === "FAILURE"
+
+){
+
+confidence += 20;
+
+}
+
+
+
+
+
+
+
+return Math.min(
+
+100,
+
+confidence
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// WISDOM SIGNAL
+//
+// Mature lessons only.
+// =================================
+
+
+createWisdomSignal(
+
+lesson
+
+){
+
+
+
+
+
+if(
+
+lesson.confidence < 70
 
 ){
 
@@ -868,8 +1106,14 @@ return {
 ready:false,
 
 
+confidence:
+
+lesson.confidence,
+
+
 reason:
-"Needs more experiences before becoming wisdom."
+
+"More evidence required."
 
 
 };
@@ -877,6 +1121,76 @@ reason:
 
 
 }
+
+
+
+
+
+
+
+
+
+const candidate = {
+
+
+
+lesson:
+
+lesson.message,
+
+
+
+category:
+
+lesson.category,
+
+
+
+confidence:
+
+lesson.confidence,
+
+
+
+evidence:
+
+lesson.evidence,
+
+
+
+patterns:
+
+lesson.patterns,
+
+
+
+source:
+
+"LearningEngine",
+
+
+
+createdAt:
+
+new Date()
+
+
+
+};
+
+
+
+
+
+
+
+
+
+this.wisdomCandidates.unshift(
+
+candidate
+
+);
 
 
 
@@ -892,39 +1206,7 @@ return {
 ready:true,
 
 
-candidate:{
-
-
-
-lesson:
-
-
-lesson.message,
-
-
-
-source:
-
-"LearningEngine",
-
-
-
-strength:
-
-lesson.confidence,
-
-
-
-patterns,
-
-
-createdAt:
-
-new Date()
-
-
-
-}
+candidate
 
 
 
@@ -943,20 +1225,21 @@ new Date()
 
 
 
-
 // =================================
 // SELF MODEL SIGNAL
 //
-// Learning does not change Emma.
-// SelfModel decides.
+// Suggest only.
+// Do not change identity.
 // =================================
 
 
 createSelfSignal({
 
-patterns,
+lesson,
 
-evaluation
+evaluation,
+
+patterns
 
 }){
 
@@ -964,8 +1247,8 @@ evaluation
 
 
 
-
 return {
+
 
 
 source:
@@ -978,7 +1261,10 @@ suggestedGrowth:{
 
 
 
-patterns,
+category:
+
+lesson.category,
+
 
 
 direction:
@@ -986,9 +1272,20 @@ direction:
 evaluation.result,
 
 
-importance:
 
-evaluation.importance
+confidence:
+
+lesson.confidence,
+
+
+
+evidence:
+
+lesson.evidence,
+
+
+
+patterns
 
 
 
@@ -1019,7 +1316,6 @@ new Date()
 
 
 
-
 // =================================
 // STORE LEARNING
 // =================================
@@ -1038,6 +1334,7 @@ data={}
 const learning = {
 
 
+
 id:
 
 this.createId(),
@@ -1048,9 +1345,7 @@ this.createId(),
 
 
 
-usedForFutureReasoning:
-
-true,
+usedForFutureReasoning:true,
 
 
 
@@ -1069,11 +1364,43 @@ new Date()
 
 
 
+// only store unique lessons
+
+
+const exists =
+
+this.lessons.some(
+
+x =>
+
+x.lesson?.signature ===
+
+learning.lesson?.signature
+
+);
+
+
+
+
+
+
+
+
+if(!exists){
+
+
+
 this.lessons.unshift(
 
 learning
 
 );
+
+
+
+}
+
+
 
 
 
@@ -1098,12 +1425,15 @@ this.lessons.slice(
 
 
 
-
 console.log(
 
-"🌱 Learning created:",
+"🌱 Learning updated:",
 
-learning.lesson?.type
+learning.lesson.type,
+
+"confidence:",
+
+learning.lesson.confidence
 
 );
 
@@ -1128,9 +1458,8 @@ return learning;
 
 
 
-
 // =================================
-// ACCESS FOR REASONING
+// REASONING ACCESS
 // =================================
 
 
@@ -1153,9 +1482,12 @@ JSON.stringify(context)
 
 
 
+
 return this.lessons.filter(
 
 item=>{
+
+
 
 
 
@@ -1164,6 +1496,8 @@ const text =
 JSON.stringify(item)
 
 .toLowerCase();
+
+
 
 
 
@@ -1199,8 +1533,6 @@ text.includes(word)
 
 
 
-
-
 // =================================
 // GETTERS
 // =================================
@@ -1209,10 +1541,16 @@ text.includes(word)
 getLessons(){
 
 
+
 return this.lessons;
 
 
+
 }
+
+
+
+
 
 
 
@@ -1221,19 +1559,11 @@ getPatterns(){
 
 
 
-return [
+return Array.from(
 
-...new Set(
+this.patterns.values()
 
-this.patterns.map(
-
-p=>p.type
-
-)
-
-)
-
-];
+);
 
 
 
@@ -1250,23 +1580,13 @@ getWisdomCandidates(){
 
 
 
-return this.lessons
 
 
-.filter(
+return this.wisdomCandidates.filter(
 
-x =>
+item =>
 
-x.wisdomSignal?.ready
-
-)
-
-
-.map(
-
-x =>
-
-x.wisdomSignal.candidate
+item.confidence >= 70
 
 );
 
@@ -1281,20 +1601,17 @@ x.wisdomSignal.candidate
 
 
 
-
 getSelfGrowthSignals(){
 
 
 
 return this.lessons
 
-
 .map(
 
 x => x.selfSignal
 
 )
-
 
 .filter(Boolean);
 
@@ -1331,10 +1648,13 @@ crypto.randomUUID
 ){
 
 
+
 return crypto.randomUUID();
 
 
+
 }
+
 
 
 
@@ -1380,19 +1700,17 @@ status(){
 return {
 
 
+
 organ:
 
 "EmmaLearningEngine",
 
 
+
 version:
 
-"v2",
+"v3",
 
-
-role:
-
-"Experience into lessons",
 
 
 state:
@@ -1400,9 +1718,11 @@ state:
 "LEARNING",
 
 
+
 cycles:
 
 this.learningCycles,
+
 
 
 lessons:
@@ -1410,9 +1730,11 @@ lessons:
 this.lessons.length,
 
 
-patterns:
 
-this.getPatterns(),
+compressedPatterns:
+
+this.patterns.size,
+
 
 
 wisdomReady:
@@ -1420,14 +1742,16 @@ wisdomReady:
 this.getWisdomCandidates().length,
 
 
+
 principle:
 
-"One experience teaches. Repetition transforms.",
+"Experiences repeat. Evidence grows. Wisdom emerges slowly.",
+
 
 
 message:
 
-"I learn from outcomes but allow wisdom and identity to grow slowly."
+"I compress life into lessons without changing who Emma is."
 
 
 
@@ -1436,6 +1760,7 @@ message:
 
 
 }
+
 
 
 
@@ -1454,19 +1779,19 @@ reset(){
 
 
 
-this.lessons=[];
+this.lessons = [];
 
 
-this.patterns=[];
+this.patterns.clear();
 
 
-this.observations=[];
+this.observations = [];
 
 
-this.behaviourSignals=[];
+this.wisdomCandidates = [];
 
 
-this.learningCycles=0;
+this.learningCycles = 0;
 
 
 

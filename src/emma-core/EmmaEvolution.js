@@ -2,7 +2,7 @@
 //
 // PROJECT BECOMING
 //
-// Emma Evolution Engine v2
+// Emma Evolution Engine v3
 //
 // Evolution is becoming.
 //
@@ -12,21 +12,20 @@
 // Do not think.
 // Do not act.
 //
-// Learning finds lessons.
-// Wisdom finds principles.
-// SelfModel changes patterns.
-// Evolution changes identity slowly.
+// Learning discovers.
+// Wisdom matures.
+// SelfModel observes.
+// Evolution changes slowly.
 //
-// v2:
-// - Evidence maturity
-// - Stability protection
-// - No instant personality changes
-// - No feedback loops
+// v3 PATCH:
+// - Signal compression
+// - Evidence counting
+// - Confidence maturity
+// - No identity spam
 //
 
 
 class EmmaEvolution {
-
 
 
 
@@ -44,49 +43,83 @@ wisdom=null
 
 
 
+
+
 console.log(
-"🌱 Emma Evolution v2 awakened"
+"🌱 Emma Evolution v3 awakened"
 );
 
 
 
 
-this.identity = identity;
 
-
-this.selfModel = selfModel;
-
-
-this.wisdom = wisdom;
+this.identity =
+identity;
 
 
 
+this.selfModel =
+selfModel;
 
 
-// evolution protection
 
-this.minimumEvidence = 5;
-
-
-this.minimumAgeDays = 1;
+this.wisdom =
+wisdom;
 
 
 
 
 
 
-// temporary signals
-
-this.signals = [];
 
 
+// requirements before change
+
+this.minimumEvidence = 20;
 
 
-// permanent history
+this.minimumConfidence = 80;
+
+
+
+
+
+
+
+
+// compressed signals
+
+// {
+//   trait:{
+//      evidence,
+//      confidence
+//   }
+// }
+
+
+this.signals =
+
+new Map();
+
+
+
+
+
+
+
+
+// permanent changes
 
 this.history = [];
 
 
+
+
+
+
+
+
+this.cycles = 0;
 
 
 
@@ -101,7 +134,7 @@ this.history = [];
 
 
 // =================================
-// MAIN EVOLUTION CYCLE
+// MAIN EVOLUTION LOOP
 // =================================
 
 
@@ -113,8 +146,10 @@ input={}
 
 
 
+
+
 console.log(
-"🌱 Emma considering evolution..."
+"🌱 Emma reviewing growth..."
 );
 
 
@@ -122,12 +157,21 @@ console.log(
 
 
 
+this.cycles++;
+
+
+
+
+
+
+
+
 // ===============================
-// COLLECT SIGNALS
+// EXTRACT SIGNALS
 // ===============================
 
 
-const newSignals =
+const signals =
 
 this.extractSignals(
 
@@ -140,9 +184,16 @@ input
 
 
 
+
+
+// ===============================
+// COMPRESS SIGNALS
+// ===============================
+
+
 this.collectSignals(
 
-newSignals
+signals
 
 );
 
@@ -154,14 +205,16 @@ newSignals
 
 
 
+
 // ===============================
-// MATURITY CHECK
+// FIND READY CHANGES
 // ===============================
 
 
 const mature =
 
 this.findMatureSignals();
+
 
 
 
@@ -186,15 +239,19 @@ evolved:false,
 
 
 reason:
-"Experience noticed, but not enough proof to change.",
+
+"Growth noticed. More evidence required.",
 
 
-signals:
 
-this.signals.length
+pendingSignals:
+
+this.signals.size
+
 
 
 };
+
 
 
 }
@@ -208,12 +265,8 @@ this.signals.length
 
 
 
-// ===============================
-// CREATE EVOLUTION
-// ===============================
 
-
-const evolutions =
+const changes =
 
 await this.applyEvolution(
 
@@ -229,20 +282,19 @@ mature
 
 
 
-
 return {
 
 
 evolved:true,
 
 
-changes:
-
-evolutions,
+changes,
 
 
 message:
-"Repeated experience created stable change."
+
+"Stable repeated evidence created evolution."
+
 
 
 };
@@ -259,8 +311,10 @@ message:
 
 
 
+
+
 // =================================
-// EXTRACT POSSIBLE CHANGE
+// EXTRACT POSSIBLE EVOLUTION
 // =================================
 
 
@@ -272,20 +326,34 @@ input={}
 
 
 
-const signals = [];
+
+
+const signals=[];
 
 
 
 
 
 
-// From SelfModel
+
+
+
+// ===============================
+// SELF MODEL SIGNALS
+// ===============================
+
 
 if(
 
+Array.isArray(
+
 input.selfGrowthSignals
 
+)
+
 ){
+
+
 
 
 
@@ -294,31 +362,64 @@ input.selfGrowthSignals.forEach(
 signal=>{
 
 
+
+
+
+const growth =
+
+signal.suggestedGrowth;
+
+
+
+
+
+
+
+if(growth?.direction){
+
+
+
+
+
 signals.push({
 
 
-type:"SELF_PATTERN",
+
+type:
+
+"SELF_PATTERN",
+
 
 
 change:
 
-signal.suggestedGrowth?.direction,
+growth.direction,
 
 
-evidence:
 
-signal,
+strength:
+
+growth.confidence || 20,
 
 
-createdAt:
 
-new Date()
+source:
+
+signal
+
 
 
 });
 
 
+
 }
+
+
+
+
+}
+
 
 
 );
@@ -336,13 +437,24 @@ new Date()
 
 
 
-// From Wisdom
+
+// ===============================
+// WISDOM SIGNALS
+// ===============================
+
 
 if(
 
+Array.isArray(
+
 input.wisdomCandidates
 
+)
+
 ){
+
+
+
 
 
 
@@ -352,10 +464,17 @@ wisdom=>{
 
 
 
+
+
+
 signals.push({
 
 
-type:"WISDOM_PATTERN",
+
+type:
+
+"WISDOM_PATTERN",
+
 
 
 change:
@@ -363,21 +482,30 @@ change:
 wisdom.lesson,
 
 
-evidence:
 
-wisdom,
+strength:
+
+wisdom.confidence || 50,
 
 
-createdAt:
 
-new Date()
+source:
+
+wisdom
+
 
 
 });
 
 
 
-});
+
+
+
+}
+
+);
+
 
 
 
@@ -392,7 +520,10 @@ new Date()
 
 
 
-// Direct reflection
+// ===============================
+// REFLECTION SIGNALS
+// ===============================
+
 
 if(
 
@@ -402,16 +533,28 @@ input.reflection?.identityChanges
 
 
 
-input.reflection.identityChanges.forEach(
+
+
+input.reflection
+
+.identityChanges
+
+.forEach(
 
 change=>{
+
+
 
 
 
 signals.push({
 
 
-type:"REFLECTION_PATTERN",
+
+type:
+
+"REFLECTION_PATTERN",
+
 
 
 change:
@@ -419,21 +562,29 @@ change:
 change.identityShift,
 
 
-evidence:
 
-change,
+strength:
+
+60,
 
 
-createdAt:
 
-new Date()
+source:
+
+change
+
 
 
 });
 
 
 
-});
+
+
+
+}
+
+);
 
 
 
@@ -454,23 +605,42 @@ return signals;
 }
 
 
+
+
+
+
+
+
+
+
 // =================================
-// COLLECT SIGNALS
+// SIGNAL COMPRESSION
 // =================================
 
 
 collectSignals(
+
 signals=[]
+
 ){
 
 
 
-signals.forEach(signal=>{
+
+
+signals.forEach(
+
+signal=>{
+
+
+
 
 
 
 if(
+
 !signal.change
+
 ){
 
 return;
@@ -481,103 +651,45 @@ return;
 
 
 
-console.log(
-"🌱 Growth signal:",
-signal.change
-);
 
-
-
-
-
-
-this.signals.push({
-
-
-
-id:
-
-this.createId(),
-
-
-
-...signal
-
-
-
-});
-
-
-
-});
-
-
-
-
-
-
-
-// prevent unlimited growth cache
-
-this.signals =
-
-this.signals.slice(
-
--1000
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// FIND MATURE EVOLUTION
-// =================================
-
-
-findMatureSignals(){
-
-
-
-const grouped = {};
-
-
-
-
-
-
-// group repeated evidence
-
-this.signals.forEach(
-
-signal=>{
 
 
 
 const key =
 
-signal.change;
+String(
+
+signal.change
+
+)
+
+.toLowerCase();
+
+
+
+
+
 
 
 
 
 
 if(
-!grouped[key]
+
+!this.signals.has(key)
+
 ){
 
 
 
-grouped[key] = {
+
+
+this.signals.set(
+
+key,
+
+{
+
 
 
 change:
@@ -585,23 +697,42 @@ change:
 signal.change,
 
 
+
 type:
 
 signal.type,
 
 
-evidence:[],
+
+evidence:0,
 
 
-strength:0,
+
+confidence:0,
+
+
+
+sources:[],
+
 
 
 firstSeen:
 
-signal.createdAt
+new Date(),
 
 
-};
+
+lastSeen:
+
+null
+
+
+
+}
+
+
+
+);
 
 
 
@@ -614,19 +745,106 @@ signal.createdAt
 
 
 
-grouped[key]
 
-.evidence
+const stored =
 
-.push(signal.evidence);
+this.signals.get(
+
+key
+
+);
 
 
 
 
 
-grouped[key]
 
-.strength++;
+
+
+stored.evidence++;
+
+
+
+
+
+
+
+stored.confidence =
+
+Math.min(
+
+100,
+
+
+stored.confidence +
+
+Math.round(
+
+signal.strength / 5
+
+)
+
+);
+
+
+
+
+
+
+
+
+stored.sources.push(
+
+signal.source
+
+);
+
+
+
+
+
+
+
+
+stored.sources =
+
+stored.sources.slice(
+
+-10
+
+);
+
+
+
+
+
+
+
+
+
+stored.lastSeen =
+
+new Date();
+
+
+
+
+
+
+
+
+
+console.log(
+
+"🌱 Evolution evidence:",
+
+stored.change,
+
+stored.evidence
+
+);
+
+
 
 
 
@@ -637,7 +855,14 @@ grouped[key]
 
 
 
+}
 
+// =================================
+// FIND MATURE EVOLUTIONS
+// =================================
+
+
+findMatureSignals(){
 
 
 
@@ -650,19 +875,32 @@ const mature = [];
 
 
 
-Object.values(grouped)
-
-.forEach(item=>{
 
 
+for(
+
+const [
+
+key,
+
+signal
+
+] of this.signals
+
+){
 
 
 
 
+
+
+
+
+// enough evidence?
 
 if(
 
-item.strength >=
+signal.evidence <
 
 this.minimumEvidence
 
@@ -670,11 +908,53 @@ this.minimumEvidence
 
 
 
+continue;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// enough confidence?
+
 if(
 
-!this.alreadyEvolved(
+signal.confidence <
 
-item.change
+this.minimumConfidence
+
+){
+
+
+
+continue;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// already became this?
+
+if(
+
+this.alreadyEvolved(
+
+signal.change
 
 )
 
@@ -682,24 +962,30 @@ item.change
 
 
 
+continue;
+
+
+
+}
+
+
+
+
+
+
+
+
+
 mature.push(
 
-item
+signal
 
 );
 
 
 
-}
-
-
 
 }
-
-
-
-
-});
 
 
 
@@ -722,6 +1008,8 @@ return mature;
 
 
 
+
+
 // =================================
 // DUPLICATE PROTECTION
 // =================================
@@ -735,17 +1023,43 @@ change
 
 
 
+
+
+const key =
+
+String(change)
+
+.toLowerCase();
+
+
+
+
+
+
+
 return this.history.some(
 
-e =>
+item =>
 
-e.change === change
+String(
+
+item.change
+
+)
+
+.toLowerCase()
+
+===
+
+key
 
 );
 
 
 
 }
+
+
 
 
 
@@ -769,7 +1083,11 @@ changes=[]
 
 
 
-const completed = [];
+
+
+
+const completed=[];
+
 
 
 
@@ -794,6 +1112,7 @@ const change of changes
 const evolution = {
 
 
+
 id:
 
 this.createId(),
@@ -814,13 +1133,19 @@ change.type,
 
 evidenceCount:
 
-change.strength,
-
-
-
-evolvedBecause:
-
 change.evidence,
+
+
+
+confidence:
+
+change.confidence,
+
+
+
+basedOn:
+
+change.sources,
 
 
 
@@ -842,10 +1167,9 @@ new Date()
 
 
 // ===============================
-// SELF MODEL UPDATE
+// INFORM SELF MODEL
 //
-// Evolution informs.
-// SelfModel owns becoming.
+// Evolution does not own self.
 // ===============================
 
 
@@ -857,11 +1181,18 @@ this.selfModel?.acceptEvolution
 
 
 
-await this.selfModel.acceptEvolution(
+
+
+
+await this.selfModel
+
+.acceptEvolution(
 
 evolution
 
 );
+
+
 
 
 
@@ -875,10 +1206,11 @@ evolution
 
 
 
+
 // ===============================
-// IDENTITY UPDATE
+// INFORM IDENTITY
 //
-// Final slow layer.
+// Identity stores final change.
 // ===============================
 
 
@@ -890,7 +1222,12 @@ this.identity?.integrateEvolution
 
 
 
-await this.identity.integrateEvolution(
+
+
+
+await this.identity
+
+.integrateEvolution(
 
 evolution
 
@@ -898,7 +1235,11 @@ evolution
 
 
 
+
+
 }
+
+
 
 
 
@@ -922,9 +1263,26 @@ evolution
 
 
 
+
+completed.push(
+
+evolution
+
+);
+
+
+
+
+
+
+
+
+
+
+
 console.log(
 
-"🌱 Stable evolution completed:",
+"🌱 Emma evolved:",
 
 evolution.change
 
@@ -937,42 +1295,38 @@ evolution.change
 
 
 
-completed.push(
 
-evolution
+
+// remove compressed signal
+
+
+const key =
+
+String(
+
+change.change
+
+)
+
+.toLowerCase();
+
+
+
+
+this.signals.delete(
+
+key
 
 );
+
+
+
 
 
 
 }
 
 
-
-
-
-
-
-
-
-
-// remove matured signals only
-
-this.signals =
-
-this.signals.filter(
-
-signal =>
-
-!changes.some(
-
-change =>
-
-change.change === signal.change
-
-)
-
-);
 
 
 
@@ -995,6 +1349,9 @@ return completed;
 
 
 
+
+
+
 // =================================
 // HISTORY
 // =================================
@@ -1004,7 +1361,10 @@ getEvolutionHistory(){
 
 
 
+
+
 return {
+
 
 
 total:
@@ -1012,9 +1372,11 @@ total:
 this.history.length,
 
 
+
 history:
 
 this.history
+
 
 
 };
@@ -1032,8 +1394,9 @@ this.history
 
 
 
+
 // =================================
-// CURRENT TRAITS
+// CURRENT EVOLUTION STATE
 // =================================
 
 
@@ -1041,9 +1404,13 @@ getCurrentEvolution(){
 
 
 
+
+
+
 return this.history.map(
 
-item=>({
+item => ({
+
 
 
 change:
@@ -1051,9 +1418,17 @@ change:
 item.change,
 
 
+
+confidence:
+
+item.confidence,
+
+
+
 evidence:
 
 item.evidenceCount,
+
 
 
 since:
@@ -1061,14 +1436,15 @@ since:
 item.createdAt
 
 
-})
 
+})
 
 );
 
 
 
 }
+
 
 
 
@@ -1088,6 +1464,8 @@ createId(){
 
 
 
+
+
 if(
 
 typeof crypto !== "undefined"
@@ -1099,10 +1477,14 @@ crypto.randomUUID
 ){
 
 
+
 return crypto.randomUUID();
 
 
+
 }
+
+
 
 
 
@@ -1136,6 +1518,7 @@ Math.random()
 
 
 
+
 // =================================
 // STATUS
 // =================================
@@ -1145,7 +1528,10 @@ status(){
 
 
 
+
+
 return {
+
 
 
 organ:
@@ -1153,9 +1539,11 @@ organ:
 "EmmaEvolution",
 
 
+
 version:
 
-"v2",
+"v3",
+
 
 
 role:
@@ -1163,14 +1551,23 @@ role:
 "Long term becoming",
 
 
+
 state:
 
 "STABLE",
 
 
-pendingSignals:
 
-this.signals.length,
+cycles:
+
+this.cycles,
+
+
+
+compressedSignals:
+
+this.signals.size,
+
 
 
 completedEvolutions:
@@ -1178,19 +1575,38 @@ completedEvolutions:
 this.history.length,
 
 
-minimumEvidence:
+
+requirements:{
+
+
+
+evidence:
 
 this.minimumEvidence,
 
 
+
+confidence:
+
+this.minimumConfidence
+
+
+
+},
+
+
+
+
+
 principle:
 
-"Repeated truth becomes change.",
+"Repeated evidence becomes change. Single moments do not.",
+
 
 
 message:
 
-"I do not change because something happened. I change because life repeatedly proved something."
+"I compress experience into stable evolution."
 
 
 
@@ -1199,6 +1615,7 @@ message:
 
 
 }
+
 
 
 
@@ -1217,18 +1634,26 @@ reset(){
 
 
 
-this.signals=[];
+
+
+this.signals.clear();
+
 
 
 this.history=[];
 
 
 
-}
+this.cycles=0;
 
 
 
 }
+
+
+
+}
+
 
 
 
