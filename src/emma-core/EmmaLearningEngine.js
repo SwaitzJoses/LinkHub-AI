@@ -1176,4 +1176,4 @@ this.confidence=50;
 
 
 
-export default new EmmaLearningEngine();
+export default EmmaLearningEngine;

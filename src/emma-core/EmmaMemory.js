@@ -1,17 +1,24 @@
 // EmmaMemory.js
-// Emma's long-term intelligence system
+//
+// Emma's Long Term Experience Memory
+//
+// PROJECT BECOMING
 //
 // PURPOSE:
-// Store experiences forever.
 //
-// RULE:
+// Store experiences forever.
+// Retrieve meaningfully.
+// Help Emma become wiser.
+//
+// RULES:
 //
 // Memory remembers.
 // Reasoning thinks.
+// Wisdom understands.
 // Judgement decides.
 //
 // Connectors stay dumb.
-// Emma owns identity.
+// Emma stays smart.
 
 
 import { EmmaDB }
@@ -26,32 +33,42 @@ from "./EmmaIdentityMemory";
 
 
 
-
 class EmmaMemory {
 
 
 
-// ===============================
+// =================================
 // WAKE MEMORY
-// ===============================
+// =================================
 
 
 constructor(){
 
 
-
-this.localMemories =
-[];
+this.localMemories = [];
 
 
 
+this.identityMemory =
+new EmmaIdentityMemory();
 
-// Default owner for local Emma
 
-this.defaultOwner =
-{
-userId:"owner",
-businessId:null
+
+
+this.defaultOwner = {
+
+
+userId:
+
+"owner",
+
+
+
+businessId:
+
+null
+
+
 };
 
 
@@ -64,6 +81,44 @@ console.log(
 
 
 }
+
+
+
+
+
+
+
+
+
+
+// =================================
+// PROJECT BECOMING ENTRY POINT
+// =================================
+
+
+async store(
+experience={}
+){
+
+
+
+console.log(
+"🧠 Emma accepting experience"
+);
+
+
+
+
+return await this.remember(
+
+experience
+
+);
+
+
+
+}
+
 
 
 
@@ -86,6 +141,7 @@ experience={}
 
 const userId =
 
+
 experience.userId ||
 
 experience.ownerId ||
@@ -99,7 +155,9 @@ this.defaultOwner.userId;
 
 
 
+
 const businessId =
+
 
 experience.businessId ||
 
@@ -110,17 +168,23 @@ null;
 
 
 
+
 return {
+
 
 userId,
 
+
 businessId,
+
 
 ownerId:
 
 businessId ||
 
 userId
+
+
 
 };
 
@@ -136,9 +200,8 @@ userId
 
 
 
-
 // =================================
-// STORE EXPERIENCE
+// STORE EXPERIENCE FOREVER
 // =================================
 
 
@@ -148,51 +211,12 @@ experience={}
 
 
 
-
-
-console.log(
-
-"💾 Emma storing experience:",
-
-experience
-
-);
-
-
-
-
-
-
-
-// ===============================
-// WHO OWNS MEMORY?
-// ===============================
-
-
-const owner =
-
-this.resolveOwner(
-
-experience
-
-);
-
-
-
-
-
-if(
-
-!owner.ownerId
-
-){
+if(!experience){
 
 
 
 console.warn(
-
-"⚠️ Memory rejected: no owner"
-
+"⚠️ Empty memory ignored"
 );
 
 
@@ -208,12 +232,28 @@ return null;
 
 
 
+console.log(
+"💾 Emma storing experience:",
+experience
+);
 
 
 
-// ===============================
-// CREATE KNOWLEDGE
-// ===============================
+
+
+
+const owner =
+
+this.resolveOwner(
+
+experience
+
+);
+
+
+
+
+
 
 
 const knowledge =
@@ -232,15 +272,11 @@ experience
 
 
 
-// ===============================
-// WHO WAS INVOLVED?
-// ===============================
+// PERSON MEMORY
 
 
 let personMemory =
 null;
-
-
 
 
 
@@ -250,15 +286,11 @@ const person =
 
 experience.identity ||
 
-
 experience.person ||
-
 
 experience.relationshipLearning?.person ||
 
-
 experience.signal?.person ||
-
 
 null;
 
@@ -269,34 +301,22 @@ null;
 
 
 
-if(
-
-person
-
-){
-
-
+if(person){
 
 
 
 personMemory =
 
-EmmaIdentityMemory.remember(
 
+await this.identityMemory.remember(
 
 person,
 
-
 {
-
 
 event:
 
-experience.eventType ||
-
-
 experience.type,
-
 
 
 lesson:
@@ -304,27 +324,11 @@ lesson:
 knowledge.lesson,
 
 
-
 date:
 
 new Date()
 
-
 }
-
-
-);
-
-
-
-
-
-
-console.log(
-
-"🧑 Linked person memory:",
-
-personMemory?.name
 
 );
 
@@ -341,13 +345,20 @@ personMemory?.name
 
 
 // ===============================
-// MEMORY OBJECT
+// CREATE MEMORY
 // ===============================
 
 
-const memory =
-{
+const memory = {
 
+
+
+id:
+
+
+crypto.randomUUID?.() ||
+
+Date.now(),
 
 
 
@@ -357,22 +368,14 @@ ownerId:
 owner.ownerId,
 
 
-
-
 userId:
 
 owner.userId,
 
 
-
-
 businessId:
 
 owner.businessId,
-
-
-
-
 
 
 
@@ -386,19 +389,8 @@ knowledge.type,
 
 
 
+memory:{
 
-
-memory:
-{
-
-
-
-
-
-
-
-
-// WHO
 
 
 person:
@@ -408,26 +400,13 @@ personMemory,
 
 
 
-
-
-
-
-
-// WHAT
-
-
 situation:
-
-
 
 experience.situation ||
 
-
 experience.problem ||
 
-
 experience.type ||
-
 
 "UNKNOWN_EVENT",
 
@@ -436,18 +415,11 @@ experience.type ||
 
 
 
-
-
-
 eventType:
-
-
-
-experience.eventType ||
-
 
 experience.type ||
 
+experience.eventType ||
 
 null,
 
@@ -456,29 +428,11 @@ null,
 
 
 
-
-
-
-// CONTEXT
 
 
 context:
 
-
-
-experience.originalObservation ||
-
-
-experience.context ||
-
-
-experience.signal ||
-
-
-experience ||
-
-
-null,
+experience,
 
 
 
@@ -486,68 +440,21 @@ null,
 
 
 
-
-
-// ACTION
-
-
-attemptedAction:
-
-
-
-experience.attemptedAction ||
-
-
-experience.action ||
-
-
-"NO_ACTION",
-
-
-
-
-
-
-
-
-
-// RESULT
-
-
-outcome:
-{
-
-
-
-result:
-
-
-
-experience.result ||
-
-
-knowledge.type,
-
-
-
-
-
-metrics:
-
-
-
-experience.metrics || {},
-
-
+outcome:{
 
 
 
 success:
 
+knowledge.success,
 
 
-knowledge.success
 
+result:
+
+experience.outcome ||
+
+knowledge.type
 
 
 
@@ -560,47 +467,28 @@ knowledge.success
 
 
 
-
-
-// LEARNING
-
-
 lesson:
-
-
 
 knowledge.lesson,
 
 
 
 
-
-
 futureRule:
-
-
 
 knowledge.futureRule,
 
 
 
 
-
-
 patterns:
-
-
 
 knowledge.patterns,
 
 
 
 
-
-
 tags:
-
-
 
 knowledge.tags,
 
@@ -608,68 +496,13 @@ knowledge.tags,
 
 
 
-
-
-
-
-// OWNER LEARNING
-
-
-identity:
-
-
-
-knowledge.identityLearning,
-
-
-
-
-
-
-
-relationship:
-
-
-
-experience.relationshipLearning ||
-
-
-null,
-
-
-
-
-
-
-
-confidenceImpact:
-
-
-
-knowledge.confidenceImpact,
-
-
-
-
-
-
-
-
 createdAt:
-
-
 
 new Date()
 
 
 
-
-
-
-
-
 }
-
 
 
 
@@ -683,10 +516,7 @@ new Date()
 
 
 
-
-// ===============================
 // ACTIVE MEMORY
-// ===============================
 
 
 this.localMemories.push(
@@ -698,12 +528,8 @@ memory
 
 
 
-
-
 console.log(
-
 "🧠 Active memory stored"
-
 );
 
 
@@ -715,15 +541,10 @@ console.log(
 
 
 
-// ===============================
 // PERMANENT MEMORY
-// ===============================
 
 
 try{
-
-
-
 
 
 await EmmaDB.saveMemory(
@@ -734,33 +555,21 @@ memory
 
 
 
-
-
-
 console.log(
-
 "💾 Supabase memory saved"
-
 );
 
 
-
-
-
 }
-
-
 
 
 catch(error){
 
 
 
-
-
 console.warn(
 
-"⚠️ Supabase memory unavailable",
+"⚠️ Supabase unavailable",
 
 error.message
 
@@ -768,10 +577,7 @@ error.message
 
 
 
-
-
 }
-
 
 
 
@@ -784,6 +590,8 @@ return memory;
 
 
 }
+
+
 
 
 
@@ -809,30 +617,20 @@ let type =
 "LEARNING_EXPERIENCE";
 
 
+
 let success =
 null;
 
 
-let confidenceImpact =
-0;
 
-
-let futureRule =
-"Use this experience for future decisions";
-
-
-
-
-
-
-
-// ======================
-// SUCCESS
-// ======================
 
 
 if(
-experience.success === true
+
+experience.success === true ||
+
+experience.outcome?.success === true
+
 ){
 
 
@@ -847,32 +645,18 @@ true;
 
 
 
-confidenceImpact =
-5;
-
-
-
-futureRule =
-"Repeat this pattern in similar situations";
-
-
-
 }
 
 
 
 
 
-
-
-
-// ======================
-// FAILURE
-// ======================
-
-
 else if(
-experience.success === false
+
+experience.success === false ||
+
+experience.outcome?.success === false
+
 ){
 
 
@@ -887,33 +671,13 @@ false;
 
 
 
-confidenceImpact =
--5;
-
-
-
-futureRule =
-"Avoid repeating without changing strategy";
-
-
-
 }
 
 
 
 
 
-
-
-
-// ======================
-// OBSERVED EVENT
-// ======================
-
-
 else if(
-
-experience.eventType ||
 
 experience.type
 
@@ -926,19 +690,7 @@ type =
 
 
 
-confidenceImpact =
-2;
-
-
-
-futureRule =
-"Compare future events with this pattern";
-
-
-
 }
-
-
 
 
 
@@ -957,8 +709,6 @@ type,
 success,
 
 
-confidenceImpact,
-
 
 
 lesson:
@@ -966,7 +716,11 @@ lesson:
 
 experience.lesson ||
 
+experience.outcome?.lesson ||
+
 `${type} stored`,
+
+
 
 
 
@@ -977,7 +731,9 @@ futureRule:
 
 experience.futureBehavior ||
 
-futureRule,
+"Use this experience for future decisions",
+
+
 
 
 
@@ -994,6 +750,9 @@ experience.patternsFound ||
 
 
 
+
+
+
 tags:
 
 
@@ -1002,19 +761,6 @@ this.createTags(
 experience,
 
 type
-
-),
-
-
-
-
-
-identityLearning:
-
-
-this.extractIdentityLearning(
-
-experience
 
 )
 
@@ -1025,100 +771,6 @@ experience
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// LEARN ABOUT OWNER
-// =================================
-
-
-extractIdentityLearning(
-experience={}
-){
-
-
-
-return {
-
-
-
-goals:
-
-
-experience.identityLearning?.goals ||
-
-[],
-
-
-
-
-
-preferences:
-
-
-experience.identityLearning?.preferences ||
-
-[],
-
-
-
-
-
-workingStyle:
-
-
-experience.identityLearning?.workingStyle ||
-
-[],
-
-
-
-
-
-priorities:
-
-
-experience.identityLearning?.priorities ||
-
-[],
-
-
-
-
-
-observations:[
-
-
-"Emma gained more understanding"
-
-
-]
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
 
 
 // =================================
@@ -1132,11 +784,533 @@ context={}
 
 
 
+console.log(
+"🔎 Emma searching memories..."
+);
+
+
+
+
+
+const memories =
+
+await this.getAllMemories();
+
+
+
+
+
+
+
+return {
+
+
+
+previousExperiences:
+
+memories,
+
+
+
+
+
+relevantExperiences:
+
+
+this.getRelevantMemories(
+
+context,
+
+memories
+
+),
+
+
+
+
+
+
+successes:
+
+
+this.findByType(
+
+memories,
+
+"POSITIVE_EXPERIENCE"
+
+),
+
+
+
+
+
+
+failures:
+
+
+this.findByType(
+
+memories,
+
+"FAILED_EXPERIENCE"
+
+),
+
+
+
+
+
+
+patterns:
+
+
+this.extractPatterns(
+
+memories
+
+),
+
+
+
+
+
+
+rules:
+
+
+this.extractRules(
+
+memories
+
+),
+
+
+
+
+
+
+totalMemories:
+
+
+memories.length,
+
+
+
+
+
+
+lastExperience:
+
+
+memories[
+
+memories.length - 1
+
+] ||
+
+null
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// FIND RELATED MEMORIES
+//
+// PROJECT BECOMING UPGRADE
+//
+// Understand meaning,
+// not only matching words.
+// =================================
+
+
+getRelevantMemories(
+context={},
+memories=null
+){
+
+
+
+console.log(
+"🧠 Emma deep memory search started"
+);
+
+
+
+
+
+
+const memorySource =
+
+
+memories ||
+
+this.localMemories ||
+
+[];
+
+
+
+
+
+
+
+
+const contextText =
+
+
+JSON.stringify(
+
+context
+
+)
+
+.toLowerCase();
+
+
+
+
+
+
+
+
+
+const scored =
+
+
+memorySource.map(memory=>{
+
+
+
+
+
+
+const memoryText =
+
+
+JSON.stringify(
+
+memory
+
+)
+
+.toLowerCase();
+
+
+
+
+
+
+let score = 0;
+
+
+
+
+
+
+
+
+
+// WORD MATCH
+
+
+const words =
+
+
+contextText
+
+.split(/\W+/)
+
+.filter(
+
+word => word.length > 3
+
+);
+
+
+
+
+
+
+
+words.forEach(word=>{
+
+
+
+if(
+
+memoryText.includes(word)
+
+){
+
+
+score += 2;
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+// MEANING MATCH
+
+
+const meanings = [
+
+
+
+
+{
+
+
+words:[
+
+"confused",
+
+"confusion",
+
+"overwhelmed",
+
+"unclear",
+
+"lost",
+
+"complex"
+
+],
+
+
+score:30
+
+
+},
+
+
+
+
+
+
+{
+
+
+words:[
+
+"failed",
+
+"failure",
+
+"mistake",
+
+"wrong",
+
+"unsuccessful"
+
+],
+
+
+score:25
+
+
+},
+
+
+
+
+
+
+
+{
+
+
+words:[
+
+"success",
+
+"worked",
+
+"improved",
+
+"positive"
+
+],
+
+
+score:20
+
+
+}
+
+
+
+
+];
+
+
+
+
+
+
+
+
+
+meanings.forEach(group=>{
+
+
+
+
+
+
+const inContext =
+
+
+group.words.some(
+
+w => contextText.includes(w)
+
+);
+
+
+
+
+
+
+const inMemory =
+
+
+group.words.some(
+
+w => memoryText.includes(w)
+
+);
+
+
+
+
+
+
+
+if(
+
+inContext &&
+
+inMemory
+
+){
+
+
+score += group.score;
+
+
+}
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+return {
+
+
+...memory,
+
+
+_relevanceScore:
+
+score
+
+
+};
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+const results =
+
+
+scored
+
+
+.filter(
+
+m => m._relevanceScore > 0
+
+)
+
+
+.sort(
+
+(a,b)=>
+
+b._relevanceScore -
+
+a._relevanceScore
+
+)
+
+
+.slice(
+
+0,
+
+10
+
+);
+
+
+
+
+
 
 
 console.log(
 
-"🔎 Emma searching memory..."
+`🧠 Relevant memories found: ${results.length}`
 
 );
 
@@ -1145,14 +1319,33 @@ console.log(
 
 
 
+return results;
 
 
-const owner =
 
-this.resolveOwner(
+}
 
-context
 
+
+
+
+
+
+
+
+
+
+// =================================
+// GET COMPLETE LIFE EXPERIENCE
+// =================================
+
+
+async getAllMemories(){
+
+
+
+console.log(
+"📚 Emma reviewing lifetime memories"
 );
 
 
@@ -1160,10 +1353,7 @@ context
 
 
 
-
-let memories =
-[];
-
+let memories = [];
 
 
 
@@ -1179,29 +1369,38 @@ try{
 
 memories =
 
-await EmmaDB.getMemories({
 
+await EmmaDB.getMemories({
 
 
 
 userId:
 
 
-owner.userId,
-
+this.defaultOwner.userId,
 
 
 
 businessId:
 
 
-owner.businessId
-
+this.defaultOwner.businessId
 
 
 
 });
 
+
+
+
+
+
+
+console.log(
+
+`📚 Lifetime memories loaded: ${memories.length}`
+
+);
 
 
 
@@ -1220,16 +1419,16 @@ catch(error){
 
 console.warn(
 
-"⚠️ Using local memories"
+"⚠️ Lifetime memory unavailable",
+
+error.message
 
 );
 
 
 
 
-
 }
-
 
 
 
@@ -1251,17 +1450,32 @@ memories.length === 0
 
 
 
+console.log(
+"📚 Using active memories"
+);
+
+
+
+
 memories =
 
-this.localMemories.filter(
 
-m =>
-
-
-m.ownerId === owner.ownerId
+this.localMemories;
 
 
-);
+
+
+}
+
+
+
+
+
+
+
+
+return memories;
+
 
 
 
@@ -1275,474 +1489,13 @@ m.ownerId === owner.ownerId
 
 
 
-return {
-
-
-
-
-
-
-
-
-previousExperiences:
-
-
-
-memories,
-
-
-
-
-
-
-
-
-
-relevantExperiences:
-
-
-
-this.getRelevantMemories(
-
-
-context,
-
-
-memories
-
-
-),
-
-
-
-
-
-
-
-relationships:
-
-
-
-this.extractRelationships(
-
-
-memories
-
-
-),
-
-
-
-
-
-
-
-
-identity:
-
-
-
-this.extractIdentity(
-
-
-memories
-
-
-),
-
-
-
-
-
-
-
-
-successes:
-
-
-
-this.findByType(
-
-
-memories,
-
-
-"POSITIVE_EXPERIENCE"
-
-
-),
-
-
-
-
-
-
-
-
-
-failures:
-
-
-
-this.findByType(
-
-
-memories,
-
-
-"FAILED_EXPERIENCE"
-
-
-),
-
-
-
-
-
-
-
-
-rules:
-
-
-
-this.extractRules(
-
-
-memories
-
-
-),
-
-
-
-
-
-
-
-
-patterns:
-
-
-
-this.extractPatterns(
-
-
-memories
-
-
-),
-
-
-
-
-
-
-
-
-totalMemories:
-
-
-
-memories.length,
-
-
-
-
-
-
-
-
-lastExperience:
-
-
-
-memories[0] || null
-
-
-
-
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
 // =================================
-// RELATIONSHIP MEMORY
+// HELPERS
 // =================================
-
-
-extractRelationships(
-memories=[]
-){
-
-
-
-return memories
-
-
-.map(
-
-m => m.memory?.person
-
-)
-
-
-.filter(Boolean)
-
-
-.map(
-
-person => ({
-
-
-
-name:
-
-person.name,
-
-
-
-email:
-
-person.email,
-
-
-
-lastSeen:
-
-person.lastSeen,
-
-
-
-interactions:
-
-
-person.interactions?.length || 0
-
-
-
-
-})
-
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// OWNER IDENTITY SUMMARY
-// =================================
-
-
-extractIdentity(
-memories=[]
-){
-
-
-
-return {
-
-
-
-goals:
-
-
-memories.flatMap(
-
-m =>
-
-m.memory?.identity?.goals || []
-
-),
-
-
-
-
-
-preferences:
-
-
-memories.flatMap(
-
-m =>
-
-m.memory?.identity?.preferences || []
-
-),
-
-
-
-
-
-workingStyle:
-
-
-memories.flatMap(
-
-m =>
-
-m.memory?.identity?.workingStyle || []
-
-),
-
-
-
-
-
-priorities:
-
-
-memories.flatMap(
-
-m =>
-
-m.memory?.identity?.priorities || []
-
-)
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// SEARCH RELATED MEMORY
-// =================================
-
-
-getRelevantMemories(
-context,
-memories=[]
-){
-
-
-
-const search =
-
-JSON.stringify(
-
-context
-
-)
-
-.toLowerCase();
-
-
-
-
-
-
-
-return memories
-
-
-.filter(memory=>{
-
-
-
-
-
-const text =
-
-JSON.stringify(
-
-memory
-
-)
-
-.toLowerCase();
-
-
-
-
-
-
-return search
-
-
-.split(" ")
-
-
-.some(word =>
-
-
-
-word.length > 4 &&
-
-text.includes(word)
-
-
-
-);
-
-
-
-
-})
-
-
-.slice(
-
-0,
-
-10
-
-);
-
-
-
-}
-
-
-
-
-
-
-
 
 
 findByType(
-memories,
+memories=[],
 type
 ){
 
@@ -1750,16 +1503,15 @@ type
 
 return memories.filter(
 
-m =>
+memory =>
 
-m.type === type
+memory.type === type
 
 );
 
 
 
 }
-
 
 
 
@@ -1779,7 +1531,9 @@ return memories
 
 .map(
 
-m => m.memory?.futureRule
+memory =>
+
+memory.memory?.futureRule
 
 )
 
@@ -1789,8 +1543,6 @@ m => m.memory?.futureRule
 
 
 }
-
-
 
 
 
@@ -1814,11 +1566,11 @@ return [
 
 memories.flatMap(
 
+memory =>
 
-m =>
+memory.memory?.patterns ||
 
-m.memory?.patterns || []
-
+[]
 
 )
 
@@ -1840,10 +1592,8 @@ m.memory?.patterns || []
 
 
 
-
-
 createTags(
-experience,
+experience={},
 type
 ){
 
@@ -1857,11 +1607,11 @@ type,
 
 
 
-experience.eventType,
-
-
-
 experience.type,
+
+
+
+experience.eventType,
 
 
 
@@ -1877,9 +1627,9 @@ experience.situation
 
 .map(
 
-x =>
+tag =>
 
-String(x)
+String(tag)
 
 .toLowerCase()
 
@@ -1896,6 +1646,9 @@ String(x)
 
 
 
+// =================================
+// EMPTY STATE
+// =================================
 
 
 emptyMemory(){
@@ -1912,22 +1665,16 @@ previousExperiences:[],
 relevantExperiences:[],
 
 
-relationships:[],
-
-
-identity:{},
-
-
 successes:[],
 
 
 failures:[],
 
 
-rules:[],
-
-
 patterns:[],
+
+
+rules:[],
 
 
 totalMemories:0
@@ -1939,6 +1686,7 @@ totalMemories:0
 
 
 }
+
 
 
 

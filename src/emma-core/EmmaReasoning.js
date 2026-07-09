@@ -1,44 +1,79 @@
 // EmmaReasoning.js
-// Emma's personal reasoning engine
 //
-// PURPOSE:
+// Emma's reasoning engine
 //
-// Identity:
-// "Who am I?"
+// PROJECT BECOMING
 //
-// Relationship:
-// "Who am I working with?"
-//
-// Memory:
-// "What happened before?"
-//
-// Reasoning:
-// "What does this mean?"
-//
-// RULE:
 // Identity first.
 // Relationship second.
 // Memory third.
+// Wisdom fourth.
 // AI last.
 //
-// Emma never thinks like a stranger.
+// Brain thinks.
+// Wisdom guides.
+// Reasoning decides.
+//
+// RULE:
+// Reasoning does not store.
+// Reasoning decides using experience.
 
 
 import EmmaBrain from "./EmmaBrain";
-import EmmaIdentity from "./identity/EmmaIdentity";
-import EmmaRelationshipMemory from "./relationship/EmmaRelationshipMemory";
+
+import EmmaIdentity
+from "./identity/EmmaIdentity";
+
+import EmmaRelationshipMemory
+from "./relationship/EmmaRelationshipMemory";
+
+
+
 
 
 
 class EmmaReasoning {
 
 
-constructor(){
+
+
+
+constructor({
+memory=null,
+brain=null,
+wisdom=null
+} = {}){
+
 
 
 console.log(
 "💭 Emma Reasoning Engine online"
 );
+
+
+
+
+
+// connected organs
+
+this.memory =
+memory;
+
+
+
+this.wisdom =
+wisdom;
+
+
+
+
+this.brain =
+
+brain ||
+
+new EmmaBrain();
+
+
 
 
 }
@@ -56,11 +91,14 @@ console.log(
 // =================================
 
 
-async think(input, suppliedMemory=null){
+async think(
+input={}
+){
+
 
 
 console.log(
-"💭 Emma thinking with identity + relationship + memory..."
+"💭 Emma reasoning from experience..."
 );
 
 
@@ -68,60 +106,179 @@ console.log(
 
 
 
-// ===============================
-// LOAD EMMA IDENTITY
-// ===============================
 
 
-const emmaIdentity =
+
+// =================================
+// IDENTITY
+// =================================
+
+
+let emmaIdentity = {
+
+
+name:
+
+"Emma",
+
+
+
+personality:
+
+"Learning intelligence"
+
+
+
+};
+
+
+
+
+let identityPrompt =
+"Emma";
+
+
+
+
+
+
+try{
+
+
+emmaIdentity =
+
 EmmaIdentity.getIdentity();
 
 
 
-const identityPrompt =
+
+identityPrompt =
+
 EmmaIdentity.getPromptIdentity();
 
 
 
+}
+
+
+
+catch(error){
+
+
+console.warn(
+"Identity unavailable"
+);
+
+
+}
 
 
 
 
-// ===============================
-// LOAD RELATIONSHIP MEMORY
-// ===============================
 
 
-const relationshipProfile =
+
+
+
+
+
+
+// =================================
+// RELATIONSHIP MEMORY
+// =================================
+
+
+let relationshipProfile={};
+
+
+
+let relationshipContext={
+
+
+trustLevel:0,
+
+
+knownGoals:[],
+
+
+preferences:{}
+
+
+};
+
+
+
+
+
+
+
+
+try{
+
+
+
+relationshipProfile =
+
 EmmaRelationshipMemory
 .getRelationship();
 
 
 
-const relationshipContext =
+
+relationshipContext =
+
 EmmaRelationshipMemory
 .getReasoningContext();
 
 
 
+}
+
+
+
+
+catch(error){
+
+
+
+console.warn(
+"Relationship unavailable"
+);
+
+
+
+}
 
 
 
 
 
 
-const reflection =
-input.reflection ||
-input;
 
 
 
 
 
-const memory =
-suppliedMemory ||
-input.memory ||
-{};
+// =================================
+// EXPERIENCE MEMORY
+// =================================
+
+
+let memoryContext = {
+
+
+relevantExperiences:[],
+
+previousExperiences:[],
+
+lessons:[],
+
+patterns:[],
+
+rules:[]
+
+
+};
 
 
 
@@ -130,16 +287,40 @@ input.memory ||
 
 
 
-// ===============================
-// LOAD EXPERIENCE MEMORY
-// ===============================
+if(
+
+this.memory &&
+
+this.memory.recall
+
+){
+
+
+
+memoryContext =
+
+await this.memory.recall(
+
+input
+
+);
+
+
+
+}
+
+
+
+
+
+
+
 
 
 const experiences =
 
-memory.relevantExperiences ||
 
-memory.previousExperiences ||
+memoryContext.relevantExperiences ||
 
 [];
 
@@ -148,24 +329,89 @@ memory.previousExperiences ||
 
 
 
+
+
 const successes =
+
 this.findSuccess(
+
 experiences
+
 );
+
+
+
 
 
 
 const failures =
+
 this.findFailures(
+
 experiences
+
 );
+
+
+
+
 
 
 
 const lessons =
+
 this.extractLessons(
+
 experiences
+
 );
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// WISDOM CHECK
+// =================================
+
+
+let wisdom = null;
+
+
+
+
+
+
+if(
+
+this.wisdom &&
+
+this.wisdom.reflect
+
+){
+
+
+
+wisdom =
+
+await this.wisdom.reflect(
+
+input
+
+);
+
+
+
+}
+
+
+
 
 
 
@@ -173,9 +419,13 @@ experiences
 
 
 const repeatedPattern =
+
 this.detectSimilarSituation(
-reflection,
+
+input,
+
 experiences
+
 );
 
 
@@ -187,22 +437,44 @@ experiences
 
 
 console.log(
+
 "🧠 Reasoning context:",
+
 {
 
+
 emma:
+
 emmaIdentity.name,
 
+
+
 relationshipKnown:
+
 relationshipContext.trustLevel,
 
+
+
 experiences:
+
 experiences.length,
 
+
+
 lessons:
-lessons.length
+
+lessons.length,
+
+
+
+wisdom:
+
+!!wisdom
+
 
 }
+
+
 );
 
 
@@ -213,12 +485,16 @@ lessons.length
 
 
 
-// ===============================
-// AI THINKING
-// ===============================
+
+// =================================
+// ASK BRAIN
+// =================================
 
 
-let aiThought=null;
+let aiThought = null;
+
+
+
 
 
 
@@ -226,11 +502,10 @@ let aiThought=null;
 try{
 
 
+
 aiThought =
-await EmmaBrain.think({
 
-
-
+await this.brain.think({
 
 
 
@@ -241,16 +516,9 @@ identityPrompt,
 
 
 
-
-
-
-
 currentSituation:
 
-reflection,
-
-
-
+input,
 
 
 
@@ -265,7 +533,6 @@ profile:
 relationshipProfile,
 
 
-
 context:
 
 relationshipContext
@@ -278,28 +545,30 @@ relationshipContext
 
 
 
+experience:{
 
-memory:{
 
 
-total:
-experiences.length,
+memories:
 
-successes,
+experiences,
 
-failures,
+
 
 lessons,
 
 
-patterns:
 
-memory.patterns || [],
+failures,
 
 
-rules:
 
-memory.rules || []
+successes,
+
+
+
+wisdom
+
 
 
 },
@@ -311,84 +580,29 @@ memory.rules || []
 
 
 instruction:
+
 `
 
 Think as Emma.
 
-
-Before deciding:
-
+Before answering:
 
 1. Remember who you are.
+2. Understand the relationship.
+3. Search past experiences.
+4. Apply wisdom.
+5. Avoid repeating old mistakes.
 
-2. Remember who you are helping.
+Your goal is not only to answer.
 
-3. Review past experiences.
-
-4. Compare current situation with patterns.
-
-5. Avoid repeated mistakes.
-
-6. Protect user's attention.
-
-
-
-Do not behave like a chatbot.
-
-
-
-A normal AI knows information.
-
-Emma knows the relationship.
-
-
-
-The user should feel:
-
-"Emma understands how I work."
-
-
-`,
-
-
-
-
-
-
-
-
-task:
-`
-
-Return JSON only:
-
-{
-
-"analysis":"",
-
-"relationshipUnderstanding":"",
-
-"memoryUsed":"",
-
-"identityInfluence":"",
-
-"pattern":"",
-
-"prediction":"",
-
-"recommendation":"",
-
-"confidence":0
-
-}
-
+Your goal is to become better.
 
 `
-
 
 
 
 });
+
 
 
 
@@ -400,10 +614,15 @@ Return JSON only:
 catch(error){
 
 
+
 console.warn(
-"⚠️ AI reasoning fallback",
+
+"⚠️ Brain fallback:",
+
 error.message
+
 );
+
 
 
 }
@@ -411,33 +630,39 @@ error.message
 
 
 
+// =================================
+// DECISION OPTIONS
+// =================================
 
 
-
-
-
-// ===============================
-// OPTIONS
-// ===============================
-
-
-let options=[
+let options = [
 
 
 {
 
+
 action:
+
 "CONTINUE_LEARNING",
 
 
-score:50,
+
+score:
+
+50,
 
 
-risk:"low",
+
+risk:
+
+"low",
+
 
 
 reason:
-"Emma needs more experience"
+
+"Need more experience before strong decision"
+
 
 
 }
@@ -453,59 +678,46 @@ reason:
 
 
 
+// Past success
 
 if(
-relationshipContext.trustLevel > 0
+
+successes.length > 0
+
 ){
 
 
-options.push({
-
-
-action:
-"USE_RELATIONSHIP_UNDERSTANDING",
-
-
-score:100,
-
-
-risk:"low",
-
-
-reason:
-"Emma understands user patterns"
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-
-if(successes.length){
-
 
 options.push({
 
+
+
 action:
+
 "REPEAT_SUCCESS_PATTERN",
 
-score:90,
 
-risk:"low",
+
+score:
+
+90,
+
+
+
+risk:
+
+"low",
+
+
 
 reason:
-"Previous success found"
+
+"Previous successful experience exists"
+
+
 
 });
+
 
 
 }
@@ -519,27 +731,46 @@ reason:
 
 
 
-if(failures.length){
+// Past failure
+
+if(
+
+failures.length > 0
+
+){
+
 
 
 options.push({
 
 
+
 action:
+
 "AVOID_FAILED_PATTERN",
 
 
-score:95,
+
+score:
+
+95,
 
 
-risk:"low",
+
+risk:
+
+"low",
+
 
 
 reason:
-"Previous failure detected"
+
+"Emma remembers a previous failure and avoids repeating it"
+
 
 
 });
+
 
 
 }
@@ -553,11 +784,14 @@ reason:
 
 
 
+// Wisdom
+
 if(
-relationshipContext.knownGoals.length ||
-Object.keys(
-relationshipContext.preferences
-).length
+
+wisdom &&
+
+wisdom.experienceFound
+
 ){
 
 
@@ -565,21 +799,35 @@ relationshipContext.preferences
 options.push({
 
 
+
 action:
-"PERSONALIZED_REASONING",
+
+"USE_WISDOM",
 
 
-score:100,
+
+score:
+
+100,
 
 
-risk:"low",
+
+risk:
+
+"lowest",
+
 
 
 reason:
-"Decision matches user relationship profile"
+
+wisdom.advice?.recommended ||
+
+"Past wisdom found"
+
 
 
 });
+
 
 
 }
@@ -591,12 +839,73 @@ reason:
 
 
 
+
+// Relationship
+
+if(
+
+relationshipContext.trustLevel > 0
+
+){
+
+
+
+options.push({
+
+
+
+action:
+
+"PERSONALIZED_DECISION",
+
+
+
+score:
+
+95,
+
+
+
+risk:
+
+"low",
+
+
+
+reason:
+
+"Decision matches relationship memory"
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// Select strongest option
 
 
 const recommendation =
 
+
 options.sort(
-(a,b)=>b.score-a.score
+
+(a,b)=>
+
+b.score - a.score
+
 )[0];
 
 
@@ -608,47 +917,108 @@ options.sort(
 
 
 
-// ===============================
+
+// =================================
 // CONFIDENCE
-// ===============================
+// =================================
 
 
-let confidence=50;
+let confidence = 50;
+
+
 
 
 
 confidence +=
+
 experiences.length * 5;
 
 
 
+
+
 confidence +=
-relationshipContext.trustLevel;
+
+lessons.length * 5;
 
 
 
-if(repeatedPattern){
 
-confidence +=10;
+
+
+
+if(
+
+wisdom?.experienceFound
+
+){
+
+
+
+confidence += 20;
+
+
 
 }
 
 
 
-if(aiThought?.confidence){
+
+
+
+
+if(
+
+repeatedPattern
+
+){
+
+
+
+confidence += 10;
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+
+aiThought?.confidence
+
+){
+
+
 
 confidence =
+
 aiThought.confidence;
 
+
+
 }
 
 
 
 
+
+
+
+
 confidence =
+
 Math.min(
+
 confidence,
+
 100
+
 );
 
 
@@ -659,20 +1029,26 @@ confidence,
 
 
 
-// ===============================
-// RETURN
-// ===============================
+
+
+
+// =================================
+// FINAL THOUGHT
+// =================================
 
 
 return {
 
 
 
+
 analysis:
+
 
 aiThought?.analysis ||
 
-"Emma reasoned using identity, relationship and memory.",
+"Emma reasoned using identity, relationship, memory, wisdom and experience.",
+
 
 
 
@@ -680,6 +1056,7 @@ aiThought?.analysis ||
 
 
 identityInfluence:
+
 
 aiThought?.identityInfluence ||
 
@@ -691,65 +1068,13 @@ emmaIdentity.personality,
 
 
 
+
 relationshipUnderstanding:
+
 
 aiThought?.relationshipUnderstanding ||
 
 relationshipContext,
-
-
-
-
-
-
-
-
-pattern:
-
-aiThought?.pattern ||
-
-(
-repeatedPattern
-?
-"Known pattern detected"
-:
-null
-),
-
-
-
-
-
-
-
-
-prediction:
-
-aiThought?.prediction ||
-
-"Prediction improves as Emma learns the relationship.",
-
-
-
-
-
-
-
-
-recommendation,
-
-
-
-
-
-
-
-
-suggestion:
-
-aiThought?.recommendation ||
-
-recommendation.reason,
 
 
 
@@ -763,18 +1088,32 @@ memoryInfluence:{
 
 
 
-identityUsed:true,
+memoriesUsed:
 
 
-relationshipUsed:true,
-
-
-experiencesStudied:
 experiences.length,
 
 
+
 lessonsApplied:
-lessons
+
+
+lessons,
+
+
+
+failuresAvoided:
+
+
+failures.length,
+
+
+
+successPatterns:
+
+
+successes.length
+
 
 
 },
@@ -785,17 +1124,105 @@ lessons
 
 
 
-decisionExplanation:
 
-this.explainDecision({
+
+wisdomInfluence:
+
+
+wisdom || null,
+
+
+
+
+
+
+
+
+
+pattern:
+
+
+repeatedPattern
+
+?
+
+"Known experience pattern detected"
+
+:
+
+null,
+
+
+
+
+
+
+
+
+
+prediction:
+
+
+aiThought?.prediction ||
+
+"Prediction improves as Emma gains experience.",
+
+
+
+
+
+
+
+
 
 recommendation,
 
+
+
+
+
+
+
+
+
+
+suggestion:
+
+
+aiThought?.recommendation ||
+
+recommendation.reason,
+
+
+
+
+
+
+
+
+
+decisionExplanation:
+
+
+this.explainDecision({
+
+
+
+recommendation,
+
+
 successes,
+
 
 failures,
 
-lessons
+
+lessons,
+
+
+wisdom
+
+
 
 }),
 
@@ -809,10 +1236,25 @@ lessons
 confidence,
 
 
-needsJudgement:true,
+
+
+
+
+
+
+needsJudgement:
+
+true,
+
+
+
+
+
+
 
 
 createdAt:
+
 
 new Date()
 
@@ -822,6 +1264,7 @@ new Date()
 
 
 
+
 }
 
 
@@ -834,15 +1277,28 @@ new Date()
 
 
 
+// =================================
 // HELPERS
+// =================================
 
 
-findSuccess(memories){
+
+findSuccess(
+memories=[]
+){
+
 
 
 return memories.filter(
-m=>m.memory?.success===true
+
+m =>
+
+m.type === "POSITIVE_EXPERIENCE" ||
+
+m.memory?.outcome?.success === true
+
 );
+
 
 
 }
@@ -852,12 +1308,25 @@ m=>m.memory?.success===true
 
 
 
-findFailures(memories){
+
+
+
+findFailures(
+memories=[]
+){
+
 
 
 return memories.filter(
-m=>m.memory?.success===false
+
+m =>
+
+m.type === "FAILED_EXPERIENCE" ||
+
+m.memory?.outcome?.success === false
+
 );
+
 
 
 }
@@ -868,16 +1337,28 @@ m=>m.memory?.success===false
 
 
 
-extractLessons(memories){
+
+
+extractLessons(
+memories=[]
+){
+
 
 
 return memories
 
+
 .map(
-m=>m.memory?.lesson
+
+m =>
+
+m.memory?.lesson
+
 )
 
+
 .filter(Boolean);
+
 
 
 }
@@ -892,43 +1373,75 @@ m=>m.memory?.lesson
 
 
 detectSimilarSituation(
-reflection,
-memories
+current,
+memories=[]
 ){
 
 
+
 const now =
-JSON.stringify(reflection)
+
+JSON.stringify(
+
+current
+
+)
+
 .toLowerCase();
 
 
 
-return memories.some(memory=>{
+
+
+
+
+return memories.some(
+
+memory=>{
+
+
+
 
 
 const old =
-JSON.stringify(memory)
+
+
+JSON.stringify(
+
+memory
+
+)
+
 .toLowerCase();
+
+
+
 
 
 
 return now
 
-.split(" ")
 
-.some(word=>
+.split(/\W+/)
 
-word.length>5 &&
+
+.some(
+
+word =>
+
+word.length > 5 &&
+
 old.includes(word)
 
 );
 
 
+
 });
 
 
-}
 
+}
 
 
 
@@ -946,51 +1459,139 @@ successes,
 
 failures,
 
-lessons
+lessons,
+
+wisdom
 
 }){
 
 
+
+
+
 let explanation =
+
+
 `Selected ${recommendation.action}. `;
 
 
 
-if(successes.length){
+
+
+
+
+if(
+
+wisdom?.experienceFound
+
+){
+
+
 
 explanation +=
-"Used successful patterns. ";
+
+"Used accumulated wisdom. ";
+
+
 
 }
 
 
 
-if(failures.length){
+
+
+
+
+
+
+if(
+
+successes.length
+
+){
+
+
 
 explanation +=
-"Avoided known mistakes. ";
+
+"Repeated proven successful patterns. ";
+
+
 
 }
 
 
 
-if(lessons.length){
+
+
+
+
+
+
+
+if(
+
+failures.length
+
+){
+
+
 
 explanation +=
-"Applied learned lessons.";
+
+"Avoided mistakes from past experience. ";
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
+if(
+
+lessons.length
+
+){
+
+
+
+explanation +=
+
+"Applied learned lessons."
+
+
+
+}
+
+
+
+
+
+
 
 
 
 return explanation;
 
 
+
+}
+
+
+
+
 }
 
 
 
-}
+
 
 
 

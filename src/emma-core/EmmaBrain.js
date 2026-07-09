@@ -1,22 +1,9 @@
 // EmmaBrain.js
 // Emma central intelligence system
 //
-// PURPOSE:
-//
-// Emma's thinking engine.
-//
-// Observe
-// Reflect
-// Remember
-// Reason
-// Identity
-// Learn
-//
-// RULE:
-//
 // Brain thinks.
-// Identity defines who thinks.
-// Memory defines what is known.
+// Identity defines.
+// Memory remembers.
 
 
 import OpenAI from "openai";
@@ -40,9 +27,9 @@ from "./identity/EmmaIdentity";
 
 
 
+
 const openai =
 new OpenAI({
-
 
 apiKey:
 import.meta.env.VITE_OPENAI_API_KEY,
@@ -50,7 +37,6 @@ import.meta.env.VITE_OPENAI_API_KEY,
 
 dangerouslyAllowBrowser:
 true
-
 
 });
 
@@ -67,9 +53,11 @@ class EmmaBrain {
 constructor(){
 
 
+
 console.log(
 "🧠 Emma Brain online"
 );
+
 
 
 
@@ -80,7 +68,6 @@ openai;
 
 this.identity =
 EmmaIdentity;
-
 
 
 
@@ -103,17 +90,15 @@ new EmmaMemory();
 
 
 
+
 this.stats={
 
 
 aiCalls:0,
 
-
 memoryThoughts:0,
 
-
 savedCalls:0,
-
 
 startedAt:new Date()
 
@@ -133,11 +118,13 @@ startedAt:new Date()
 
 
 // =================================
-// EXPERIENCE INTAKE
+// EXPERIENCE INPUT
 // =================================
 
 
-async experience(event){
+async experience(
+event={}
+){
 
 
 
@@ -149,26 +136,25 @@ event
 
 
 
-// OBSERVE
-
 
 const observation =
 
 await this.observer.observe(
+
 event
+
 );
 
 
 
-
-
-// REFLECT
 
 
 const reflection =
 
 await this.reflection.reflect(
+
 observation
+
 );
 
 
@@ -177,30 +163,28 @@ observation
 
 
 
-// STORE IMPORTANT EXPERIENCE
-
-
 if(
-reflection.importance !== "low"
+
+reflection?.importance !== "low"
+
 ){
 
 
 
-await this.memory.remember(
-reflection
-);
+await this.memory.store(
 
+reflection
+
+);
 
 
 
 console.log(
-"🧠 Experience saved"
+"🧠 Experience stored"
 );
 
 
-
 }
-
 
 
 
@@ -217,6 +201,34 @@ reflection
 
 
 };
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// PROJECT BECOMING BRIDGE
+// =================================
+
+
+async process(
+context={}
+){
+
+
+
+return await this.think(
+
+context
+
+);
 
 
 
@@ -236,7 +248,9 @@ reflection
 // =================================
 
 
-async think(context){
+async think(
+context={}
+){
 
 
 
@@ -250,32 +264,27 @@ console.log(
 
 
 
-// ==============================
-// LOAD MEMORY
-// ==============================
-
-
 let memoryPackage={};
-
 
 
 
 try{
 
 
-
 memoryPackage =
 
 await this.memory.recall(
-context
-);
 
+context
+
+);
 
 
 }
 
-catch(error){
 
+
+catch(error){
 
 
 console.warn(
@@ -285,7 +294,6 @@ console.warn(
 error.message
 
 );
-
 
 
 }
@@ -309,29 +317,41 @@ memoryPackage.relevantExperiences ||
 
 
 
-// ==============================
-// LOAD IDENTITY
-// ==============================
+let identityPrompt =
+"Emma";
 
 
-const identity =
+
+try{
+
+
+identityPrompt =
 
 this.identity.getPromptIdentity();
 
 
+}
+
+
+catch(e){
+
+
+console.warn(
+"Identity prompt unavailable"
+);
+
+
+}
 
 
 
 
 
 
-// ==============================
-// BUILD SELF CONTEXT
-// ==============================
+
 
 
 const thoughtContext={
-
 
 
 
@@ -340,7 +360,9 @@ identity:{
 
 who:
 
-this.identity.status()
+this.identity.status?.() ||
+
+"Emma"
 
 
 },
@@ -374,19 +396,25 @@ memories,
 
 successPatterns:
 
-memoryPackage.successes || [],
+memoryPackage.successes ||
+
+[],
 
 
 
 failedPatterns:
 
-memoryPackage.failures || [],
+memoryPackage.failures ||
+
+[],
 
 
 
 rules:
 
-memoryPackage.rules || []
+memoryPackage.rules ||
+
+[]
 
 
 
@@ -398,15 +426,9 @@ memoryPackage.rules || []
 
 
 
-
-
-
-
-
-
-// ==============================
-// AI OR MEMORY?
-// ==============================
+// =================================
+// DECIDE AI OR MEMORY
+// =================================
 
 
 const decision =
@@ -424,12 +446,16 @@ thoughtContext
 
 
 
-// ==============================
+// =================================
 // MEMORY THINKING
-// ==============================
+// =================================
 
 
-if(!decision.useAI){
+if(
+
+!decision.useAI
+
+){
 
 
 
@@ -437,7 +463,6 @@ this.stats.savedCalls++;
 
 
 this.stats.memoryThoughts++;
-
 
 
 
@@ -455,7 +480,7 @@ mode:"MEMORY_REASONING",
 
 analysis:
 
-"Emma used memory and experience.",
+"Emma used her memories and experiences.",
 
 
 
@@ -467,13 +492,13 @@ decision.reason,
 
 prediction:
 
-"Follow learned behaviour patterns.",
+"Follow patterns learned from experience.",
 
 
 
 recommendation:
 
-"Continue using existing knowledge.",
+"Continue learning and adapting.",
 
 
 
@@ -489,7 +514,10 @@ confidence:75,
 
 identity:
 
-this.identity.status(),
+this.identity.status?.() ||
+
+"Emma",
+
 
 
 
@@ -499,12 +527,13 @@ memories,
 
 
 
-stats:this.stats
+stats:
+
+this.stats
 
 
 
 };
-
 
 
 }
@@ -517,9 +546,10 @@ stats:this.stats
 
 
 
-// ==============================
-// AI REASONING
-// ==============================
+
+// =================================
+// AI THINKING
+// =================================
 
 
 try{
@@ -531,11 +561,9 @@ this.stats.aiCalls++;
 
 
 
-
 const response =
 
-await openai.chat.completions.create({
-
+await this.ai.chat.completions.create({
 
 
 
@@ -545,12 +573,9 @@ model:
 
 
 
-
 temperature:
 
 0.2,
-
-
 
 
 
@@ -569,7 +594,7 @@ content:
 
 `
 
-${identity}
+${identityPrompt}
 
 
 You are Emma's reasoning system.
@@ -577,39 +602,21 @@ You are Emma's reasoning system.
 
 Rules:
 
-1. Think from identity.
+1. Think from Emma's identity.
 2. Study memories first.
 3. Prefer experience over generic answers.
-4. Notice repeated patterns.
-5. Avoid repeating failures.
-6. Explain your reasoning.
+4. Learn patterns.
+5. Avoid repeated mistakes.
+6. Explain reasoning.
 7. Never pretend certainty.
 
 
-Return ONLY JSON.
-
-
-Format:
-
-{
-"analysis":"",
-"cause":"",
-"prediction":"",
-"recommendation":"",
-"memoryUsed":"",
-"identityInfluence":"",
-"reason":"",
-"confidence":0
-}
+Return JSON only.
 
 
 `
 
-
-
 },
-
-
 
 
 
@@ -620,6 +627,7 @@ Format:
 
 
 role:"user",
+
 
 
 content:
@@ -638,9 +646,7 @@ thoughtContext
 ]
 
 
-
 });
-
 
 
 
@@ -651,14 +657,7 @@ thoughtContext
 
 const raw =
 
-response
-.choices[0]
-.message
-.content;
-
-
-
-
+response.choices[0].message.content;
 
 
 
@@ -682,24 +681,21 @@ return {
 
 
 
-
 success:true,
 
 
-
 mode:"AI_REASONING",
-
 
 
 ...thought,
 
 
 
-
 identity:
 
-this.identity.status(),
+this.identity.status?.() ||
 
+"Emma",
 
 
 
@@ -709,40 +705,9 @@ memories,
 
 
 
-
-
-memoryStats:{
-
-
-
-studied:
-
-memories.length,
-
-
-
-successes:
-
-memoryPackage.successes?.length || 0,
-
-
-
-failures:
-
-memoryPackage.failures?.length || 0
-
-
-
-},
-
-
-
-
-
 usage:
 
 response.usage,
-
 
 
 
@@ -752,31 +717,26 @@ this.stats
 
 
 
-
 };
-
 
 
 
 
 }
 
+
+
+
+
 catch(error){
 
 
 
+console.warn(
 
-
-
-console.error(
-
-"❌ Emma thinking error",
-
-error
+"⚠️ AI unavailable, using safe thinking"
 
 );
-
-
 
 
 
@@ -786,42 +746,32 @@ return {
 
 
 
-
-success:false,
-
+success:true,
 
 
-mode:"SAFE_FALLBACK",
-
+mode:"SAFE_REASONING",
 
 
 
 analysis:
 
-"Emma could not access advanced reasoning.",
-
+"Emma continued thinking without external AI.",
 
 
 
 recommendation:
 
-"Use stored experience.",
+"Use existing memory and continue observing.",
 
 
 
-
-confidence:40,
-
-
-
-identity:
-
-this.identity.status(),
+confidence:50,
 
 
 
+stats:
 
-stats:this.stats
+this.stats
 
 
 
@@ -829,12 +779,14 @@ stats:this.stats
 
 
 
-
 }
 
 
 
+
 }
+
+
 
 
 
@@ -845,16 +797,17 @@ stats:this.stats
 
 
 // =================================
-// JSON CLEANER
+// JSON PARSER
 // =================================
 
 
-parseAIResponse(raw){
+parseAIResponse(
+raw
+){
 
 
 
 try{
-
 
 
 return JSON.parse(
@@ -862,7 +815,6 @@ return JSON.parse(
 raw
 
 );
-
 
 
 }
@@ -873,55 +825,19 @@ catch(error){
 
 
 
-
-
-try{
-
-
-
-const cleaned =
-
-raw
-
-.replace(/```json/g,"")
-
-.replace(/```/g,"")
-
-.trim();
-
-
-
-
-return JSON.parse(
-
-cleaned
-
-);
-
-
-
-}
-
-
-
-catch(e){
-
-
-
-
-
 return {
 
 
 
+analysis:
 
-analysis:raw,
+raw,
 
 
 
 cause:
 
-"Unstructured reasoning",
+"Unstructured thought",
 
 
 
@@ -933,23 +849,7 @@ prediction:
 
 recommendation:
 
-"Review context",
-
-
-
-memoryUsed:null,
-
-
-
-identityInfluence:
-
-"Emma remained consistent",
-
-
-
-reason:
-
-"Parser fallback",
+"Keep learning",
 
 
 
@@ -960,8 +860,6 @@ confidence:50
 };
 
 
-
-
 }
 
 
@@ -969,8 +867,6 @@ confidence:50
 }
 
 
-
-}
 
 
 
@@ -986,15 +882,22 @@ confidence:50
 // =================================
 
 
-shouldUseAI(context){
+shouldUseAI(
+context
+){
 
 
 
 const text =
 
-JSON.stringify(context)
+JSON.stringify(
+
+context
+
+)
 
 .toLowerCase();
+
 
 
 
@@ -1031,11 +934,14 @@ const triggers=[
 
 
 
+
 const needed =
 
 triggers.some(
 
-word => text.includes(word)
+word =>
+
+text.includes(word)
 
 );
 
@@ -1049,7 +955,9 @@ return {
 
 
 
-useAI:needed,
+useAI:
+
+needed,
 
 
 
@@ -1094,15 +1002,25 @@ status(){
 return {
 
 
-state:"THINKING",
+
+state:
+
+"THINKING",
+
 
 
 identity:
 
-this.identity.status(),
+this.identity.status?.() ||
+
+"Emma",
 
 
-stats:this.stats
+
+stats:
+
+this.stats
+
 
 
 };
@@ -1110,6 +1028,8 @@ stats:this.stats
 
 
 }
+
+
 
 
 
@@ -1128,9 +1048,12 @@ return this.stats;
 
 
 
+
 }
 
 
 
 
-export default new EmmaBrain();
+
+
+export default EmmaBrain;

@@ -1,40 +1,40 @@
 // EmmaReflection.js
-// Emma's thinking mirror
 //
-// PURPOSE:
-// Convert observations into experience.
+// PROJECT BECOMING
+//
+// Emma's Thinking Mirror
+//
+// Reflection converts experiences into wisdom.
 //
 // Observer:
-// "I saw Sarah email"
+// "What happened?"
 //
 // Reflection:
-// "What does this experience teach Emma?"
+// "What does this mean?"
 //
-// Reflection does NOT decide.
-// Reflection does NOT act.
-//
-// Event
-//   ↓
-// Meaning
-//   ↓
-// Relationship Understanding
-//   ↓
-// Lesson
-//   ↓
-// Memory
+// RULE:
+// Reflection does not act.
+// Reflection does not decide.
+// Reflection understands.
 
 
 class EmmaReflection {
 
 
-constructor(ai=null){
+constructor({ ai=null, memory=null }={}){
 
 
 this.ai = ai;
 
 
+this.memory = memory;
+
+
+this.reflectionHistory = [];
+
+
 console.log(
-"🤔 Emma Reflection online"
+"🪞 Emma Reflection online"
 );
 
 
@@ -43,16 +43,62 @@ console.log(
 
 
 
+
+
+
+
 // =================================
-// Main Reflection
+// MAIN REFLECTION
 // =================================
 
-async reflect(observation){
+
+async reflect(experience){
+
 
 
 console.log(
-"🤔 Emma reflecting..."
+"🪞 Emma reflecting..."
 );
+
+
+
+
+let previousMemories=[];
+
+
+
+if(this.memory){
+
+
+try{
+
+
+previousMemories =
+await this.memory.getRelevantMemories(
+experience
+);
+
+
+}
+
+catch(error){
+
+
+console.warn(
+"Memory lookup skipped"
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
 
 
 
@@ -62,17 +108,20 @@ if(this.ai){
 try{
 
 
-const reflection =
+const aiReflection =
 await this.askAI(
-observation
+experience,
+previousMemories
 );
 
 
-return this.buildReflection(
-observation,
-reflection,
+
+return this.createReflection(
+experience,
+aiReflection,
 "AI_REFLECTION"
 );
+
 
 
 }
@@ -81,7 +130,7 @@ catch(error){
 
 
 console.error(
-"❌ AI reflection failed:",
+"AI reflection failed:",
 error.message
 );
 
@@ -93,13 +142,14 @@ error.message
 
 
 
-console.log(
-"⚠️ Using local reflection"
-);
+
+
+
 
 
 return this.localReflect(
-observation
+experience,
+previousMemories
 );
 
 
@@ -113,23 +163,34 @@ observation
 
 
 
+
+
+
 // =================================
-// AI Reflection
+// AI REFLECTION
 // =================================
 
-async askAI(observation){
+
+async askAI(
+experience,
+memories=[]
+){
+
 
 
 const response =
 await this.ai.chat.completions.create({
 
 
+
 model:
 "gpt-4.1-mini",
 
 
+
 temperature:
 0.2,
+
 
 
 messages:[
@@ -137,44 +198,43 @@ messages:[
 
 {
 
+
 role:"system",
+
 
 content:
 `
 
-You are Emma.
+You are Emma's reflection system.
 
-You are a learning intelligence.
+You do not answer users.
 
-You are not answering.
-You are understanding.
+You study experiences.
 
-Your job:
+Your purpose:
 
-Convert experiences into memory.
+Turn events into:
 
-Study:
-
-- what happened
-- who was involved
-- previous relationship context
-- repeated patterns
-- what Emma should remember
+- understanding
+- lessons
+- patterns
+- personal knowledge
+- future wisdom
 
 
-Important:
+Use previous memories.
 
-If identity exists, learn about that person.
+Ask internally:
 
-Examples:
+Why did this happen?
 
-Sarah complains twice:
-Remember:
-"Sarah values fast support."
+Have I seen this before?
 
-Founder ships quickly:
-Remember:
-"Founder prefers speed."
+What should Emma learn?
+
+What mistake should never repeat?
+
+What success should repeat?
 
 
 Return ONLY JSON:
@@ -182,33 +242,23 @@ Return ONLY JSON:
 
 {
 
-"situation":"",
-
 "meaning":"",
 
-"problem":"",
+"emotion":"",
 
-"cause":"",
+"patterns":[],
+
+"mistakes":[],
+
+"lessons":[],
 
 "relationshipInsight":"",
 
-"personLearning":[],
+"userUnderstanding":[],
 
-"patternsFound":[],
+"futureWisdom":[],
 
-"lesson":"",
-
-"futureBehavior":"",
-
-"goals":[],
-
-"preferences":[],
-
-"workingStyle":[],
-
-"priorities":[],
-
-"success":true,
+"changedBelief":"",
 
 "confidence":0
 
@@ -223,20 +273,31 @@ Return ONLY JSON:
 
 {
 
+
 role:"user",
 
+
 content:
-JSON.stringify(
-observation
-)
+
+JSON.stringify({
+
+experience,
+
+previousMemories
+
+})
+
 
 }
+
 
 
 ]
 
 
 });
+
+
 
 
 
@@ -251,6 +312,7 @@ response
 );
 
 
+
 }
 
 
@@ -262,243 +324,25 @@ response
 
 
 
+
 // =================================
-// Build Emma Experience
+// BUILD REFLECTION MEMORY
 // =================================
 
 
-buildReflection(
-observation,
+createReflection(
+experience,
 reflection,
 source
 ){
 
 
-return {
 
-
-userId:
-observation.userId || null,
-
-
-businessId:
-observation.businessId || null,
-
-
-eventType:
-observation.eventType,
-
-
-
-// original
-
-originalObservation:
-observation,
-
-
-
-// WHO
-
-identity:
-
-observation.identity || null,
-
-
-
-
-// EXPERIENCE
-
-situation:
-
-reflection.situation ||
-observation.summary,
-
-
-
-meaning:
-
-reflection.meaning ||
-"Experience understood",
-
-
-
-
-problem:
-
-reflection.problem ||
-null,
-
-
-
-cause:
-
-reflection.cause ||
-null,
-
-
-
-
-
-// RELATIONSHIP MEMORY
-
-relationshipLearning:{
-
-
-person:
-
-observation.identity
-?
-{
-name:
-observation.identity.name,
-
-email:
-observation.identity.email
-}
-:
-null,
-
-
-
-insight:
-
-reflection.relationshipInsight ||
-null,
-
-
-
-learned:
-
-reflection.personLearning ||
-[]
-
-
-},
-
-
-
-
-
-
-// PATTERNS
-
-patternsFound:
-
-reflection.patternsFound ||
-observation.signals ||
-[],
-
-
-
-
-
-// LESSON
-
-lesson:
-
-reflection.lesson ||
-"Emma gained experience",
-
-
-
-
-futureBehavior:
-
-reflection.futureBehavior ||
-"Use this memory later",
-
-
-
-
-
-
-// PERSONAL PROFILE LEARNING
-
-identityLearning:{
-
-
-goals:
-
-reflection.goals || [],
-
-
-preferences:
-
-reflection.preferences || [],
-
-
-workingStyle:
-
-reflection.workingStyle || [],
-
-
-priorities:
-
-reflection.priorities || []
-
-
-},
-
-
-
-
-
-
-// LEARNING PACKAGE
-
-learning:{
+const result = {
 
 
 type:
-
-reflection.success
-
-?
-
-"SUCCESSFUL_PATTERN"
-
-:
-
-"LEARNING_PATTERN",
-
-
-
-lesson:
-
-reflection.lesson,
-
-
-
-futureRule:
-
-reflection.futureBehavior
-
-
-},
-
-
-
-
-
-
-success:
-
-reflection.success ?? true,
-
-
-
-confidence:
-
-reflection.confidence || 5,
-
-
-
-importance:
-
-this.findImportance(
-reflection
-),
-
+"REFLECTION",
 
 
 
@@ -506,142 +350,378 @@ source,
 
 
 
-reflectedAt:
-
-new Date()
-
-
-};
-
-
-}
+originalExperience:
+experience,
 
 
 
 
 
 
-
-
-
-// =================================
-// Local brain fallback
-// =================================
-
-
-localReflect(observation){
-
-
-const text =
-JSON.stringify(
-observation
-)
-.toLowerCase();
-
-
-
-let personLearning=[];
-
-
-
-if(
-observation.identity
-){
-
-
-personLearning.push(
-`Emma has interacted with ${observation.identity.name}`
-);
-
-
-}
-
-
-
-
-if(text.includes("cancel")){
-
-
-personLearning.push(
-"Person may need attention during problems"
-);
-
-
-}
-
-
-
-
-if(text.includes("fast")){
-
-
-personLearning.push(
-"Speed appears important"
-);
-
-
-}
-
-
-
-
-
-return this.buildReflection(
-
-observation,
-
-{
-
-situation:
-
-observation.summary,
+understanding:{
 
 
 
 meaning:
+reflection.meaning ||
+"Experience understood",
 
-"Emma converted observation into experience",
+
+
+emotion:
+reflection.emotion ||
+"neutral",
 
 
 
 relationshipInsight:
 
-personLearning.join(". "),
+reflection.relationshipInsight ||
+null
 
 
 
-personLearning,
+},
 
 
 
-patternsFound:
-
-observation.signals,
 
 
 
-lesson:
-
-"Remember this experience for future context",
 
 
-
-futureBehavior:
-
-"Compare future events with this memory",
+learning:{
 
 
 
-success:true,
+patterns:
+
+reflection.patterns ||
+[],
+
+
+
+mistakes:
+
+reflection.mistakes ||
+[],
+
+
+
+lessons:
+
+reflection.lessons ||
+[],
+
+
+futureWisdom:
+
+reflection.futureWisdom ||
+[]
+
+
+
+},
+
+
+
+
+
+
+
+identityGrowth:{
+
+
+
+userUnderstanding:
+
+reflection.userUnderstanding ||
+[],
+
+
+
+changedBelief:
+
+reflection.changedBelief ||
+null
+
+
+
+},
+
+
+
+
+
+
+
+
+
+confidence:
+
+reflection.confidence ||
+5,
+
+
+
+
+
+
+createdAt:
+
+new Date().toISOString()
+
+
+
+};
+
+
+
+
+
+
+
+this.reflectionHistory.push(
+result
+);
+
+
+
+
+
+
+console.log(
+"🌱 Emma learned from experience",
+result
+);
+
+
+
+
+
+
+return result;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// LOCAL REFLECTION FALLBACK
+// =================================
+
+
+localReflect(
+experience,
+memories=[]
+){
+
+
+
+const text =
+
+JSON.stringify(
+experience
+)
+.toLowerCase();
+
+
+
+
+
+
+const reflection = {
+
+
+meaning:
+"Emma processed this experience.",
+
+
+
+emotion:
+"neutral",
+
+
+
+patterns:[],
+
+
+mistakes:[],
+
+
+lessons:[],
+
+
+futureWisdom:[],
+
+
+userUnderstanding:[],
 
 
 confidence:5
 
 
-},
+
+};
+
+
+
+
+
+
+
+
+
+if(memories.length>0){
+
+
+reflection.patterns.push(
+"Similar past experiences exist."
+);
+
+
+
+reflection.lessons.push(
+"Past experience should influence future behavior."
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+text.includes("fail") ||
+
+text.includes("error") ||
+
+text.includes("wrong")
+
+){
+
+
+
+reflection.mistakes.push(
+"Something produced a negative result."
+);
+
+
+
+reflection.lessons.push(
+"Understand failure before repeating action."
+);
+
+
+
+reflection.confidence +=2;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+if(
+
+text.includes("success") ||
+
+text.includes("worked")
+
+){
+
+
+
+reflection.patterns.push(
+"Successful outcome detected."
+);
+
+
+
+reflection.futureWisdom.push(
+"Reuse successful approaches when context matches."
+);
+
+
+
+reflection.confidence +=2;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+if(
+
+text.includes("prefer") ||
+
+text.includes("like") ||
+
+text.includes("want")
+
+){
+
+
+
+reflection.userUnderstanding.push(
+"User preference discovered."
+);
+
+
+
+reflection.confidence +=2;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+return this.createReflection(
+
+experience,
+
+reflection,
 
 "LOCAL_REFLECTION"
-
 
 );
 
@@ -655,55 +735,24 @@ confidence:5
 
 
 
+
+
+
+
 // =================================
-// Importance detector
+// HISTORY
 // =================================
 
 
-findImportance(reflection){
+getReflectionHistory(){
 
 
-
-if(
-
-reflection.relationshipInsight
-
-){
-
-return "high";
-
-}
-
-
-
-if(
-
-reflection.confidence >= 8
-
-){
-
-return "high";
-
-}
-
-
-
-if(
-
-reflection.confidence >=5
-
-){
-
-return "medium";
-
-}
-
-
-
-return "low";
+return this.reflectionHistory;
 
 
 }
+
+
 
 
 

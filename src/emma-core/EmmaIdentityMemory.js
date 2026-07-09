@@ -476,4 +476,4 @@ person.firstSeen
 
 
 
-export default new EmmaIdentityMemory();
+export default EmmaIdentityMemory;

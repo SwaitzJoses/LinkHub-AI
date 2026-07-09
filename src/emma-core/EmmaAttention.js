@@ -1,32 +1,32 @@
 // EmmaAttention.js
+//
+// PROJECT BECOMING
+//
 // Emma's focus system
 //
 // RULE:
+//
 // Emma sees many things.
-// Emma thinks deeply only about what matters.
-//
-// This protects:
-// - API cost
-// - Memory quality
-// - Emma's focus
-//
+// Emma does not give everything equal attention.
 //
 // Connectors collect.
 // Attention filters.
+// Memory remembers.
+// Wisdom learns.
 // Brain thinks.
-
+//
+// Purpose:
+// - protect API cost
+// - protect memory quality
+// - prevent noise
+// - decide what deserves Emma
 
 
 class EmmaAttention {
 
 
 
-// ==============================
-// WAKE ATTENTION
-// ==============================
-
-
-constructor(){
+constructor({memory,wisdom} = {}){
 
 
 console.log(
@@ -35,19 +35,38 @@ console.log(
 
 
 
+this.memory =
+memory;
+
+
+
+this.wisdom =
+wisdom;
+
+
+
 this.thresholds = {
 
 
-ignore:30,
+ignore:
+
+30,
 
 
-experience:60,
+
+remember:
+
+60,
 
 
-deep:80
+
+deep:
+
+85
 
 
 };
+
 
 
 
@@ -61,21 +80,22 @@ deep:80
 
 
 
-// ==============================
-// MAIN ATTENTION CHECK
-// ==============================
+// =================================
+// MAIN ATTENTION ENGINE
+// =================================
 
 
 async evaluate(
-signal,
-memory = {}
+signal={}
 ){
 
 
 
 console.log(
-"🎯 Emma evaluating attention..."
+"🎯 Emma evaluating importance..."
 );
+
+
 
 
 
@@ -91,12 +111,10 @@ let reasons = [];
 
 
 
-// ==============================
-// BASE HUMAN ATTENTION
-// ==============================
 
-
-// 1. Human involved
+// ===============================
+// HUMAN IMPORTANCE
+// ===============================
 
 
 if(
@@ -107,8 +125,9 @@ this.hasHumanSignal(signal)
 score += 25;
 
 
+
 reasons.push(
-"Human interaction detected"
+"Human experience detected"
 );
 
 
@@ -122,20 +141,38 @@ reasons.push(
 
 
 
-// 2. Commitment
+// ===============================
+// EMOTION
+// ===============================
+
+
+const emotion =
+
+this.detectEmotion(
+
+signal
+
+);
+
+
 
 
 if(
-this.hasCommitment(signal)
+emotion
 ){
 
 
-score += 25;
+
+score += emotion.weight;
+
 
 
 reasons.push(
-"Commitment or responsibility detected"
+
+emotion.reason
+
 );
+
 
 
 }
@@ -148,34 +185,9 @@ reasons.push(
 
 
 
-// 3. Opportunity
-
-
-if(
-this.hasOpportunity(signal)
-){
-
-
-score += 20;
-
-
-reasons.push(
-"Possible opportunity detected"
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// 4. Problem
+// ===============================
+// PROBLEM
+// ===============================
 
 
 if(
@@ -183,12 +195,51 @@ this.hasProblem(signal)
 ){
 
 
+
+score += 25;
+
+
+
+reasons.push(
+
+"Problem or friction detected"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// OPPORTUNITY
+// ===============================
+
+
+if(
+this.hasOpportunity(signal)
+){
+
+
+
 score += 20;
 
 
+
 reasons.push(
-"Problem needing attention detected"
+
+"Possible opportunity"
+
 );
+
 
 
 }
@@ -202,72 +253,151 @@ reasons.push(
 
 
 
-// 5. User effort
+// ===============================
+// COMMITMENT
+// ===============================
 
 
 if(
-signal.duration &&
-signal.duration > 20
-){
-
-
-score += 15;
-
-
-reasons.push(
-"User invested significant time"
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// ==============================
-// PERSONAL ATTENTION
-// Learns over time
-// ==============================
-
-
-if(
-memory.interests
+this.hasCommitment(signal)
 ){
 
 
 
-const match =
+score += 25;
 
-memory.interests.some(
-
-interest =>
-
-this.text(signal)
-.includes(
-interest.toLowerCase()
-)
-
-);
-
-
-
-if(match){
-
-
-score += 30;
 
 
 reasons.push(
-"Connected to user's journey"
+
+"Future responsibility detected"
+
 );
 
 
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// CHECK PAST EXPERIENCE
+// ===============================
+
+
+let relatedMemories = [];
+
+
+
+
+
+if(
+this.memory &&
+this.memory.getRelevantMemories
+){
+
+
+
+relatedMemories =
+
+
+await this.memory.getRelevantMemories(
+
+signal
+
+);
+
+
+
+
+
+if(
+relatedMemories.length > 0
+){
+
+
+
+score += 20;
+
+
+
+reasons.push(
+
+"Connected to past experience"
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// ASK WISDOM
+// ===============================
+
+
+let wisdom = null;
+
+
+
+
+
+if(
+this.wisdom
+){
+
+
+
+wisdom =
+
+
+await this.wisdom.reflect(
+
+signal
+
+);
+
+
+
+
+
+
+if(
+wisdom.experienceFound
+){
+
+
+
+score += 20;
+
+
+
+reasons.push(
+
+"Wisdom pattern detected"
+
+);
+
+
+
 }
 
 
@@ -284,13 +414,15 @@ reasons.push(
 
 
 
-// ==============================
-// FINAL DECISION
-// ==============================
+// ===============================
+// DECISION
+// ===============================
 
 
-let level =
-"RAW";
+let decision =
+
+"IGNORE";
+
 
 
 
@@ -299,8 +431,11 @@ score >= this.thresholds.deep
 ){
 
 
-level =
-"DEEP_THINKING";
+
+decision =
+
+"DEEP_THINK";
+
 
 
 }
@@ -308,15 +443,20 @@ level =
 
 
 else if(
-score >= this.thresholds.experience
+score >= this.thresholds.remember
 ){
 
 
-level =
-"EXPERIENCE";
+
+decision =
+
+"REMEMBER";
+
 
 
 }
+
+
 
 
 
@@ -329,26 +469,46 @@ level =
 const result = {
 
 
-attention:
 
-score >= this.thresholds.ignore,
+payAttention:
+
+
+decision !== "IGNORE",
+
+
+
+
+decision,
 
 
 
 score,
 
 
-level,
-
 
 reasons,
 
 
 
+relatedMemories:
+
+
+relatedMemories.length,
+
+
+
+wisdomFound:
+
+
+!!wisdom?.experienceFound,
+
+
+
+
 createdAt:
 
-new Date()
-.toISOString()
+
+new Date().toISOString()
 
 
 
@@ -359,10 +519,18 @@ new Date()
 
 
 
+
+
 console.log(
+
 "🎯 Attention result:",
+
 result
+
 );
+
+
+
 
 
 
@@ -380,11 +548,115 @@ return result;
 
 
 
+// =================================
+// EMOTIONAL SIGNAL
+// =================================
 
 
-// ==============================
-// DETECT HUMAN
-// ==============================
+detectEmotion(signal){
+
+
+
+const text =
+
+this.text(signal);
+
+
+
+
+
+if(
+
+text.includes("angry") ||
+
+text.includes("frustrated") ||
+
+text.includes("confused") ||
+
+text.includes("worried")
+
+){
+
+
+
+return {
+
+
+weight:30,
+
+
+reason:
+
+"Strong negative emotion detected"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+
+text.includes("happy") ||
+
+text.includes("excited") ||
+
+text.includes("love")
+
+){
+
+
+
+return {
+
+
+weight:20,
+
+
+reason:
+
+"Positive emotional signal detected"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+return null;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// HUMAN SIGNAL
+// =================================
 
 
 hasHumanSignal(signal){
@@ -392,24 +664,34 @@ hasHumanSignal(signal){
 
 
 const text =
+
 this.text(signal);
+
+
 
 
 
 return (
 
 
+
 signal.person ||
 
-signal.people ||
 
-text.includes("founder") ||
+signal.user ||
+
 
 text.includes("customer") ||
 
+
 text.includes("client") ||
 
-text.includes("user")
+
+text.includes("user") ||
+
+
+text.includes("founder")
+
 
 
 );
@@ -427,98 +709,9 @@ text.includes("user")
 
 
 
-
-// ==============================
-// DETECT COMMITMENT
-// ==============================
-
-
-hasCommitment(signal){
-
-
-
-return this.contains(
-signal,
-[
-
-"meeting",
-
-"deadline",
-
-"payment",
-
-"contract",
-
-"launch",
-
-"appointment",
-
-"interview"
-
-
-]
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ==============================
-// DETECT OPPORTUNITY
-// ==============================
-
-
-hasOpportunity(signal){
-
-
-
-return this.contains(
-signal,
-[
-
-"looking for",
-
-"need help",
-
-"hiring",
-
-"recommend",
-
-"interested",
-
-"opportunity",
-
-"partnership",
-
-"growth"
-
-
-]
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ==============================
-// DETECT PROBLEM
-// ==============================
+// =================================
+// PROBLEM DETECTION
+// =================================
 
 
 hasProblem(signal){
@@ -526,25 +719,39 @@ hasProblem(signal){
 
 
 return this.contains(
+
 signal,
+
 [
+
 
 "problem",
 
+
 "issue",
+
 
 "stuck",
 
+
+"failed",
+
+
+"confused",
+
+
 "struggling",
 
-"frustrated",
 
-"can't",
+"mistake",
 
-"need solution"
+
+"complaint"
 
 
 ]
+
+
 );
 
 
@@ -559,9 +766,117 @@ signal,
 
 
 
-// ==============================
+
+// =================================
+// OPPORTUNITY DETECTION
+// =================================
+
+
+hasOpportunity(signal){
+
+
+
+return this.contains(
+
+signal,
+
+[
+
+
+"interested",
+
+
+"growth",
+
+
+"opportunity",
+
+
+"partnership",
+
+
+"lead",
+
+
+"sale",
+
+
+"upgrade"
+
+
+]
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// COMMITMENT DETECTION
+// =================================
+
+
+hasCommitment(signal){
+
+
+
+return this.contains(
+
+signal,
+
+[
+
+
+"meeting",
+
+
+"deadline",
+
+
+"promise",
+
+
+"appointment",
+
+
+"payment",
+
+
+"launch"
+
+
+]
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
 // TEXT NORMALIZER
-// ==============================
+// =================================
 
 
 text(signal){
@@ -569,8 +884,11 @@ text(signal){
 
 
 return JSON.stringify(
+
 signal || {}
+
 )
+
 .toLowerCase();
 
 
@@ -585,9 +903,10 @@ signal || {}
 
 
 
-// ==============================
+
+// =================================
 // KEYWORD CHECK
-// ==============================
+// =================================
 
 
 contains(
@@ -597,7 +916,8 @@ words=[]
 
 
 
-const content =
+const text =
+
 this.text(signal);
 
 
@@ -607,9 +927,7 @@ return words.some(
 
 word =>
 
-content.includes(
-word
-)
+text.includes(word)
 
 );
 
@@ -621,10 +939,9 @@ word
 
 
 
-
-
-
 }
+
+
 
 
 
