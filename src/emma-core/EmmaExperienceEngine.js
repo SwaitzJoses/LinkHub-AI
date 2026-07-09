@@ -2,7 +2,7 @@
 //
 // PROJECT BECOMING
 //
-// Emma Experience Engine v7
+// Emma Experience Engine v8
 //
 // Emma's spinal cord.
 //
@@ -12,55 +12,57 @@
 // Do not decide.
 // Do not learn.
 //
-// Only move life between organs.
+// Only move experiences
+// between organs.
 //
-// World
-//  ↓
-// Experience
-//  ↓
-// Memory
-//  ↓
-// Wisdom
-//  ↓
-// SelfModel
-//  ↓
-// Reasoning
-//  ↓
-// Judgement
+// v8:
+// - Attention aware routing
+// - Outcome feedback loop
+// - Executor connection
+// - Cleaner life cycle
 //
-// Action outcomes return here.
-//
+
 
 class EmmaExperienceEngine {
 
 
+
+
+
 constructor({
 
-stream,
+stream=null,
 
-attention,
+attention=null,
 
-memory,
+memory=null,
 
-reflection,
+wisdom=null,
 
-selfReflection,
+selfModel=null,
 
-learning,
+curiosity=null,
 
-wisdom,
+reasoning=null,
 
-selfModel,
+judgement=null,
 
-curiosity,
+executor=null,
 
-evolution,
+outcome=null,
 
-reasoning,
+learning=null,
 
-judgement
+evolution=null
 
 } = {}){
+
+
+
+console.log(
+"🧬 Emma Experience Engine v8 alive"
+);
+
 
 
 
@@ -76,18 +78,6 @@ this.memory =
 memory;
 
 
-this.reflection =
-reflection;
-
-
-this.selfReflection =
-selfReflection;
-
-
-this.learning =
-learning;
-
-
 this.wisdom =
 wisdom;
 
@@ -100,10 +90,6 @@ this.curiosity =
 curiosity;
 
 
-this.evolution =
-evolution;
-
-
 this.reasoning =
 reasoning;
 
@@ -112,10 +98,26 @@ this.judgement =
 judgement;
 
 
+this.executor =
+executor;
 
-console.log(
-"🧬 Emma Experience Engine v7 alive"
-);
+
+this.outcome =
+outcome;
+
+
+this.learning =
+learning;
+
+
+this.evolution =
+evolution;
+
+
+
+
+this.cycles = 0;
+
 
 
 }
@@ -129,22 +131,26 @@ console.log(
 
 
 // =================================
-// LIFE PIPELINE
+// LIFE PROCESS
 // =================================
 
 
-async process(event={}){
+async process(
+
+event={}
+
+){
+
 
 
 console.log(
-"🌎 Emma experiencing life..."
+"🌎 Life entered Emma"
 );
 
 
 
-const experience =
+this.cycles++;
 
-this.createExperience(event);
 
 
 
@@ -152,29 +158,54 @@ const timeline = [];
 
 
 
-timeline.push({
-
-stage:"EXPERIENCE",
-
-time:new Date()
-
-});
 
 
 
 
+// ===============================
+// CREATE EXPERIENCE
+// ===============================
+
+
+const experience =
+
+this.createExperience(
+
+event
+
+);
 
 
 
 
 
 
-// =================================
-// EXPERIENCE STREAM
-// =================================
+timeline.push(
+
+"EXPERIENCE"
+
+);
 
 
-if(this.stream){
+
+
+
+
+
+
+
+
+// ===============================
+// STREAM
+// ===============================
+
+
+if(
+
+this.stream?.record
+
+){
+
 
 
 await this.stream.record(
@@ -185,11 +216,13 @@ experience
 
 
 
-timeline.push({
 
-stage:"STREAM"
+timeline.push(
 
-});
+"STREAM"
+
+);
+
 
 
 }
@@ -202,16 +235,23 @@ stage:"STREAM"
 
 
 
-// =================================
+// ===============================
 // ATTENTION
-// =================================
+// ===============================
 
 
 let attention = null;
 
 
 
-if(this.attention){
+
+
+if(
+
+this.attention?.evaluate
+
+){
+
 
 
 attention =
@@ -223,38 +263,35 @@ experience
 );
 
 
+
+
+timeline.push(
+
+"ATTENTION"
+
+);
+
+
+
 }
 
 
 
 
 
-timeline.push({
-
-stage:"ATTENTION",
-
-result:attention
-
-});
 
 
 
 
 
-
-
-
-
-// =================================
-// IF EXPERIENCE PASSES BY
-// =================================
+// ===============================
+// IGNORE ROUTE
+// ===============================
 
 
 if(
 
-attention &&
-
-attention.payAttention === false
+attention?.depth === "IGNORE"
 
 ){
 
@@ -269,18 +306,17 @@ experienced:true,
 integrated:false,
 
 
-experience,
+reason:
+
+"Attention ignored low value signal.",
 
 
 timeline,
 
 
-message:
+createdAt:
 
-"Experience passed through awareness.",
-
-
-createdAt:new Date()
+new Date()
 
 
 };
@@ -298,16 +334,26 @@ createdAt:new Date()
 
 
 
-// =================================
-// MEMORY
-// =================================
+// ===============================
+// MEMORY ROUTE
+// ===============================
 
 
 let memory = null;
 
 
 
-if(this.memory){
+
+
+if(
+
+attention?.depth === "REMEMBER"
+
+&&
+
+this.memory?.store
+
+){
 
 
 
@@ -315,25 +361,21 @@ memory =
 
 await this.memory.store({
 
-
 ...experience,
-
 
 attention
 
-
 });
 
 
 
 
-timeline.push({
 
-stage:"MEMORY",
+timeline.push(
 
-formed:true
+"MEMORY"
 
-});
+);
 
 
 
@@ -347,73 +389,22 @@ formed:true
 
 
 
+// ===============================
+// WISDOM
+// ===============================
 
-// =================================
-// REFLECTION
-// =================================
 
+let wisdom = null;
 
-let reflection=null;
 
 
 
 
 if(
 
-memory &&
-
-this.reflection
+this.wisdom?.reflect
 
 ){
-
-
-
-reflection =
-
-await this.reflection.reflect({
-
-
-experience,
-
-
-memory
-
-
-});
-
-
-
-
-timeline.push({
-
-stage:"REFLECTION"
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// =================================
-// WISDOM
-// =================================
-
-
-let wisdom=null;
-
-
-
-
-if(this.wisdom){
 
 
 
@@ -421,26 +412,21 @@ wisdom =
 
 await this.wisdom.reflect({
 
-
 experience,
 
-
-memory,
-
-
-reflection
-
+memory
 
 });
 
 
 
 
-timeline.push({
 
-stage:"WISDOM"
+timeline.push(
 
-});
+"WISDOM"
+
+);
 
 
 
@@ -450,19 +436,27 @@ stage:"WISDOM"
 
 
 
-// =================================
-// SELF MODEL 🧬
-//
-// What did this experience
-// do to Emma?
-// =================================
+
+
+
+
+
+// ===============================
+// SELF MODEL
+// ===============================
 
 
 let self = null;
 
 
 
-if(this.selfModel){
+
+
+if(
+
+this.selfModel?.observe
+
+){
 
 
 
@@ -470,88 +464,11 @@ self =
 
 await this.selfModel.observe({
 
-
 experience,
-
-
-memory,
-
-
-reflection,
-
-
-wisdom
-
-
-});
-
-
-
-
-
-timeline.push({
-
-
-stage:"SELF_MODEL",
-
-
-changed:true
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-// =================================
-// LEARNING 🌱
-//
-// Learning observes,
-// does not force identity.
-// =================================
-
-
-let learning = null;
-
-
-
-
-if(
-
-reflection &&
-
-this.learning
-
-){
-
-
-
-learning =
-
-await this.learning.learn({
-
-
-experience,
-
-
-reflection,
-
 
 wisdom,
 
-
-self
-
+memory
 
 });
 
@@ -559,26 +476,15 @@ self
 
 
 
-timeline.push({
+timeline.push(
 
+"SELF_MODEL"
 
-stage:"LEARNING"
-
-
-});
+);
 
 
 
 }
-
-
-
-
-
-
-
-
-
 
 // =================================
 // CURIOSITY
@@ -590,13 +496,19 @@ let curiosity = null;
 
 
 
-if(this.curiosity){
+
+if(
+
+this.curiosity?.explore
+
+){
 
 
 
 curiosity =
 
 await this.curiosity.explore({
+
 
 
 experience,
@@ -608,10 +520,8 @@ memory,
 wisdom,
 
 
-self,
+self
 
-
-learning
 
 
 });
@@ -620,79 +530,18 @@ learning
 
 
 
-timeline.push({
 
 
-stage:"CURIOSITY"
+timeline.push(
 
+"CURIOSITY"
 
-});
+);
 
 
 
 }
 
-
-
-
-
-
-
-
-
-
-// =================================
-// EVOLUTION
-//
-// Identity changes only after
-// experience is understood.
-// =================================
-
-
-let evolution = null;
-
-
-
-
-if(this.evolution){
-
-
-
-evolution =
-
-await this.evolution.evolve({
-
-
-experience,
-
-
-wisdom,
-
-
-self,
-
-
-learning
-
-
-});
-
-
-
-
-
-
-timeline.push({
-
-
-stage:"EVOLUTION"
-
-
-});
-
-
-
-}
 
 
 
@@ -706,7 +555,7 @@ stage:"EVOLUTION"
 // =================================
 // REASONING
 //
-// Understand meaning.
+// Meaning formation only
 // =================================
 
 
@@ -715,13 +564,19 @@ let reasoning = null;
 
 
 
-if(this.reasoning){
+
+if(
+
+this.reasoning?.think
+
+){
 
 
 
 reasoning =
 
 await this.reasoning.think({
+
 
 
 experience,
@@ -736,13 +591,8 @@ wisdom,
 self,
 
 
-learning,
+curiosity
 
-
-curiosity,
-
-
-evolution
 
 
 });
@@ -752,13 +602,12 @@ evolution
 
 
 
-timeline.push({
 
+timeline.push(
 
-stage:"REASONING"
+"REASONING"
 
-
-});
+);
 
 
 
@@ -773,10 +622,11 @@ stage:"REASONING"
 
 
 
+
 // =================================
-// JUDGEMENT ⚖️
+// JUDGEMENT
 //
-// Should understanding move?
+// Permission boundary
 // =================================
 
 
@@ -785,13 +635,19 @@ let judgement = null;
 
 
 
-if(this.judgement){
+
+if(
+
+this.judgement?.judge
+
+){
 
 
 
 judgement =
 
 await this.judgement.judge({
+
 
 
 reasoning,
@@ -806,21 +662,21 @@ self,
 memory
 
 
-});
-
-
-
-
-
-
-
-timeline.push({
-
-
-stage:"JUDGEMENT"
-
 
 });
+
+
+
+
+
+
+
+
+timeline.push(
+
+"JUDGEMENT"
+
+);
 
 
 
@@ -834,8 +690,293 @@ stage:"JUDGEMENT"
 
 
 
+
+
 // =================================
-// EXPERIENCE COMPLETE
+// ACTION EXECUTOR
+//
+// Hands move only if allowed
+// =================================
+
+
+let execution = null;
+
+
+
+
+
+if(
+
+judgement &&
+
+this.executor?.execute
+
+){
+
+
+
+execution =
+
+await this.executor.execute(
+
+judgement
+
+);
+
+
+
+
+
+
+
+
+timeline.push(
+
+"EXECUTOR"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// OUTCOME
+//
+// Reality mirror
+// =================================
+
+
+let outcomeResult = null;
+
+
+
+
+
+if(
+
+execution &&
+
+this.outcome?.record
+
+){
+
+
+
+outcomeResult =
+
+await this.outcome.record(
+
+
+
+execution,
+
+
+
+{
+
+
+goal:
+
+experience.situation,
+
+
+source:
+
+experience.source
+
+
+
+}
+
+
+
+);
+
+
+
+
+
+
+
+
+timeline.push(
+
+"OUTCOME"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// LEARNING
+//
+// Outcome → meaning
+// =================================
+
+
+let learning = null;
+
+
+
+
+
+if(
+
+outcomeResult?.readyForLearning &&
+
+this.learning?.learn
+
+){
+
+
+
+learning =
+
+await this.learning.learn(
+
+
+
+outcomeResult,
+
+
+
+memory ? [memory] : []
+
+
+
+);
+
+
+
+
+
+
+
+
+timeline.push(
+
+"LEARNING"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EVOLUTION
+//
+// Slow becoming only
+// =================================
+
+
+let evolution = null;
+
+
+
+
+
+if(
+
+this.evolution?.evolve
+
+){
+
+
+
+evolution =
+
+await this.evolution.evolve({
+
+
+
+wisdomCandidates:
+
+
+this.learning?.getWisdomCandidates?.()
+
+||
+
+[],
+
+
+
+
+selfGrowthSignals:
+
+
+this.selfModel?.getGrowthSignals?.()
+
+||
+
+[]
+
+
+
+});
+
+
+
+
+
+
+
+
+timeline.push(
+
+"EVOLUTION"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// COMPLETE LIFE CYCLE
 // =================================
 
 
@@ -843,58 +984,50 @@ return {
 
 
 
-experienced:
-
-true,
+experienced:true,
 
 
 
-integrated:
-
-true,
+integrated:true,
 
 
 
 experience,
 
 
+attention,
+
 
 memory,
-
-
-
-reflection,
-
 
 
 wisdom,
 
 
-
 self,
-
-
-
-learning,
-
 
 
 curiosity,
 
 
-
-evolution,
-
-
-
-thought:
-
 reasoning,
-
 
 
 judgement,
 
+
+execution,
+
+
+outcome:
+
+outcomeResult,
+
+
+learning,
+
+
+evolution,
 
 
 timeline,
@@ -903,7 +1036,7 @@ timeline,
 
 message:
 
-"Experience moved through Emma and shaped understanding.",
+"Experience completed a full Emma life cycle.",
 
 
 
@@ -929,12 +1062,17 @@ new Date()
 
 
 
+
 // =================================
-// CREATE EXPERIENCE
+// CREATE EXPERIENCE OBJECT
 // =================================
 
 
-createExperience(event={}){
+createExperience(
+
+event={}
+
+){
 
 
 
@@ -942,12 +1080,9 @@ return {
 
 
 
-
 id:
 
 this.createId(),
-
-
 
 
 
@@ -959,18 +1094,11 @@ event.type ||
 
 
 
-
-
-
 source:
 
 event.source ||
 
 "world",
-
-
-
-
 
 
 
@@ -980,13 +1108,7 @@ event.person ||
 
 event.user ||
 
-event.userId ||
-
 null,
-
-
-
-
 
 
 
@@ -996,34 +1118,19 @@ event.situation ||
 
 event.message ||
 
-event.description ||
-
 event.text ||
+
+event.description ||
 
 null,
 
 
 
-
-
-
-
-
-// Action outcomes return here
-
-
-outcome:
-
-event.outcome ||
+result:
 
 event.result ||
 
 null,
-
-
-
-
-
 
 
 
@@ -1033,15 +1140,9 @@ event,
 
 
 
-
-
-
-
-
 createdAt:
 
-new Date().toISOString()
-
+new Date()
 
 
 
@@ -1050,9 +1151,6 @@ new Date().toISOString()
 
 
 }
-
-
-
 
 
 
@@ -1088,6 +1186,9 @@ return crypto.randomUUID();
 
 
 }
+
+
+
 
 
 
@@ -1132,18 +1233,21 @@ return {
 
 
 
-
-name:
+organ:
 
 "EmmaExperienceEngine",
 
 
 
-
 version:
 
-"v7",
+"v8",
 
+
+
+role:
+
+"Central nervous system",
 
 
 
@@ -1153,11 +1257,9 @@ state:
 
 
 
+cycles:
 
-role:
-
-"Spinal cord",
-
+this.cycles,
 
 
 
@@ -1168,48 +1270,37 @@ pipeline:[
 "Experience",
 
 
-
-"Stream",
-
-
-
 "Attention",
-
 
 
 "Memory",
 
 
-
-"Reflection",
-
-
-
 "Wisdom",
-
 
 
 "SelfModel",
 
 
-
-"Learning",
-
-
-
 "Curiosity",
-
-
-
-"Evolution",
-
 
 
 "Reasoning",
 
 
+"Judgement",
 
-"Judgement"
+
+"Executor",
+
+
+"Outcome",
+
+
+"Learning",
+
+
+"Evolution"
 
 
 
@@ -1218,21 +1309,15 @@ pipeline:[
 
 
 
-
-
 principle:
 
-"Move experiences. Never become the brain.",
-
-
-
+"Move life between organs. Never become an organ.",
 
 
 
 message:
 
-"World experiences flow through Emma and shape what she becomes."
-
+"I connect Emma's experiences into a continuous life cycle."
 
 
 

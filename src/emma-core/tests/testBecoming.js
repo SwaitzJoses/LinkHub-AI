@@ -1,91 +1,59 @@
 //
+// testEmmaLife.js
+//
 // PROJECT BECOMING
 //
-// Emma Full Life Cycle Test
+// Full Emma organism simulation
 //
-// Goal:
-// Prove Emma learns before adding more organs
+// This does NOT test functions.
+// This tests life flow.
+//
+// World
+//  ↓
+// Experience
+//  ↓
+// Memory
+//  ↓
+// Wisdom
+//  ↓
+// Self
+//  ↓
+// Reasoning
+//  ↓
+// Action
+//  ↓
+// Outcome
+//  ↓
+// Learning
+//  ↓
+// Evolution
 //
 
 
 import Emma from "../Emma.js";
 
 
+
+
+
 console.log(
-`
-🧪 =========================
-   EMMA LIFE TEST START
-=========================
-`
+"\n🌎 STARTING EMMA LIFE TEST\n"
 );
 
 
 
-const emma = new Emma();
+
+
+const wait = (ms)=>
+new Promise(
+resolve =>
+setTimeout(resolve, ms)
+);
 
 
 
 
-// fake company life events
 
-const events = [
-
-
-{
-
-    type:"business_event",
-
-    title:"Summer campaign launched",
-
-    description:
-    "Business offered 20% discount",
-
-    importance:80,
-
-    outcome:"failed",
-
-    result:
-    "Many views but very few purchases"
-
-},
-
-
-
-{
-
-    type:"business_event",
-
-    title:"Premium bundle launched",
-
-    description:
-    "Business created higher value package",
-
-    importance:85,
-
-    outcome:"success",
-
-    result:
-    "Customers bought more expensive option"
-
-},
-
-
-
-{
-
-    type:"question",
-
-    question:
-    "Should we run another 20% discount campaign?",
-
-    importance:90,
-
-    uncertainty:90
-
-}
-
-
-];
 
 
 
@@ -95,80 +63,340 @@ async function runLife(){
 
 
 
-for(const event of events){
+// =================================
+// CREATE EMMA
+// =================================
 
 
-console.log(
-`
-🌍 NEW EXPERIENCE:
-${event.title || event.question}
-`
-);
+const emma =
+new Emma();
 
 
-
-const response =
-await emma.experience(
-event
-);
 
 
 
 console.log(
-"Emma response:",
-response
+"\n=========================="
 );
+
+
+console.log(
+"🌅 AWAKENING"
+);
+
+
+console.log(
+"=========================="
+);
+
 
 
 
 console.log(
-`
---------------------------
-`
+
+emma.awaken()
+
 );
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE 1
+// NEW CUSTOMER
+// =================================
+
+
+console.log(
+"\n🌎 EXPERIENCE 1: NEW CUSTOMER\n"
+);
+
+
+
+
+await emma.experience({
+
+
+
+type:
+
+"CUSTOMER_EVENT",
+
+
+
+source:
+
+"LinkHub",
+
+
+
+customer:
+
+"Fashion Hub",
+
+
+
+situation:
+
+"Customer created first digital store and liked the result",
+
+
+
+result:
+
+"success",
+
+
+
+importance:
+
+70
+
+
+
+});
+
+
+
+
+
+
+
+
+
+await wait(500);
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE 2
+// SUCCESSFUL ACTION
+// =================================
+
+
+console.log(
+"\n🌎 EXPERIENCE 2: SUCCESS PATTERN\n"
+);
+
+
+
+
+await emma.experience({
+
+
+
+type:
+
+"ACTION_OUTCOME",
+
+
+
+source:
+
+"Marketing",
+
+
+
+action:
+
+"Created AI poster campaign",
+
+
+
+result:
+
+"Customer received more enquiries",
+
+
+
+success:
+
+true,
+
+
+
+goal:
+
+"Increase customer attention"
+
+
+
+});
+
+
+
+
+
+
+
+
+
+await wait(500);
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE 3
+// FAILURE
+// =================================
+
+
+console.log(
+"\n🌎 EXPERIENCE 3: FAILURE EXPERIENCE\n"
+);
+
+
+
+
+await emma.experience({
+
+
+
+type:
+
+"ACTION_OUTCOME",
+
+
+
+source:
+
+"Marketing",
+
+
+
+action:
+
+"Repeated same offer again",
+
+
+
+result:
+
+"Campaign failed because customers ignored repeated message",
+
+
+
+success:
+
+false,
+
+
+
+goal:
+
+"Increase sales"
+
+
+
+});
+
+
+
+
+
+
+
+
+
+await wait(500);
+
+
+
+
+
+
+
+
+
+
+// =================================
+// REPEATED EXPERIENCES
+//
+// Should create patterns
+// =================================
+
+
+console.log(
+"\n🔁 CREATING EXPERIENCE PATTERN\n"
+);
+
+
+
+
+
+for(
+
+let i=0;
+
+i<6;
+
+i++
+
+){
+
+
+
+await emma.experience({
+
+
+
+type:
+
+"ACTION_OUTCOME",
+
+
+
+source:
+
+"Business",
+
+
+
+result:
+
+"Personalized message worked successfully",
+
+
+
+success:true,
+
+
+
+goal:
+
+"Improve customer relationship",
+
+
+
+repeat:true
+
+
+
+});
+
+
+
+
+await wait(200);
+
 
 
 }
-
-
-
-
-console.log(
-
-`
-🧠 FINAL BRAIN STATUS
-`
-
-);
-
-
-console.log(
-emma.brain.getStats()
-);
-
-
-
-console.log(
-
-`
-🧬 FINAL IDENTITY
-`
-
-);
-
-
-if(emma.identity.snapshot){
-
-console.log(
-emma.identity.snapshot()
-);
-
-}
-
-
-
-}
-
-
-
-runLife();
