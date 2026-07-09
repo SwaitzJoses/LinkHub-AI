@@ -1,22 +1,23 @@
 // EmmaIdentityMemory.js
-// Emma's Identity Memory
 //
-// PURPOSE:
-// Remember WHO Emma has interacted with.
+// PROJECT BECOMING
 //
-// This is NOT event memory.
-// This is NOT reasoning.
-// This is NOT judgement.
+// Identity Memory v2
 //
 // EmmaMemory:
 // "What happened?"
 //
-// EmmaIdentityMemory:
-// "Who is this?"
+// MemoryConsolidation:
+// "What did I learn?"
+//
+// IdentityMemory:
+// "Who are we becoming together?"
 //
 // RULE:
-// Identity remembers.
-// Brain thinks.
+// Store identity.
+// Do not reason here.
+
+
 
 class EmmaIdentityMemory {
 
@@ -24,11 +25,13 @@ class EmmaIdentityMemory {
 constructor(){
 
 
-this.identities = new Map();
+this.identities =
+new Map();
+
 
 
 console.log(
-"🧑 Emma Identity Memory awake"
+"🧑 Emma Identity Memory v2 awake"
 );
 
 
@@ -36,16 +39,26 @@ console.log(
 
 
 
-// ----------------------------------------------------
-// Create stable identity key
-// ----------------------------------------------------
+
+
+
+
+
+
+// =====================================
+// CREATE STABLE IDENTITY KEY
+// =====================================
+
 
 createIdentityKey(person){
 
 
 if(!person){
+
 return null;
+
 }
+
 
 
 if(person.email){
@@ -57,6 +70,7 @@ return person.email
 }
 
 
+
 if(person.phone){
 
 return person.phone
@@ -64,6 +78,7 @@ return person.phone
 .trim();
 
 }
+
 
 
 if(person.name){
@@ -75,6 +90,7 @@ return person.name
 }
 
 
+
 return null;
 
 
@@ -82,9 +98,16 @@ return null;
 
 
 
-// ----------------------------------------------------
-// Check if Emma knows this person
-// ----------------------------------------------------
+
+
+
+
+
+
+// =====================================
+// FIND PERSON
+// =====================================
+
 
 find(person){
 
@@ -93,15 +116,23 @@ const key =
 this.createIdentityKey(person);
 
 
+
 if(!key){
+
 return null;
+
 }
 
 
+
 return (
+
 this.identities.get(key)
+
 ||
+
 null
+
 );
 
 
@@ -109,95 +140,230 @@ null
 
 
 
-// ----------------------------------------------------
-// Create new identity
-// ----------------------------------------------------
 
-create(person, context = {}){
+
+
+
+
+
+// =====================================
+// CREATE IDENTITY
+// =====================================
+
+
+create(person, context={}){
 
 
 const key =
 this.createIdentityKey(person);
 
 
+
 if(!key){
+
 return null;
+
 }
+
+
+
 
 
 
 const identity = {
 
 
+
 id:
 key,
 
 
+
 name:
-person.name ||
-"Unknown",
+person.name || "Unknown",
+
 
 
 email:
-person.email ||
-null,
+person.email || null,
+
 
 
 phone:
-person.phone ||
-null,
+person.phone || null,
 
 
-sources:
-[
-person.source || "unknown"
-],
+
+createdAt:
+new Date(),
 
 
-// first time Emma met them
 
 firstSeen:
 new Date(),
 
 
-// latest interaction
 
 lastSeen:
 new Date(),
 
 
-// every touchpoint
 
-interactions:[
-{
 
-time:
-new Date(),
 
-source:
-person.source,
 
-context
 
-}
+// ----------------------
+// where Emma met them
+// ----------------------
+
+sources:[
+
+person.source ||
+"unknown"
 
 ],
 
 
-// facts learned over time
-// Example:
-// company, role, preferences
-
-profile:{},
 
 
-// Relationship history only.
-// No judgement here.
 
-history:[]
+
+
+
+// ----------------------
+// relationship state
+// ----------------------
+
+relationship:{
+
+
+
+familiarity:
+1,
+
+
+
+trust:
+0,
+
+
+
+interactions:
+0,
+
+
+
+stage:
+"new"
+
+
+
+},
+
+
+
+
+
+
+
+
+// ----------------------
+// learned profile
+// ----------------------
+
+profile:{
+
+
+
+preferences:{},
+
+
+
+communication:{
+
+
+
+style:null,
+
+
+
+pace:null,
+
+
+
+detailLevel:null
+
+
+
+},
+
+
+
+interests:[]
+
+
+
+},
+
+
+
+
+
+
+
+
+
+//
+// Beliefs Emma formed
+// about this relationship
+//
+
+beliefs:[],
+
+
+
+
+
+
+
+
+
+
+//
+// Timeline
+//
+
+history:[
+
+
+
+{
+
+type:
+"FIRST_CONTACT",
+
+
+time:
+new Date(),
+
+
+context
+
+
+}
+
+
+
+]
+
 
 
 };
+
+
+
+
 
 
 
@@ -207,10 +373,14 @@ identity
 );
 
 
+
+
 console.log(
-"🆕 New identity learned:",
+"🆕 New relationship formed:",
 identity.name
 );
+
+
 
 
 return identity;
@@ -220,11 +390,18 @@ return identity;
 
 
 
-// ----------------------------------------------------
-// Update existing person
-// ----------------------------------------------------
 
-update(identity, person, context = {}){
+
+
+
+
+
+// =====================================
+// UPDATE IDENTITY
+// =====================================
+
+
+update(identity, person, context={}){
 
 
 identity.lastSeen =
@@ -232,31 +409,58 @@ new Date();
 
 
 
-// add new source
 
-if(
-person.source &&
-!identity.sources.includes(person.source)
+identity.relationship.interactions++;
+
+
+
+
+identity.relationship.familiarity =
+
+Math.min(
+
+identity.relationship.familiarity + 1,
+
+100
+
+);
+
+
+
+
+
+
+if(person.source &&
+
+!identity.sources.includes(
+person.source
+)
+
 ){
+
 
 identity.sources.push(
 person.source
 );
 
+
 }
 
 
 
-// update latest info
+
+
 
 identity.name =
 person.name ||
 identity.name;
 
 
+
 identity.email =
 person.email ||
 identity.email;
+
 
 
 identity.phone =
@@ -265,17 +469,48 @@ identity.phone;
 
 
 
-identity.interactions.push({
+
+
+
+
+identity.history.push({
+
+
+
+type:
+"INTERACTION",
+
+
 
 time:
 new Date(),
 
+
+
 source:
 person.source,
 
+
+
 context
 
+
+
 });
+
+
+
+
+
+
+
+this.updateRelationshipStage(
+identity
+);
+
+
+
+
 
 
 
@@ -286,11 +521,6 @@ identity
 
 
 
-console.log(
-"🔄 Identity updated:",
-identity.name
-);
-
 
 return identity;
 
@@ -299,22 +529,92 @@ return identity;
 
 
 
-// ----------------------------------------------------
-// Main entry point
-// Emma calls this
-// ----------------------------------------------------
 
-remember(person, context = {}){
+
+
+
+
+
+// =====================================
+// RELATIONSHIP EVOLUTION
+// =====================================
+
+
+updateRelationshipStage(identity){
+
+
+
+const count =
+identity.relationship.interactions;
+
+
+
+
+
+if(count > 50){
+
+
+identity.relationship.stage =
+"deep";
+
+
+}
+
+
+
+else if(count > 10){
+
+
+identity.relationship.stage =
+"familiar";
+
+
+}
+
+
+
+else {
+
+
+identity.relationship.stage =
+"learning";
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// MAIN ENTRY
+// =====================================
+
+
+remember(person, context={}){
+
 
 
 if(!person){
+
 return null;
+
 }
 
 
 
 const existing =
 this.find(person);
+
 
 
 
@@ -332,6 +632,8 @@ context
 
 
 
+
+
 return this.create(
 person,
 context
@@ -342,71 +644,83 @@ context
 
 
 
-// ----------------------------------------------------
-// Add learned facts about person
-// ----------------------------------------------------
 
-learnFact(person, key, value){
+
+
+
+
+
+// =====================================
+// LEARN USER FACT
+// =====================================
+
+
+learnFact(person, category, key, value){
+
 
 
 const identity =
 this.find(person);
 
 
+
 if(!identity){
+
 return null;
+
 }
 
 
 
-identity.profile[key] =
+
+
+if(
+
+!identity.profile[category]
+
+){
+
+
+identity.profile[category] = {};
+
+
+}
+
+
+
+
+identity.profile
+[category]
+[key] =
 value;
 
 
-this.identities.set(
-identity.id,
-identity
-);
 
-
-return identity;
-
-
-}
-
-
-
-// ----------------------------------------------------
-// Add relationship history
-// ----------------------------------------------------
-
-addHistory(person, event){
-
-
-const identity =
-this.find(person);
-
-
-if(!identity){
-return null;
-}
 
 
 
 identity.history.push({
 
-time:
-new Date(),
 
-event
+type:
+"FACT_LEARNED",
+
+
+category,
+
+
+key,
+
+
+time:
+new Date()
+
 
 });
 
 
-this.identities.set(
-identity.id,
-identity
-);
+
+
 
 
 return identity;
@@ -416,15 +730,234 @@ return identity;
 
 
 
-// ----------------------------------------------------
-// Get all known people
-// ----------------------------------------------------
+
+
+
+
+
+
+// =====================================
+// ADD RELATIONSHIP BELIEF
+// =====================================
+
+
+addBelief(person, belief){
+
+
+
+const identity =
+this.find(person);
+
+
+
+if(!identity){
+
+return null;
+
+}
+
+
+
+
+identity.beliefs.push({
+
+
+
+belief,
+
+
+
+confidence:
+50,
+
+
+
+createdAt:
+new Date()
+
+
+
+});
+
+
+
+
+
+
+return identity;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// STRENGTHEN TRUST
+// =====================================
+
+
+increaseTrust(person, amount=5){
+
+
+
+const identity =
+this.find(person);
+
+
+
+if(!identity){
+
+return null;
+
+}
+
+
+
+
+identity.relationship.trust =
+
+Math.min(
+
+identity.relationship.trust + amount,
+
+100
+
+);
+
+
+
+
+
+return identity;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// HISTORY
+// =====================================
+
+
+addHistory(person,event){
+
+
+
+const identity =
+this.find(person);
+
+
+
+if(!identity){
+
+return null;
+
+}
+
+
+
+
+identity.history.push({
+
+
+
+time:
+new Date(),
+
+
+
+event
+
+
+
+});
+
+
+
+
+return identity;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================================
+// PRIVACY SAFE FORGET
+// =====================================
+
+
+forget(person){
+
+
+
+const key =
+this.createIdentityKey(person);
+
+
+
+
+if(key){
+
+
+this.identities.delete(
+key
+);
+
+
+return true;
+
+
+}
+
+
+
+
+return false;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =====================================
+// GETTERS
+// =====================================
+
 
 getAll(){
 
 
 return Array.from(
+
 this.identities.values()
+
 );
 
 
@@ -432,47 +965,74 @@ this.identities.values()
 
 
 
-// ----------------------------------------------------
-// Debug Emma's relationships
-// ----------------------------------------------------
+
+
 
 summary(){
 
 
+
 return {
 
+
+
 totalPeople:
+
 this.identities.size,
 
 
-people:
+
+
+relationships:
+
+
+
 this.getAll()
+
 .map(person=>({
+
+
 
 name:
 person.name,
 
-email:
-person.email,
+
+
+stage:
+person.relationship.stage,
+
+
+
+trust:
+person.relationship.trust,
+
+
 
 interactions:
-person.interactions.length,
+person.relationship.interactions,
+
+
 
 knownSince:
 person.firstSeen
 
 
+
 }))
+
 
 
 };
 
 
+
+}
+
+
+
 }
 
 
-
-}
 
 
 

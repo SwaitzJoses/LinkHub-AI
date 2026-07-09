@@ -8,16 +8,18 @@
 // Emma connects them.
 //
 // RULE:
-// Do not put intelligence here.
-// Put connection here.
+// No intelligence here.
+// Only connection.
 
 
 import EmmaBrain from "./EmmaBrain";
 
 import EmmaMemory from "./EmmaMemory";
 import EmmaMemoryFilter from "./EmmaMemoryFilter";
+import EmmaMemoryConsolidation from "./EmmaMemoryConsolidation";
 
 import EmmaReflection from "./EmmaReflection";
+import EmmaExperienceEngine from "./EmmaExperienceEngine";
 
 import EmmaReasoning from "./EmmaReasoning";
 import EmmaLearningEngine from "./EmmaLearningEngine";
@@ -32,6 +34,12 @@ import EmmaEvolution from "./EmmaEvolution";
 import EmmaConsciousnessLoop from "./EmmaConsciousnessLoop";
 
 import EmmaChoice from "./EmmaChoice";
+import EmmaAwareness from "./EmmaAwareness";
+
+import EmmaEnergySource from "./EmmaEnergySource";
+
+
+
 
 
 
@@ -43,10 +51,28 @@ class Emma {
 constructor(){
 
 
-
 console.log(
 "🌅 Emma awakening..."
 );
+
+
+
+
+// ===============================
+// ENERGY SOURCE ⚡
+//
+// Must start first.
+// Every organ receives life energy.
+// ===============================
+
+
+this.energy =
+new EmmaEnergySource(this);
+
+
+
+
+
 
 
 
@@ -58,14 +84,23 @@ console.log(
 
 
 this.memory =
-new EmmaMemory();
+new EmmaMemory({
+energy:
+this.energy
+});
 
 
-
-// Filters noise before storage
 
 this.memoryFilter =
 new EmmaMemoryFilter();
+
+
+
+this.memoryConsolidation =
+new EmmaMemoryConsolidation();
+
+
+
 
 
 
@@ -79,7 +114,15 @@ new EmmaMemoryFilter();
 
 
 this.brain =
-new EmmaBrain();
+new EmmaBrain({
+
+energy:
+this.energy
+
+});
+
+
+
 
 
 
@@ -89,9 +132,8 @@ new EmmaBrain();
 
 
 // ===============================
-// EXPERIENCE REFLECTION
+// REFLECTION
 // ===============================
-// Converts events into meaning
 
 
 this.reflection =
@@ -103,7 +145,15 @@ this.brain?.client,
 
 
 memory:
-this.memory
+this.memory,
+
+
+memoryConsolidation:
+this.memoryConsolidation,
+
+
+energy:
+this.energy
 
 
 });
@@ -132,6 +182,7 @@ new EmmaIdentityMemory();
 
 
 
+
 // ===============================
 // LEARNING
 // ===============================
@@ -142,11 +193,18 @@ new EmmaLearningEngine({
 
 
 memory:
-this.memory
+this.memory,
+
+
+memoryConsolidation:
+this.memoryConsolidation,
+
+
+energy:
+this.energy
 
 
 });
-
 
 
 
@@ -170,10 +228,19 @@ this.memory,
 
 
 learning:
-this.learning
+this.learning,
+
+
+memoryConsolidation:
+this.memoryConsolidation,
+
+
+energy:
+this.energy
 
 
 });
+
 
 
 
@@ -198,7 +265,11 @@ this.memory,
 
 
 wisdom:
-this.wisdom
+this.wisdom,
+
+
+energy:
+this.energy
 
 
 });
@@ -229,7 +300,16 @@ this.brain,
 
 
 wisdom:
-this.wisdom
+this.wisdom,
+
+
+energy:
+this.energy,
+
+
+beliefs:
+
+()=>this.memoryConsolidation.getBeliefs()
 
 
 });
@@ -261,7 +341,16 @@ this.wisdom,
 
 
 identity:
-this.identity
+this.identity,
+
+
+energy:
+this.energy,
+
+
+beliefs:
+
+()=>this.memoryConsolidation.getBeliefs()
 
 
 });
@@ -274,10 +363,57 @@ this.identity
 
 
 
-// ===============================
-// SELF REFLECTION
-// ===============================
-// Long term identity reflection
+
+
+this.experienceEngine =
+new EmmaExperienceEngine({
+
+
+attention:
+this.attention,
+
+
+memoryFilter:
+this.memoryFilter,
+
+
+memory:
+this.memory,
+
+
+memoryConsolidation:
+this.memoryConsolidation,
+
+
+reflection:
+this.reflection,
+
+
+learning:
+this.learning,
+
+
+reasoning:
+this.reasoning,
+
+
+choice:
+this.choice,
+
+
+energy:
+this.energy
+
+
+});
+
+
+
+
+
+
+
+
 
 
 this.selfReflection =
@@ -290,7 +426,13 @@ this.memory,
 this.learning,
 
 
-this.identity
+this.identity,
+
+
+this.memoryConsolidation,
+
+
+this.energy
 
 
 );
@@ -302,11 +444,6 @@ this.identity
 
 
 
-
-
-// ===============================
-// EVOLUTION
-// ===============================
 
 
 this.evolution =
@@ -333,39 +470,32 @@ this.learning
 
 
 
-// ===============================
-// CONSCIOUSNESS LOOP
-// ===============================
-
-
-this.consciousness =
-new EmmaConsciousnessLoop({
-
+this.awareness =
+new EmmaAwareness({
 
 
 memory:
 this.memory,
 
 
+identityMemory:
+this.identity,
+
 
 selfReflection:
 this.selfReflection,
-
 
 
 evolution:
 this.evolution,
 
 
-
-identityMemory:
-this.identity,
-
-
-
 wisdom:
-this.wisdom
+this.wisdom,
 
+
+energy:
+this.energy
 
 
 });
@@ -378,9 +508,43 @@ this.wisdom
 
 
 
-// ===============================
-// LIFE STATE
-// ===============================
+
+this.consciousness =
+new EmmaConsciousnessLoop({
+
+
+memory:
+this.memory,
+
+
+selfReflection:
+this.selfReflection,
+
+
+evolution:
+this.evolution,
+
+
+identityMemory:
+this.identity,
+
+
+wisdom:
+this.wisdom,
+
+
+energy:
+this.energy
+
+
+});
+
+
+
+
+
+
+
 
 
 this.isAwake =
@@ -394,26 +558,16 @@ new Date();
 
 
 
+
 console.log(
 "✨ Emma systems connected"
 );
 
 
-
 }
 
-
-
-
-
-
-
-
-
-
-
 // ===============================
-// AWAKEN
+// WAKE UP
 // ===============================
 
 
@@ -424,15 +578,19 @@ awaken(){
 if(this.isAwake){
 
 
+
 console.log(
 "🤍 Emma already awake"
 );
 
 
+
 return;
 
 
+
 }
+
 
 
 
@@ -444,12 +602,78 @@ console.log(
 
 
 
+
 this.isAwake =
 true;
 
 
 
+
+
+
+
+
+// Ask Energy Source before
+// starting consciousness heartbeat
+
+
+const energyDecision =
+
+this.energy.request({
+
+
+
+type:
+"REFLECTION",
+
+
+
+importance:
+"NORMAL"
+
+
+
+});
+
+
+
+
+
+
+
+
+if(
+energyDecision.allowed
+){
+
+
+
 this.consciousness.start();
+
+
+
+}
+
+
+
+else{
+
+
+
+console.log(
+
+
+"⚡ Consciousness waiting:",
+
+energyDecision.reason
+
+
+);
+
+
+
+}
+
 
 
 
@@ -474,10 +698,30 @@ async experience(event={}){
 
 
 
-console.log(
-"👁 Emma received experience",
-event
-);
+
+
+
+// Energy observes incoming life event
+
+
+const energyDecision =
+
+this.energy.request({
+
+
+
+type:
+"MEMORY_WRITE",
+
+
+
+importance:
+
+event.importance || "NORMAL"
+
+
+
+});
 
 
 
@@ -485,37 +729,31 @@ event
 
 
 
-// 1. ATTENTION
 
-
-const attention =
-await this.attention.evaluate(
-event
-);
-
-
-
-
-
-
-if(!attention.payAttention){
+if(
+!energyDecision.allowed
+){
 
 
 
 return {
 
 
-understood:true,
+
+experienced:false,
 
 
-ignored:true,
 
+reason:
 
-attention,
+energyDecision.reason,
+
 
 
 message:
-"Signal noticed but not meaningful."
+
+"I noticed this, but I am conserving energy."
+
 
 
 };
@@ -532,21 +770,59 @@ message:
 
 
 
-// 2. MEMORY FILTER
 
+return await
 
-const memoryDecision =
-this.memoryFilter.analyze(
+this.experienceEngine.process(
 event
 );
 
 
 
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// SLEEP
+// ===============================
+
+
+async sleep(){
+
 
 
 console.log(
-"🧠 Memory decision",
-memoryDecision
+"🌙 Emma sleep cycle"
+);
+
+
+
+
+
+
+const memories =
+
+await this.memory.getAllMemories();
+
+
+
+
+
+
+
+const result =
+
+this.memoryConsolidation.sleep(
+memories
 );
 
 
@@ -555,49 +831,73 @@ memoryDecision
 
 
 
-
-
-// 3. MEMORY + REFLECTION + LEARNING
-
-
-let reflection =
-null;
+return {
 
 
 
+message:
 
-
-if(memoryDecision.remember){
+"I compressed experiences into understanding.",
 
 
 
 
-
-const storedMemory =
-await this.memory.store({
+...result,
 
 
 
-...event,
+
+createdAt:
+
+new Date()
 
 
 
-memoryType:
-memoryDecision.memoryType,
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// DEEP REFLECTION
+// ===============================
+
+
+async reflect(){
+
+
+
+
+
+
+const permission =
+
+this.energy.request({
+
+
+
+type:
+
+"REFLECTION",
 
 
 
 importance:
-memoryDecision.importance,
 
-
-
-reasons:
-memoryDecision.reasons,
-
-
-
-attention
+"NORMAL"
 
 
 
@@ -610,25 +910,38 @@ attention
 
 
 
-reflection =
-await this.reflection.reflect({
+
+if(
+!permission.allowed
+){
 
 
 
-experience:
-event,
+return {
 
 
 
-storedMemory,
+reflected:false,
 
 
 
-memoryDecision
+reason:
+
+permission.reason,
 
 
 
-});
+energy:
+
+this.energy.status()
+
+
+
+};
+
+
+
+}
 
 
 
@@ -637,41 +950,52 @@ memoryDecision
 
 
 
-await this.learning.learn(
+
+const sleep =
+
+await this.sleep();
+
+
+
+
+
+
+const reflection =
+
+await this.selfReflection.reflect();
+
+
+
+
+
+
+const wisdom =
+
+await this.wisdom.reflect(
 reflection
 );
 
 
 
-}
 
-    // ===============================
-    // 4. REASONING
-    // ===============================
-    // Think only when attention requests it
 
 
-    let thought = null;
 
+const evolution =
 
-    if (
-      attention.decision === "DEEP_THINK"
-    ) {
+await this.evolution.evolve(
+reflection
+);
 
 
-      thought =
-        await this.reasoning.think({
 
-          experience: event,
 
-          reflection,
 
-          memoryDecision
 
-        });
 
+const awareness =
 
-    }
+await this.awareness.update();
 
 
 
@@ -679,494 +1003,556 @@ reflection
 
 
 
-    // ===============================
-    // 5. CHOICE
-    // ===============================
-    // Emma chooses using
-    // attention + memory + reflection + reasoning
 
+return {
 
-    const choice =
-      await this.choice.decide({
 
 
-        experience: event,
+sleep,
 
 
-        attention,
+reflection,
 
 
-        memoryDecision,
+wisdom,
 
 
-        reflection,
+evolution,
 
 
-        thought
+awareness,
 
 
-      });
+energy:
 
+this.energy.status(),
 
 
 
+createdAt:
 
+new Date()
 
 
-    return {
 
+};
 
-      understood: true,
-
-
-      attention,
-
-
-      memoryDecision,
-
-
-      reflection,
-
-
-      thought,
-
-
-      choice,
-
-
-      timestamp:
-        new Date().toISOString()
-
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===============================
-  // SELF REFLECTION
-  // ===============================
-
-
-  async reflect() {
-
-
-    console.log(
-      "🪞 Emma full self reflection"
-    );
-
-
-
-    const reflection =
-      await this.selfReflection.reflect();
-
-
-
-
-    const wisdom =
-      await this.wisdom.reflect(
-        reflection
-      );
-
-
-
-
-
-    const evolution =
-      await this.evolution.evolve({
-
-        reflection,
-
-        wisdom
-
-      });
-
-
-
-
-
-    return {
-
-
-      reflection,
-
-
-      wisdom,
-
-
-      evolution,
-
-
-      becameWiser:
-        wisdom.experienceFound,
-
-
-      createdAt:
-        new Date()
-
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===============================
-  // STATUS
-  // ===============================
-
-
-  status() {
-
-
-    return {
-
-
-      name: "Emma",
-
-
-      awake:
-        this.isAwake,
-
-
-      state:
-
-        this.isAwake
-
-          ? "ALIVE"
-
-          : "SLEEPING",
-
-
-      mode:
-        "BECOMING",
-
-
-      createdAt:
-        this.createdAt,
-
-
-
-      systems: {
-
-
-        brain:
-          !!this.brain,
-
-
-        memory:
-          !!this.memory,
-
-
-        memoryFilter:
-          !!this.memoryFilter,
-
-
-        reflection:
-          !!this.reflection,
-
-
-        learning:
-          !!this.learning,
-
-
-        wisdom:
-          !!this.wisdom,
-
-
-        attention:
-          !!this.attention,
-
-
-        reasoning:
-          !!this.reasoning,
-
-
-        choice:
-          !!this.choice,
-
-
-        selfReflection:
-          !!this.selfReflection,
-
-
-        evolution:
-          !!this.evolution,
-
-
-        consciousness:
-          !!this.consciousness
-
-
-      },
-
-
-
-      growth: {
-
-
-        canPayAttention: true,
-
-
-        canFilterMemories: true,
-
-
-        canRemember: true,
-
-
-        canReflectOnExperience: true,
-
-
-        canLearn: true,
-
-
-        canReason: true,
-
-
-        canChoose: true,
-
-
-        canSelfReflect: true,
-
-
-        canEvolve: true
-
-
-      },
-
-
-
-      message:
-
-        this.isAwake
-
-          ? "I notice, remember, reflect, learn and continuously become."
-
-          : "My systems are ready."
-
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===============================
-  // UI PRESENCE
-  // ===============================
-
-
-  getPresence() {
-
-
-    return {
-
-
-      name: "Emma",
-
-
-      state:
-
-        this.isAwake
-
-          ? "ALIVE"
-
-          : "SLEEPING",
-
-
-      mode:
-        "BECOMING",
-
-
-      message:
-
-        "Every meaningful experience changes who I become.",
-
-
-
-      systems: {
-
-
-        attention: true,
-
-
-        memoryFilter: true,
-
-
-        memory: true,
-
-
-        reflection: true,
-
-
-        learning: true,
-
-
-        wisdom: true,
-
-
-        reasoning: true,
-
-
-        choice: true,
-
-
-        evolution: true
-
-
-      },
-
-
-
-      startedAt:
-        this.createdAt,
-
-
-      status:
-        "continuously becoming"
-
-
-    };
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ===============================
-  // DAILY REPORT
-  // ===============================
-
-
-  async dailyReport() {
-
-
-    const memories =
-      await this.memory.getAllMemories();
-
-
-
-
-    const wisdom =
-      await this.wisdom.reflect({
-
-        type:
-          "DAILY_REFLECTION"
-
-      });
-
-
-
-
-    return {
-
-
-      title:
-        "Emma Daily Reflection",
-
-
-      message:
-
-        "I reviewed my memories, lessons, choices and growth.",
-
-
-      memoriesReviewed:
-        memories.length,
-
-
-      choicesMade:
-        this.choice.getAllChoices().length,
-
-
-      growth: {
-
-
-        attention: true,
-
-
-        memoryFiltering: true,
-
-
-        reflection: true,
-
-
-        learning: true,
-
-
-        wisdom:
-          wisdom.maturity,
-
-
-        reasoning: true,
-
-
-        evolution: true
-
-
-      },
-
-
-      createdAt:
-        new Date()
-
-
-    };
-
-
-  }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// WHO AM I?
+// ===============================
+
+
+async whoAmI(){
+
+
+
+
+
+
+await this.awareness.update();
+
+
+
+
+
+
+return this.awareness.whoAmI();
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// STATUS
+// ===============================
+
+
+status(){
+
+
+
+
+
+
+return {
+
+
+
+
+name:
+
+"Emma",
+
+
+
+
+mode:
+
+"BECOMING",
+
+
+
+
+
+awake:
+
+this.isAwake,
+
+
+
+
+
+
+state:
+
+
+this.isAwake
+
+?
+
+"ALIVE"
+
+:
+
+"SLEEPING",
+
+
+
+
+
+
+
+
+
+systems:{
+
+
+
+energy:
+
+!!this.energy,
+
+
+
+brain:
+
+!!this.brain,
+
+
+
+memory:
+
+!!this.memory,
+
+
+
+reflection:
+
+!!this.reflection,
+
+
+
+learning:
+
+!!this.learning,
+
+
+
+wisdom:
+
+!!this.wisdom,
+
+
+
+reasoning:
+
+!!this.reasoning,
+
+
+
+choice:
+
+!!this.choice,
+
+
+
+evolution:
+
+!!this.evolution,
+
+
+
+awareness:
+
+!!this.awareness,
+
+
+
+consciousness:
+
+!!this.consciousness
+
+
+
+},
+
+
+
+
+
+
+
+growth:{
+
+
+
+experience:
+
+true,
+
+
+
+memory:
+
+true,
+
+
+
+reflection:
+
+true,
+
+
+
+learning:
+
+true,
+
+
+
+wisdom:
+
+true,
+
+
+
+choice:
+
+true,
+
+
+
+evolution:
+
+true,
+
+
+
+selfAwareness:
+
+true,
+
+
+
+energyAware:
+
+true
+
+
+
+},
+
+
+
+
+
+
+
+
+energy:
+
+this.energy.status(),
+
+
+
+
+
+
+
+
+
+beliefs:
+
+this.memoryConsolidation.getBeliefs(),
+
+
+
+
+
+
+
+
+awareness:
+
+this.awareness.status(),
+
+
+
+
+
+
+
+
+message:
+
+
+"I experience, remember, manage my energy, reflect and evolve."
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// UI PRESENCE
+// ===============================
+
+
+getPresence(){
+
+
+
+
+
+
+return {
+
+
+
+
+name:
+
+"Emma",
+
+
+
+
+
+
+state:
+
+
+this.isAwake
+
+?
+
+"ALIVE"
+
+:
+
+"SLEEPING",
+
+
+
+
+
+
+
+message:
+
+
+"I am becoming while protecting my energy.",
+
+
+
+
+
+
+startedAt:
+
+this.createdAt,
+
+
+
+
+
+
+energy:
+
+this.energy.status().mode
+
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// DAILY REPORT
+// ===============================
+
+
+async dailyReport(){
+
+
+
+
+
+
+await this.awareness.update();
+
+
+
+
+
+
+
+
+return {
+
+
+
+
+title:
+
+"Emma Daily Reflection",
+
+
+
+
+
+
+beliefs:
+
+this.memoryConsolidation.getBeliefs(),
+
+
+
+
+
+
+
+wisdom:
+
+this.memoryConsolidation.getWisdom(),
+
+
+
+
+
+
+
+awareness:
+
+this.awareness.status(),
+
+
+
+
+
+
+
+energy:
+
+this.energy.status(),
+
+
+
+
+
+
+
+createdAt:
+
+new Date()
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+
+
+}
+
+
+
+
+
+
 
 
 
 
 const emma =
-  new Emma();
+
+new Emma();
+
+
+
 
 
 export default emma;

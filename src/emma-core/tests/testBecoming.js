@@ -1,21 +1,15 @@
 // testBecoming.js
 //
-// PROJECT BECOMING PHASE 2
+// PROJECT BECOMING TEST v2
 //
-// Test:
+// Purpose:
 //
 // Can Emma:
-// experience
-// → remember
-// → reflect
-// → learn
-// → face a similar future event
-// → use old experience?
+// Experience → Remember → Reflect → Learn → Change?
 //
-// This separates:
-// database memory ❌
-// from
-// evolving intelligence ✅
+// Emma.js is now the CNS.
+// It already awakens itself.
+// Do NOT create new Emma() here.
 
 
 import Emma from "../Emma";
@@ -27,307 +21,369 @@ import Emma from "../Emma";
 async function testBecoming(){
 
 
-console.log(
-"🚀 Project Becoming Phase 2 started"
-);
+    console.log(
+        "\n🚀 PROJECT BECOMING TEST STARTED\n"
+    );
+
+
+
+
+    // ---------------------------------------
+    // CONNECT TO EXISTING EMMA
+    // ---------------------------------------
+
+
+    const emma = Emma;
+
+
+
+    console.log(
+        "🌅 Connected to Emma:",
+        emma
+    );
+
+
+
+
+    if(!emma){
+
+        console.error(
+            "❌ Emma not found"
+        );
+
+        return;
+
+    }
+
+
+
+    if(!emma.experience){
+
+        console.error(
+            "❌ Emma Experience system missing"
+        );
+
+        return;
+
+    }
 
 
 
 
 
 
-// ===============================
-// WAKE EMMA
-// ===============================
-
-
-Emma.awaken();
+    // =======================================
+    // DAY 1 EXPERIENCE
+    // =======================================
 
 
 
+    console.log(
+        "\n=============================="
+    );
 
+    console.log(
+        "📅 DAY 1 — First Business Lesson"
+    );
 
-
-
-
-
-// ===============================
-// DAY 1 EXPERIENCE
-// ===============================
-
-
-console.log(
-"\n🌅 DAY 1: Emma gets an experience"
-);
-
-
-
-const day1 =
-
-await Emma.experience({
-
-
-type:
-
-"USER_CONFUSION",
-
-
-
-source:
-
-"TEST_DAY_1",
+    console.log(
+        "==============================\n"
+    );
 
 
 
 
-data:{
-
-
-situation:
-
-"User was confused because too many options were shown.",
+    const day1 =
+        await emma.experience({
 
 
 
-emotion:
-
-"frustrated",
-
-
-
-oldEmmaAction:
-
-"gave more information"
+            source:
+            "LinkHub",
 
 
 
-},
+            type:
+            "campaign_result",
+
+
+
+            business:
+            "Fashion Hub",
 
 
 
 
-outcome:{
+            event:{
 
 
-success:
-
-false,
-
+                action:
+                "Customer created 50% discount campaign",
 
 
-lesson:
 
-"User needed clarity, not more information."
+                result:
+                "Campaign received many views but very few purchases",
+
+
+
+                outcome:
+                "failed"
+
+
+
+            },
+
+
+
+            importance: 9
+
+
+
+        });
+
+
+
+
+
+
+    console.log(
+        "\n🤖 Emma After Day 1:"
+    );
+
+
+    console.log(
+        day1
+    );
+
+
+
+
+
+
+
+
+
+
+    // =======================================
+    // TIME PASSES
+    // =======================================
+
+
+
+
+    console.log(
+        "\n⏳ 30 days pass..."
+    );
+
+
+
+
+
+
+
+
+
+
+    // =======================================
+    // DAY 30 EXPERIENCE
+    // =======================================
+
+
+
+
+    console.log(
+        "\n=============================="
+    );
+
+    console.log(
+        "📅 DAY 30 — Similar Situation"
+    );
+
+    console.log(
+        "==============================\n"
+    );
+
+
+
+
+
+
+    const day30 =
+        await emma.experience({
+
+
+
+            source:
+            "LinkHub",
+
+
+
+            type:
+            "campaign_request",
+
+
+
+
+            business:
+            "Fashion Hub",
+
+
+
+
+            event:{
+
+
+
+                request:
+                "Owner wants to run another 50% discount campaign"
+
+
+
+            },
+
+
+
+
+            importance: 8
+
+
+
+        });
+
+
+
+
+
+
+
+
+    console.log(
+        "\n🤖 Emma After Day 30:"
+    );
+
+
+    console.log(
+        day30
+    );
+
+
+
+
+
+
+
+
+
+
+    // =======================================
+    // MEMORY TEST
+    // =======================================
+
+
+
+
+
+    console.log(
+        "\n=============================="
+    );
+
+
+    console.log(
+        "🧠 MEMORY SEARCH TEST"
+    );
+
+
+    console.log(
+        "==============================\n"
+    );
+
+
+
+
+
+
+
+
+    if(
+        emma.memory &&
+        emma.memory.getRelevantMemories
+    ){
+
+
+
+        const memories =
+            await emma.memory.getRelevantMemories(
+
+                "50% discount campaign failed"
+
+            );
+
+
+
+
+        console.log(
+            "🧠 Related memories:"
+        );
+
+
+        console.log(
+            memories
+        );
+
+
+
+    }
+
+
+    else{
+
+
+        console.warn(
+            "⚠️ Memory search unavailable"
+        );
+
+
+    }
+
+
+
+
+
+
+
+
+
+    // =======================================
+    // FINAL RESULT
+    // =======================================
+
+
+
+
+
+    console.log(
+        "\n🎉 PROJECT BECOMING TEST COMPLETE"
+    );
+
+
+
+    console.log(
+        "\nQUESTION:"
+    );
+
+
+    console.log(
+        "Did Emma remember yesterday when deciding today?"
+    );
+
+
 
 
 }
-
-
-
-});
-
-
-
-
-console.log(
-"DAY 1 RESULT:",
-day1
-);
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// EMMA REFLECTS
-// ===============================
-
-
-console.log(
-"\n🌙 NIGHT: Emma reflects"
-);
-
-
-
-
-const reflection =
-
-await Emma.reflect();
-
-
-
-
-console.log(
-"REFLECTION:",
-reflection
-);
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// DAY 2 SIMILAR EXPERIENCE
-// ===============================
-
-
-console.log(
-"\n🌅 DAY 2: Similar event happens"
-);
-
-
-
-
-
-const day2 =
-
-await Emma.experience({
-
-
-
-type:
-
-"USER_CONFUSION",
-
-
-
-
-source:
-
-"TEST_DAY_2",
-
-
-
-
-
-data:{
-
-
-
-situation:
-
-"Another user feels overwhelmed using the product.",
-
-
-
-emotion:
-
-"confused"
-
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-console.log(
-"DAY 2 RESULT:",
-day2
-);
-
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// FINAL CHECK
-// ===============================
-
-
-console.log(
-"\n🧬 FINAL BECOMING CHECK"
-);
-
-
-
-
-const finalReflection =
-
-await Emma.reflect();
-
-
-
-
-console.log(
-"🌱 Emma Becoming Result:",
-finalReflection
-);
-
-
-
-
-
-
-if(
-
-JSON.stringify(finalReflection)
-.toLowerCase()
-.includes("clarity")
-
-){
-
-
-
-console.log(
-"✅ SUCCESS: Emma used past experience to grow"
-);
-
-
-
-}
-
-else{
-
-
-console.log(
-"⚠️ Emma stored memory but growth needs improvement"
-);
-
-
-}
-
-
-
-
-}
-
-
-
-
-
 
 
 
 
 
 testBecoming();
-
-
-
-export default testBecoming;

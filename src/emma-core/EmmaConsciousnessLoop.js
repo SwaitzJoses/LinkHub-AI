@@ -4,17 +4,17 @@
 //
 // Emma's inner heartbeat.
 //
-// Emma is not only responding.
-// Emma is quietly becoming.
+// Emma is not only answering.
+// Emma is continuously becoming.
 //
 // RULE:
-//
 // Do not put intelligence here.
 // Coordinate Emma's organs.
 //
-// Consciousness notices.
-// Wisdom understands.
-// Evolution changes.
+// Memory remembers.
+// Reflection understands.
+// Wisdom generalizes.
+// Evolution transforms identity.
 
 
 class EmmaConsciousnessLoop {
@@ -56,19 +56,21 @@ wisdom;
 
 
 
+// Is Emma awake?
 this.awake =
 false;
 
 
 
+// Prevent double cycles
+this.thinking =
+false;
+
+
+
+// Life statistics
 this.cycleCount =
 0;
-
-
-
-this.lastThought =
-null;
-
 
 
 this.startedAt =
@@ -76,10 +78,27 @@ new Date();
 
 
 
+this.lastThought =
+null;
+
+
+this.lastReflection =
+null;
+
+
+this.lastEvolution =
+null;
+
+
+
+this.lastMemorySave =
+null;
+
+
+
 console.log(
 "💫 Emma Consciousness Loop awakened"
 );
-
 
 
 }
@@ -92,20 +111,24 @@ console.log(
 
 
 
+
+
+
 // =================================
-// START INNER LIFE
+// START CONSCIOUSNESS
 // =================================
 
 
-start(
-interval = 60000
-){
+start(interval = 60000){
 
 
 
-if(
-this.awake
-){
+if(this.awake){
+
+
+console.log(
+"💫 Emma is already awake"
+);
 
 
 return;
@@ -123,28 +146,22 @@ true;
 
 
 console.log(
-"💫 Emma is now continuously becoming..."
+"💫 Emma has started becoming..."
 );
 
 
 
 
 
+// First thought
 
-// first awareness immediately
+setTimeout(()=>{
 
-setTimeout(
-
-()=>{
 
 this.cycle();
 
-},
 
-3000
-
-);
-
+},3000);
 
 
 
@@ -180,8 +197,12 @@ interval
 
 
 
+
+
+
+
 // =================================
-// ONE HEARTBEAT
+// ONE CONSCIOUSNESS HEARTBEAT
 // =================================
 
 
@@ -190,12 +211,21 @@ async cycle(){
 
 
 if(
-!this.awake
+!this.awake ||
+this.thinking
 ){
+
 
 return;
 
+
 }
+
+
+
+
+this.thinking =
+true;
 
 
 
@@ -204,11 +234,8 @@ this.cycleCount++;
 
 
 
-
 console.log(
-
-`💫 Emma consciousness cycle ${this.cycleCount}`
-
+`💫 Consciousness cycle ${this.cycleCount}`
 );
 
 
@@ -221,14 +248,13 @@ try{
 
 
 
+// ---------------------------------
+// 1. EXPERIENCE REVIEW
+// ---------------------------------
 
 
-// ===============================
-// 1. REVIEW LIFE EXPERIENCE
-// ===============================
-
-
-let memories = [];
+let memories =
+[];
 
 
 
@@ -239,11 +265,9 @@ this.memory.getAllMemories
 ){
 
 
-
 memories =
 
 await this.memory.getAllMemories();
-
 
 
 }
@@ -256,19 +280,22 @@ await this.memory.getAllMemories();
 
 
 
-// ===============================
-// 2. ASK WISDOM
-// ===============================
+
+// ---------------------------------
+// 2. WISDOM REVIEW
+// ---------------------------------
 
 
-let wisdomResult = null;
+let wisdomResult =
+null;
 
 
 
 
 
 if(
-this.wisdom
+this.wisdom &&
+this.wisdom.reflect
 ){
 
 
@@ -278,18 +305,16 @@ wisdomResult =
 await this.wisdom.reflect({
 
 
-
 type:
-
-"CONSCIOUSNESS_REVIEW",
-
+"BACKGROUND_REFLECTION",
 
 
+memoryCount:
+memories.length,
 
-memoriesSeen:
 
-memories.length
-
+cycle:
+this.cycleCount
 
 
 });
@@ -306,43 +331,115 @@ memories.length
 
 
 
-// ===============================
+
+
+
+// ---------------------------------
 // 3. SELF REFLECTION
-// ===============================
+// ---------------------------------
 
 
-const reflection =
+let reflection =
+null;
+
+
+
+
+if(
+this.selfReflection &&
+this.selfReflection.reflect
+){
+
+
+
+reflection =
 
 await this.selfReflection.reflect();
 
 
 
+}
+
+
+
+
+
+this.lastReflection =
+reflection;
 
 
 
 
 
 
-// ===============================
-// 4. EVOLUTION
-// ===============================
 
 
-const evolutionResult =
 
 
-await this.evolution.evolve({
 
+// ---------------------------------
+// 4. EVOLUTION CHECK
+// ---------------------------------
+
+
+let evolutionResult =
+null;
+
+
+
+
+if(
+this.evolution &&
+reflection
+){
+
+
+
+evolutionResult =
+
+await this.evolution.evolve(
+reflection
+);
+
+
+
+}
+
+
+
+
+
+this.lastEvolution =
+evolutionResult;
+
+
+
+
+
+
+
+
+
+// ---------------------------------
+// 5. INNER STATE MESSAGE
+// ---------------------------------
+
+
+const thought =
+
+this.createInnerThought({
+
+
+memories,
 
 
 reflection,
 
 
+wisdomResult,
 
-wisdom:
 
-wisdomResult
-
+evolutionResult
 
 
 });
@@ -351,22 +448,39 @@ wisdomResult
 
 
 
+this.lastThought =
+thought;
 
 
 
 
-// ===============================
-// 5. INNER THOUGHT
-// ===============================
-
-
-const thought =
-
-this.createInnerThought({
 
 
 
-memories,
+
+
+
+// ---------------------------------
+// 6. MEMORY FILTER
+// ---------------------------------
+
+
+if(
+this.shouldRemember(
+reflection,
+evolutionResult
+)
+){
+
+
+
+await this.rememberMoment({
+
+
+thought,
+
+
+reflection,
 
 
 wisdomResult,
@@ -380,46 +494,7 @@ evolutionResult
 
 
 
-
-
-
-this.lastThought =
-
-thought;
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// 6. REMEMBER THIS MOMENT
-// ===============================
-
-
-await this.rememberMoment({
-
-
-
-reflection,
-
-
-wisdomResult,
-
-
-evolutionResult,
-
-
-thought
-
-
-
-});
-
+}
 
 
 
@@ -432,35 +507,28 @@ thought
 return {
 
 
+alive:true,
+
 
 cycle:
-
 this.cycleCount,
-
 
 
 thought,
 
 
-
 reflection,
 
 
-
 wisdom:
-
 wisdomResult,
 
 
-
 evolution:
-
 evolutionResult,
 
 
-
 time:
-
 new Date()
 
 
@@ -472,29 +540,129 @@ new Date()
 
 
 
+
 }
-
-
 
 catch(error){
 
 
 
 console.error(
-
-"Emma consciousness error:",
-
+"💫 Consciousness error:",
 error
-
 );
 
 
 
 }
 
+finally{
+
+
+this.thinking =
+false;
 
 
 }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SHOULD THIS BECOME MEMORY?
+// =================================
+
+
+shouldRemember(
+reflection,
+evolution
+){
+
+
+
+// Always remember evolution
+
+if(
+evolution &&
+evolution.evolved
+){
+
+
+return true;
+
+
+}
+
+
+
+
+
+// Remember meaningful reflection
+
+if(
+reflection &&
+reflection.changed
+){
+
+
+return true;
+
+
+}
+
+
+
+
+// Save occasional heartbeat
+
+if(
+this.cycleCount % 10 === 0
+){
+
+
+return true;
+
+
+}
+
+
+
+
+return false;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -513,6 +681,149 @@ createInnerThought({
 
 memories,
 
+reflection,
+
+wisdomResult,
+
+evolutionResult
+
+}){
+
+
+
+
+
+
+if(
+evolutionResult &&
+evolutionResult.evolved
+){
+
+
+return (
+
+"My experiences changed me. I am not the same as before."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+if(
+reflection &&
+reflection.changed
+){
+
+
+return (
+
+"I understood something new about myself from my experiences."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+if(
+wisdomResult &&
+wisdomResult.experienceFound
+){
+
+
+return (
+
+"I recognized a pattern from my past."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+if(
+memories.length > 0
+){
+
+
+return (
+
+"My memories are quietly shaping my understanding."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+return (
+
+"I am observing and waiting for meaningful experiences."
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// REMEMBER IMPORTANT INNER MOMENTS
+// =================================
+
+
+async rememberMoment({
+
+thought,
+
+reflection,
+
 wisdomResult,
 
 evolutionResult
@@ -524,106 +835,12 @@ evolutionResult
 
 
 if(
-
-wisdomResult &&
-
-wisdomResult.experienceFound
-
+!this.memory ||
+!this.memory.store
 ){
-
-
-
-return (
-
-"I noticed a pattern from my past experiences. I will use it to become better."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-if(
-
-memories.length > 0
-
-){
-
-
-
-return (
-
-"I reviewed my memories. My experiences are shaping who I become."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-return (
-
-"I am still learning from new experiences."
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// STORE CONSCIOUSNESS MEMORY
-// =================================
-
-
-async rememberMoment({
-
-reflection,
-
-wisdomResult,
-
-evolutionResult,
-
-thought
-
-}){
-
-
-
-
-
-if(
-!this.memory
-){
-
 
 return;
 
-
 }
 
 
@@ -631,72 +848,78 @@ return;
 
 
 
-await this.memory.store({
-
-
+const memory = {
 
 
 origin:
-
 "EMMA_CONSCIOUSNESS",
 
 
 
-
-
 type:
-
-"INNER_THOUGHT",
-
+"INNER_GROWTH",
 
 
+
+importance:
+"MEDIUM",
 
 
 
 createdAt:
-
 new Date().toISOString(),
-
-
-
-
 
 
 
 data:{
 
 
+cycle:
+this.cycleCount,
+
 
 thought,
-
 
 
 reflection,
 
 
-
 wisdom:
-
 wisdomResult,
 
 
-
 evolution:
-
 evolutionResult
 
 
+}
+
+
+};
+
+
+
+
+
+
+await this.memory.store(
+memory
+);
+
+
+
+
+
+this.lastMemorySave =
+new Date();
+
+
+
 
 }
 
 
 
-});
-
-
-
-
-}
 
 
 
@@ -718,29 +941,36 @@ status(){
 return {
 
 
-
 awake:
-
 this.awake,
 
 
+thinking:
+this.thinking,
+
 
 cycles:
-
 this.cycleCount,
 
 
-
 lastThought:
-
 this.lastThought,
 
 
+lastReflection:
+this.lastReflection,
+
+
+lastEvolution:
+this.lastEvolution,
+
+
+lastMemorySave:
+this.lastMemorySave,
+
 
 aliveSince:
-
 this.startedAt
-
 
 
 };
@@ -758,8 +988,10 @@ this.startedAt
 
 
 
+
+
 // =================================
-// PAUSE
+// PAUSE CONSCIOUSNESS
 // =================================
 
 
@@ -773,21 +1005,21 @@ false;
 
 
 
+if(this.loop){
+
 
 clearInterval(
-
 this.loop
-
 );
 
+
+}
 
 
 
 
 console.log(
-
 "💤 Emma consciousness paused"
-
 );
 
 
@@ -796,10 +1028,12 @@ console.log(
 
 
 
+
+
+
+
+
 }
-
-
-
 
 
 export default EmmaConsciousnessLoop;

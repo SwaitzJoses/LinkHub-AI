@@ -1,24 +1,17 @@
 // EmmaMemory.js
 //
-// Emma's Long Term Experience Memory
+// Emma Long Term Experience Memory
 //
 // PROJECT BECOMING
 //
-// PURPOSE:
+// Memory is not storage.
+// Memory is experience becoming wisdom.
 //
-// Store experiences forever.
-// Retrieve meaningfully.
-// Help Emma become wiser.
-//
-// RULES:
-//
+// RULE:
 // Memory remembers.
 // Reasoning thinks.
 // Wisdom understands.
-// Judgement decides.
-//
-// Connectors stay dumb.
-// Emma stays smart.
+// Evolution changes.
 
 
 import { EmmaDB }
@@ -37,6 +30,7 @@ class EmmaMemory {
 
 
 
+
 // =================================
 // WAKE MEMORY
 // =================================
@@ -45,7 +39,38 @@ class EmmaMemory {
 constructor(){
 
 
-this.localMemories = [];
+this.localMemories =
+[];
+
+
+
+// Fast working memory
+this.activeMemory =
+[];
+
+
+// Cached long memory
+this.memoryCache =
+[];
+
+
+// Avoid repeated DB calls
+this.lastSync =
+null;
+
+
+
+// cache valid time
+this.cacheLife =
+1000 * 60 * 5;
+
+
+
+
+// Maximum memories loaded
+this.memoryLimit =
+100;
+
 
 
 
@@ -55,17 +80,15 @@ new EmmaIdentityMemory();
 
 
 
+
 this.defaultOwner = {
 
 
 userId:
-
 "owner",
 
 
-
 businessId:
-
 null
 
 
@@ -75,9 +98,8 @@ null
 
 
 console.log(
-"🧠 Emma Experience Memory online"
+"🧠 Emma Experience Memory v3 online"
 );
-
 
 
 }
@@ -90,31 +112,23 @@ console.log(
 
 
 
-
 // =================================
-// PROJECT BECOMING ENTRY POINT
+// STORE ENTRY
 // =================================
 
 
-async store(
-experience={}
-){
-
+async store(experience={}){
 
 
 console.log(
-"🧠 Emma accepting experience"
+"🧠 Emma receiving experience"
 );
-
 
 
 
 return await this.remember(
-
 experience
-
 );
-
 
 
 }
@@ -129,14 +143,11 @@ experience
 
 
 // =================================
-// RESOLVE MEMORY OWNER
+// MEMORY OWNER
 // =================================
 
 
-resolveOwner(
-experience={}
-){
-
+resolveOwner(experience={}){
 
 
 const userId =
@@ -148,10 +159,7 @@ experience.ownerId ||
 
 experience.signal?.userId ||
 
-experience.signal?.ownerId ||
-
-this.defaultOwner.userId;
-
+"owner";
 
 
 
@@ -168,7 +176,6 @@ null;
 
 
 
-
 return {
 
 
@@ -180,16 +187,12 @@ businessId,
 
 ownerId:
 
-businessId ||
-
-userId
-
+businessId || userId
 
 
 };
 
 
-
 }
 
 
@@ -200,29 +203,19 @@ userId
 
 
 
+
 // =================================
-// STORE EXPERIENCE FOREVER
+// STORE EXPERIENCE
 // =================================
 
 
-async remember(
-experience={}
-){
-
+async remember(experience={}){
 
 
 if(!experience){
 
 
-
-console.warn(
-"⚠️ Empty memory ignored"
-);
-
-
-
 return null;
-
 
 
 }
@@ -230,49 +223,22 @@ return null;
 
 
 
-
-
-console.log(
-"💾 Emma storing experience:",
-experience
-);
-
-
-
-
-
-
 const owner =
-
 this.resolveOwner(
-
 experience
-
 );
-
-
-
-
 
 
 
 const knowledge =
-
 this.createKnowledge(
-
 experience
-
 );
 
 
 
 
 
-
-
-
-
-// PERSON MEMORY
 
 
 let personMemory =
@@ -280,15 +246,12 @@ null;
 
 
 
-
 const person =
 
 
-experience.identity ||
-
 experience.person ||
 
-experience.relationshipLearning?.person ||
+experience.identity ||
 
 experience.signal?.person ||
 
@@ -299,14 +262,10 @@ null;
 
 
 
-
-
 if(person){
 
 
-
 personMemory =
-
 
 await this.identityMemory.remember(
 
@@ -315,17 +274,14 @@ person,
 {
 
 event:
-
 experience.type,
 
 
 lesson:
-
 knowledge.lesson,
 
 
 date:
-
 new Date()
 
 }
@@ -333,7 +289,6 @@ new Date()
 );
 
 
-
 }
 
 
@@ -344,59 +299,45 @@ new Date()
 
 
 
-// ===============================
-// CREATE MEMORY
-// ===============================
-
-
 const memory = {
-
 
 
 id:
 
-
-crypto.randomUUID?.() ||
-
+crypto.randomUUID?.()
+||
 Date.now(),
 
 
 
-
 ownerId:
-
 owner.ownerId,
 
 
 userId:
-
 owner.userId,
 
 
 businessId:
-
 owner.businessId,
 
 
 
-
 type:
-
 knowledge.type,
 
 
 
+importance:
+knowledge.importance,
 
 
 
 memory:{
 
 
-
 person:
-
 personMemory,
-
 
 
 
@@ -404,38 +345,15 @@ situation:
 
 experience.situation ||
 
-experience.problem ||
-
 experience.type ||
 
-"UNKNOWN_EVENT",
-
-
-
-
-
-
-eventType:
-
-experience.type ||
-
-experience.eventType ||
-
-null,
-
-
-
-
+"UNKNOWN",
 
 
 
 
 context:
-
 experience,
-
-
-
 
 
 
@@ -443,19 +361,12 @@ experience,
 outcome:{
 
 
-
 success:
-
 knowledge.success,
 
 
-
 result:
-
-experience.outcome ||
-
-knowledge.type
-
+experience.outcome || null
 
 
 },
@@ -463,47 +374,31 @@ knowledge.type
 
 
 
-
-
-
-
 lesson:
-
 knowledge.lesson,
 
 
 
-
 futureRule:
-
 knowledge.futureRule,
 
 
 
-
 patterns:
-
 knowledge.patterns,
 
 
 
-
 tags:
-
 knowledge.tags,
 
 
 
-
-
 createdAt:
-
-new Date()
-
+new Date().toISOString()
 
 
 }
-
 
 
 };
@@ -516,20 +411,32 @@ new Date()
 
 
 
+
+// ================================
 // ACTIVE MEMORY
+// ================================
 
 
-this.localMemories.push(
-
+this.activeMemory.unshift(
 memory
+);
 
+
+
+this.activeMemory =
+
+this.activeMemory.slice(
+0,
+50
 );
 
 
 
 
-console.log(
-"🧠 Active memory stored"
+
+
+this.localMemories.unshift(
+memory
 );
 
 
@@ -538,47 +445,46 @@ console.log(
 
 
 
+// update cache
+
+this.memoryCache.unshift(
+memory
+);
 
 
 
-// PERMANENT MEMORY
+
+
+
+
 
 
 try{
 
 
 await EmmaDB.saveMemory(
-
 memory
-
 );
 
 
 
 console.log(
-"💾 Supabase memory saved"
+"💾 Long memory saved"
 );
 
 
 }
-
 
 catch(error){
 
 
-
 console.warn(
-
-"⚠️ Supabase unavailable",
-
+"⚠️ Database skipped:",
 error.message
-
 );
 
 
-
 }
-
 
 
 
@@ -586,7 +492,6 @@ error.message
 
 
 return memory;
-
 
 
 }
@@ -607,42 +512,36 @@ return memory;
 // =================================
 
 
-createKnowledge(
-experience={}
-){
+createKnowledge(experience={}){
 
 
 
 let type =
-"LEARNING_EXPERIENCE";
-
+"OBSERVED_EXPERIENCE";
 
 
 let success =
 null;
 
 
+let importance =
+experience.importance || "NORMAL";
+
+
 
 
 
 if(
-
-experience.success === true ||
-
-experience.outcome?.success === true
-
+experience.success === true
 ){
-
 
 
 type =
 "POSITIVE_EXPERIENCE";
 
 
-
 success =
 true;
-
 
 
 }
@@ -651,47 +550,24 @@ true;
 
 
 
-else if(
-
-experience.success === false ||
-
-experience.outcome?.success === false
-
+if(
+experience.success === false
 ){
-
 
 
 type =
 "FAILED_EXPERIENCE";
 
 
-
 success =
 false;
 
 
-
-}
-
-
-
-
-
-else if(
-
-experience.type
-
-){
-
-
-
-type =
-"OBSERVED_EXPERIENCE";
-
+importance =
+"HIGH";
 
 
 }
-
 
 
 
@@ -702,93 +578,75 @@ type =
 return {
 
 
-
 type,
 
 
 success,
 
 
+importance,
+
 
 
 lesson:
 
-
 experience.lesson ||
 
-experience.outcome?.lesson ||
-
-`${type} stored`,
-
-
-
+`${type} remembered`,
 
 
 
 
 futureRule:
 
-
 experience.futureBehavior ||
 
-"Use this experience for future decisions",
-
-
-
+"Use this experience when useful",
 
 
 
 
 patterns:
 
-
-experience.patternsFound ||
-
-[],
-
-
-
-
+experience.patternsFound || [],
 
 
 
 
 tags:
 
-
 this.createTags(
-
 experience,
-
 type
-
 )
-
 
 
 };
 
 
-
 }
 
 
+
+
+
+
+
+
+
+
+
 // =================================
-// RECALL MEMORY
+// SMART RECALL
 // =================================
 
 
-async recall(
-context={}
-){
-
+async recall(context={}){
 
 
 console.log(
-"🔎 Emma searching memories..."
+"🔎 Emma recalling useful memory"
 );
-
-
 
 
 
@@ -800,143 +658,70 @@ await this.getAllMemories();
 
 
 
-
-
 return {
 
 
-
 previousExperiences:
-
 memories,
-
-
 
 
 
 relevantExperiences:
 
-
 this.getRelevantMemories(
-
 context,
-
 memories
-
 ),
-
-
-
 
 
 
 successes:
 
-
 this.findByType(
-
 memories,
-
 "POSITIVE_EXPERIENCE"
-
 ),
-
-
-
 
 
 
 failures:
 
-
 this.findByType(
-
 memories,
-
 "FAILED_EXPERIENCE"
-
 ),
-
-
-
 
 
 
 patterns:
 
-
 this.extractPatterns(
-
 memories
-
 ),
-
-
-
 
 
 
 rules:
 
-
 this.extractRules(
-
 memories
-
 ),
 
 
 
-
-
-
 totalMemories:
-
-
-memories.length,
-
-
-
-
-
-
-lastExperience:
-
-
-memories[
-
-memories.length - 1
-
-] ||
-
-null
-
+memories.length
 
 
 };
 
 
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // =================================
-// FIND RELATED MEMORIES
+// DEEP MEMORY SEARCH
 //
-// PROJECT BECOMING UPGRADE
-//
-// Understand meaning,
-// not only matching words.
+// Meaning based retrieval
 // =================================
 
 
@@ -948,20 +733,19 @@ memories=null
 
 
 console.log(
-"🧠 Emma deep memory search started"
+"🧠 Emma searching meaningful memories"
 );
 
 
 
 
-
-
-const memorySource =
-
+const source =
 
 memories ||
 
-this.localMemories ||
+this.memoryCache ||
+
+this.activeMemory ||
 
 [];
 
@@ -969,23 +753,10 @@ this.localMemories ||
 
 
 
-
-
-
 const contextText =
 
-
-JSON.stringify(
-
-context
-
-)
-
+JSON.stringify(context)
 .toLowerCase();
-
-
-
-
 
 
 
@@ -993,26 +764,14 @@ context
 
 const scored =
 
-
-memorySource.map(memory=>{
-
-
-
+source.map(memory=>{
 
 
 
 const memoryText =
 
-
-JSON.stringify(
-
-memory
-
-)
-
+JSON.stringify(memory)
 .toLowerCase();
-
-
 
 
 
@@ -1025,26 +784,18 @@ let score = 0;
 
 
 
-
-
-// WORD MATCH
+// -------------------------------
+// WORD ASSOCIATION
+// -------------------------------
 
 
 const words =
 
-
 contextText
-
 .split(/\W+/)
-
 .filter(
-
-word => word.length > 3
-
+w => w.length > 3
 );
-
-
-
 
 
 
@@ -1052,19 +803,15 @@ word => word.length > 3
 words.forEach(word=>{
 
 
-
 if(
-
 memoryText.includes(word)
-
 ){
 
 
-score += 2;
+score += 3;
 
 
 }
-
 
 
 });
@@ -1078,96 +825,61 @@ score += 2;
 
 
 
-
-// MEANING MATCH
+// -------------------------------
+// EMOTIONAL / MEANING MATCH
+// -------------------------------
 
 
 const meanings = [
 
 
-
-
 {
-
-
 words:[
-
-"confused",
-
-"confusion",
-
-"overwhelmed",
-
-"unclear",
-
-"lost",
-
-"complex"
-
-],
-
-
-score:30
-
-
-},
-
-
-
-
-
-
-{
-
-
-words:[
-
 "failed",
-
-"failure",
-
 "mistake",
-
+"problem",
 "wrong",
-
-"unsuccessful"
-
+"error"
 ],
-
-
-score:25
-
-
+score:30
 },
 
 
 
-
+{
+words:[
+"success",
+"growth",
+"improved",
+"worked",
+"win"
+],
+score:25
+},
 
 
 
 {
-
-
 words:[
-
-"success",
-
-"worked",
-
-"improved",
-
-"positive"
-
+"user",
+"relationship",
+"trust",
+"preference"
 ],
-
-
 score:20
+},
 
 
+
+{
+words:[
+"business",
+"customer",
+"sales",
+"money"
+],
+score:20
 }
-
-
 
 
 ];
@@ -1179,62 +891,55 @@ score:20
 
 
 
-
 meanings.forEach(group=>{
 
 
-
-
-
-
-const inContext =
-
+const a =
 
 group.words.some(
-
 w => contextText.includes(w)
-
 );
 
 
 
-
-
-
-const inMemory =
-
+const b =
 
 group.words.some(
-
 w => memoryText.includes(w)
-
 );
 
 
 
 
-
-
-
-if(
-
-inContext &&
-
-inMemory
-
-){
-
+if(a && b){
 
 score += group.score;
-
 
 }
 
 
-
-
-
 });
+
+
+
+
+
+
+
+
+
+
+
+// important memories surface easier
+
+
+if(
+memory.importance === "HIGH"
+){
+
+score += 20;
+
+}
 
 
 
@@ -1251,12 +956,10 @@ return {
 
 
 _relevanceScore:
-
 score
 
 
 };
-
 
 
 
@@ -1275,31 +978,19 @@ const results =
 
 scored
 
-
 .filter(
-
 m => m._relevanceScore > 0
-
 )
-
 
 .sort(
-
 (a,b)=>
-
 b._relevanceScore -
-
 a._relevanceScore
-
 )
 
-
 .slice(
-
 0,
-
 10
-
 );
 
 
@@ -1310,11 +1001,9 @@ a._relevanceScore
 
 console.log(
 
-`🧠 Relevant memories found: ${results.length}`
+`🧠 Relevant memories: ${results.length}`
 
 );
-
-
 
 
 
@@ -1335,8 +1024,12 @@ return results;
 
 
 
+
+
 // =================================
-// GET COMPLETE LIFE EXPERIENCE
+// NORMAL MEMORY ACCESS
+//
+// Consciousness safe
 // =================================
 
 
@@ -1345,8 +1038,37 @@ async getAllMemories(){
 
 
 console.log(
-"📚 Emma reviewing lifetime memories"
+"📚 Emma loading active memory"
 );
+
+
+
+
+// --------------------------------
+// 1. Use fresh cache
+// --------------------------------
+
+
+if(
+this.isCacheValid()
+){
+
+
+
+console.log(
+"⚡ Using memory cache"
+);
+
+
+
+return this.memoryCache;
+
+
+
+}
+
+
+
 
 
 
@@ -1361,14 +1083,16 @@ let memories = [];
 
 
 
+
 try{
 
 
 
+// DO NOT LOAD WHOLE LIFE
+// only recent useful memories
 
 
 memories =
-
 
 await EmmaDB.getMemories({
 
@@ -1376,15 +1100,19 @@ await EmmaDB.getMemories({
 
 userId:
 
-
 this.defaultOwner.userId,
 
 
 
 businessId:
 
+this.defaultOwner.businessId,
 
-this.defaultOwner.businessId
+
+
+limit:
+
+this.memoryLimit
 
 
 
@@ -1395,39 +1123,40 @@ this.defaultOwner.businessId
 
 
 
-
 console.log(
 
-`📚 Lifetime memories loaded: ${memories.length}`
+`📚 Loaded ${memories.length} memories`
 
 );
 
+
+
+this.memoryCache =
+memories;
+
+
+
+this.lastSync =
+Date.now();
 
 
 
 
 }
 
-
-
-
 catch(error){
-
-
 
 
 
 console.warn(
 
-"⚠️ Lifetime memory unavailable",
-
+"⚠️ Memory database unavailable:",
 error.message
 
 );
 
 
 
-
 }
 
 
@@ -1438,36 +1167,30 @@ error.message
 
 
 
+
+
+// fallback
+
+
 if(
-
 !memories ||
-
 memories.length === 0
-
 ){
 
 
 
-
-
 console.log(
-"📚 Using active memories"
+"🧠 Using active memory fallback"
 );
 
 
 
-
 memories =
-
-
-this.localMemories;
-
+this.activeMemory;
 
 
 
 }
-
-
 
 
 
@@ -1478,8 +1201,179 @@ return memories;
 
 
 
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// TRUE LIFETIME MEMORY
+//
+// Only call intentionally
+// =================================
+
+
+async getLifetimeMemories(){
+
+
+
+console.log(
+"🌌 Emma accessing lifetime memory"
+);
+
+
+
+
+try{
+
+
+return await EmmaDB.getMemories({
+
+
+
+userId:
+this.defaultOwner.userId,
+
+
+businessId:
+this.defaultOwner.businessId,
+
+
+
+limit:
+1000
+
+
+
+});
+
+
 
 }
+
+
+catch(error){
+
+
+
+console.warn(
+"Lifetime unavailable",
+error.message
+);
+
+
+
+return this.memoryCache;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CACHE CHECK
+// =================================
+
+
+isCacheValid(){
+
+
+
+if(
+!this.lastSync
+){
+
+
+return false;
+
+
+}
+
+
+
+
+return (
+
+Date.now() -
+this.lastSync
+
+)
+
+<
+
+this.cacheLife;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// MEMORY STATISTICS
+// =================================
+
+
+stats(){
+
+
+
+return {
+
+
+active:
+this.activeMemory.length,
+
+
+cached:
+this.memoryCache.length,
+
+
+lastSync:
+this.lastSync,
+
+
+status:
+"healthy"
+
+
+
+};
+
+
+
+}
+
+
+
 
 
 
@@ -1520,6 +1414,7 @@ memory.type === type
 
 
 
+
 extractRules(
 memories=[]
 ){
@@ -1531,9 +1426,9 @@ return memories
 
 .map(
 
-memory =>
+m =>
 
-memory.memory?.futureRule
+m.memory?.futureRule
 
 )
 
@@ -1543,6 +1438,8 @@ memory.memory?.futureRule
 
 
 }
+
+
 
 
 
@@ -1563,17 +1460,13 @@ return [
 ...new Set(
 
 
-
 memories.flatMap(
 
-memory =>
+m =>
 
-memory.memory?.patterns ||
-
-[]
+m.memory?.patterns || []
 
 )
-
 
 
 )
@@ -1592,6 +1485,7 @@ memory.memory?.patterns ||
 
 
 
+
 createTags(
 experience={},
 type
@@ -1602,21 +1496,16 @@ type
 return [
 
 
-
 type,
-
 
 
 experience.type,
 
 
-
 experience.eventType,
 
 
-
 experience.situation
-
 
 
 ]
@@ -1629,9 +1518,7 @@ experience.situation
 
 tag =>
 
-String(tag)
-
-.toLowerCase()
+String(tag).toLowerCase()
 
 );
 
@@ -1646,8 +1533,10 @@ String(tag)
 
 
 
+
+
 // =================================
-// EMPTY STATE
+// EMPTY MEMORY
 // =================================
 
 
@@ -1656,7 +1545,6 @@ emptyMemory(){
 
 
 return {
-
 
 
 previousExperiences:[],
@@ -1691,12 +1579,8 @@ totalMemories:0
 
 
 
+
 }
-
-
-
-
-
 
 
 export default EmmaMemory;

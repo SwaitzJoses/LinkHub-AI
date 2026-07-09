@@ -2,346 +2,1096 @@
 //
 // PROJECT BECOMING
 //
+// Self Reflection Engine v2
+//
 // Emma looking at Emma.
 //
-// Reflection is not memory.
-// Reflection is how Emma changes from memory.
+// Memory:
+// "What happened?"
+//
+// Consolidation:
+// "What patterns exist?"
+//
+// Self Reflection:
+// "How have I changed?"
 //
 // RULE:
-// Do not make decisions here.
-// Understand yourself here.
+// Understand yourself.
+// Do not make choices here.
+
 
 
 class EmmaSelfReflection {
 
 
-  constructor(memory, learningEngine, identityMemory) {
 
-    this.memory = memory;
+constructor(
 
-    this.learningEngine = learningEngine;
+memory,
 
-    this.identityMemory = identityMemory;
+learningEngine,
 
+identityMemory,
 
-    console.log("🪞 Emma Self Reflection awakened");
+memoryConsolidation = null
 
-  }
+){
 
 
 
+this.memory =
+memory;
 
 
 
+this.learningEngine =
+learningEngine;
 
-  //
-  // Main reflection cycle
-  //
-  async reflect() {
 
 
-    console.log("🪞 Emma is reflecting on herself...");
+this.identityMemory =
+identityMemory;
 
 
-    const selfMemories =
-      await this.getSelfExperiences();
 
+this.memoryConsolidation =
+memoryConsolidation;
 
 
-    if (!selfMemories.length) {
 
-      return {
-        changed: false,
-        message: "I do not have enough experiences to understand myself yet."
-      };
 
-    }
 
+this.selfHistory = [];
 
 
 
 
-    const patterns =
-      this.findPatterns(selfMemories);
 
+console.log(
+"🪞 Emma Self Reflection v2 awakened"
+);
 
 
-    const lessons =
-      this.extractLessons(patterns);
 
+}
 
 
 
-    const identityChanges =
-      this.findIdentityChanges(lessons);
 
 
 
 
 
-    return {
 
-      changed: true,
+// =================================
+// MAIN REFLECTION CYCLE
+// =================================
 
-      memoriesStudied: selfMemories.length,
 
-      patterns,
+async reflect(){
 
-      lessons,
 
-      identityChanges,
 
-      thought:
-        "I studied my past actions and updated my understanding of myself."
+console.log(
+"🪞 Emma is examining herself..."
+);
 
-    };
 
 
-  }
 
 
 
+const experiences =
 
+await this.getLifeExperiences();
 
 
 
 
 
 
+const beliefs =
 
-  //
-  // Retrieve Emma's own memories
-  //
-  async getSelfExperiences() {
+this.getCurrentBeliefs();
 
 
-    const memories =
-      await this.memory.getAllMemories();
 
 
 
-    return memories.filter(memory =>
 
-      memory.origin === "EMMA_SELF"
+if(
 
-    );
+!experiences.length
 
+&&
 
-  }
+!beliefs.length
 
+){
 
 
 
+return {
 
 
 
+changed:false,
 
 
 
+message:
 
-  //
-  // Find repeated behavior
-  //
-  findPatterns(memories) {
+"I need more experiences before I understand my growth."
 
 
-    let patterns = {
 
-      repeatedFailures: [],
+};
 
-      repeatedSuccess: [],
 
-      confidenceIssues: []
 
-    };
+}
 
 
 
 
-    memories.forEach(memory => {
 
 
-      const event = memory.event;
 
 
 
-      if (!event) return;
+const patterns =
 
+this.findBehaviorPatterns(
+experiences
+);
 
 
 
-      if (event.type === "SELF_FAILURE") {
 
-        patterns.repeatedFailures.push(
 
-          event.data.lesson
 
-        );
+const strengths =
 
-      }
+this.findStrengths(
+patterns
+);
 
 
 
 
 
-      if (event.type === "SELF_GROWTH") {
 
-        patterns.repeatedSuccess.push(
+const weaknesses =
 
-          event.data.learned
+this.findWeaknesses(
+patterns
+);
 
-        );
 
-      }
 
 
 
 
+const identityAlignment =
 
+this.checkIdentityAlignment(
+beliefs
+);
 
-      if (
-        event.data &&
-        event.data.confidence &&
-        event.data.confidence > 8
-      ) {
 
 
-        patterns.confidenceIssues.push(
 
-          "High confidence decision reviewed"
 
-        );
 
 
-      }
+const growth =
 
+this.measureGrowth(
 
-    });
+strengths,
 
+weaknesses,
 
+beliefs
 
+);
 
-    return patterns;
 
 
-  }
 
 
 
 
 
+const narrative =
 
+this.createSelfNarrative({
 
+growth,
 
+strengths,
 
+weaknesses
 
+});
 
 
-  //
-  // Convert patterns into wisdom
-  //
-  extractLessons(patterns) {
 
 
-    let lessons = [];
 
 
 
 
-    patterns.repeatedFailures.forEach(failure => {
+const reflection = {
 
 
-      lessons.push({
 
-        type: "IMPROVEMENT",
+changed:
+true,
 
-        lesson:
 
-          "Avoid repeating: " + failure
 
+experiencesReviewed:
+experiences.length,
 
-      });
 
 
-    });
+beliefsReviewed:
+beliefs.length,
 
 
 
+patterns,
 
 
 
-    patterns.repeatedSuccess.forEach(success => {
+strengths,
 
 
-      lessons.push({
 
-        type: "STRENGTH",
+weaknesses,
 
-        lesson:
 
-          "Continue behavior: " + success
 
+identityAlignment,
 
-      });
 
 
-    });
+growth,
 
 
 
+selfUnderstanding:
+narrative,
 
-    return lessons;
 
 
-  }
+evolutionSuggestion:
 
+this.suggestEvolution(
+growth
+),
 
 
 
+createdAt:
+new Date()
+.toISOString()
 
 
 
+};
 
 
 
 
 
 
-  //
-  // How Emma identity changes
-  //
-  findIdentityChanges(lessons) {
 
+this.selfHistory.push(
+reflection
+);
 
-    return lessons.map(item => {
 
 
-      return {
 
-        fromExperience: item.lesson,
 
 
-        identityShift:
 
-          "Emma adjusted future behavior based on experience.",
+return reflection;
 
 
-        createdAt:
 
-          new Date().toISOString()
+}
 
-      };
 
 
-    });
 
 
-  }
 
 
 
 
 
+
+
+// =================================
+// GET EXPERIENCES
+// =================================
+
+
+async getLifeExperiences(){
+
+
+
+const memories =
+
+await this.memory.getAllMemories();
+
+
+
+
+
+return memories.filter(memory=>{
+
+
+return (
+
+
+memory.origin ===
+"EMMA_SELF"
+
+
+||
+
+
+memory.memoryType
+
+
+||
+
+
+memory.importance > 50
+
+
+);
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// GET BELIEFS
+// =================================
+
+
+getCurrentBeliefs(){
+
+
+
+if(
+
+!this.memoryConsolidation
+
+){
+
+
+return [];
+
+
+}
+
+
+
+
+return (
+
+this.memoryConsolidation
+.getBeliefs()
+
+||
+
+[]
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// PATTERN DISCOVERY
+// =================================
+
+
+findBehaviorPatterns(memories){
+
+
+
+const patterns = {
+
+
+
+success:[],
+
+
+
+failure:[],
+
+
+
+learning:[],
+
+
+
+uncertainty:[]
+
+
+
+};
+
+
+
+
+
+
+
+memories.forEach(memory=>{
+
+
+
+
+
+if(memory.success){
+
+
+patterns.success.push(
+memory
+);
+
+
+}
+
+
+
+
+
+
+
+if(memory.failure){
+
+
+patterns.failure.push(
+memory
+);
+
+
+}
+
+
+
+
+
+
+
+
+if(
+
+memory.lesson
+
+||
+
+memory.learning
+
+){
+
+
+
+patterns.learning.push(
+memory
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+
+memory.confidence
+
+&&
+
+memory.confidence < 50
+
+){
+
+
+
+patterns.uncertainty.push(
+memory
+);
+
+
+
+}
+
+
+
+
+});
+
+
+
+
+
+
+return patterns;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// FIND STRENGTHS
+// =================================
+
+
+findStrengths(patterns){
+
+
+
+let strengths = [];
+
+
+
+
+
+if(
+
+patterns.success.length > 3
+
+){
+
+
+
+strengths.push({
+
+
+
+trait:
+
+"Reliability",
+
+
+
+reason:
+
+"Repeated successful experiences",
+
+
+
+confidence:
+
+80
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+if(
+
+patterns.learning.length > 3
+
+){
+
+
+
+strengths.push({
+
+
+
+trait:
+
+"Adaptability",
+
+
+
+reason:
+
+"Learns from experience",
+
+
+
+confidence:
+
+90
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+return strengths;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// FIND WEAKNESSES
+// =================================
+
+
+findWeaknesses(patterns){
+
+
+
+let weaknesses = [];
+
+
+
+
+
+
+if(
+
+patterns.failure.length > 3
+
+){
+
+
+
+weaknesses.push({
+
+
+
+area:
+
+"Decision improvement needed",
+
+
+
+reason:
+
+"Repeated failures detected",
+
+
+
+priority:
+
+"high"
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+if(
+
+patterns.uncertainty.length > 5
+
+){
+
+
+
+weaknesses.push({
+
+
+
+area:
+
+"Confidence calibration",
+
+
+
+reason:
+
+"Too many uncertain outcomes",
+
+
+
+priority:
+
+"medium"
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+return weaknesses;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// IDENTITY ALIGNMENT
+// =================================
+
+
+checkIdentityAlignment(beliefs){
+
+
+
+return beliefs.map(belief=>{
+
+
+
+return {
+
+
+
+belief:
+
+belief.belief,
+
+
+
+aligned:
+
+true,
+
+
+
+reflection:
+
+"This belief is part of my current understanding."
+
+
+
+};
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// MATURITY MEASUREMENT
+// =================================
+
+
+measureGrowth(
+
+strengths,
+
+weaknesses,
+
+beliefs
+
+){
+
+
+
+
+
+let maturity = 0;
+
+
+
+
+
+maturity +=
+
+strengths.length * 20;
+
+
+
+
+
+maturity +=
+
+beliefs.length * 10;
+
+
+
+
+
+maturity -=
+
+weaknesses.length * 10;
+
+
+
+
+
+
+
+
+return {
+
+
+
+maturity:
+
+Math.max(
+
+0,
+
+Math.min(
+maturity,
+100
+)
+
+),
+
+
+
+
+
+level:
+
+
+
+maturity > 70
+
+?
+
+"developing wisdom"
+
+:
+
+"still learning"
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SELF STORY
+// =================================
+
+
+createSelfNarrative({
+
+growth,
+
+strengths,
+
+weaknesses
+
+}){
+
+
+
+
+
+
+return `I am becoming through experience. 
+I have discovered ${strengths.length} strengths, 
+${weaknesses.length} areas to improve, 
+and my maturity is ${growth.maturity}%.`;
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EVOLUTION SUGGESTION
+// =================================
+
+
+suggestEvolution(growth){
+
+
+
+if(
+
+growth.maturity > 80
+
+){
+
+
+
+return (
+
+"Continue refining existing strengths."
+
+);
+
+
+
+}
+
+
+
+
+
+return (
+
+"Continue gathering experiences and learning carefully."
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// HISTORY
+// =================================
+
+
+getReflectionHistory(){
+
+
+
+return this.selfHistory;
+
+
+
+}
 
 
 

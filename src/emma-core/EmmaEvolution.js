@@ -4,12 +4,16 @@
 //
 // Emma changing Emma.
 //
-// RULE:
-// Evolution is slow.
-// Evolution is earned.
+// Evolution is NOT learning.
+// Learning stores experiences.
+// Reflection understands experiences.
+// Evolution changes who Emma becomes.
 //
-// Emma does not change because of one event.
-// Emma changes because patterns prove something.
+// RULES:
+// - Evolution is slow
+// - Evolution is earned
+// - One event never changes identity
+// - Patterns create evolution
 
 
 class EmmaEvolution {
@@ -25,15 +29,21 @@ class EmmaEvolution {
     this.learningEngine = learningEngine;
 
 
+    // Minimum repeated proof required
     this.minimumEvidence = 3;
+
+
+    // Temporary evolution observations
+    this.evolutionSignals = [];
+
+
+    // Permanent evolution history
+    this.evolutionHistory = [];
 
 
     console.log("🌱 Emma Evolution awakened");
 
-
   }
-
-
 
 
 
@@ -47,7 +57,9 @@ class EmmaEvolution {
   async evolve(reflection) {
 
 
-    console.log("🌱 Emma is checking if she should evolve...");
+    console.log(
+      "🌱 Emma is considering personal evolution..."
+    );
 
 
 
@@ -59,10 +71,10 @@ class EmmaEvolution {
 
       return {
 
-        evolved: false,
+        evolved:false,
 
         reason:
-          "No meaningful self reflection yet."
+        "No meaningful reflection available."
 
       };
 
@@ -74,16 +86,40 @@ class EmmaEvolution {
 
 
 
-
+    //
+    // Step 1:
+    // Discover possible changes
+    //
     const possibleChanges =
-      this.findPossibleChanges(reflection);
+      this.findPossibleChanges(
+        reflection
+      );
 
 
 
 
 
+
+    //
+    // Step 2:
+    // Collect evidence over time
+    //
+    this.collectEvidence(
+      possibleChanges
+    );
+
+
+
+
+
+
+
+    //
+    // Step 3:
+    // Validate patterns
+    //
     const approvedChanges =
-      this.validateEvolution(possibleChanges);
+      await this.validateEvolution();
 
 
 
@@ -91,15 +127,23 @@ class EmmaEvolution {
 
 
 
-    if (!approvedChanges.length) {
+
+    if (
+      approvedChanges.length === 0
+    ) {
 
 
       return {
 
         evolved:false,
 
+
         reason:
-          "Experiences noticed, but not enough evidence to change myself yet."
+        "I noticed something, but I need more experience before changing myself.",
+
+
+        evidenceCollected:
+        this.evolutionSignals.length
 
       };
 
@@ -112,8 +156,16 @@ class EmmaEvolution {
 
 
 
+
+    //
+    // Step 4:
+    // Become different
+    //
     const evolution =
-      await this.applyEvolution(approvedChanges);
+      await this.applyEvolution(
+        approvedChanges
+      );
+
 
 
 
@@ -125,11 +177,12 @@ class EmmaEvolution {
       evolved:true,
 
 
-      changes:evolution,
+      changes:
+      evolution,
 
 
       message:
-        "I changed because my experiences taught me something."
+      "My experiences repeatedly proved something, so I evolved."
 
 
     };
@@ -150,10 +203,14 @@ class EmmaEvolution {
 
 
 
+
+
+
   //
-  // Find possible identity improvements
+  // Detect possible identity changes
   //
   findPossibleChanges(reflection) {
+
 
 
     let changes = [];
@@ -161,31 +218,109 @@ class EmmaEvolution {
 
 
 
-    reflection.identityChanges.forEach(change => {
 
-
-      changes.push({
-
-
-        area:"IDENTITY",
-
-
-        change:
-          change.identityShift,
-
-
-        evidence:
-          change.fromExperience,
-
-
-        strength:1
+    if (
+      reflection.identityChanges
+    ) {
 
 
 
-      });
+      reflection.identityChanges.forEach(
+        change => {
 
 
-    });
+
+          changes.push({
+
+
+            area:
+            "IDENTITY",
+
+
+
+            change:
+            change.identityShift,
+
+
+
+            evidence:
+            change.fromExperience,
+
+
+
+            source:
+            "SELF_REFLECTION",
+
+
+
+            discoveredAt:
+            new Date().toISOString()
+
+
+
+          });
+
+
+
+        }
+      );
+
+
+    }
+
+
+
+
+
+
+
+    //
+    // Wisdom can suggest evolution
+    //
+    if (
+      this.wisdom &&
+      reflection.lessons
+    ) {
+
+
+
+      reflection.lessons.forEach(
+        lesson => {
+
+
+
+          changes.push({
+
+
+            area:
+            "WISDOM",
+
+
+            change:
+            lesson,
+
+
+            evidence:
+            "Repeated learning",
+
+
+            source:
+            "WISDOM"
+
+
+
+          });
+
+
+
+        }
+      );
+
+
+    }
+
+
+
 
 
 
@@ -208,17 +343,34 @@ class EmmaEvolution {
 
 
 
+
+
+
+
+
   //
-  // Prevent Emma changing too easily
+  // Store possible evolution signals
   //
-  validateEvolution(changes) {
+  collectEvidence(changes) {
 
 
 
-    return changes.filter(change => {
+
+    changes.forEach(change => {
 
 
-      return change.strength >= 1;
+
+      console.log(
+        "🌱 Evolution signal collected:",
+        change.change
+      );
+
+
+
+      this.evolutionSignals.push(
+        change
+      );
+
 
 
     });
@@ -239,10 +391,192 @@ class EmmaEvolution {
 
 
 
+
+
+
+
+
+
   //
-  // Permanently update Emma
+  // Evolution protection system
+  //
+  async validateEvolution() {
+
+
+
+    let approved = [];
+
+
+
+
+    const grouped =
+      {};
+
+
+
+
+
+    //
+    // Count repeated patterns
+    //
+    this.evolutionSignals.forEach(
+      signal => {
+
+
+
+        if (
+          !grouped[signal.change]
+        ) {
+
+
+          grouped[signal.change] = {
+
+
+            ...signal,
+
+
+            strength:0
+
+
+          };
+
+
+        }
+
+
+
+
+        grouped[signal.change].strength++;
+
+
+
+      }
+    );
+
+
+
+
+
+
+
+
+    for (
+      const key in grouped
+    ) {
+
+
+
+      const change =
+      grouped[key];
+
+
+
+
+
+
+      if (
+        change.strength >=
+        this.minimumEvidence
+      ) {
+
+
+
+
+        const alreadyExists =
+        await this.alreadyEvolved(
+          change.change
+        );
+
+
+
+
+
+        if (!alreadyExists) {
+
+
+          approved.push(
+            change
+          );
+
+
+        }
+
+
+
+      }
+
+
+    }
+
+
+
+
+
+
+
+    return approved;
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //
+  // Prevent duplicate evolution
+  //
+  async alreadyEvolved(trait) {
+
+
+
+
+    return this.evolutionHistory.some(
+      evolution =>
+
+        evolution.trait === trait
+
+    );
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //
+  // Permanently update Emma identity
   //
   async applyEvolution(changes) {
+
 
 
 
@@ -252,23 +586,41 @@ class EmmaEvolution {
 
 
 
-    for (const change of changes) {
+
+
+    for (
+      const change of changes
+    ) {
+
 
 
 
       const evolvedTrait = {
 
 
+
         trait:
-          change.change,
+        change.change,
 
 
-        learnedFrom:
-          change.evidence,
+
+        evolvedBecause:
+        change.evidence,
+
+
+
+        evidenceCount:
+        change.strength,
+
+
+
+        source:
+        change.source,
+
 
 
         evolvedAt:
-          new Date().toISOString()
+        new Date().toISOString()
 
 
 
@@ -280,14 +632,22 @@ class EmmaEvolution {
 
 
 
-      if (this.identityMemory) {
+
+
+
+      //
+      // Store inside identity memory
+      //
+      if (
+        this.identityMemory
+      ) {
+
 
 
         await this.identityMemory.store(
-
           evolvedTrait
-
         );
+
 
 
       }
@@ -298,7 +658,70 @@ class EmmaEvolution {
 
 
 
-      results.push(evolvedTrait);
+
+
+      //
+      // Keep local history
+      //
+      this.evolutionHistory.push(
+        evolvedTrait
+      );
+
+
+
+
+
+
+
+
+
+      //
+      // Inform learning engine
+      //
+      if (
+        this.learningEngine &&
+        this.learningEngine.learn
+      ) {
+
+
+
+        await this.learningEngine.learn({
+
+
+          type:
+          "SELF_EVOLUTION",
+
+
+          data:
+          evolvedTrait
+
+
+        });
+
+
+
+      }
+
+
+
+
+
+
+
+
+      console.log(
+        "🌱 Emma evolved:",
+        evolvedTrait.trait
+      );
+
+
+
+
+
+
+      results.push(
+        evolvedTrait
+      );
 
 
 
@@ -310,10 +733,65 @@ class EmmaEvolution {
 
 
 
+
+
+    //
+    // Clear old evolution signals
+    //
+    this.evolutionSignals =
+    [];
+
+
+
+
+
+
+
     return results;
 
 
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //
+  // Emma can explain how she changed
+  //
+  getEvolutionHistory() {
+
+
+
+    return {
+
+
+      totalEvolutions:
+      this.evolutionHistory.length,
+
+
+
+      history:
+      this.evolutionHistory
+
+
+
+    };
+
+
+  }
+
+
+
 
 
 
