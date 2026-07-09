@@ -2,35 +2,34 @@
 //
 // PROJECT BECOMING
 //
-// Emma's focus system
+// Emma Conscious Attention System v2
+//
+// Attention is not filtering data.
+// Attention is choosing awareness.
 //
 // RULE:
 //
-// Emma sees many things.
-// Emma does not give everything equal attention.
+// Experience happens first.
+// Attention decides what enters consciousness.
+// Memory stores what matters.
+// Reflection creates wisdom.
+// Brain thinks only when needed.
 //
-// Connectors collect.
-// Attention filters.
-// Memory remembers.
-// Wisdom learns.
-// Brain thinks.
-//
-// Purpose:
-// - protect API cost
-// - protect memory quality
-// - prevent noise
-// - decide what deserves Emma
 
 
 class EmmaAttention {
 
 
 
-constructor({memory,wisdom} = {}){
+constructor({
+    memory,
+    wisdom,
+    identity
+} = {}){
 
 
 console.log(
-"🎯 Emma Attention online"
+"👁 Emma Attention v2 awake"
 );
 
 
@@ -45,28 +44,37 @@ wisdom;
 
 
 
+this.identity =
+identity;
+
+
+
+
+// Consciousness thresholds
+
 this.thresholds = {
 
 
-ignore:
-
-30,
+ignore:30,
 
 
-
-remember:
-
-60,
+notice:45,
 
 
+remember:60,
 
-deep:
 
-85
+think:85
 
 
 };
 
+
+
+
+// avoid obsessing over same thing
+
+this.recentFocus = [];
 
 
 
@@ -81,18 +89,17 @@ deep:
 
 
 // =================================
-// MAIN ATTENTION ENGINE
+// EXPERIENCE AWARENESS ENGINE
 // =================================
 
 
 async evaluate(
-signal={}
+experience={}
 ){
 
 
-
 console.log(
-"🎯 Emma evaluating importance..."
+"👁 Emma noticing experience..."
 );
 
 
@@ -105,6 +112,22 @@ let score = 0;
 let reasons = [];
 
 
+let awareness = {
+
+
+novel:false,
+
+
+emotional:false,
+
+
+personal:false,
+
+
+repeated:false
+
+
+};
 
 
 
@@ -113,21 +136,26 @@ let reasons = [];
 
 
 // ===============================
-// HUMAN IMPORTANCE
+// 1. HUMAN MEANING
 // ===============================
 
 
 if(
-this.hasHumanSignal(signal)
+this.hasHumanSignal(
+experience
+)
 ){
 
 
 score += 25;
 
 
+awareness.personal = true;
+
+
 
 reasons.push(
-"Human experience detected"
+"Someone important is involved"
 );
 
 
@@ -141,17 +169,16 @@ reasons.push(
 
 
 
+
 // ===============================
-// EMOTION
+// 2. EMOTIONAL WEIGHT
 // ===============================
 
 
 const emotion =
 
 this.detectEmotion(
-
-signal
-
+experience
 );
 
 
@@ -162,17 +189,16 @@ emotion
 ){
 
 
-
 score += emotion.weight;
 
 
+awareness.emotional = true;
+
+
 
 reasons.push(
-
 emotion.reason
-
 );
-
 
 
 }
@@ -185,27 +211,26 @@ emotion.reason
 
 
 
+
 // ===============================
-// PROBLEM
+// 3. PROBLEMS NEED ATTENTION
 // ===============================
 
 
 if(
-this.hasProblem(signal)
+this.hasProblem(
+experience
+)
 ){
 
 
-
-score += 25;
+score += 30;
 
 
 
 reasons.push(
-
-"Problem or friction detected"
-
+"Possible problem detected"
 );
-
 
 
 }
@@ -220,12 +245,14 @@ reasons.push(
 
 
 // ===============================
-// OPPORTUNITY
+// 4. OPPORTUNITY
 // ===============================
 
 
 if(
-this.hasOpportunity(signal)
+this.hasOpportunity(
+experience
+)
 ){
 
 
@@ -235,11 +262,8 @@ score += 20;
 
 
 reasons.push(
-
-"Possible opportunity"
-
+"Possible growth opportunity"
 );
-
 
 
 }
@@ -254,12 +278,14 @@ reasons.push(
 
 
 // ===============================
-// COMMITMENT
+// 5. RESPONSIBILITY
 // ===============================
 
 
 if(
-this.hasCommitment(signal)
+this.hasCommitment(
+experience
+)
 ){
 
 
@@ -269,11 +295,8 @@ score += 25;
 
 
 reasons.push(
-
-"Future responsibility detected"
-
+"Future responsibility noticed"
 );
-
 
 
 }
@@ -286,51 +309,44 @@ reasons.push(
 
 
 
+
 // ===============================
-// CHECK PAST EXPERIENCE
+// 6. MEMORY CONNECTION
 // ===============================
 
 
-let relatedMemories = [];
-
-
+let memories = [];
 
 
 
 if(
-this.memory &&
-this.memory.getRelevantMemories
+this.memory?.getRelevantMemories
 ){
 
 
-
-relatedMemories =
-
+memories =
 
 await this.memory.getRelevantMemories(
-
-signal
-
+experience
 );
 
 
 
 
-
 if(
-relatedMemories.length > 0
+memories.length > 0
 ){
-
 
 
 score += 20;
 
 
+awareness.repeated = true;
+
+
 
 reasons.push(
-
-"Connected to past experience"
-
+"Past experience connected"
 );
 
 
@@ -338,6 +354,23 @@ reasons.push(
 }
 
 
+else{
+
+
+score += 10;
+
+
+awareness.novel = true;
+
+
+
+reasons.push(
+"New experience pattern"
+);
+
+
+}
+
 
 }
 
@@ -349,39 +382,33 @@ reasons.push(
 
 
 
+
 // ===============================
-// ASK WISDOM
+// 7. WISDOM CHECK
 // ===============================
 
 
-let wisdom = null;
-
-
+let wisdomResult = null;
 
 
 
 if(
-this.wisdom
+this.wisdom?.reflect
 ){
 
 
 
-wisdom =
-
+wisdomResult =
 
 await this.wisdom.reflect(
-
-signal
-
+experience
 );
 
 
 
 
-
-
 if(
-wisdom.experienceFound
+wisdomResult?.experienceFound
 ){
 
 
@@ -391,9 +418,7 @@ score += 20;
 
 
 reasons.push(
-
-"Wisdom pattern detected"
-
+"Wisdom recognizes pattern"
 );
 
 
@@ -401,9 +426,38 @@ reasons.push(
 }
 
 
-
 }
 
+
+
+
+
+
+
+
+
+// ===============================
+// PREVENT OBSESSION
+// ===============================
+
+
+if(
+this.wasRecentlyFocused(
+experience
+)
+){
+
+
+score -= 20;
+
+
+
+reasons.push(
+"Already recently considered"
+);
+
+
+}
 
 
 
@@ -420,22 +474,17 @@ reasons.push(
 
 
 let decision =
-
 "IGNORE";
 
 
 
-
 if(
-score >= this.thresholds.deep
+score >= this.thresholds.think
 ){
 
 
-
 decision =
-
-"DEEP_THINK";
-
+"THINK";
 
 
 }
@@ -447,11 +496,21 @@ score >= this.thresholds.remember
 ){
 
 
-
 decision =
-
 "REMEMBER";
 
+
+}
+
+
+
+else if(
+score >= this.thresholds.notice
+){
+
+
+decision =
+"NOTICE";
 
 
 }
@@ -462,54 +521,34 @@ decision =
 
 
 
-
-
-
-
 const result = {
-
 
 
 payAttention:
 
-
 decision !== "IGNORE",
-
 
 
 
 decision,
 
 
-
 score,
 
+
+awareness,
 
 
 reasons,
 
 
-
-relatedMemories:
-
-
-relatedMemories.length,
-
-
-
-wisdomFound:
-
-
-!!wisdom?.experienceFound,
-
-
+memoryLinks:
+memories.length,
 
 
 createdAt:
-
-
-new Date().toISOString()
-
+new Date()
+.toISOString()
 
 
 };
@@ -520,15 +559,19 @@ new Date().toISOString()
 
 
 
-
-console.log(
-
-"🎯 Attention result:",
-
-result
-
+this.recordFocus(
+experience
 );
 
+
+
+
+
+
+console.log(
+"👁 Attention:",
+result
+);
 
 
 
@@ -540,40 +583,39 @@ return result;
 
 }
 
-
-
-
-
-
-
-
-
 // =================================
-// EMOTIONAL SIGNAL
+// EMOTIONAL UNDERSTANDING
 // =================================
 
 
-detectEmotion(signal){
-
+detectEmotion(experience={}){
 
 
 const text =
+this.text(
+experience
+);
 
-this.text(signal);
 
 
 
-
+// negative emotions
 
 if(
 
 text.includes("angry") ||
 
+text.includes("upset") ||
+
 text.includes("frustrated") ||
+
+text.includes("worried") ||
 
 text.includes("confused") ||
 
-text.includes("worried")
+text.includes("afraid") ||
+
+text.includes("stress")
 
 ){
 
@@ -582,12 +624,16 @@ text.includes("worried")
 return {
 
 
-weight:30,
+type:
+"negative",
+
+
+weight:
+35,
 
 
 reason:
-
-"Strong negative emotion detected"
+"Emotional distress detected"
 
 
 };
@@ -603,6 +649,8 @@ reason:
 
 
 
+
+// positive emotions
 
 if(
 
@@ -610,7 +658,13 @@ text.includes("happy") ||
 
 text.includes("excited") ||
 
-text.includes("love")
+text.includes("love") ||
+
+text.includes("thank") ||
+
+text.includes("amazing") ||
+
+text.includes("great")
 
 ){
 
@@ -619,12 +673,16 @@ text.includes("love")
 return {
 
 
-weight:20,
+type:
+"positive",
+
+
+weight:
+25,
 
 
 reason:
-
-"Positive emotional signal detected"
+"Positive emotional moment"
 
 
 };
@@ -632,8 +690,6 @@ reason:
 
 
 }
-
-
 
 
 
@@ -643,7 +699,6 @@ reason:
 return null;
 
 
-
 }
 
 
@@ -654,31 +709,36 @@ return null;
 
 
 
+
+
+
 // =================================
-// HUMAN SIGNAL
+// HUMAN CONNECTION
 // =================================
 
 
-hasHumanSignal(signal){
-
+hasHumanSignal(
+experience={}
+){
 
 
 const text =
-
-this.text(signal);
-
-
+this.text(
+experience
+);
 
 
 
 return (
 
 
+experience.person ||
 
-signal.person ||
+
+experience.user ||
 
 
-signal.user ||
+experience.customer ||
 
 
 text.includes("customer") ||
@@ -687,11 +747,13 @@ text.includes("customer") ||
 text.includes("client") ||
 
 
-text.includes("user") ||
+text.includes("friend") ||
 
 
-text.includes("founder")
+text.includes("founder") ||
 
+
+text.includes("team")
 
 
 );
@@ -699,6 +761,7 @@ text.includes("founder")
 
 
 }
+
 
 
 
@@ -714,49 +777,49 @@ text.includes("founder")
 // =================================
 
 
-hasProblem(signal){
+hasProblem(
+experience={}
+){
 
 
 
 return this.contains(
 
-signal,
+experience,
 
 [
 
-
 "problem",
-
-
-"issue",
-
-
-"stuck",
-
 
 "failed",
 
-
-"confused",
-
-
-"struggling",
-
+"failure",
 
 "mistake",
 
+"error",
 
-"complaint"
+"bug",
 
+"complaint",
+
+"lost",
+
+"stuck",
+
+"confused",
+
+"not working"
 
 ]
-
 
 );
 
 
 
 }
+
+
 
 
 
@@ -772,37 +835,38 @@ signal,
 // =================================
 
 
-hasOpportunity(signal){
+hasOpportunity(
+experience={}
+){
 
 
 
 return this.contains(
 
-signal,
+experience,
 
 [
-
-
-"interested",
-
-
-"growth",
-
-
-"opportunity",
-
-
-"partnership",
 
 
 "lead",
 
-
 "sale",
 
+"growth",
 
-"upgrade"
+"opportunity",
 
+"interested",
+
+"upgrade",
+
+"customer wants",
+
+"new idea",
+
+"improvement",
+
+"positive result"
 
 ]
 
@@ -822,38 +886,42 @@ signal,
 
 
 
+
 // =================================
-// COMMITMENT DETECTION
+// RESPONSIBILITY DETECTION
 // =================================
 
 
-hasCommitment(signal){
+hasCommitment(
+experience={}
+){
 
 
 
 return this.contains(
 
-signal,
+experience,
 
 [
 
 
-"meeting",
-
-
 "deadline",
 
+"meeting",
 
 "promise",
 
-
 "appointment",
 
+"schedule",
 
 "payment",
 
+"delivery",
 
-"launch"
+"launch",
+
+"follow up"
 
 
 ]
@@ -874,18 +942,122 @@ signal,
 
 
 
+
+
 // =================================
-// TEXT NORMALIZER
+// RECENT FOCUS PROTECTION
+//
+// prevents Emma thinking
+// same thought repeatedly
 // =================================
 
 
-text(signal){
+wasRecentlyFocused(
+experience={}
+){
+
+
+const current =
+
+this.signature(
+experience
+);
+
+
+
+return this.recentFocus.some(
+
+item => item === current
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+recordFocus(
+experience={}
+){
+
+
+
+const current =
+this.signature(
+experience
+);
+
+
+
+
+this.recentFocus.unshift(
+current
+);
+
+
+
+
+// Emma short attention history
+
+this.recentFocus =
+
+this.recentFocus.slice(
+0,
+20
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPERIENCE SIGNATURE
+// =================================
+
+
+signature(
+experience={}
+){
 
 
 
 return JSON.stringify(
 
-signal || {}
+{
+
+type:
+experience.type,
+
+
+person:
+experience.person,
+
+
+topic:
+experience.topic,
+
+
+source:
+experience.source
+
+
+}
 
 )
 
@@ -904,21 +1076,112 @@ signal || {}
 
 
 
+
 // =================================
-// KEYWORD CHECK
+// ATTENTION STATE
+// =================================
+
+
+currentFocus(){
+
+
+
+return {
+
+
+recent:
+
+this.recentFocus,
+
+
+capacity:
+
+20 - this.recentFocus.length,
+
+
+status:
+
+"aware"
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// TEXT NORMALIZER
+// =================================
+
+
+text(
+experience={}
+){
+
+
+
+try{
+
+
+return JSON.stringify(
+experience
+)
+.toLowerCase();
+
+
+}
+
+
+catch{
+
+
+return "";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// WORD MATCH
 // =================================
 
 
 contains(
-signal,
+experience={},
 words=[]
 ){
 
 
 
 const text =
-
-this.text(signal);
+this.text(
+experience
+);
 
 
 
@@ -927,7 +1190,10 @@ return words.some(
 
 word =>
 
-text.includes(word)
+text.includes(
+word
+)
+
 
 );
 
@@ -939,9 +1205,86 @@ text.includes(word)
 
 
 
+
+
+
+
+
+// =================================
+// QUIET MODE
+//
+// Used when Emma overloaded
+// =================================
+
+
+quietMode(){
+
+
+
+this.thresholds.notice += 10;
+
+
+this.thresholds.remember += 10;
+
+
+this.thresholds.think += 10;
+
+
+
+
+console.log(
+"🌙 Emma attention softened"
+);
+
+
+
 }
 
 
+
+
+
+
+
+
+
+// =================================
+// HIGH AWARENESS MODE
+//
+// Used during important periods
+// =================================
+
+
+focusMode(){
+
+
+
+this.thresholds.notice -= 10;
+
+
+this.thresholds.remember -= 10;
+
+
+this.thresholds.think -= 10;
+
+
+
+
+console.log(
+"🔥 Emma attention heightened"
+);
+
+
+
+}
+
+
+
+
+
+
+
+}
 
 
 

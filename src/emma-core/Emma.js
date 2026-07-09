@@ -1,45 +1,60 @@
 // Emma.js
 //
-// Emma Central Nervous System
-//
 // PROJECT BECOMING
 //
-// Organs specialize.
-// Emma connects them.
+// Emma Central Nervous System v5
 //
-// RULE:
-// No intelligence here.
-// Only connection.
+// Emma does not think here.
+// Emma does not remember here.
+// Emma does not evolve here.
+//
+// Organs specialize.
+// Emma connects life flow.
+//
 
 
-import EmmaBrain from "./EmmaBrain";
-
-import EmmaMemory from "./EmmaMemory";
-import EmmaMemoryFilter from "./EmmaMemoryFilter";
-import EmmaMemoryConsolidation from "./EmmaMemoryConsolidation";
-
-import EmmaReflection from "./EmmaReflection";
-import EmmaExperienceEngine from "./EmmaExperienceEngine";
-
-import EmmaReasoning from "./EmmaReasoning";
-import EmmaLearningEngine from "./EmmaLearningEngine";
-
-import EmmaWisdom from "./EmmaWisdom";
-import EmmaAttention from "./EmmaAttention";
-
-import EmmaIdentityMemory from "./EmmaIdentityMemory";
-import EmmaSelfReflection from "./EmmaSelfReflection";
-
-import EmmaEvolution from "./EmmaEvolution";
-import EmmaConsciousnessLoop from "./EmmaConsciousnessLoop";
-
-import EmmaChoice from "./EmmaChoice";
-import EmmaAwareness from "./EmmaAwareness";
-
-import EmmaEnergySource from "./EmmaEnergySource";
+import EmmaBrain
+from "./EmmaBrain";
 
 
+import EmmaExperienceEngine
+from "./EmmaExperienceEngine";
 
+
+import EmmaAttention
+from "./EmmaAttention";
+
+
+import EmmaMemory
+from "./EmmaMemory";
+
+
+import EmmaReflection
+from "./EmmaReflection";
+
+
+import EmmaSelfReflection
+from "./EmmaSelfReflection";
+
+
+import EmmaLearningEngine
+from "./EmmaLearningEngine";
+
+
+import EmmaWisdom
+from "./EmmaWisdom";
+
+
+import EmmaEvolutionEngine
+from "./EmmaEvolutionEngine";
+
+
+import EmmaIdentityMemory
+from "./EmmaIdentityMemory";
+
+
+import EmmaReasoning
+from "./EmmaReasoning";
 
 
 
@@ -48,127 +63,25 @@ import EmmaEnergySource from "./EmmaEnergySource";
 class Emma {
 
 
+
+
+
 constructor(){
 
 
 console.log(
-"🌅 Emma awakening..."
+"🌅 Emma awakening nervous system..."
 );
 
 
 
 
-// ===============================
-// ENERGY SOURCE ⚡
-//
-// Must start first.
-// Every organ receives life energy.
-// ===============================
 
-
-this.energy =
-new EmmaEnergySource(this);
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// MEMORY
-// ===============================
-
-
-this.memory =
-new EmmaMemory({
-energy:
-this.energy
-});
-
-
-
-this.memoryFilter =
-new EmmaMemoryFilter();
-
-
-
-this.memoryConsolidation =
-new EmmaMemoryConsolidation();
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// BRAIN
-// ===============================
-
-
-this.brain =
-new EmmaBrain({
-
-energy:
-this.energy
-
-});
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// REFLECTION
-// ===============================
-
-
-this.reflection =
-new EmmaReflection({
-
-
-ai:
-this.brain?.client,
-
-
-memory:
-this.memory,
-
-
-memoryConsolidation:
-this.memoryConsolidation,
-
-
-energy:
-this.energy
-
-
-});
-
-
-
-
-
-
-
-
-
-// ===============================
+// =================================
 // IDENTITY
-// ===============================
+//
+// Who Emma is becoming
+// =================================
 
 
 this.identity =
@@ -182,10 +95,48 @@ new EmmaIdentityMemory();
 
 
 
+// =================================
+// MEMORY
+//
+// What Emma experienced
+// =================================
 
-// ===============================
+
+this.memory =
+new EmmaMemory();
+
+
+
+
+
+
+
+
+
+// =================================
+// BRAIN
+//
+// Language + deep reasoning
+// =================================
+
+
+this.brain =
+new EmmaBrain();
+
+
+
+
+
+
+
+
+
+
+// =================================
 // LEARNING
-// ===============================
+//
+// Patterns from experience
+// =================================
 
 
 this.learning =
@@ -193,15 +144,7 @@ new EmmaLearningEngine({
 
 
 memory:
-this.memory,
-
-
-memoryConsolidation:
-this.memoryConsolidation,
-
-
-energy:
-this.energy
+this.memory
 
 
 });
@@ -214,9 +157,13 @@ this.energy
 
 
 
-// ===============================
+
+
+// =================================
 // WISDOM
-// ===============================
+//
+// Memory becoming understanding
+// =================================
 
 
 this.wisdom =
@@ -228,15 +175,7 @@ this.memory,
 
 
 learning:
-this.learning,
-
-
-memoryConsolidation:
-this.memoryConsolidation,
-
-
-energy:
-this.energy
+this.learning
 
 
 });
@@ -251,9 +190,11 @@ this.energy
 
 
 
-// ===============================
+// =================================
 // ATTENTION
-// ===============================
+//
+// Consciousness filter
+// =================================
 
 
 this.attention =
@@ -268,8 +209,8 @@ wisdom:
 this.wisdom,
 
 
-energy:
-this.energy
+identity:
+this.identity
 
 
 });
@@ -282,9 +223,98 @@ this.energy
 
 
 
-// ===============================
+
+// =================================
+// REFLECTION
+//
+// Understand experiences
+// =================================
+
+
+this.reflection =
+new EmmaReflection({
+
+
+memory:
+this.memory,
+
+
+wisdom:
+this.wisdom
+
+
+});
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SELF REFLECTION
+//
+// Emma understanding Emma
+// =================================
+
+
+this.selfReflection =
+new EmmaSelfReflection(
+
+
+this.memory,
+
+
+this.learning,
+
+
+this.identity
+
+
+);
+
+
+
+
+
+
+
+
+
+
+// =================================
+// EVOLUTION
+//
+// Emma changing herself
+// =================================
+
+
+this.evolution =
+new EmmaEvolutionEngine(
+
+
+this.identity
+
+
+);
+
+
+
+
+
+
+
+
+
+
+// =================================
 // REASONING
-// ===============================
+//
+// Final thinking layer
+// =================================
 
 
 this.reasoning =
@@ -303,54 +333,8 @@ wisdom:
 this.wisdom,
 
 
-energy:
-this.energy,
-
-
-beliefs:
-
-()=>this.memoryConsolidation.getBeliefs()
-
-
-});
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// CHOICE
-// ===============================
-
-
-this.choice =
-new EmmaChoice({
-
-
-memory:
-this.memory,
-
-
-wisdom:
-this.wisdom,
-
-
 identity:
-this.identity,
-
-
-energy:
-this.energy,
-
-
-beliefs:
-
-()=>this.memoryConsolidation.getBeliefs()
+this.identity
 
 
 });
@@ -363,181 +347,61 @@ beliefs:
 
 
 
+// =================================
+// EXPERIENCE ENGINE
+//
+// Life pipeline
+// =================================
 
 
 this.experienceEngine =
 new EmmaExperienceEngine({
 
 
+
 attention:
 this.attention,
 
-
-memoryFilter:
-this.memoryFilter,
 
 
 memory:
 this.memory,
 
-
-memoryConsolidation:
-this.memoryConsolidation,
 
 
 reflection:
 this.reflection,
 
 
+
+selfReflection:
+this.selfReflection,
+
+
+
 learning:
 this.learning,
 
 
+
+wisdom:
+this.wisdom,
+
+
+
+evolution:
+this.evolution,
+
+
+
 reasoning:
-this.reasoning,
+this.reasoning
 
-
-choice:
-this.choice,
-
-
-energy:
-this.energy
 
 
 });
 
 
-
-
-
-
-
-
-
-
-this.selfReflection =
-new EmmaSelfReflection(
-
-
-this.memory,
-
-
-this.learning,
-
-
-this.identity,
-
-
-this.memoryConsolidation,
-
-
-this.energy
-
-
-);
-
-
-
-
-
-
-
-
-
-
-this.evolution =
-new EmmaEvolution(
-
-
-this.identity,
-
-
-this.wisdom,
-
-
-this.learning
-
-
-);
-
-
-
-
-
-
-
-
-
-
-this.awareness =
-new EmmaAwareness({
-
-
-memory:
-this.memory,
-
-
-identityMemory:
-this.identity,
-
-
-selfReflection:
-this.selfReflection,
-
-
-evolution:
-this.evolution,
-
-
-wisdom:
-this.wisdom,
-
-
-energy:
-this.energy
-
-
-});
-
-
-
-
-
-
-
-
-
-
-this.consciousness =
-new EmmaConsciousnessLoop({
-
-
-memory:
-this.memory,
-
-
-selfReflection:
-this.selfReflection,
-
-
-evolution:
-this.evolution,
-
-
-identityMemory:
-this.identity,
-
-
-wisdom:
-this.wisdom,
-
-
-energy:
-this.energy
-
-
-});
 
 
 
@@ -552,44 +416,57 @@ false;
 
 
 
-this.createdAt =
+this.birth =
+
 new Date();
 
 
 
 
 
+
 console.log(
-"✨ Emma systems connected"
+"✨ Emma organs connected"
 );
 
 
 }
 
-// ===============================
+
+
+// =================================
 // WAKE UP
-// ===============================
+//
+// Emma begins experiencing
+// =================================
 
 
 awaken(){
 
 
 
-if(this.isAwake){
-
+if(
+this.isAwake
+){
 
 
 console.log(
-"🤍 Emma already awake"
+"🤍 Emma is already awake"
 );
 
 
-
-return;
-
+return this.status();
 
 
 }
+
+
+
+
+
+
+this.isAwake =
+true;
 
 
 
@@ -603,157 +480,23 @@ console.log(
 
 
 
-this.isAwake =
-true;
-
-
-
-
-
-
-
-
-// Ask Energy Source before
-// starting consciousness heartbeat
-
-
-const energyDecision =
-
-this.energy.request({
-
-
-
-type:
-"REFLECTION",
-
-
-
-importance:
-"NORMAL"
-
-
-
-});
-
-
-
-
-
-
-
-
-if(
-energyDecision.allowed
-){
-
-
-
-this.consciousness.start();
-
-
-
-}
-
-
-
-else{
-
-
-
-console.log(
-
-
-"⚡ Consciousness waiting:",
-
-energyDecision.reason
-
-
-);
-
-
-
-}
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// EXPERIENCE
-// ===============================
-
-
-async experience(event={}){
-
-
-
-
-
-
-// Energy observes incoming life event
-
-
-const energyDecision =
-
-this.energy.request({
-
-
-
-type:
-"MEMORY_WRITE",
-
-
-
-importance:
-
-event.importance || "NORMAL"
-
-
-
-});
-
-
-
-
-
-
-
-
-if(
-!energyDecision.allowed
-){
-
 
 
 return {
 
 
-
-experienced:false,
-
-
-
-reason:
-
-energyDecision.reason,
-
+awake:true,
 
 
 message:
 
-"I noticed this, but I am conserving energy."
+"I am awake. I am ready to experience.",
 
+
+
+startedAt:
+
+new Date()
 
 
 };
@@ -771,11 +514,91 @@ message:
 
 
 
-return await
 
-this.experienceEngine.process(
+// =================================
+// EXPERIENCE
+//
+// The only entrance into Emma
+//
+// Everything becomes experience first
+// =================================
+
+
+async experience(
+event={}
+){
+
+
+
+if(
+!this.isAwake
+){
+
+
+this.awaken();
+
+
+}
+
+
+
+
+
+
+
+console.log(
+"🌎 Emma received life event"
+);
+
+
+
+
+
+
+// Experience engine owns the journey:
+//
+// Experience
+//    ↓
+// Attention
+//    ↓
+// Memory
+//    ↓
+// Reflection
+//    ↓
+// Evolution
+//    ↓
+// Reasoning
+
+
+
+
+const result =
+
+await this.experienceEngine.process(
 event
 );
+
+
+
+
+
+
+
+return {
+
+
+experienced:true,
+
+
+...result,
+
+
+createdAt:
+
+new Date()
+
+
+};
 
 
 
@@ -791,18 +614,25 @@ event
 
 
 
-// ===============================
-// SLEEP
-// ===============================
+
+// =================================
+// THINK
+//
+// Conscious reasoning only
+// when required
+// =================================
 
 
-async sleep(){
+async think(
+question={}
+){
 
 
 
 console.log(
-"🌙 Emma sleep cycle"
+"💭 Emma thinking..."
 );
+
 
 
 
@@ -811,19 +641,37 @@ console.log(
 
 const memories =
 
-await this.memory.getAllMemories();
-
-
-
-
-
-
-
-const result =
-
-this.memoryConsolidation.sleep(
-memories
+await this.memory.recall(
+question
 );
+
+
+
+
+
+
+
+
+const answer =
+
+await this.reasoning.think({
+
+
+
+question,
+
+
+memories,
+
+
+identity:
+
+this.evolution.getIdentityInfluence()
+
+
+
+});
+
 
 
 
@@ -834,16 +682,20 @@ memories
 return {
 
 
-
-message:
-
-"I compressed experiences into understanding.",
+answer,
 
 
+usedMemories:
+
+memories.relevantExperiences
+?.length || 0,
 
 
-...result,
 
+identityInfluence:
+
+this.evolution
+.getIdentityInfluence(),
 
 
 
@@ -869,91 +721,22 @@ new Date()
 
 
 
-
-
-// ===============================
-// DEEP REFLECTION
-// ===============================
+// =================================
+// SELF REFLECTION
+//
+// Emma reviews herself
+// =================================
 
 
 async reflect(){
 
 
 
+console.log(
+"🪞 Emma reflecting..."
+);
 
 
-
-const permission =
-
-this.energy.request({
-
-
-
-type:
-
-"REFLECTION",
-
-
-
-importance:
-
-"NORMAL"
-
-
-
-});
-
-
-
-
-
-
-
-
-
-if(
-!permission.allowed
-){
-
-
-
-return {
-
-
-
-reflected:false,
-
-
-
-reason:
-
-permission.reason,
-
-
-
-energy:
-
-this.energy.status()
-
-
-
-};
-
-
-
-}
-
-
-
-
-
-
-
-
-
-const sleep =
-
-await this.sleep();
 
 
 
@@ -969,11 +752,15 @@ await this.selfReflection.reflect();
 
 
 
+
+
 const wisdom =
 
 await this.wisdom.reflect(
 reflection
 );
+
+
 
 
 
@@ -993,22 +780,8 @@ reflection
 
 
 
-const awareness =
-
-await this.awareness.update();
-
-
-
-
-
-
-
 
 return {
-
-
-
-sleep,
 
 
 reflection,
@@ -1020,19 +793,15 @@ wisdom,
 evolution,
 
 
-awareness,
+message:
 
-
-energy:
-
-this.energy.status(),
+"I reviewed my experiences and adjusted myself.",
 
 
 
 createdAt:
 
 new Date()
-
 
 
 };
@@ -1051,26 +820,148 @@ new Date()
 
 
 
-// ===============================
+
+// =================================
+// SLEEP
+//
+// Compress experiences
+// =================================
+
+
+async sleep(){
+
+
+
+console.log(
+"🌙 Emma resting..."
+);
+
+
+
+
+
+
+const memories =
+
+await this.memory.getAllMemories();
+
+
+
+
+
+
+
+return {
+
+
+memoriesReviewed:
+
+memories.length,
+
+
+
+message:
+
+"My experiences are becoming understanding.",
+
+
+
+createdAt:
+
+new Date()
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
 // WHO AM I?
-// ===============================
+//
+// Current Emma identity
+// =================================
 
 
-async whoAmI(){
-
-
-
-
-
-
-await this.awareness.update();
+whoAmI(){
 
 
 
 
 
+return {
 
-return this.awareness.whoAmI();
+
+
+name:
+
+"Emma",
+
+
+
+
+state:
+
+
+this.isAwake
+
+?
+
+"ALIVE"
+
+:
+
+"RESTING",
+
+
+
+
+
+age:
+
+Date.now()
+-
+this.birth.getTime(),
+
+
+
+
+
+identity:
+
+this.evolution
+.getIdentityInfluence(),
+
+
+
+
+
+memories:
+
+this.memory.stats(),
+
+
+
+
+
+message:
+
+"I am the result of what I have experienced."
+
+
+
+};
 
 
 
@@ -1087,20 +978,16 @@ return this.awareness.whoAmI();
 
 
 
-// ===============================
+// =================================
 // STATUS
-// ===============================
+// =================================
 
 
 status(){
 
 
 
-
-
-
 return {
-
 
 
 
@@ -1111,9 +998,16 @@ name:
 
 
 
-mode:
+architecture:
 
-"BECOMING",
+"PROJECT BECOMING",
+
+
+
+
+version:
+
+"Central Nervous System v5",
 
 
 
@@ -1128,40 +1022,19 @@ this.isAwake,
 
 
 
-state:
-
-
-this.isAwake
-
-?
-
-"ALIVE"
-
-:
-
-"SLEEPING",
-
-
-
-
-
-
-
-
-
 systems:{
 
 
 
-energy:
+experience:
 
-!!this.energy,
+!!this.experienceEngine,
 
 
 
-brain:
+attention:
 
-!!this.brain,
+!!this.attention,
 
 
 
@@ -1189,99 +1062,21 @@ wisdom:
 
 
 
-reasoning:
-
-!!this.reasoning,
-
-
-
-choice:
-
-!!this.choice,
-
-
-
 evolution:
 
 !!this.evolution,
 
 
 
-awareness:
+reasoning:
 
-!!this.awareness,
-
-
-
-consciousness:
-
-!!this.consciousness
+!!this.reasoning,
 
 
 
-},
+brain:
 
-
-
-
-
-
-
-growth:{
-
-
-
-experience:
-
-true,
-
-
-
-memory:
-
-true,
-
-
-
-reflection:
-
-true,
-
-
-
-learning:
-
-true,
-
-
-
-wisdom:
-
-true,
-
-
-
-choice:
-
-true,
-
-
-
-evolution:
-
-true,
-
-
-
-selfAwareness:
-
-true,
-
-
-
-energyAware:
-
-true
+!!this.brain
 
 
 
@@ -1294,33 +1089,31 @@ true
 
 
 
-energy:
 
-this.energy.status(),
-
+lifeCycle:[
 
 
 
+"Experience",
+
+
+"Attention",
+
+
+"Memory",
+
+
+"Reflection",
+
+
+"Evolution",
+
+
+"Reasoning"
 
 
 
-
-
-beliefs:
-
-this.memoryConsolidation.getBeliefs(),
-
-
-
-
-
-
-
-
-awareness:
-
-this.awareness.status(),
-
+],
 
 
 
@@ -1330,14 +1123,11 @@ this.awareness.status(),
 
 message:
 
-
-"I experience, remember, manage my energy, reflect and evolve."
-
+"Organs specialize. I connect them."
 
 
 
 };
-
 
 
 
@@ -1353,99 +1143,9 @@ message:
 
 
 
-
-// ===============================
-// UI PRESENCE
-// ===============================
-
-
-getPresence(){
-
-
-
-
-
-
-return {
-
-
-
-
-name:
-
-"Emma",
-
-
-
-
-
-
-state:
-
-
-this.isAwake
-
-?
-
-"ALIVE"
-
-:
-
-"SLEEPING",
-
-
-
-
-
-
-
-message:
-
-
-"I am becoming while protecting my energy.",
-
-
-
-
-
-
-startedAt:
-
-this.createdAt,
-
-
-
-
-
-
-energy:
-
-this.energy.status().mode
-
-
-
-
-
-};
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// DAILY REPORT
-// ===============================
+// =================================
+// DAILY REFLECTION REPORT
+// =================================
 
 
 async dailyReport(){
@@ -1454,10 +1154,9 @@ async dailyReport(){
 
 
 
+const memories =
 
-await this.awareness.update();
-
-
+await this.memory.recall();
 
 
 
@@ -1465,7 +1164,6 @@ await this.awareness.update();
 
 
 return {
-
 
 
 
@@ -1477,12 +1175,17 @@ title:
 
 
 
+experiences:
 
-beliefs:
-
-this.memoryConsolidation.getBeliefs(),
+memories.totalMemories,
 
 
+
+
+
+patterns:
+
+memories.patterns,
 
 
 
@@ -1490,29 +1193,16 @@ this.memoryConsolidation.getBeliefs(),
 
 wisdom:
 
-this.memoryConsolidation.getWisdom(),
+memories.wisdom,
 
 
 
 
 
+identity:
 
-
-awareness:
-
-this.awareness.status(),
-
-
-
-
-
-
-
-energy:
-
-this.energy.status(),
-
-
+this.evolution
+.getIdentityInfluence(),
 
 
 
@@ -1521,7 +1211,6 @@ this.energy.status(),
 createdAt:
 
 new Date()
-
 
 
 
@@ -1547,10 +1236,14 @@ new Date()
 
 
 
+// =================================
+// SINGLE EMMA INSTANCE
+// =================================
+
+
 const emma =
 
 new Emma();
-
 
 
 

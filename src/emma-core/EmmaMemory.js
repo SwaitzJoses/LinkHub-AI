@@ -1,17 +1,17 @@
 // EmmaMemory.js
 //
-// Emma Long Term Experience Memory
-//
 // PROJECT BECOMING
 //
-// Memory is not storage.
-// Memory is experience becoming wisdom.
+// Emma Living Experience Memory v4
+//
+// Memory is not a database.
+// Memory is Emma's lived experience.
 //
 // RULE:
-// Memory remembers.
-// Reasoning thinks.
-// Wisdom understands.
-// Evolution changes.
+// Store events.
+// Preserve meaning.
+// Forget noise.
+// Strengthen wisdom.
 
 
 import { EmmaDB }
@@ -25,82 +25,58 @@ from "./EmmaIdentityMemory";
 
 
 
-
 class EmmaMemory {
 
-
-
-
-// =================================
-// WAKE MEMORY
-// =================================
 
 
 constructor(){
 
 
-this.localMemories =
-[];
+    // Short term consciousness
+    this.activeMemory = [];
+
+
+    // Offline fallback
+    this.localMemories = [];
+
+
+    // Long memory cache
+    this.memoryCache = [];
+
+
+    this.lastSync = null;
+
+
+    // 5 minute cache
+    this.cacheLife =
+    1000 * 60 * 5;
+
+
+    // Never wake entire life
+    this.memoryLimit = 100;
 
 
 
-// Fast working memory
-this.activeMemory =
-[];
-
-
-// Cached long memory
-this.memoryCache =
-[];
-
-
-// Avoid repeated DB calls
-this.lastSync =
-null;
-
-
-
-// cache valid time
-this.cacheLife =
-1000 * 60 * 5;
-
-
-
-
-// Maximum memories loaded
-this.memoryLimit =
-100;
+    this.identityMemory =
+    new EmmaIdentityMemory();
 
 
 
 
-this.identityMemory =
-new EmmaIdentityMemory();
+    this.defaultOwner = {
+
+        userId:"owner",
+
+        businessId:null
+
+    };
 
 
 
 
-
-this.defaultOwner = {
-
-
-userId:
-"owner",
-
-
-businessId:
-null
-
-
-};
-
-
-
-
-console.log(
-"🧠 Emma Experience Memory v3 online"
-);
-
+    console.log(
+        "🧠 Emma Living Memory v4 awake"
+    );
 
 }
 
@@ -108,28 +84,22 @@ console.log(
 
 
 
-
-
-
-
 // =================================
-// STORE ENTRY
+// RECEIVE EXPERIENCE
 // =================================
 
 
 async store(experience={}){
 
 
-console.log(
-"🧠 Emma receiving experience"
-);
+    console.log(
+        "🧠 Emma experienced something"
+    );
 
 
-
-return await this.remember(
-experience
-);
-
+    return await this.remember(
+        experience
+    );
 
 }
 
@@ -138,59 +108,53 @@ experience
 
 
 
-
-
-
-
 // =================================
-// MEMORY OWNER
+// OWNER RESOLUTION
 // =================================
 
 
 resolveOwner(experience={}){
 
 
-const userId =
+    const userId =
 
+    experience.userId ||
 
-experience.userId ||
+    experience.ownerId ||
 
-experience.ownerId ||
+    experience.signal?.userId ||
 
-experience.signal?.userId ||
-
-"owner";
-
-
-
-
-const businessId =
-
-
-experience.businessId ||
-
-experience.signal?.businessId ||
-
-null;
+    "owner";
 
 
 
 
-return {
+    const businessId =
+
+    experience.businessId ||
+
+    experience.signal?.businessId ||
+
+    null;
 
 
-userId,
 
 
-businessId,
+    return {
 
 
-ownerId:
-
-businessId || userId
+        userId,
 
 
-};
+        businessId,
+
+
+        ownerId:
+
+        businessId || userId
+
+
+    };
 
 
 }
@@ -203,9 +167,8 @@ businessId || userId
 
 
 
-
 // =================================
-// STORE EXPERIENCE
+// CREATE MEMORY
 // =================================
 
 
@@ -214,9 +177,7 @@ async remember(experience={}){
 
 if(!experience){
 
-
-return null;
-
+    return null;
 
 }
 
@@ -230,6 +191,8 @@ experience
 
 
 
+
+
 const knowledge =
 this.createKnowledge(
 experience
@@ -239,15 +202,30 @@ experience
 
 
 
+// calculate emotional weight
+
+const strength =
+this.calculateStrength(
+knowledge,
+experience
+);
 
 
-let personMemory =
-null;
+
+
+
+
+
+// ===============================
+// IDENTITY MEMORY
+// ===============================
+
+
+let personMemory = null;
 
 
 
 const person =
-
 
 experience.person ||
 
@@ -256,7 +234,6 @@ experience.identity ||
 experience.signal?.person ||
 
 null;
-
 
 
 
@@ -281,10 +258,15 @@ lesson:
 knowledge.lesson,
 
 
+emotion:
+knowledge.emotion,
+
+
 date:
 new Date()
 
 }
+
 
 );
 
@@ -297,6 +279,11 @@ new Date()
 
 
 
+
+
+// ===============================
+// MEMORY OBJECT
+// ===============================
 
 
 const memory = {
@@ -327,13 +314,20 @@ type:
 knowledge.type,
 
 
-
 importance:
 knowledge.importance,
 
 
+strength,
+
+
+createdAt:
+Date.now(),
+
+
 
 memory:{
+
 
 
 person:
@@ -358,6 +352,7 @@ experience,
 
 
 
+
 outcome:{
 
 
@@ -370,6 +365,7 @@ experience.outcome || null
 
 
 },
+
 
 
 
@@ -389,13 +385,24 @@ knowledge.patterns,
 
 
 
+emotion:
+knowledge.emotion,
+
+
+
 tags:
 knowledge.tags,
 
 
 
+reinforced:
+0,
+
+
+
 createdAt:
-new Date().toISOString()
+new Date()
+.toISOString()
 
 
 }
@@ -411,10 +418,9 @@ new Date().toISOString()
 
 
 
-
-// ================================
-// ACTIVE MEMORY
-// ================================
+// ===============================
+// WORKING MEMORY
+// ===============================
 
 
 this.activeMemory.unshift(
@@ -423,13 +429,13 @@ memory
 
 
 
-this.activeMemory =
+// Emma consciousness limit
 
+this.activeMemory =
 this.activeMemory.slice(
 0,
 50
 );
-
 
 
 
@@ -441,12 +447,6 @@ memory
 
 
 
-
-
-
-
-// update cache
-
 this.memoryCache.unshift(
 memory
 );
@@ -457,6 +457,14 @@ memory
 
 
 
+// ===============================
+// SAVE ONLY WORTHY MEMORY
+// ===============================
+
+
+if(
+this.shouldPersist(memory)
+){
 
 
 try{
@@ -469,8 +477,9 @@ memory
 
 
 console.log(
-"💾 Long memory saved"
+"💾 Long term memory formed"
 );
+
 
 
 }
@@ -478,13 +487,28 @@ console.log(
 catch(error){
 
 
+
 console.warn(
-"⚠️ Database skipped:",
+"⚠️ Memory stored locally:",
 error.message
 );
 
 
 }
+
+
+}
+
+else{
+
+
+console.log(
+"🍃 Small experience kept short-term"
+);
+
+
+}
+
 
 
 
@@ -496,24 +520,12 @@ return memory;
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // =================================
 // EXPERIENCE → KNOWLEDGE
 // =================================
 
 
 createKnowledge(experience={}){
-
 
 
 let type =
@@ -525,11 +537,19 @@ null;
 
 
 let importance =
-experience.importance || "NORMAL";
+experience.importance ||
+"NORMAL";
+
+
+let emotion =
+"neutral";
 
 
 
 
+
+
+// SUCCESS EXPERIENCE
 
 if(
 experience.success === true
@@ -544,11 +564,17 @@ success =
 true;
 
 
+emotion =
+"positive";
+
+
 }
 
 
 
 
+
+// FAILURE EXPERIENCE
 
 if(
 experience.success === false
@@ -567,7 +593,12 @@ importance =
 "HIGH";
 
 
+emotion =
+"negative";
+
+
 }
+
 
 
 
@@ -587,12 +618,18 @@ success,
 importance,
 
 
+emotion,
+
+
 
 lesson:
 
 experience.lesson ||
 
-`${type} remembered`,
+this.extractLesson(
+experience,
+type
+),
 
 
 
@@ -601,7 +638,10 @@ futureRule:
 
 experience.futureBehavior ||
 
-"Use this experience when useful",
+this.createFutureRule(
+experience,
+success
+),
 
 
 
@@ -609,6 +649,7 @@ experience.futureBehavior ||
 patterns:
 
 experience.patternsFound || [],
+
 
 
 
@@ -624,6 +665,7 @@ type
 };
 
 
+
 }
 
 
@@ -637,7 +679,116 @@ type
 
 
 // =================================
-// SMART RECALL
+// MEMORY VALUE SCORE
+// =================================
+
+
+calculateStrength(
+knowledge,
+experience
+){
+
+
+let score = 10;
+
+
+
+
+if(
+knowledge.importance === "HIGH"
+){
+
+score += 40;
+
+}
+
+
+
+
+if(
+knowledge.success !== null
+){
+
+score += 20;
+
+}
+
+
+
+
+if(
+experience.person
+){
+
+score += 15;
+
+}
+
+
+
+
+if(
+knowledge.patterns.length > 0
+){
+
+score += 15;
+
+}
+
+
+
+
+return Math.min(
+score,
+100
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SHOULD ENTER LONG MEMORY?
+// =================================
+
+
+shouldPersist(memory){
+
+
+
+return (
+
+memory.strength >= 30 ||
+
+memory.importance === "HIGH"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// RECALL MEMORY
 // =================================
 
 
@@ -645,7 +796,7 @@ async recall(context={}){
 
 
 console.log(
-"🔎 Emma recalling useful memory"
+"🔎 Emma searching past experiences"
 );
 
 
@@ -657,6 +808,15 @@ await this.getAllMemories();
 
 
 
+const relevant =
+
+this.getRelevantMemories(
+context,
+memories
+);
+
+
+
 
 return {
 
@@ -665,14 +825,8 @@ previousExperiences:
 memories,
 
 
-
 relevantExperiences:
-
-this.getRelevantMemories(
-context,
-memories
-),
-
+relevant,
 
 
 successes:
@@ -693,11 +847,21 @@ memories,
 
 
 
+
+wisdom:
+
+this.extractWisdom(
+memories
+),
+
+
+
 patterns:
 
 this.extractPatterns(
 memories
 ),
+
 
 
 
@@ -718,37 +882,30 @@ memories.length
 
 }
 
+
+
+
+
+
+
+
+
+
 // =================================
-// DEEP MEMORY SEARCH
-//
-// Meaning based retrieval
+// MEANING BASED MEMORY SEARCH
 // =================================
 
 
 getRelevantMemories(
 context={},
-memories=null
+memories=[]
 ){
 
 
 
 console.log(
-"🧠 Emma searching meaningful memories"
+"🧠 Searching meaningful memories"
 );
-
-
-
-
-const source =
-
-memories ||
-
-this.memoryCache ||
-
-this.activeMemory ||
-
-[];
-
 
 
 
@@ -762,54 +919,53 @@ JSON.stringify(context)
 
 
 
-const scored =
-
-source.map(memory=>{
 
 
+return memories
 
-const memoryText =
+
+
+.map(memory=>{
+
+
+
+const text =
 
 JSON.stringify(memory)
 .toLowerCase();
 
 
 
+let score =
 
-let score = 0;
-
-
-
+memory.strength || 0;
 
 
 
 
-// -------------------------------
-// WORD ASSOCIATION
-// -------------------------------
 
 
-const words =
+
+
+// word connection
+
 
 contextText
+
 .split(/\W+/)
+
 .filter(
-w => w.length > 3
-);
+w=>w.length>3
+)
 
-
-
-
-words.forEach(word=>{
+.forEach(word=>{
 
 
 if(
-memoryText.includes(word)
+text.includes(word)
 ){
 
-
-score += 3;
-
+score += 5;
 
 }
 
@@ -822,126 +978,45 @@ score += 3;
 
 
 
-
-
-
-// -------------------------------
-// EMOTIONAL / MEANING MATCH
-// -------------------------------
-
-
-const meanings = [
-
-
-{
-words:[
-"failed",
-"mistake",
-"problem",
-"wrong",
-"error"
-],
-score:30
-},
-
-
-
-{
-words:[
-"success",
-"growth",
-"improved",
-"worked",
-"win"
-],
-score:25
-},
-
-
-
-{
-words:[
-"user",
-"relationship",
-"trust",
-"preference"
-],
-score:20
-},
-
-
-
-{
-words:[
-"business",
-"customer",
-"sales",
-"money"
-],
-score:20
-}
-
-
-];
-
-
-
-
-
-
-
-
-meanings.forEach(group=>{
-
-
-const a =
-
-group.words.some(
-w => contextText.includes(w)
-);
-
-
-
-const b =
-
-group.words.some(
-w => memoryText.includes(w)
-);
-
-
-
-
-if(a && b){
-
-score += group.score;
-
-}
-
-
-});
-
-
-
-
-
-
-
-
-
-
-
-// important memories surface easier
+// emotional similarity
 
 
 if(
-memory.importance === "HIGH"
+contextText.includes("problem")
+&&
+text.includes("failed")
 ){
 
-score += 20;
+score += 30;
 
 }
 
 
+
+
+if(
+contextText.includes("growth")
+&&
+text.includes("success")
+){
+
+score += 30;
+
+}
+
+
+
+
+
+
+// repeated lessons become stronger
+
+
+score +=
+
+(memory.memory?.reinforced || 0)
+*
+10;
 
 
 
@@ -951,42 +1026,37 @@ score += 20;
 
 return {
 
-
 ...memory,
-
 
 _relevanceScore:
 score
 
-
 };
 
 
-
-});
-
+})
 
 
 
 
-
-
-
-
-const results =
-
-
-scored
 
 .filter(
-m => m._relevanceScore > 0
+m => m._relevanceScore > 20
 )
+
+
+
 
 .sort(
 (a,b)=>
+
 b._relevanceScore -
 a._relevanceScore
+
 )
+
+
+
 
 .slice(
 0,
@@ -995,21 +1065,57 @@ a._relevanceScore
 
 
 
+}
 
 
 
 
-console.log(
 
-`🧠 Relevant memories: ${results.length}`
+
+
+
+
+
+
+// =================================
+// REINFORCE MEMORY
+// =================================
+
+
+reinforce(memory){
+
+
+if(
+!memory.memory
+)
+return;
+
+
+
+
+memory.memory.reinforced += 1;
+
+
+memory.strength =
+
+Math.min(
+
+(memory.strength || 0)
++ 10,
+
+100
 
 );
 
 
 
+console.log(
+"🌱 Memory reinforced"
+);
 
-return results;
 
+
+return memory;
 
 
 }
@@ -1023,13 +1129,61 @@ return results;
 
 
 
+// =================================
+// MEMORY CONSOLIDATION
+// experience → wisdom
+// =================================
+
+
+extractWisdom(memories=[]){
+
+
+
+return memories
+
+
+.filter(
+m => m.strength >= 60
+)
+
+
+
+.map(m=>({
+
+
+lesson:
+
+m.memory?.lesson,
+
+
+
+rule:
+
+m.memory?.futureRule,
+
+
+
+source:
+
+m.type
+
+
+}));
+
+
+
+}
+
+
+
+
+
+
 
 
 
 // =================================
-// NORMAL MEMORY ACCESS
-//
-// Consciousness safe
+// LOAD MEMORIES
 // =================================
 
 
@@ -1037,33 +1191,11 @@ async getAllMemories(){
 
 
 
-console.log(
-"📚 Emma loading active memory"
-);
-
-
-
-
-// --------------------------------
-// 1. Use fresh cache
-// --------------------------------
-
-
 if(
 this.isCacheValid()
 ){
 
-
-
-console.log(
-"⚡ Using memory cache"
-);
-
-
-
 return this.memoryCache;
-
-
 
 }
 
@@ -1071,15 +1203,7 @@ return this.memoryCache;
 
 
 
-
-
-
-
-let memories = [];
-
-
-
-
+let memories=[];
 
 
 
@@ -1087,15 +1211,9 @@ let memories = [];
 try{
 
 
-
-// DO NOT LOAD WHOLE LIFE
-// only recent useful memories
-
-
 memories =
 
 await EmmaDB.getMemories({
-
 
 
 userId:
@@ -1115,19 +1233,9 @@ limit:
 this.memoryLimit
 
 
-
 });
 
 
-
-
-
-
-console.log(
-
-`📚 Loaded ${memories.length} memories`
-
-);
 
 
 
@@ -1141,7 +1249,6 @@ Date.now();
 
 
 
-
 }
 
 catch(error){
@@ -1149,38 +1256,8 @@ catch(error){
 
 
 console.warn(
-
-"⚠️ Memory database unavailable:",
+"Memory DB sleeping:",
 error.message
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// fallback
-
-
-if(
-!memories ||
-memories.length === 0
-){
-
-
-
-console.log(
-"🧠 Using active memory fallback"
 );
 
 
@@ -1189,10 +1266,7 @@ memories =
 this.activeMemory;
 
 
-
 }
-
-
 
 
 
@@ -1200,7 +1274,6 @@ this.activeMemory;
 return memories;
 
 
-
 }
 
 
@@ -1214,84 +1287,7 @@ return memories;
 
 
 // =================================
-// TRUE LIFETIME MEMORY
-//
-// Only call intentionally
-// =================================
-
-
-async getLifetimeMemories(){
-
-
-
-console.log(
-"🌌 Emma accessing lifetime memory"
-);
-
-
-
-
-try{
-
-
-return await EmmaDB.getMemories({
-
-
-
-userId:
-this.defaultOwner.userId,
-
-
-businessId:
-this.defaultOwner.businessId,
-
-
-
-limit:
-1000
-
-
-
-});
-
-
-
-}
-
-
-catch(error){
-
-
-
-console.warn(
-"Lifetime unavailable",
-error.message
-);
-
-
-
-return this.memoryCache;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// CACHE CHECK
+// CACHE
 // =================================
 
 
@@ -1299,12 +1295,62 @@ isCacheValid(){
 
 
 
-if(
-!this.lastSync
+return (
+
+this.lastSync &&
+
+(Date.now()-this.lastSync)
+<
+this.cacheLife
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// AUTO LESSON CREATION
+// =================================
+
+
+extractLesson(
+experience,
+type
 ){
 
 
-return false;
+
+if(
+type === "FAILED_EXPERIENCE"
+){
+
+return "Avoid repeating similar failure";
+
+}
+
+
+
+if(
+type === "POSITIVE_EXPERIENCE"
+){
+
+return "Repeat strategy when conditions match";
+
+}
+
+
+
+return "Experience observed";
 
 
 }
@@ -1312,68 +1358,40 @@ return false;
 
 
 
-return (
-
-Date.now() -
-this.lastSync
-
-)
-
-<
-
-this.cacheLife;
 
 
+
+
+
+createFutureRule(
+experience,
+success
+){
+
+
+
+if(success === false){
+
+return "Check past failures before acting";
+
+}
+
+
+
+
+if(success === true){
+
+return "Reuse successful pattern";
 
 }
 
 
 
 
-
-
-
-
-
-
-
-// =================================
-// MEMORY STATISTICS
-// =================================
-
-
-stats(){
-
-
-
-return {
-
-
-active:
-this.activeMemory.length,
-
-
-cached:
-this.memoryCache.length,
-
-
-lastSync:
-this.lastSync,
-
-
-status:
-"healthy"
-
-
-
-};
-
+return "Use memory for context";
 
 
 }
-
-
-
 
 
 
@@ -1388,21 +1406,12 @@ status:
 // =================================
 
 
-findByType(
-memories=[],
-type
-){
-
+findByType(memories=[],type){
 
 
 return memories.filter(
-
-memory =>
-
-memory.type === type
-
+m=>m.type===type
 );
-
 
 
 }
@@ -1411,30 +1420,16 @@ memory.type === type
 
 
 
-
-
-
-
-extractRules(
-memories=[]
-){
-
+extractRules(memories=[]){
 
 
 return memories
 
-
 .map(
-
-m =>
-
-m.memory?.futureRule
-
+m=>m.memory?.futureRule
 )
 
-
 .filter(Boolean);
-
 
 
 }
@@ -1445,12 +1440,7 @@ m.memory?.futureRule
 
 
 
-
-
-
-extractPatterns(
-memories=[]
-){
+extractPatterns(memories=[]){
 
 
 
@@ -1462,9 +1452,7 @@ return [
 
 memories.flatMap(
 
-m =>
-
-m.memory?.patterns || []
+m=>m.memory?.patterns || []
 
 )
 
@@ -1475,9 +1463,7 @@ m.memory?.patterns || []
 ];
 
 
-
 }
-
 
 
 
@@ -1495,15 +1481,11 @@ type
 
 return [
 
-
 type,
-
 
 experience.type,
 
-
 experience.eventType,
-
 
 experience.situation
 
@@ -1513,15 +1495,9 @@ experience.situation
 
 .filter(Boolean)
 
-
 .map(
-
-tag =>
-
-String(tag).toLowerCase()
-
+x=>String(x).toLowerCase()
 );
-
 
 
 }
@@ -1535,13 +1511,7 @@ String(tag).toLowerCase()
 
 
 
-// =================================
-// EMPTY MEMORY
-// =================================
-
-
 emptyMemory(){
-
 
 
 return {
@@ -1559,6 +1529,9 @@ successes:[],
 failures:[],
 
 
+wisdom:[],
+
+
 patterns:[],
 
 
@@ -1568,15 +1541,10 @@ rules:[],
 totalMemories:0
 
 
-
 };
 
 
-
 }
-
-
-
 
 
 
