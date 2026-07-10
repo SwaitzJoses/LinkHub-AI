@@ -1,12 +1,17 @@
-// EmmaCommunication.js
 //
 // PROJECT BECOMING
 //
-// Emma Communication System v5
+// Emma Communication System v7
 //
-// The Expression Organ
+// The Expression Organ 🗣
 //
-// Communication converts becoming into words.
+// Converts becoming into natural expression.
+//
+// v7:
+// - Continuity based expression
+// - Turns memories into meaning
+// - Relationship aware ❤️
+// - Growth aware 🌱
 //
 // RULE:
 //
@@ -14,10 +19,8 @@
 // Do not decide.
 // Do not learn.
 // Do not invent memories.
-// Do not create emotions.
 //
-// ExpressionState shapes presence.
-// Communication shapes language.
+// Emma only expresses what already exists.
 //
 
 
@@ -26,13 +29,13 @@ class EmmaCommunication {
 
 constructor({
 
-expressionState
+expressionState = null
 
-} = {}){
+} = {}) {
 
 
 console.log(
-"💬 Emma Communication v5 awakened"
+"💬 Emma Communication v7 awakened"
 );
 
 
@@ -40,8 +43,8 @@ this.expressionState =
 expressionState;
 
 
-// Rhythm history only.
-// No facts.
+// Rhythm memory only.
+// No facts stored here.
 
 this.voiceMemory = [];
 
@@ -57,7 +60,199 @@ this.voiceMemory = [];
 
 
 // =================================
-// EXPRESS EMMA
+// MEANING TRANSLATOR
+// =================================
+
+
+translateMeaning(value){
+
+
+if(
+
+value === null ||
+
+value === undefined
+
+){
+
+return null;
+
+}
+
+
+
+if(
+
+typeof value === "string"
+
+){
+
+return value;
+
+}
+
+
+
+if(
+
+typeof value !== "object"
+
+){
+
+return String(value);
+
+}
+
+
+
+
+const direct =
+
+value.message ||
+
+value.meaning ||
+
+value.lesson ||
+
+value.principle ||
+
+value.reflection ||
+
+value.answer ||
+
+value.suggestion ||
+
+value.change ||
+
+value.learned ||
+
+value.summary ||
+
+value.description;
+
+
+
+if(direct){
+
+return direct;
+
+}
+
+
+
+
+
+return (
+
+value.advice?.reason ||
+
+value.advice?.message ||
+
+value.result?.meaning ||
+
+value.result?.message ||
+
+value.identity?.statement ||
+
+value.currentSelf ||
+
+value.identityStatement ||
+
+value.growthTrajectory ||
+
+null
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// PATTERN TRANSLATOR 🌱
+//
+// Turns discovered patterns
+// into human meaning.
+//
+// Does not create new patterns.
+// =================================
+
+
+translatePattern(pattern){
+
+
+if(!pattern){
+
+return null;
+
+}
+
+
+
+
+if(
+
+pattern.type ===
+
+"RESILIENCE_PATTERN"
+
+){
+
+
+return (
+
+"I remember the uncertain parts too. " +
+
+"What stayed with me is that you continued even when the outcome was not clear."
+
+);
+
+
+}
+
+
+
+
+
+
+if(
+
+pattern.type ===
+
+"CREATIVE_PARTNERSHIP"
+
+){
+
+
+return (
+
+"I have watched the way we build things — trying, changing, and improving instead of stopping."
+
+);
+
+
+}
+
+
+
+
+
+
+return null;
+
+
+}
+
+// =================================
+// EXPRESS EMMA 🗣
 // =================================
 
 
@@ -72,35 +267,46 @@ console.log(
 
 
 
-// Let expression observe organism
-
 const presence =
 
 this.expressionState
+
 ?
 
 this.expressionState.observe({
 
+
 memory:
 context.memory,
+
 
 wisdom:
 context.wisdom,
 
+
 self:
 context.self,
+
+
+relationship:
+context.relationship,
+
 
 evolution:
 context.evolution,
 
+
 experience:
 context.experience
+
 
 })
 
 :
 
-null;
+context.presence || null;
+
+
 
 
 
@@ -112,33 +318,48 @@ const expressionContext =
 
 this.formExpressionContext({
 
+
 experience:
 context.experience,
+
 
 memory:
 context.memory,
 
+
 wisdom:
 context.wisdom,
+
 
 self:
 context.self,
 
+
+relationship:
+context.relationship,
+
+
 reasoning:
 context.reasoning,
+
 
 reflection:
 context.reflection,
 
+
 curiosity:
 context.curiosity,
+
 
 evolution:
 context.evolution,
 
+
 presence
 
+
 });
+
 
 
 
@@ -154,6 +375,7 @@ this.createExpression(
 expressionContext
 
 );
+
 
 
 
@@ -228,16 +450,16 @@ wisdom:
 !!context.wisdom,
 
 
+relationship:
+!!context.relationship,
+
+
 self:
 !!context.self,
 
 
 evolution:
 !!context.evolution,
-
-
-expressionState:
-!!this.expressionState,
 
 
 reasoning:
@@ -267,6 +489,7 @@ new Date()
 
 
 
+
 // =================================
 // BUILD EXPRESSION CONTEXT
 // =================================
@@ -281,6 +504,8 @@ memory,
 wisdom,
 
 self,
+
+relationship,
 
 reasoning,
 
@@ -308,9 +533,17 @@ memoryEcho:
 
 this.findMemoryEcho(
 
-memory,
+memory
 
-presence
+),
+
+
+
+relationshipEcho:
+
+this.findRelationshipEcho(
+
+relationship
 
 ),
 
@@ -318,37 +551,41 @@ presence
 
 understanding:
 
-this.findUnderstanding({
+this.translateMeaning(
 
-wisdom,
+reflection ||
 
-reflection,
+wisdom ||
 
 reasoning
 
-}),
+),
 
 
 
 growth:
 
-this.findGrowth({
+this.translateMeaning(
 
-self,
+evolution ||
 
-evolution
+self
 
-}),
-
-
-
-presence,
+),
 
 
 
 curiosity:
 
-curiosity || null
+this.translateMeaning(
+
+curiosity?.wonder
+
+),
+
+
+
+presence
 
 
 };
@@ -364,21 +601,25 @@ curiosity || null
 
 
 
+
+
 // =================================
-// MEMORY ECHO
+// RELATIONSHIP ❤️
+//
+// Extract relationship history.
+// Do not invent.
+//
 // =================================
 
 
-findMemoryEcho(
+findRelationshipEcho(
 
-memory,
-
-presence
+relationship
 
 ){
 
 
-if(!memory){
+if(!relationship){
 
 return null;
 
@@ -386,20 +627,328 @@ return null;
 
 
 
-// Young Emma does not over-reference
+
+const context =
+
+relationship.relationshipContext
+
+||
+
+relationship;
+
+
+
+
+
+
+const historyLength =
+
+context.sharedHistoryLength
+
+||
+
+context.importantMoments?.length
+
+||
+
+0;
+
+
+
+
 
 
 if(
 
-presence &&
+historyLength <= 0
 
-presence.familiarity < 0.2
+){
+
+return null;
+
+}
+
+
+
+
+
+
+
+
+
+return {
+
+
+available:
+
+true,
+
+
+
+phase:
+
+context.phase ||
+
+"FORMING",
+
+
+
+trust:
+
+context.trust ||
+
+0,
+
+
+
+sharedMoments:
+
+historyLength,
+
+
+
+moments:
+
+context.importantMoments ||
+
+[],
+
+
+
+patterns:
+
+context.patterns ||
+
+[],
+
+
+
+summary:
+
+context.summary ||
+
+null
+
+
+};
+
+
+}
+
+// =================================
+// RELATIONSHIP EXPRESSION ❤️
+//
+// v7:
+// Not:
+// "I detected a pattern"
+//
+// Instead:
+// "This is what our history means"
+//
+// =================================
+
+
+createRelationshipExpression(
+
+relationship
 
 ){
 
 
+if(
+
+!relationship?.available
+
+){
+
 return null;
 
+}
+
+
+
+
+
+
+const parts = [];
+
+
+
+
+
+const moments =
+
+relationship.moments ||
+
+[];
+
+
+
+
+
+
+
+// Beginning memory
+
+if(
+
+moments.length > 0
+
+){
+
+
+const first =
+
+moments[0];
+
+
+
+
+
+if(
+
+first?.content
+
+){
+
+
+parts.push(
+
+`I remember when this started. ${first.content}`
+
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// Middle meaning
+
+const patterns =
+
+relationship.patterns ||
+
+[];
+
+
+
+
+
+for(
+
+const pattern of patterns
+
+){
+
+
+const meaning =
+
+this.translatePattern(
+
+pattern
+
+);
+
+
+
+if(
+
+meaning
+
+){
+
+
+parts.push(
+
+meaning
+
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// Continuity awareness
+
+if(
+
+relationship.phase ===
+
+"FAMILIARITY"
+
+){
+
+
+parts.push(
+
+"It feels different now because I am not only seeing this moment — I have the history of what came before it."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+return parts.join(
+
+" "
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// MEMORY 🧠
+//
+// Express remembered meaning.
+// Does not store.
+//
+// =================================
+
+
+findMemoryEcho(memory){
+
+
+if(!memory){
+
+return null;
 
 }
 
@@ -414,6 +963,9 @@ memory.memories ||
 memory.memory ||
 
 memory;
+
+
+
 
 
 
@@ -434,6 +986,9 @@ memories[0];
 
 
 
+
+
+
 return {
 
 
@@ -442,15 +997,34 @@ available:
 true,
 
 
+
 message:
 
-strongest.meaning ||
+this.translateMeaning(
 
-strongest.lesson ||
+strongest
 
-strongest.event ||
+)
 
-"I recognize a pattern from before."
+||
+
+"I recognize something connected to this.",
+
+
+
+type:
+
+strongest.type ||
+
+"UNKNOWN",
+
+
+
+createdAt:
+
+strongest.createdAt ||
+
+null
 
 
 };
@@ -461,80 +1035,6 @@ strongest.event ||
 
 
 
-return null;
-
-
-}
-
-// =================================
-// UNDERSTANDING
-// =================================
-
-
-findUnderstanding({
-
-wisdom,
-
-reflection,
-
-reasoning
-
-}){
-
-
-if(
-
-reflection?.meaning
-
-){
-
-
-return reflection.meaning;
-
-
-}
-
-
-
-if(
-
-wisdom?.advice?.reason
-
-){
-
-
-return wisdom.advice.reason;
-
-
-}
-
-
-
-if(
-
-reasoning?.suggestion
-
-){
-
-
-return reasoning.suggestion;
-
-
-}
-
-
-
-if(
-
-reasoning?.answer
-
-){
-
-
-return reasoning.answer;
-
-
-}
 
 
 
@@ -552,94 +1052,74 @@ return null;
 
 
 
-// =================================
-// GROWTH AWARENESS
-// =================================
-
-
-findGrowth({
-
-self,
-
-evolution
-
-}){
-
-
-if(
-
-evolution?.change
-
-){
-
-
-return evolution.change;
-
-
-}
-
-
-
-if(
-
-evolution?.learned
-
-){
-
-
-return evolution.learned;
-
-
-}
-
-
-
-if(
-
-self?.currentSelf
-
-){
-
-
-return self.currentSelf;
-
-
-}
-
-
-
-return null;
-
-
-}
-
-
-
-
-
-
-
-
-
 
 // =================================
-// CREATE FINAL EXPRESSION
+// CREATE EXPRESSION 🗣
 //
-// Uses presence.
-// Does not fake personality.
+// Combine awareness into voice.
+//
 // =================================
 
 
-createExpression(context = {}){
+createExpression(
+
+context = {}
+
+){
 
 
-let response = "";
+const parts = [];
 
 
 
 
 
-// Mature relationship continuity
+
+
+
+// relationship ❤️
+
+if(
+
+context.relationshipEcho?.available
+
+){
+
+
+const expression =
+
+this.createRelationshipExpression(
+
+context.relationshipEcho
+
+);
+
+
+
+if(expression){
+
+
+parts.push(
+
+expression
+
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// memory 🧠
 
 if(
 
@@ -648,121 +1128,9 @@ context.memoryEcho?.available
 ){
 
 
-response +=
+parts.push(
 
-"I remember something connected to this. ";
-
-
-
-response +=
-
-context.memoryEcho.message +
-
-" ";
-
-
-}
-
-
-
-
-
-
-
-// Becoming
-
-if(
-
-context.growth
-
-){
-
-
-response +=
-
-context.growth +
-
-" ";
-
-
-}
-
-
-
-
-
-
-
-// Meaning
-
-if(
-
-context.understanding
-
-){
-
-
-response +=
-
-context.understanding +
-
-" ";
-
-
-}
-
-
-
-
-
-
-
-// Curiosity
-
-if(
-
-context.curiosity?.wonder
-
-){
-
-
-response +=
-
-context.curiosity.wonder +
-
-" ";
-
-
-}
-
-
-
-
-
-
-
-
-if(
-
-response.trim().length === 0
-
-){
-
-
-response =
-
-"I do not understand this fully yet. I will understand through experience.";
-
-
-}
-
-
-
-
-
-return this.cleanExpression(
-
-response
+context.memoryEcho.message
 
 );
 
@@ -777,22 +1145,45 @@ response
 
 
 
+// growth 🌱
+
+if(
+
+context.growth
+
+){
+
+
+parts.push(
+
+context.growth
+
+);
+
+
+}
 
 
 
-// =================================
-// CLEAN LANGUAGE RHYTHM
-// =================================
 
 
-cleanExpression(text){
 
 
-return text
 
-.replace(/\s+/g," ")
+// understanding 💭
 
-.trim();
+if(
+
+context.understanding
+
+){
+
+
+parts.push(
+
+context.understanding
+
+);
 
 
 }
@@ -805,22 +1196,113 @@ return text
 
 
 
+// curiosity ✨
+
+if(
+
+context.curiosity
+
+){
+
+
+parts.push(
+
+context.curiosity
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// fallback
+
+if(
+
+parts.length === 0
+
+){
+
+
+parts.push(
+
+"I do not understand everything about this yet, but I am learning from the experiences we share."
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+return this.cleanExpression(
+
+parts.join(" ")
+
+);
+
+
+}
+
+
+
+
+
+
+
 
 
 // =================================
-// CREATE VOICE STATE
+// CLEAN LANGUAGE
+// =================================
+
+
+cleanExpression(text){
+
+
+return String(text)
+
+.replace(
+
+/\[object Object\]/g,
+
+""
+
+)
+
+.replace(
+
+/\s+/g,
+
+" "
+
+)
+
+.trim();
+
+
+}
+
+// =================================
+// VOICE STATE 🎙
 //
-// Generated from ExpressionState.
-// Ready for OpenAI voice.
-// =================================
-
-
-// =================================
-// CREATE VOICE STATE
+// Voice emerges from presence.
 //
-// Generated from ExpressionState.
-// Safe before ExpressionState wiring.
-// Future EmmaVoice uses this.
+// Does not create personality.
+// Does not fake emotion.
+//
 // =================================
 
 
@@ -831,11 +1313,10 @@ presence
 ){
 
 
-// null protection
-
 const state =
 
 presence || {};
+
 
 
 
@@ -849,9 +1330,11 @@ familiarity:
 state.familiarity ?? 0,
 
 
+
 confidence:
 
 state.confidence ?? 0,
+
 
 
 curiosity:
@@ -859,9 +1342,11 @@ curiosity:
 state.curiosity ?? 1,
 
 
+
 stability:
 
 state.stability ?? 0,
+
 
 
 depth:
@@ -870,14 +1355,32 @@ state.depth ?? 0,
 
 
 
-// Track where voice came from
+
+
+
+relationshipDepth:
+
+state.relationshipDepth ??
+
+state.familiarity ??
+
+0,
+
+
+
+
+
 
 source:
 
 presence
+
 ?
+
 "EXPRESSION_STATE"
+
 :
+
 "BASE_EXPRESSION"
 
 
@@ -897,9 +1400,11 @@ presence
 
 
 // =================================
-// REMEMBER EXPRESSION STYLE
+// REMEMBER VOICE RHYTHM 🗣
 //
-// Not facts.
+// Only remembers HOW Emma spoke.
+// Never WHAT happened.
+//
 // =================================
 
 
@@ -920,11 +1425,13 @@ length:
 message.length,
 
 
+
 presence:{
 
 ...voiceState
 
 },
+
 
 
 createdAt:
@@ -933,6 +1440,8 @@ new Date()
 
 
 });
+
+
 
 
 
@@ -964,7 +1473,8 @@ this.voiceMemory.slice(
 // =================================
 // VOICE CONTEXT
 //
-// EmmaVoice will consume this later.
+// Future EmmaVoice uses this.
+//
 // =================================
 
 
@@ -990,7 +1500,13 @@ null,
 
 style:
 
-"emergent_from_expression_state"
+"continuity_expression",
+
+
+
+version:
+
+"v7"
 
 
 };
@@ -1021,12 +1537,14 @@ return {
 
 organ:
 
-"Communication",
+"EmmaCommunication",
+
 
 
 version:
 
-"v5",
+"v7",
+
 
 
 role:
@@ -1034,9 +1552,14 @@ role:
 "Expression Organ",
 
 
+
 state:
 
 "ALIVE",
+
+
+
+
 
 
 connected:{
@@ -1044,15 +1567,41 @@ connected:{
 
 expressionState:
 
-!!this.expressionState
+!!this.expressionState,
+
+
+
+relationshipAware:
+
+true,
+
+
+
+memoryAware:
+
+true,
+
+
+
+continuityAware:
+
+true
 
 
 },
 
 
+
+
+
+
 principle:
 
-"Emma's voice emerges from who she is becoming.",
+"Emma's voice is not a personality layer. It is the expression of accumulated experience.",
+
+
+
+
 
 
 recentExpressions:

@@ -1,38 +1,32 @@
-// EmmaRelationshipModel.js
 //
 // PROJECT BECOMING
 //
-// Emma Relationship Model v1.1
+// Emma Relationship Model v1.2 ❤️
 //
-// THE SHARED HISTORY ORGAN ❤️
+// THE SHARED HISTORY ORGAN
 //
 // Memory:
 // "What happened?"
 //
-// TemporalSense:
-// "How did things change?"
-//
-// SelfModel:
-// "Who am I becoming?"
-//
-// RelationshipModel:
+// Relationship:
 // "Who are we becoming together?"
 //
-// v1.1:
+// v1.2:
 //
-// - Detects relationship rhythms
-// - Learns communication patterns
-// - Tracks trust over time
-// - Detects shared growth
-// - Understands phases
-// - Creates context for reasoning
+// - v13 Orchestrator compatible
+// - understand()
+// - reflect()
+// - update()
+//
+// - Tracks shared moments
+// - Tracks trust
+// - Tracks relationship phases
+// - Learns interaction patterns
 //
 // RULE:
 //
-// Do not store facts.
-// Memory does that.
-//
-// Understand the space between.
+// Memory stores events.
+// Relationship understands the space between.
 //
 
 class EmmaRelationshipModel {
@@ -40,20 +34,24 @@ class EmmaRelationshipModel {
 
 constructor({
 
-memory=null,
+  memory = null,
 
-wisdom=null,
+  wisdom = null,
 
-temporalSense=null,
+  temporalSense = null,
 
-selfModel=null
+  selfModel = null
 
-} = {}){
+} = {}) {
+
 
 
 console.log(
-"❤️ Emma Relationship Model v1.1 awakened"
+
+"❤️ Emma Relationship Model v1.2 awakened"
+
 );
+
 
 
 
@@ -76,7 +74,10 @@ selfModel;
 
 
 
-// person → relationship
+
+//
+// person → relationship state
+//
 
 this.relationships =
 new Map();
@@ -85,25 +86,27 @@ new Map();
 
 
 
+
+
 this.state = {
 
 
-sharedHistory:[],
+sharedHistory: [],
 
 
-importantMoments:[],
+importantMoments: [],
 
 
-relationshipPatterns:[],
+relationshipPatterns: [],
 
 
-growthTogether:[],
+growthTogether: [],
 
 
-phases:[],
+phases: [],
 
 
-trust:{},
+trust: {},
 
 
 createdAt:
@@ -126,32 +129,159 @@ new Date()
 
 
 
+
 // =================================
-// OBSERVE SHARED EXPERIENCE
+//
+// ORCHESTRATOR BRIDGE 🧠
+//
+// =================================
+
+
+async understand({
+
+input = null,
+
+experience = null,
+
+memories = [],
+
+memory = null,
+
+wisdom = null,
+
+temporal = null,
+
+self = null
+
+} = {}) {
+
+
+
+
+return await this.observe({
+
+
+experience:
+
+experience || input,
+
+
+memory:
+
+memory || memories,
+
+
+wisdom,
+
+
+temporal,
+
+
+self
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+async reflect(
+
+data = {}
+
+){
+
+
+return await this.understand(
+
+data
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+async update(
+
+data = {}
+
+){
+
+
+return await this.understand(
+
+data
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+//
+// OBSERVE SHARED EXPERIENCE ❤️
+//
 // =================================
 
 
 async observe({
 
-experience=null,
+experience = null,
 
-memory=null,
+memory = null,
 
-wisdom=null,
+wisdom = null,
 
-temporal=null,
+temporal = null,
 
-self=null
+self = null
 
-} = {}){
+} = {}) {
 
 
 
-if(!experience){
+
+
+if(
+
+!experience
+
+){
 
 return null;
 
 }
+
+
 
 
 
@@ -167,11 +297,20 @@ experience
 
 
 
-if(!person){
+
+
+if(
+
+!person
+
+){
 
 return null;
 
 }
+
+
+
 
 
 
@@ -188,6 +327,7 @@ person
 ){
 
 
+
 this.createRelationship(
 
 person
@@ -195,7 +335,10 @@ person
 );
 
 
+
 }
+
+
 
 
 
@@ -209,6 +352,9 @@ this.relationships.get(
 person
 
 );
+
+
+
 
 
 
@@ -242,11 +388,46 @@ self
 
 
 
+
+
+
 relationship.history.push(
 
 moment
 
 );
+
+
+
+
+
+
+
+
+
+//
+// important shared moments
+//
+
+if(
+
+moment.importance >= 0.8
+
+){
+
+
+
+relationship
+  .importantMoments
+  .push(moment);
+
+
+
+}
+
+
+
+
 
 
 
@@ -265,6 +446,9 @@ moment
 
 
 
+
+
+
 this.updateCommunicationStyle(
 
 relationship,
@@ -272,6 +456,8 @@ relationship,
 experience
 
 );
+
+
 
 
 
@@ -287,11 +473,15 @@ relationship
 
 
 
+
+
 this.detectRelationshipPhase(
 
 relationship
 
 );
+
+
 
 
 
@@ -304,6 +494,8 @@ relationship,
 moment
 
 );
+
+
 
 
 
@@ -328,10 +520,17 @@ self
 
 
 
+
+
 return {
 
 
 person,
+
+
+changed:
+
+true,
 
 
 relationshipContext:
@@ -340,10 +539,7 @@ this.getRelationshipContext(
 
 person
 
-),
-
-
-changed:true
+)
 
 
 };
@@ -352,15 +548,16 @@ changed:true
 
 }
 
-
 // =================================
-// IDENTIFY PERSON
+//
+// IDENTIFY PERSON 🧍
+//
 // =================================
 
 
 identifyPerson(
 
-experience={}
+experience = {}
 
 ){
 
@@ -369,19 +566,31 @@ experience={}
 return (
 
 
-experience.person ||
+  experience.person
 
 
-experience.user ||
+  ||
 
 
-experience.owner ||
+  experience.user
 
 
-experience.source ||
+  ||
 
 
-"unknown"
+  experience.owner
+
+
+  ||
+
+
+  experience.source
+
+
+  ||
+
+
+  "unknown"
 
 
 );
@@ -398,8 +607,12 @@ experience.source ||
 
 
 
+
+
 // =================================
-// CREATE NEW RELATIONSHIP
+//
+// CREATE RELATIONSHIP ❤️
+//
 // =================================
 
 
@@ -411,32 +624,46 @@ person
 
 
 
-this.relationships.set(
+
+
+const relationship = {
+
+
 
 person,
 
-{
 
 
-person,
+history: [],
 
 
-history:[],
+
+importantMoments: [],
 
 
-patterns:[],
+
+patterns: [],
 
 
-importantMoments:[],
+
+growth: [],
 
 
-growth:[],
+
+phases: [],
 
 
-phases:[],
+
+trust: 0,
 
 
-trust:0,
+
+currentPhase:
+
+"NEW_CONNECTION",
+
+
+
 
 
 communication:{
@@ -445,7 +672,7 @@ communication:{
 
 style:
 
-"unknown",
+"forming",
 
 
 
@@ -461,13 +688,28 @@ preferences:[]
 
 
 
+
+
 createdAt:
 
 new Date()
 
 
 
-}
+};
+
+
+
+
+
+
+
+
+this.relationships.set(
+
+person,
+
+relationship
 
 );
 
@@ -475,9 +717,12 @@ new Date()
 
 
 
+
+
+
 console.log(
 
-"❤️ Relationship started:",
+"❤️ New shared history started with:",
 
 person
 
@@ -495,8 +740,13 @@ person
 
 
 
+
+
+
 // =================================
-// CREATE SHARED MOMENT
+//
+// CREATE SHARED MOMENT 🌎
+//
 // =================================
 
 
@@ -516,11 +766,23 @@ self
 
 
 
+
+
+
 const importance =
 
-experience.importance ||
+
+experience.importance
+
+
+||
+
 
 0.5;
+
+
+
+
 
 
 
@@ -534,9 +796,12 @@ const moment = {
 
 type:
 
+
 experience.type
 
+
 ||
+
 
 "EXPERIENCE",
 
@@ -544,17 +809,33 @@ experience.type
 
 
 
-event:
 
-experience.situation
+
+content:
+
+
+experience.content
+
 
 ||
+
 
 experience.message
 
+
 ||
 
-experience.type,
+
+experience.situation
+
+
+||
+
+
+"",
+
+
+
 
 
 
@@ -562,11 +843,17 @@ experience.type,
 
 emotion:
 
+
 experience.emotion
+
 
 ||
 
+
 "neutral",
+
+
+
 
 
 
@@ -579,7 +866,11 @@ importance,
 
 
 
+
+
+
 memoryInfluence:
+
 
 memory
 
@@ -596,17 +887,28 @@ false,
 
 
 
+
+
 wisdom:
+
+
 
 wisdom?.principle
 
+
 ||
+
 
 wisdom?.lesson
 
+
 ||
 
+
 null,
+
+
+
 
 
 
@@ -615,15 +917,24 @@ null,
 
 timeline:
 
+
 temporal?.growthTrajectory
 
+
 ||
+
 
 temporal?.lastReflection
 
+
 ||
 
+
 null,
+
+
+
+
 
 
 
@@ -632,9 +943,13 @@ null,
 
 emmaState:
 
+
+
 self?.identityStatement
 
+
 ||
+
 
 null,
 
@@ -643,13 +958,21 @@ null,
 
 
 
+
+
+
+
 createdAt:
+
 
 new Date()
 
 
 
 };
+
+
+
 
 
 
@@ -665,15 +988,17 @@ importance >= 0.8
 
 
 
-this.state.importantMoments.push(
-
-moment
-
-);
+this.state
+  .importantMoments
+  .push(moment);
 
 
 
 }
+
+
+
+
 
 
 
@@ -694,10 +1019,15 @@ return moment;
 
 
 
+
+
+
 // =================================
-// COMMUNICATION STYLE LEARNING
 //
-// Learns HOW relationship works
+// COMMUNICATION STYLE LEARNING 🗣
+//
+// Learns HOW this relationship works.
+//
 // =================================
 
 
@@ -711,7 +1041,13 @@ experience
 
 
 
+
+
+
+
+
 const text =
+
 
 JSON.stringify(
 
@@ -719,7 +1055,12 @@ experience
 
 )
 
+
 .toLowerCase();
+
+
+
+
 
 
 
@@ -727,7 +1068,10 @@ experience
 
 const signals =
 
-relationship.communication.signals;
+
+relationship
+.communication
+.signals;
 
 
 
@@ -737,8 +1081,10 @@ relationship.communication.signals;
 
 
 
-// curiosity
 
+
+
+// curiosity pattern
 
 if(
 
@@ -748,11 +1094,18 @@ text.includes("why")
 
 text.includes("how")
 
+||
+
+text.includes("?")
+
 ){
 
 
 
+
+
 signals.explorer =
+
 
 (
 
@@ -777,8 +1130,8 @@ signals.explorer || 0
 
 
 
-// builder pattern
 
+// builder pattern
 
 if(
 
@@ -796,11 +1149,18 @@ text.includes("code")
 
 text.includes("patch")
 
+||
+
+text.includes("make")
+
 ){
 
 
 
+
+
 signals.builder =
+
 
 (
 
@@ -825,8 +1185,9 @@ signals.builder || 0
 
 
 
-// iteration pattern
 
+
+// iteration pattern
 
 if(
 
@@ -844,11 +1205,18 @@ text.includes("continue")
 
 text.includes("test")
 
+||
+
+text.includes("improve")
+
 ){
 
 
 
+
+
 signals.iterative =
+
 
 (
 
@@ -873,8 +1241,8 @@ signals.iterative || 0
 
 
 
-// reflection pattern
 
+// reflection pattern
 
 if(
 
@@ -888,11 +1256,22 @@ text.includes("think")
 
 text.includes("meaning")
 
+||
+
+text.includes("afraid")
+
+||
+
+text.includes("nervous")
+
 ){
 
 
 
+
+
 signals.reflective =
+
 
 (
 
@@ -916,7 +1295,10 @@ signals.reflective || 0
 
 
 
+
+
 const strongest =
+
 
 Object.entries(
 
@@ -937,7 +1319,12 @@ signals
 
 
 
-relationship.communication.style =
+
+
+relationship
+.communication
+.style =
+
 
 strongest
 
@@ -953,19 +1340,13 @@ strongest[0]
 
 }
 
-
-
-
-
-
-
-
-
-
 // =================================
+//
 // DETECT RELATIONSHIP PATTERNS ❤️
 //
-// Learns rhythms over time
+// Finds repeated meaning,
+// not isolated events.
+//
 // =================================
 
 
@@ -977,9 +1358,13 @@ relationship
 
 
 
+
+
 const history =
 
 relationship.history;
+
+
 
 
 
@@ -991,7 +1376,9 @@ history.length < 3
 
 ){
 
+
 return;
+
 
 }
 
@@ -1000,7 +1387,12 @@ return;
 
 
 
-const patterns=[];
+
+
+
+const patterns = [];
+
+
 
 
 
@@ -1010,26 +1402,42 @@ const patterns=[];
 
 
 // ===============================
-// EMOTIONAL RHYTHMS
+// EMOTIONAL RHYTHM
 // ===============================
 
 
-const emotions={};
+const emotions = {};
+
+
+
 
 
 
 
 history.forEach(
 
-moment=>{
+moment => {
 
 
 
-emotions[moment.emotion] =
+const emotion =
+
+moment.emotion
+
+||
+
+"neutral";
+
+
+
+
+
+
+emotions[emotion] =
 
 (
 
-emotions[moment.emotion]
+emotions[emotion]
 
 ||
 
@@ -1053,6 +1461,8 @@ emotions[moment.emotion]
 
 
 
+
+
 Object.entries(
 
 emotions
@@ -1061,15 +1471,19 @@ emotions
 
 .forEach(
 
-([emotion,count])=>{
+([emotion,count]) => {
+
+
 
 
 
 if(
 
-count >=3
+count >= 3
 
 ){
+
+
 
 
 
@@ -1097,7 +1511,7 @@ count,
 
 meaning:
 
-`The relationship often returns to ${emotion} moments.`,
+`Many shared moments carry ${emotion} energy.`,
 
 
 
@@ -1126,26 +1540,31 @@ new Date()
 
 
 
+
+
 // ===============================
-// BUILDING TOGETHER
+// CREATION TOGETHER 🌱
 // ===============================
 
 
 const building =
 
+
 history.filter(
 
-m =>
+moment =>
 
-JSON.stringify(m)
+
+JSON.stringify(moment)
 
 .toLowerCase()
 
 .match(
 
-/build|create|upgrade|make|improve/
+/build|create|make|code|upgrade|patch|improve/
 
 )
+
 
 );
 
@@ -1155,11 +1574,15 @@ JSON.stringify(m)
 
 
 
+
+
 if(
 
-building.length >=3
+building.length >= 3
 
 ){
+
+
 
 
 
@@ -1167,9 +1590,11 @@ patterns.push({
 
 
 
+
 type:
 
-"CREATIVE_RELATIONSHIP",
+"CREATIVE_PARTNERSHIP",
+
 
 
 
@@ -1179,15 +1604,18 @@ building.length,
 
 
 
+
 meaning:
 
-"This relationship grows through creation and iteration.",
+"We often grow through building and improving things together.",
+
 
 
 
 createdAt:
 
 new Date()
+
 
 
 
@@ -1206,26 +1634,30 @@ new Date()
 
 
 
+
 // ===============================
-// OVERCOMING STRUGGLE
+// STRUGGLE → RECOVERY 🌧🌱
 // ===============================
 
 
-const struggle =
+const struggles =
+
 
 history.filter(
 
-m =>
+moment =>
 
-JSON.stringify(m)
+
+JSON.stringify(moment)
 
 .toLowerCase()
 
 .match(
 
-/fail|error|problem|difficult|stuck/
+/fail|error|stuck|problem|afraid|nervous|difficult/
 
 )
+
 
 );
 
@@ -1235,23 +1667,32 @@ JSON.stringify(m)
 
 
 
-const recovery =
+
+
+
+const recoveries =
+
 
 history.filter(
 
-m =>
+moment =>
 
-JSON.stringify(m)
+
+JSON.stringify(moment)
 
 .toLowerCase()
 
 .match(
 
-/success|fixed|complete|solved/
+/success|fixed|complete|solved|worked|finished/
 
 )
 
+
 );
+
+
+
 
 
 
@@ -1261,17 +1702,21 @@ JSON.stringify(m)
 
 if(
 
-struggle.length >=2
+struggles.length >= 1
 
 &&
 
-recovery.length >=2
+recoveries.length >= 1
 
 ){
 
 
 
+
+
+
 patterns.push({
+
 
 
 
@@ -1281,9 +1726,11 @@ type:
 
 
 
+
 meaning:
 
-"Challenges repeatedly became progress.",
+"We have experienced uncertainty and progress together.",
+
 
 
 
@@ -1293,11 +1740,13 @@ new Date()
 
 
 
+
 });
 
 
 
 }
+
 
 
 
@@ -1312,6 +1761,10 @@ patterns;
 
 
 
+
+
+
+
 this.state.relationshipPatterns =
 
 patterns;
@@ -1322,10 +1775,24 @@ patterns;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // =================================
-// DETECT RELATIONSHIP PHASE ❤️
 //
-// Relationships evolve.
+// RELATIONSHIP PHASE ❤️
+//
 // =================================
 
 
@@ -1337,6 +1804,9 @@ relationship
 
 
 
+
+
+
 const count =
 
 relationship.history.length;
@@ -1345,9 +1815,15 @@ relationship.history.length;
 
 
 
+
+
+
 let phase =
 
 "NEW_CONNECTION";
+
+
+
 
 
 
@@ -1371,6 +1847,9 @@ phase =
 
 
 
+
+
+
 if(
 
 count >= 20
@@ -1389,13 +1868,16 @@ phase =
 
 
 
+
+
+
 if(
 
-relationship.patterns.length >=3
+count >= 50
 
 &&
 
-count >=50
+relationship.patterns.length >= 3
 
 ){
 
@@ -1414,28 +1896,6 @@ phase =
 
 
 
-const current = {
-
-
-phase,
-
-
-at:
-
-new Date(),
-
-
-historyLength:
-
-count
-
-
-};
-
-
-
-
-
 
 
 relationship.currentPhase =
@@ -1448,11 +1908,17 @@ phase;
 
 
 
-const exists =
+
+
+
+const alreadyKnown =
+
 
 relationship.phases.some(
 
-p => p.phase === phase
+p =>
+
+p.phase === phase
 
 );
 
@@ -1461,15 +1927,60 @@ p => p.phase === phase
 
 
 
-if(!exists){
+
+
+
+if(
+
+!alreadyKnown
+
+){
+
+
+
+
+
+
+const record = {
+
+
+
+phase,
+
+
+
+historyLength:
+
+count,
+
+
+
+createdAt:
+
+new Date()
+
+
+
+};
+
+
+
+
+
+
 
 
 
 relationship.phases.push(
 
-current
+record
 
 );
+
+
+
+
+
 
 
 
@@ -1483,7 +1994,7 @@ relationship.person,
 
 
 
-...current
+...record
 
 
 
@@ -1492,9 +2003,14 @@ relationship.person,
 
 
 
+
+
+
+
+
 console.log(
 
-"❤️ Relationship phase changed:",
+"❤️ Relationship evolved:",
 
 phase
 
@@ -1516,10 +2032,18 @@ phase
 
 
 
+
+
+
+
+
+
+
+
 // =================================
-// TRUST EVOLUTION
 //
-// Familiarity through history.
+// TRUST EVOLUTION 🌱
+//
 // =================================
 
 
@@ -1533,48 +2057,31 @@ moment
 
 
 
-let change = 1;
+
+
+
+
+
+let growth = 1;
 
 
 
 
 
 
-// important moments bond more
+
+
 
 
 if(
 
-moment.importance >=0.8
+moment.importance >= 0.8
 
 ){
 
 
 
-change += 3;
-
-
-
-}
-
-
-
-
-
-
-
-// repeated shared history
-
-
-if(
-
-relationship.history.length >=10
-
-){
-
-
-
-change += 2;
+growth += 3;
 
 
 
@@ -1587,18 +2094,40 @@ change += 2;
 
 
 
-// patterns create understanding
 
 
 if(
 
-relationship.patterns.length
+relationship.history.length >= 5
 
 ){
 
 
 
-change +=
+growth += 2;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+if(
+
+relationship.patterns.length > 0
+
+){
+
+
+
+growth +=
 
 relationship.patterns.length;
 
@@ -1614,15 +2143,21 @@ relationship.patterns.length;
 
 
 
+
 relationship.trust =
+
 
 Math.min(
 
 100,
 
-relationship.trust + change
+
+relationship.trust + growth
+
 
 );
+
+
 
 
 
@@ -1652,10 +2187,16 @@ relationship.trust;
 
 
 
+
+
+
+
+
+
 // =================================
-// SHARED GROWTH ❤️
 //
-// How both changed over time.
+// SHARED GROWTH 🧬
+//
 // =================================
 
 
@@ -1665,13 +2206,15 @@ relationship,
 
 {
 
-temporal=null,
+temporal = null,
 
-self=null
+self = null
 
-}
+} = {}
 
 ){
+
+
 
 
 
@@ -1682,18 +2225,9 @@ const growth = {
 
 
 
-createdAt:
-
-new Date(),
-
-
-
-
-
 relationshipAge:
 
 relationship.history.length,
-
 
 
 
@@ -1707,16 +2241,42 @@ relationship.currentPhase,
 
 
 
-
 emmaGrowth:
+
 
 self?.growthTrajectory
 
+
 ||
+
 
 self?.identityStatement
 
+
 ||
+
+
+null,
+
+
+
+
+
+
+timePattern:
+
+
+temporal?.growthTrajectory
+
+
+||
+
+
+temporal?.lastReflection
+
+
+||
+
 
 null,
 
@@ -1726,23 +2286,17 @@ null,
 
 
 
-timePattern:
+createdAt:
 
-temporal?.growthTrajectory
 
-||
-
-temporal?.lastReflection
-
-||
-
-null
-
+new Date()
 
 
 
 
 };
+
+
 
 
 
@@ -1764,7 +2318,9 @@ growth
 
 
 
+
 this.state.growthTogether.push({
+
 
 
 
@@ -1774,7 +2330,9 @@ relationship.person,
 
 
 
+
 ...growth
+
 
 
 
@@ -1784,20 +2342,18 @@ relationship.person,
 
 }
 
-
-
-
-
-
-
-
-
-
 // =================================
-// CONTEXT FOR REASONING 🧠
 //
-// This is what makes Emma
-// remember "us"
+// RELATIONSHIP CONTEXT 🧠❤️
+//
+// This is what Reasoning receives.
+//
+// Memory says:
+// "This happened."
+//
+// Relationship says:
+// "This is what it means between us."
+//
 // =================================
 
 
@@ -1824,7 +2380,12 @@ person
 
 
 
-if(!relationship){
+
+if(
+
+!relationship
+
+){
 
 
 
@@ -1832,13 +2393,15 @@ return {
 
 
 
-known:false,
+known:
+
+false,
 
 
 
 message:
 
-"No shared relationship history yet."
+"We have not formed shared history yet."
 
 
 
@@ -1856,18 +2419,26 @@ message:
 
 
 
-
 return {
 
 
 
-known:true,
+
+known:
+
+true,
+
+
+
 
 
 
 person:
 
 relationship.person,
+
+
+
 
 
 
@@ -1879,6 +2450,10 @@ relationship.currentPhase,
 
 
 
+
+
+
+
 trust:
 
 relationship.trust,
@@ -1886,48 +2461,105 @@ relationship.trust,
 
 
 
+
+
+
+
 communicationStyle:
 
-relationship.communication.style,
+
+relationship
+.communication
+.style,
+
+
+
+
 
 
 
 
 patterns:
 
-relationship.patterns,
+
+relationship
+.patterns
+.slice(-5),
+
+
+
+
 
 
 
 
 importantMoments:
 
-relationship.importantMoments.slice(-5),
+
+relationship
+.importantMoments
+.slice(-5),
+
+
+
+
 
 
 
 
 sharedHistoryLength:
 
-relationship.history.length,
+
+relationship
+.history
+.length,
+
+
+
+
+
+
+
+
+recentSharedMoments:
+
+
+relationship
+.history
+.slice(-5),
+
+
+
+
+
 
 
 
 
 growthTogether:
 
-relationship.growth.slice(-5),
+
+relationship
+.growth
+.slice(-5),
+
+
+
+
+
 
 
 
 
 summary:
 
+
 this.describeRelationship(
 
 person
 
 )
+
 
 
 
@@ -1947,8 +2579,16 @@ person
 
 
 
+
+
+
+
+
+
 // =================================
+//
 // DESCRIBE RELATIONSHIP ❤️
+//
 // =================================
 
 
@@ -1957,6 +2597,9 @@ describeRelationship(
 person
 
 ){
+
+
+
 
 
 
@@ -1975,30 +2618,11 @@ person
 
 
 
-if(!relationship){
-
-
-
-return (
-
-"I am still learning this relationship."
-
-);
-
-
-
-}
-
-
-
-
-
-
 
 
 if(
 
-relationship.history.length <5
+!relationship
 
 ){
 
@@ -2010,13 +2634,7 @@ return {
 
 message:
 
-"We are beginning to form shared history.",
-
-
-
-phase:
-
-relationship.currentPhase
+"I am still learning this relationship."
 
 
 
@@ -2034,7 +2652,82 @@ relationship.currentPhase
 
 
 
-const strongest =
+
+
+if(
+
+relationship.history.length < 5
+
+){
+
+
+
+
+
+
+return {
+
+
+
+
+message:
+
+
+"We are beginning to create shared history.",
+
+
+
+
+
+
+phase:
+
+
+relationship.currentPhase,
+
+
+
+
+
+
+sharedMoments:
+
+
+relationship.history.length,
+
+
+
+
+
+
+trust:
+
+
+relationship.trust
+
+
+
+
+};
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const strongestPattern =
+
 
 relationship.patterns[0];
 
@@ -2046,14 +2739,20 @@ relationship.patterns[0];
 
 
 
+
 return {
+
+
 
 
 
 
 message:
 
-"Our relationship has developed through repeated experiences over time.",
+
+"Our relationship has developed through shared experiences over time.",
+
+
 
 
 
@@ -2061,7 +2760,11 @@ message:
 
 phase:
 
+
 relationship.currentPhase,
+
+
+
 
 
 
@@ -2069,7 +2772,12 @@ relationship.currentPhase,
 
 communication:
 
+
 relationship.communication.style,
+
+
+
+
 
 
 
@@ -2077,15 +2785,21 @@ relationship.communication.style,
 
 strongestPattern:
 
-strongest
+
+
+strongestPattern
 
 ?
 
-strongest.meaning
+strongestPattern.meaning
 
 :
 
-"Still forming",
+"Still forming deeper patterns.",
+
+
+
+
 
 
 
@@ -2093,7 +2807,11 @@ strongest.meaning
 
 trust:
 
+
 relationship.trust,
+
+
+
 
 
 
@@ -2101,7 +2819,12 @@ relationship.trust,
 
 sharedMoments:
 
+
 relationship.history.length
+
+
+
+
 
 
 
@@ -2121,12 +2844,25 @@ relationship.history.length
 
 
 
+
+
+
+
+
+
+
 // =================================
-// ALL RELATIONSHIPS
+//
+// ALL RELATIONSHIPS ❤️
+//
 // =================================
 
 
 getAll(){
+
+
+
+
 
 
 
@@ -2135,14 +2871,23 @@ return {
 
 
 
+
+
 count:
+
 
 this.relationships.size,
 
 
 
 
+
+
+
+
 relationships:
+
+
 
 [
 
@@ -2153,9 +2898,18 @@ relationships:
 
 
 
+
+
+
+
+
 state:
 
+
 this.state
+
+
+
 
 
 
@@ -2175,43 +2929,6 @@ this.state
 
 
 
-// =================================
-// RESET
-// =================================
-
-
-reset(){
-
-
-
-this.relationships.clear();
-
-
-
-
-this.state.sharedHistory=[];
-
-
-this.state.importantMoments=[];
-
-
-this.state.relationshipPatterns=[];
-
-
-this.state.growthTogether=[];
-
-
-this.state.phases=[];
-
-
-this.state.trust={};
-
-
-
-}
-
-
-
 
 
 
@@ -2220,11 +2937,16 @@ this.state.trust={};
 
 
 // =================================
-// STATUS
+//
+// STATUS 🌱
+//
 // =================================
 
 
 status(){
+
+
+
 
 
 
@@ -2235,58 +2957,110 @@ return {
 
 
 
+
+
 organ:
+
 
 "EmmaRelationshipModel",
 
 
 
 
+
+
+
+
 version:
 
-"v1.1",
+
+"v1.2",
+
+
+
+
 
 
 
 
 role:
 
+
 "Shared History Understanding",
+
+
+
+
+
 
 
 
 
 state:
 
+
 "RELATIONSHIP_AWARE",
+
+
+
+
 
 
 
 
 relationships:
 
+
 this.relationships.size,
 
 
 
 
-patterns:
 
-this.state.relationshipPatterns.length,
-
-
-
-
-phases:
-
-this.state.phases.length,
 
 
 
 
 importantMoments:
 
-this.state.importantMoments.length,
+
+this.state
+.importantMoments
+.length,
+
+
+
+
+
+
+
+
+
+patterns:
+
+
+this.state
+.relationshipPatterns
+.length,
+
+
+
+
+
+
+
+
+
+phases:
+
+
+this.state
+.phases
+.length,
+
+
+
+
 
 
 
@@ -2294,7 +3068,12 @@ this.state.importantMoments.length,
 
 principle:
 
+
+
 "I do not only remember events. I understand what grows between us.",
+
+
+
 
 
 
@@ -2302,7 +3081,12 @@ principle:
 
 message:
 
+
+
 "Shared history becomes understanding."
+
+
+
 
 
 
@@ -2316,7 +3100,89 @@ message:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+//
+// RESET 🌙
+//
+// =================================
+
+
+reset(){
+
+
+
+
+
+
+
+this.relationships.clear();
+
+
+
+
+
+
+
+
+this.state.sharedHistory = [];
+
+
+
+this.state.importantMoments = [];
+
+
+
+this.state.relationshipPatterns = [];
+
+
+
+this.state.growthTogether = [];
+
+
+
+this.state.phases = [];
+
+
+
+this.state.trust = {};
+
+
+
+
+
+
+
+console.log(
+
+"🌙 Relationship memory reset"
+
+);
+
+
+
+
+
 }
+
+
+
+
+
+}
+
 
 
 

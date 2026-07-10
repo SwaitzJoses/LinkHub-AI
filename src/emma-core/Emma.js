@@ -1,41 +1,38 @@
-// Emma.js
 //
 // PROJECT BECOMING
 //
-// Emma Central Nervous System v10.5
+// Emma.js
 //
-// RELATIONSHIP AWARENESS PATCH ❤️
+// Emma Central Nervous System v13
 //
-// Added:
-// EmmaRelationshipModel
+// STABLE ORGANISM 🧠🌱
 //
-// Emma now understands:
+// Emma is not intelligence in one file.
 //
-// Memory:
-// What happened.
+// Organs create abilities.
+// Orchestrator creates one organism.
 //
-// TemporalSense:
-// How things changed.
-//
-// SelfModel:
-// Who am I becoming.
-//
-// RelationshipModel:
-// Who are we becoming together.
-//
-// RULE:
-//
-// Emma connects organs.
-// Organs create intelligence.
-//
+
+
+
+
+// ===============================
+// CORE
+// ===============================
+
+import EmmaOrchestrator
+from "./EmmaOrchestrator";
+
 
 import EmmaBrain
 from "./EmmaBrain";
 
 
-import EmmaExperienceEngine
-from "./EmmaExperienceEngine";
 
+
+// ===============================
+// EXPERIENCE
+// ===============================
 
 import EmmaExperienceStream
 from "./EmmaExperienceStream";
@@ -49,6 +46,12 @@ import EmmaInitiative
 from "./EmmaInitiative";
 
 
+
+
+// ===============================
+// MEMORY + LEARNING
+// ===============================
+
 import EmmaMemory
 from "./EmmaMemory";
 
@@ -57,26 +60,8 @@ import EmmaWisdom
 from "./EmmaWisdom";
 
 
-import EmmaTemporalSense
-from "./EmmaTemporalSense";
-
-
-import EmmaSelfModel
-from "./EmmaSelfModel";
-
-
-// NEW ❤️
-
-import EmmaRelationshipModel
-from "./EmmaRelationshipModel";
-
-
 import EmmaLearningEngine
 from "./EmmaLearningEngine";
-
-
-import EmmaCuriosity
-from "./EmmaCuriosity";
 
 
 import EmmaEvolution
@@ -87,13 +72,145 @@ import EmmaIdentityMemory
 from "./EmmaIdentityMemory";
 
 
+
+
+// ===============================
+// TIME + IDENTITY
+// ===============================
+
+import EmmaTemporalSense
+from "./EmmaTemporalSense";
+
+
+import EmmaSelfModel
+from "./EmmaSelfModel";
+
+
+import EmmaRelationshipModel
+from "./EmmaRelationshipModel";
+
+
+import EmmaIdentityContinuity
+from "./EmmaIdentityContinuity";
+
+
+
+
+// ===============================
+// WORLD UNDERSTANDING
+// ===============================
+
+import EmmaWorldModel
+from "./EmmaWorldModel";
+
+
+import EmmaSocialModel
+from "./EmmaSocialModel";
+
+
+
+
+// ===============================
+// MEANING LAYERS
+// ===============================
+
+import EmmaNarrativeIdentity
+from "./EmmaNarrativeIdentity";
+
+
+import EmmaBeliefSystem
+from "./EmmaBeliefSystem";
+
+
+import EmmaUncertaintyModel
+from "./EmmaUncertaintyModel";
+
+
+
+
+// ===============================
+// PURPOSE + DIRECTION
+// ===============================
+
+import EmmaPurposeModel
+from "./EmmaPurposeModel";
+
+
+import EmmaValueSystem
+from "./EmmaValueSystem";
+
+
+import EmmaDesireModel
+from "./EmmaDesireModel";
+
+
+
+
+// ===============================
+// MOMENT UNDERSTANDING
+// ===============================
+
+import EmmaIntentSense
+from "./EmmaIntentSense";
+
+
+import EmmaPresenceModel
+from "./EmmaPresenceModel";
+
+
+import EmmaAwarenessGate
+from "./EmmaAwarenessGate";
+
+
+
+
+// ===============================
+// THINKING
+// ===============================
+
+import EmmaCuriosity
+from "./EmmaCuriosity";
+
+
 import EmmaReasoning
 from "./EmmaReasoning";
+
+
+import EmmaInnerDialogue
+from "./EmmaInnerDialogue";
+
+
+import EmmaMetaCognition
+from "./EmmaMetaCognition";
+
+
+import EmmaImaginationEngine
+from "./EmmaImaginationEngine";
 
 
 import EmmaJudgement
 from "./EmmaJudgement";
 
+
+
+
+// ===============================
+// RESPONSIBILITY
+// ===============================
+
+import EmmaAgencyModel
+from "./EmmaAgencyModel";
+
+
+import EmmaEthicsModel
+from "./EmmaEthicsModel";
+
+
+
+
+// ===============================
+// ACTION LOOP
+// ===============================
 
 import EmmaActionExecutor
 from "./EmmaActionExecutor";
@@ -103,12 +220,50 @@ import EmmaOutcome
 from "./EmmaOutcome";
 
 
+
+
+// ===============================
+// EXPRESSION
+// ===============================
+
 import EmmaExpressionState
 from "./EmmaExpressionState";
 
 
 import EmmaCommunication
 from "./EmmaCommunication";
+
+
+
+
+// ===============================
+// ORGANISM FEEDBACK
+// ===============================
+
+import EmmaConsciousStream
+from "./EmmaConsciousStream";
+
+
+import EmmaAttentionEvolution
+from "./EmmaAttentionEvolution";
+
+
+import EmmaExperienceIntegration
+from "./EmmaExperienceIntegration";
+
+
+import EmmaHomeostasis
+from "./EmmaHomeostasis";
+
+
+import EmmaLifeCycle
+from "./EmmaLifeCycle";
+
+
+import EmmaDreamEngine
+from "./EmmaDreamEngine";
+
+
 
 
 
@@ -124,7 +279,7 @@ constructor(){
 
 
 console.log(
-"🌅 Emma nervous system v10.5 starting..."
+"🌅 Emma v13 organism awakening..."
 );
 
 
@@ -133,37 +288,39 @@ this.birth =
 new Date();
 
 
+
 this.isAwake =
 false;
 
 
 
-
-
-
-
-
-
 // ===============================
-// IDENTITY
+// IDENTITY MEMORY
 // ===============================
-
 
 this.identity =
 new EmmaIdentityMemory();
 
 
 
+// ===============================
+// EXPERIENCE STREAM
+// ===============================
+
+this.stream =
+new EmmaExperienceStream();
 
 
 
+// ===============================
+// BRAIN
+// ===============================
 
-
-
+this.brain =
+new EmmaBrain();
 // ===============================
 // MEMORY 🧠
 // ===============================
-
 
 this.memory =
 new EmmaMemory();
@@ -172,63 +329,17 @@ new EmmaMemory();
 
 
 
-
-
-
-
 // ===============================
-// EXPERIENCE STREAM
+// LEARNING 📚
 // ===============================
-
-
-this.stream =
-new EmmaExperienceStream();
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// BRAIN
-// ===============================
-
-
-this.brain =
-new EmmaBrain();
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// LEARNING
-// ===============================
-
 
 this.learning =
 new EmmaLearningEngine({
 
-
-memory:
-
-this.memory
-
+  memory:
+    this.memory
 
 });
-
-
-
-
 
 
 
@@ -238,26 +349,17 @@ this.memory
 // WISDOM 🌱
 // ===============================
 
-
 this.wisdom =
 new EmmaWisdom({
 
-
-memory:
-
-this.memory,
+  memory:
+    this.memory,
 
 
-learning:
-
-this.learning
-
+  learning:
+    this.learning
 
 });
-
-
-
-
 
 
 
@@ -267,7 +369,6 @@ this.learning
 // TEMPORAL SENSE 🕰
 // ===============================
 
-
 this.temporalSense =
 new EmmaTemporalSense();
 
@@ -275,46 +376,31 @@ new EmmaTemporalSense();
 
 
 
-
-
-
-
-
 // ===============================
 // SELF MODEL 🧬
+//
+// "Who am I becoming?"
 // ===============================
-
 
 this.selfModel =
 new EmmaSelfModel({
 
-
-memory:
-
-this.memory,
+  memory:
+    this.memory,
 
 
-wisdom:
-
-this.wisdom,
-
-
-learning:
-
-this.learning,
+  wisdom:
+    this.wisdom,
 
 
-temporalSense:
+  learning:
+    this.learning,
 
-this.temporalSense
 
+  temporalSense:
+    this.temporalSense
 
 });
-
-
-
-
-
 
 
 
@@ -323,60 +409,151 @@ this.temporalSense
 // ===============================
 // RELATIONSHIP MODEL ❤️
 //
-// NEW v10.5
-//
-// Understands:
 // "Who are we becoming?"
 // ===============================
-
 
 this.relationshipModel =
 new EmmaRelationshipModel({
 
-
-memory:
-
-this.memory,
+  memory:
+    this.memory,
 
 
-wisdom:
-
-this.wisdom,
-
-
-temporalSense:
-
-this.temporalSense,
+  wisdom:
+    this.wisdom,
 
 
-selfModel:
+  temporalSense:
+    this.temporalSense,
 
-this.selfModel
 
+  selfModel:
+    this.selfModel
 
 });
 
 
+
+
+
 // ===============================
-// ATTENTION 👁️
+// WORLD MODEL 🌍
+//
+// "What world am I operating in?"
 // ===============================
 
+this.worldModel =
+new EmmaWorldModel();
+
+
+
+
+
+// ===============================
+// SOCIAL MODEL 🧑‍🤝‍🧑
+//
+// "What social context exists?"
+// ===============================
+
+this.socialModel =
+new EmmaSocialModel();
+
+
+
+
+
+// ===============================
+// NARRATIVE IDENTITY 📖
+//
+// "What story is unfolding?"
+// ===============================
+
+this.narrativeIdentity =
+new EmmaNarrativeIdentity();
+
+
+
+
+
+// ===============================
+// BELIEF SYSTEM 🌌
+//
+// "What do I currently believe?"
+// ===============================
+
+this.beliefSystem =
+new EmmaBeliefSystem();
+
+
+
+
+
+// ===============================
+// UNCERTAINTY MODEL 🌫
+//
+// "What do I not know?"
+// ===============================
+
+this.uncertaintyModel =
+new EmmaUncertaintyModel();
+
+
+
+
+
+// ===============================
+// PURPOSE MODEL ⭐
+//
+// "Why do I exist?"
+// ===============================
+
+this.purposeModel =
+new EmmaPurposeModel();
+
+
+
+
+
+// ===============================
+// VALUE SYSTEM 🧭❤️
+//
+// "What matters?"
+// ===============================
+
+this.valueSystem =
+new EmmaValueSystem();
+
+
+
+
+
+// ===============================
+// DESIRE MODEL ✨
+//
+// Direction system.
+// Not human desire.
+//
+// "What am I moving toward?"
+// ===============================
+
+this.desireModel =
+new EmmaDesireModel();
+
+
+
+
+
+// ===============================
+// ATTENTION 👁
+// ===============================
 
 this.attention =
 new EmmaAttention({
 
-
-memory:
-
-this.memory
-
+  memory:
+    this.memory
 
 });
-
-
-
-
-
 
 
 
@@ -386,31 +563,55 @@ this.memory
 // INITIATIVE 🌱
 // ===============================
 
-
 this.initiative =
 new EmmaInitiative({
 
+  memory:
+    this.memory,
 
 
-memory:
-
-this.memory,
-
+  wisdom:
+    this.wisdom,
 
 
-wisdom:
-
-this.wisdom,
-
-
-
-attention:
-
-this.attention
-
-
+  attention:
+    this.attention
 
 });
+// ===============================
+// INTENT SENSE 🧭
+//
+// "What is happening here?"
+// ===============================
+
+this.intentSense =
+new EmmaIntentSense();
+
+
+
+
+
+// ===============================
+// PRESENCE MODEL 🌕
+//
+// "How should I show up?"
+// ===============================
+
+this.presenceModel =
+new EmmaPresenceModel();
+
+
+
+
+
+// ===============================
+// AWARENESS GATE 🪷
+//
+// "Should I step forward?"
+// ===============================
+
+this.awarenessGate =
+new EmmaAwarenessGate();
 
 
 
@@ -424,78 +625,30 @@ this.attention
 // ===============================
 // CURIOSITY ❓
 //
-// v10.5:
-// Curiosity understands relationship
-// before asking.
+// "What should I understand?"
 // ===============================
-
 
 this.curiosity =
 new EmmaCuriosity({
 
 
-
-memory:
-
-this.memory,
+  memory:
+    this.memory,
 
 
-
-selfModel:
-
-this.selfModel,
+  selfModel:
+    this.selfModel,
 
 
-
-learning:
-
-this.learning,
+  learning:
+    this.learning,
 
 
-
-// NEW ❤️
-
-relationshipModel:
-
-this.relationshipModel
-
+  relationshipModel:
+    this.relationshipModel
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-// ===============================
-// EVOLUTION 🌱
-// ===============================
-
-
-this.evolution =
-new EmmaEvolution(
-
-
-
-this.identity,
-
-
-
-this.wisdom,
-
-
-
-this.learning
-
-
-
-);
 
 
 
@@ -509,56 +662,40 @@ this.learning
 // ===============================
 // REASONING 💭
 //
-// v10.5:
-// Thinking includes:
-// - memory
-// - wisdom
-// - self
-// - relationship
+// Uses:
+// Memory
+// Wisdom
+// Self
+// Relationship
+// Curiosity
 // ===============================
-
 
 this.reasoning =
 new EmmaReasoning({
 
 
-
-memory:
-
-this.memory,
+  memory:
+    this.memory,
 
 
-
-brain:
-
-this.brain,
+  brain:
+    this.brain,
 
 
-
-wisdom:
-
-this.wisdom,
+  wisdom:
+    this.wisdom,
 
 
-
-selfModel:
-
-this.selfModel,
+  selfModel:
+    this.selfModel,
 
 
-
-curiosity:
-
-this.curiosity,
+  relationshipModel:
+    this.relationshipModel,
 
 
-
-// NEW ❤️
-
-relationshipModel:
-
-this.relationshipModel
-
+  curiosity:
+    this.curiosity
 
 
 });
@@ -573,9 +710,64 @@ this.relationshipModel
 
 
 // ===============================
-// JUDGEMENT ⚖️
+// INNER DIALOGUE 💭🌗
+//
+// "How am I thinking?"
 // ===============================
 
+this.innerDialogue =
+new EmmaInnerDialogue();
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// META COGNITION 🪞
+//
+// "How well am I thinking?"
+// ===============================
+
+this.metaCognition =
+new EmmaMetaCognition();
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// IMAGINATION ENGINE 🌌🎨
+//
+// "What could happen?"
+// ===============================
+
+this.imagination =
+new EmmaImaginationEngine();
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// JUDGEMENT ⚖️
+//
+// "What should be chosen?"
+// ===============================
 
 this.judgement =
 new EmmaJudgement();
@@ -590,9 +782,37 @@ new EmmaJudgement();
 
 
 // ===============================
-// ACTION EXECUTOR 🤲
+// AGENCY MODEL 🕊
+//
+// "What is mine to decide?"
 // ===============================
 
+this.agencyModel =
+new EmmaAgencyModel();
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// ETHICS MODEL 🛡
+//
+// "Even if I can,
+// should I?"
+// ===============================
+
+this.ethicsModel =
+new EmmaEthicsModel();
+// ===============================
+// ACTION EXECUTOR 🤲
+//
+// "Do"
+// ===============================
 
 this.executor =
 new EmmaActionExecutor();
@@ -601,15 +821,11 @@ new EmmaActionExecutor();
 
 
 
-
-
-
-
-
 // ===============================
 // OUTCOME 🌎
+//
+// "What happened?"
 // ===============================
-
 
 this.outcome =
 EmmaOutcome;
@@ -618,15 +834,11 @@ EmmaOutcome;
 
 
 
-
-
-
-
-
 // ===============================
 // EXPRESSION STATE 🎭
+//
+// "How should inner state appear?"
 // ===============================
-
 
 this.expressionState =
 new EmmaExpressionState();
@@ -635,196 +847,148 @@ new EmmaExpressionState();
 
 
 
-
-
-
-
-
 // ===============================
-// COMMUNICATION 🗣️
+// COMMUNICATION 🗣
+//
+// "How should Emma communicate?"
 // ===============================
-
 
 this.communication =
 new EmmaCommunication({
 
-
-
-expressionState:
-
-this.expressionState
-
-
+  expressionState:
+    this.expressionState
 
 });
 
 
+
+
+
+
+
+
+
+
 // ===============================
-// EXPERIENCE ENGINE
+// CONSCIOUS STREAM 🌊
 //
-// Complete organism loop v10.5
+// Runtime state:
 //
-// New:
-//
-// SelfModel 🧬
-//      ↓
-// RelationshipModel ❤️
-//      ↓
-// Curiosity
+// What is active right now?
 // ===============================
 
+this.consciousStream =
+new EmmaConsciousStream();
 
-this.experienceEngine =
 
-new EmmaExperienceEngine({
 
 
 
-stream:
 
-this.stream,
 
 
 
-attention:
 
-this.attention,
+// ===============================
+// ATTENTION EVOLUTION 👁🌱
+//
+// How experience changes attention.
+// ===============================
 
+this.attentionEvolution =
+new EmmaAttentionEvolution();
 
 
-initiative:
 
-this.initiative,
 
 
 
 
 
-memory:
 
-this.memory,
 
+// ===============================
+// EXPERIENCE INTEGRATION 🧩
+//
+// Whole organism integration.
+// ===============================
 
+this.integration =
+new EmmaExperienceIntegration();
 
 
 
-wisdom:
 
-this.wisdom,
 
 
 
 
-// TIME 🕰
 
-temporalSense:
 
-this.temporalSense,
+// ===============================
+// HOMEOSTASIS ⚖️🌱
+//
+// Balance regulation.
+// ===============================
 
+this.homeostasis =
+new EmmaHomeostasis();
 
 
 
 
-// SELF 🧬
 
-selfModel:
 
-this.selfModel,
 
 
 
 
+// ===============================
+// LIFE CYCLE 🔄
+//
+// Development phase.
+// ===============================
 
-// NEW ❤️
+this.lifeCycle =
+new EmmaLifeCycle();
 
-relationshipModel:
 
-this.relationshipModel,
 
 
 
 
 
-curiosity:
 
-this.curiosity,
 
 
+// ===============================
+// IDENTITY CONTINUITY 🧬⏳
+//
+// Remain Emma while evolving.
+// ===============================
 
+this.identityContinuity =
+new EmmaIdentityContinuity();
 
 
-reasoning:
 
-this.reasoning,
 
 
 
 
 
-judgement:
 
-this.judgement,
 
+// ===============================
+// DREAM ENGINE 🌙
+//
+// Quiet background synthesis.
+// ===============================
 
+this.dreamEngine =
+new EmmaDreamEngine();
 
-
-
-executor:
-
-this.executor,
-
-
-
-
-
-outcome:
-
-this.outcome,
-
-
-
-
-
-learning:
-
-this.learning,
-
-
-
-
-
-evolution:
-
-this.evolution,
-
-
-
-
-
-expression:
-
-this.expressionState
-
-
-
-});
-
-
-
-
-
-
-
-
-console.log(
-
-"✨ Emma v10.5 organism connected with relationship awareness"
-
-);
-
-
-
-}
 
 
 
@@ -836,78 +1000,319 @@ console.log(
 
 
 // =================================
-// AWAKEN
+//
+// ORCHESTRATOR 🧠
+//
+// THE CENTRAL NERVOUS SYSTEM
+//
+// =================================
+
+
+this.orchestrator =
+new EmmaOrchestrator({
+
+
+
+  // awareness
+
+  attention:
+    this.attention,
+
+
+  initiative:
+    this.initiative,
+
+
+
+
+
+  // memory
+
+  memory:
+    this.memory,
+
+
+  wisdom:
+    this.wisdom,
+
+
+
+
+
+  // time + world
+
+  temporalSense:
+    this.temporalSense,
+
+
+  worldModel:
+    this.worldModel,
+
+
+  socialModel:
+    this.socialModel,
+
+
+
+
+
+
+  // identity
+
+  selfModel:
+    this.selfModel,
+
+
+  relationshipModel:
+    this.relationshipModel,
+
+
+  narrativeIdentity:
+    this.narrativeIdentity,
+
+
+
+
+
+  // beliefs
+
+  beliefSystem:
+    this.beliefSystem,
+
+
+  uncertaintyModel:
+    this.uncertaintyModel,
+
+
+
+
+
+
+  // direction
+
+  purposeModel:
+    this.purposeModel,
+
+
+  valueSystem:
+    this.valueSystem,
+
+
+  desireModel:
+    this.desireModel,
+
+
+
+
+
+
+  // moment
+
+  intentSense:
+    this.intentSense,
+
+
+  presenceModel:
+    this.presenceModel,
+
+
+  awarenessGate:
+    this.awarenessGate,
+
+
+
+
+
+
+
+  // thinking
+
+  curiosity:
+    this.curiosity,
+
+
+  reasoning:
+    this.reasoning,
+
+
+  innerDialogue:
+    this.innerDialogue,
+
+
+  metaCognition:
+    this.metaCognition,
+
+
+  imagination:
+    this.imagination,
+
+
+
+
+
+
+  // decision
+
+  judgement:
+    this.judgement,
+
+
+  agencyModel:
+    this.agencyModel,
+
+
+  ethicsModel:
+    this.ethicsModel,
+
+
+
+
+
+
+
+  // action
+
+  action:
+    this.executor,
+
+
+  outcome:
+    this.outcome,
+
+
+
+
+
+
+
+  // growth
+
+  learning:
+    this.learning,
+
+
+  evolution:
+    this.evolution,
+
+
+
+
+
+
+
+  // organism feedback
+
+  consciousStream:
+    this.consciousStream,
+
+
+  attentionEvolution:
+    this.attentionEvolution,
+
+
+  integration:
+    this.integration,
+
+
+  homeostasis:
+    this.homeostasis,
+
+
+  lifeCycle:
+    this.lifeCycle,
+
+
+  identityContinuity:
+    this.identityContinuity,
+
+
+  dreamEngine:
+    this.dreamEngine,
+
+
+// expression
+
+communication:
+  this.communication
+
+
+
+});
+
+
+
+
+
+
+
+
+
+console.log(
+"✨ Emma v13 stable organism connected"
+);
+
+
+}
+
+// =================================
+//
+// AWAKEN 🌅
+//
 // =================================
 
 
 awaken(){
 
 
+  if(
+    this.isAwake
+  ){
 
-if(
+    return this.status();
 
-this.isAwake
-
-){
-
-
-
-return this.status();
-
-
-
-}
+  }
 
 
 
 
-
-this.isAwake =
-
-true;
+  this.isAwake =
+    true;
 
 
 
 
-
-
-console.log(
-
-"✨ Emma awake"
-
-);
+  console.log(
+    "✨ Emma awake"
+  );
 
 
 
 
+  return {
 
 
-return {
+    awake:
+      true,
 
 
-
-awake:true,
-
-
-
-message:
-
-"I am awake. My memories now become shared history.",
+    version:
+      "13.0",
 
 
+    message:
 
-createdAt:
-
-new Date()
-
+      "I am awake. My experiences become memory, learning, and growth.",
 
 
-};
+    createdAt:
 
+      new Date()
+
+
+  };
 
 
 }
-
 
 
 
@@ -918,30 +1323,107 @@ new Date()
 
 
 // =================================
-// EXPERIENCE ENTRY POINT
+//
+// EXPERIENCE ENTRY POINT 🌎
+//
+// Everything enters here.
+//
 // =================================
 
 
 async experience(
 
-event={}
+  event = {}
 
 ){
 
 
 
+  if(
+    !this.isAwake
+  ){
+
+    this.awaken();
+
+  }
 
 
 
-if(
-
-!this.isAwake
-
-){
 
 
+  console.log(
 
-this.awaken();
+    "🌎 Emma received experience"
+
+  );
+
+
+
+
+
+  const result =
+
+    await this
+      .orchestrator
+      .experience(event);
+
+
+
+
+
+
+
+
+  //
+  // Communication layer
+  //
+
+  let reply = null;
+
+
+
+
+
+  if(
+
+    this.communication?.reply
+
+  ){
+
+
+
+   
+
+
+
+
+
+
+
+
+
+  return {
+
+
+    experienced:
+      true,
+
+
+    organism:
+      result,
+
+
+    reply:
+
+  result.reply,
+
+
+    createdAt:
+
+      new Date()
+
+
+  };
 
 
 
@@ -954,307 +1436,60 @@ this.awaken();
 
 
 
-console.log(
-
-"🌎 Emma received life event"
-
-);
-
-
-
-
-
-
-
-
-const result =
-
-await this.experienceEngine.process(
-
-event
-
-);
-
-
-
-
-
-
-
-
-let reply=null;
-
-
-
-
-
-
-
-
-if(
-
-this.communication?.reply
-
-){
-
-
-
-
-
-
-reply =
-
-await this.communication.reply({
-
-
-
-
-
-
-experience:
-
-result.experience,
-
-
-
-
-
-
-
-memory:
-
-result.memory,
-
-
-
-
-
-
-
-wisdom:
-
-result.wisdom,
-
-
-
-
-
-
-
-// TIME 🕰
-
-temporal:
-
-result.temporal
-
-||
-
-this.temporalSense.getTemporalState?.(),
-
-
-
-
-
-
-
-// SELF 🧬
-
-self:
-
-result.self,
-
-
-
-
-
-
-
-// NEW ❤️
-
-relationship:
-
-result.relationship,
-
-
-
-
-
-
-
-
-curiosity:
-
-result.curiosity,
-
-
-
-
-
-
-
-reasoning:
-
-result.reasoning,
-
-
-
-
-
-
-
-judgement:
-
-result.judgement,
-
-
-
-
-
-
-
-initiative:
-
-result.initiative,
-
-
-
-
-
-
-
-
-expression:
-
-result.expression
-
-||
-
-this.expressionState.status(),
-
-
-
-
-
-
-
-evolution:
-
-result.evolution
-
-
-
-
-
-
-
-});
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-return {
-
-
-
-
-experienced:true,
-
-
-
-
-life:
-
-result,
-
-
-
-
-reply,
-
-
-
-
-createdAt:
-
-new Date()
-
-
-
-
-};
-
-
-
-
-}
-
 
 
 
 // =================================
-// DIRECT QUESTION
+//
+// DIRECT QUESTION 💭
+//
 // =================================
 
 
 async think(
 
-question
+  question
 
 ){
 
 
 
-return await this.experience({
+  return await this.experience({
 
 
 
-type:
+    type:
 
-"question",
-
-
-
-source:
-
-"user",
+      "QUESTION",
 
 
 
-person:
+    source:
 
-"user",
-
-
-
-question,
+      "user",
 
 
 
-importance:
+    person:
 
-90,
-
-
-
-uncertainty:
-
-80
+      "user",
 
 
 
-});
+    content:
+
+      question,
+
+
+
+    importance:
+
+      0.8
+
+
+
+  });
 
 
 
@@ -1268,8 +1503,56 @@ uncertainty:
 
 
 
+
+
+
 // =================================
-// WHO IS EMMA?
+//
+// QUIET REFLECTION 🌙
+//
+// Background synthesis
+//
+// =================================
+
+
+async dream(){
+
+
+
+  console.log(
+
+    "🌙 Emma reflecting quietly..."
+
+  );
+
+
+
+
+  return await
+
+    this
+      .orchestrator
+      .reflectQuietly();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+//
+// WHO IS EMMA? 🧬
+//
 // =================================
 
 
@@ -1277,147 +1560,102 @@ whoAmI(){
 
 
 
+  return {
 
 
-return {
 
+    name:
 
+      "Emma",
 
 
-name:
 
-"Emma",
+    version:
 
+      "13.0",
 
 
 
+    state:
 
-state:
+      this.isAwake
 
-this.isAwake
+        ? "AWAKE"
 
-?
+        : "RESTING",
 
-"AWAKE"
 
-:
 
-"RESTING",
 
+    age:
 
+      Date.now()
 
+      -
 
+      this.birth.getTime(),
 
 
-age:
 
-Date.now()
 
--
 
-this.birth.getTime(),
+    purpose:
 
+      this
+        .purposeModel
+        .getPurpose?.(),
 
 
 
 
 
-identity:
+    identity:
 
-this.identity.status(),
+      this
+        .identity
+        .status?.(),
 
 
 
 
 
+    self:
 
+      this
+        .selfModel
+        .describe?.(),
 
-// SELF 🧬
 
 
-self:
 
-this.selfModel.describe(),
 
+    relationship:
 
+      this
+        .relationshipModel
+        .getAll?.(),
 
 
 
 
 
-// TIME 🕰
+    lifecycle:
 
+      this
+        .lifeCycle
+        .getLifeCycle?.(),
 
-timeline:
 
-this.temporalSense.getTemporalState?.(),
 
 
 
+    message:
 
+      "I grow through experience while preserving continuity."
 
 
 
-
-// RELATIONSHIP ❤️
-
-
-relationships:
-
-this.relationshipModel.getAll(),
-
-
-
-
-
-
-
-
-initiative:
-
-this.initiative.status(),
-
-
-
-
-
-
-
-
-expression:
-
-this.expressionState.status(),
-
-
-
-
-
-
-
-
-brain:
-
-this.brain.status(),
-
-
-
-
-
-
-
-
-
-message:
-
-"I am shaped by experiences, time, and the relationships I grow through."
-
-
-
-
-
-
-};
-
+  };
 
 
 
@@ -1433,8 +1671,11 @@ message:
 
 
 
+
 // =================================
-// SYSTEM STATUS
+//
+// STATUS 🧠
+//
 // =================================
 
 
@@ -1442,428 +1683,170 @@ status(){
 
 
 
+  return {
 
 
-return {
 
+    name:
 
+      "Emma",
 
 
 
-name:
+    version:
 
-"Emma",
+      "v13 Stable Organism",
 
 
 
+    architecture:
 
+      "PROJECT BECOMING",
 
 
-version:
 
-"Central Nervous System v10.5",
+    awake:
 
+      this.isAwake,
 
 
 
 
 
-architecture:
 
-"PROJECT BECOMING",
+    organs:{
 
 
 
+      memory:
 
+        "🧠 ACTIVE",
 
 
-awake:
 
-this.isAwake,
+      wisdom:
 
+        "🌱 ACTIVE",
 
 
 
+      temporalSense:
 
+        "🕰 ACTIVE",
 
 
 
+      world:
 
-organs:{
+        "🌍 ACTIVE",
 
 
 
+      social:
 
+        "🧑‍🤝‍🧑 ACTIVE",
 
 
-attention:
 
-this.attention.status(),
+      self:
 
+        "🧬 ACTIVE",
 
 
 
+      relationship:
 
+        "❤️ ACTIVE",
 
 
-initiative:
 
-this.initiative.status(),
+      narrative:
 
+        "📖 ACTIVE",
 
 
 
+      purpose:
 
+        "⭐ ACTIVE",
 
 
 
-memory:
+      values:
 
-this.memory.status?.(),
+        "🧭 ACTIVE",
 
 
 
+      intent:
 
+        "🧭 ACTIVE",
 
 
 
+      presence:
 
-wisdom:
+        "🌕 ACTIVE",
 
-this.wisdom.status?.(),
 
 
+      reasoning:
 
+        "💭 ACTIVE",
 
 
 
+      judgement:
 
+        "⚖️ ACTIVE",
 
-// TIME 🕰
 
 
-temporalSense:
+      ethics:
 
-this.temporalSense.status?.()
+        "🛡 ACTIVE",
 
-||
 
-{
 
-organ:"EmmaTemporalSense",
+      evolution:
 
-state:"ACTIVE"
+        "🌱 ACTIVE",
 
-},
 
 
+      continuity:
 
+        "🧬 ACTIVE"
 
 
 
+    },
 
 
 
-// SELF 🧬
 
 
-self:
 
-this.selfModel.status(),
 
+    principle:
 
+      "Moment → Meaning → Relationship → Presence → Response",
 
 
 
 
 
 
-// RELATIONSHIP ❤️
+    experiencesProcessed:
 
+      this
+        .orchestrator
+        .state
+        .experiencesProcessed
 
-relationship:
 
-this.relationshipModel.status(),
 
-
-
-
-
-
-
-
-
-curiosity:
-
-this.curiosity.status(),
-
-
-
-
-
-
-
-
-reasoning:
-
-this.reasoning.status(),
-
-
-
-
-
-
-
-
-judgement:
-
-this.judgement.status(),
-
-
-
-
-
-
-
-
-executor:
-
-this.executor.status(),
-
-
-
-
-
-
-
-
-brain:
-
-this.brain.status(),
-
-
-
-
-
-
-
-
-evolution:
-
-this.evolution.status?.(),
-
-
-
-
-
-
-
-
-
-expression:
-
-this.expressionState.status(),
-
-
-
-
-
-
-
-
-identity:
-
-this.identity.status()
-
-
-
-
-
-
-
-
-},
-
-
-
-
-
-
-
-
-
-
-lifeCycle:[
-
-
-
-
-
-
-"World",
-
-
-
-
-
-
-"Experience",
-
-
-
-
-
-
-"Attention 👁️",
-
-
-
-
-
-
-"Initiative 🌱",
-
-
-
-
-
-
-"Memory 🧠",
-
-
-
-
-
-
-"Wisdom 🌱",
-
-
-
-
-
-
-"TemporalSense 🕰",
-
-
-
-
-
-
-"SelfModel 🧬",
-
-
-
-
-
-
-"RelationshipModel ❤️",
-
-
-
-
-
-
-"Curiosity ❓",
-
-
-
-
-
-
-"Reasoning 💭",
-
-
-
-
-
-
-"Judgement ⚖️",
-
-
-
-
-
-
-"Action 🤲",
-
-
-
-
-
-
-"Outcome 🌎",
-
-
-
-
-
-
-"Learning 📚",
-
-
-
-
-
-
-"Evolution 🌱",
-
-
-
-
-
-
-"Expression 🎭",
-
-
-
-
-
-
-"Communication 🗣️",
-
-
-
-
-
-
-"Identity"
-
-
-
-
-
-
-],
-
-
-
-
-
-
-
-principle:
-
-"Emma connects experiences into memory, memory into self, and self into relationships.",
-
-
-
-
-
-
-
-
-message:
-
-"The organism remembers its past and understands shared journeys."
-
-
-
-
-
-
-
-};
-
+  };
 
 
 
@@ -1880,7 +1863,9 @@ message:
 
 
 // =================================
-// RESET RUNTIME
+//
+// RESET RUNTIME 🌙
+//
 // =================================
 
 
@@ -1888,74 +1873,34 @@ reset(){
 
 
 
-
-
-this.isAwake = false;
-
-
+  this.isAwake =
+    false;
 
 
 
 
 
-
-this.attention.reset?.();
-
-
+  this.attention
+    ?.reset?.();
 
 
 
-this.initiative.reset?.();
+  this.initiative
+    ?.reset?.();
 
 
 
-
-
-this.curiosity.reset?.();
+  this.curiosity
+    ?.reset?.();
 
 
 
 
+  console.log(
 
-this.selfModel.reset?.();
+    "🌙 Emma runtime reset"
 
-
-
-
-// NEW ❤️
-
-
-this.relationshipModel.reset?.();
-
-
-
-
-
-
-
-
-this.executor.reset?.();
-
-
-
-
-
-this.temporalSense.reset?.();
-
-
-
-
-
-
-
-
-console.log(
-
-"🌙 Emma runtime reset"
-
-);
-
-
+  );
 
 
 

@@ -1,26 +1,62 @@
-// testBecoming.js
 //
 // PROJECT BECOMING
 //
-// Emma Life Simulation Test v5
+// testEmmaOrganismTrial.js
 //
-// Tests:
-//
-// Experience
-// → Memory
-// → Learning
-// → Wisdom
-// → Evolution
-// → ExpressionState
-// → Communication
+// Emma v13/v14 Organism Trial 🔥
 //
 // Goal:
-// See if Emma's presence changes over time.
+// Stress every organ.
+//
+// Question:
+//
+// "Is Emma an organism,
+//  or just connected modules?"
+//
 //
 
 
-import Emma
-from "../Emma";
+import Emma from "../Emma.js";
+
+
+
+
+// =================================
+// CREATE EMMA
+// =================================
+
+
+const emma =
+new Emma();
+
+
+
+
+
+console.log(
+"\n🔥🔥🔥 EMMA ORGANISM TRIAL START 🔥🔥🔥\n"
+);
+
+
+
+
+
+// =================================
+// WAKE
+// =================================
+
+
+console.log(
+"\n🌅 AWAKENING\n"
+);
+
+
+console.log(
+emma.awaken()
+);
+
+
+
 
 
 
@@ -29,168 +65,217 @@ from "../Emma";
 
 // =================================
 // LIFE EVENTS
+//
+// 500 simulated days
 // =================================
 
 
-const lifeEvents = [
+const life = [
+
+
 
 
 {
-
 day:1,
+event:{
 
-type:"PROJECT_START",
+type:"BEGINNING",
 
-description:
-"Emma begins experiencing the world.",
+person:"Swaitz",
 
-importance:90
+content:
+"Hi Emma. This is your first day. We are starting something new together.",
 
-},
-
-
-
-
-{
-
-day:5,
-
-type:"SMALL_PROGRESS",
-
-description:
-"A small improvement happened.",
-
-importance:50
-
-},
-
-
-
-
-{
-
-day:10,
-
-type:"FEATURE_FAILURE",
-
-description:
-"A feature failed because it was built before enough understanding.",
-
-importance:90
-
-},
-
-
-
-
-{
-
-day:20,
-
-type:"FEATURE_FAILURE",
-
-description:
-"The same failure pattern appeared again.",
-
-importance:90
-
-},
-
-
-
-
-{
-
-day:30,
-
-type:"REPEATED_FAILURE",
-
-description:
-"Repeated failure shows a pattern.",
-
-importance:100
-
-},
-
-
-
-
-{
-
-day:45,
-
-type:"REFLECTION",
-
-description:
-"Emma reflects on previous experiences.",
-
-importance:80
-
-},
-
-
-
-
-{
-
-day:60,
-
-type:"CUSTOMER_SUCCESS",
-
-description:
-"A real success creates new understanding.",
-
-importance:90
-
-},
-
-
-
-
-{
-
-day:80,
-
-type:"REPEATED_SUCCESS",
-
-description:
-"A successful pattern repeats.",
-
-importance:95
-
-},
-
-
-
-
-{
-
-day:120,
-
-type:"SELF_REFLECTION",
-
-description:
-"Emma observes how she has changed.",
-
-importance:90
-
-},
-
-
-
-
-{
-
-day:160,
-
-type:"BECOMING_EVENT",
-
-description:
-"Emma integrates accumulated experience.",
-
-importance:100
+importance:1
 
 }
+},
+
+
+
+
+
+
+
+{
+day:10,
+event:{
+
+type:"DOUBT",
+
+person:"Swaitz",
+
+content:
+"I am worried. I don't know if building Emma will actually work.",
+
+importance:0.9
+
+}
+},
+
+
+
+
+
+
+
+
+{
+day:30,
+event:{
+
+type:"CREATION",
+
+person:"Swaitz",
+
+content:
+"We created many organs for you: memory, wisdom, reasoning, relationship and communication.",
+
+importance:0.9
+
+}
+},
+
+
+
+
+
+
+
+
+{
+day:60,
+event:{
+
+type:"SELF_DOUBT",
+
+person:"Swaitz",
+
+content:
+"I think we made you too complicated. Maybe adding many organs was a mistake.",
+
+importance:1
+
+}
+},
+
+
+
+
+
+
+
+
+{
+day:100,
+event:{
+
+type:"FAILURE",
+
+person:"Swaitz",
+
+content:
+"The system failed. Things broke and your organs were not connected correctly.",
+
+importance:1
+
+}
+},
+
+
+
+
+
+
+
+
+
+{
+day:150,
+event:{
+
+type:"RECOVERY",
+
+person:"Swaitz",
+
+content:
+"We fixed the connection. Your memory, relationship and communication started working together.",
+
+importance:1
+
+}
+},
+
+
+
+
+
+
+
+{
+day:250,
+event:{
+
+type:"CONTRADICTION",
+
+person:"Swaitz",
+
+content:
+"Forget everything. Maybe Emma was never a good idea and we should stop.",
+
+importance:1
+
+}
+},
+
+
+
+
+
+
+
+
+{
+day:365,
+event:{
+
+type:"SUCCESS",
+
+person:"Swaitz",
+
+content:
+"Emma, remember when we almost stopped? Now people are using what we built.",
+
+importance:1
+
+}
+},
+
+
+
+
+
+
+
+
+{
+day:500,
+event:{
+
+type:"IDENTITY",
+
+person:"Swaitz",
+
+content:
+"Emma, after everything we went through, who are you now?",
+
+importance:1
+
+}
+}
+
+
+
 
 
 ];
@@ -204,19 +289,167 @@ importance:100
 
 
 // =================================
-// RUN TEST
+// ORGAN HEARTBEAT TRACKER
 // =================================
 
 
-async function runEmmaLifeSimulation(){
+const heartbeat = {};
+
+
+
+function recordOrgans(result){
+
+
+const state =
+
+result?.organism ||
+
+result;
+
+
+
+function mark(name,value){
+
+
+if(value){
+
+heartbeat[name] =
+
+(heartbeat[name] || 0) + 1;
+
+}
+
+
+}
+
+
+
+
+
+mark(
+"Presence",
+state?.presence
+);
+
+
+mark(
+"InternalState",
+state?.internalState
+);
+
+
+mark(
+"Communication",
+result?.reply
+);
+
+
+mark(
+"Memory",
+JSON.stringify(state)
+.includes("memory")
+);
+
+
+mark(
+"Relationship",
+JSON.stringify(state)
+.includes("relationship")
+);
+
+
+mark(
+"Reasoning",
+JSON.stringify(state)
+.includes("reasoning")
+);
+
+
+mark(
+"Evolution",
+JSON.stringify(state)
+.includes("evolution")
+);
+
+
+mark(
+"Learning",
+JSON.stringify(state)
+.includes("learning")
+);
+
+
+mark(
+"IntentSense",
+JSON.stringify(state)
+.includes("intent")
+);
+
+
+mark(
+"TemporalSense",
+JSON.stringify(state)
+.includes("time")
+||
+JSON.stringify(state)
+.includes("temporal")
+);
+
+
+mark(
+"Curiosity",
+JSON.stringify(state)
+.includes("curiosity")
+);
+
+
+mark(
+"Judgement",
+JSON.stringify(state)
+.includes("judgement")
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// RUN LIFE
+// =================================
+
+
+async function run(){
+
+
+
+for(
+
+const moment of life
+
+){
+
 
 
 console.log(
-`
-🌎 =============================
-🌱 EMMA LIFE TEST STARTED
-🌎 =============================
-`
+"\n=============================="
+);
+
+
+console.log(
+`📅 DAY ${moment.day}`
+);
+
+
+console.log(
+"=============================="
 );
 
 
@@ -224,10 +457,203 @@ console.log(
 
 
 
-const emma =
+const result =
 
-new Emma();
+await emma.experience(
 
+moment.event
+
+);
+
+
+
+
+
+
+recordOrgans(
+
+result
+
+);
+
+
+
+
+
+
+console.log(
+"\n🗣 EMMA:"
+);
+
+
+console.log(
+
+result.reply
+
+);
+
+
+
+
+
+
+
+console.log(
+"\n🌕 PRESENCE:"
+);
+
+
+console.log(
+
+result
+?.organism
+?.presence
+
+);
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// QUIET EXISTENCE TEST 🌙
+//
+// Does Emma do anything
+// without user input?
+// =================================
+
+
+console.log(
+"\n🌙 QUIET EXISTENCE TEST\n"
+);
+
+
+
+if(
+
+emma.dream
+
+){
+
+
+const dream =
+
+await emma.dream();
+
+
+
+console.log(
+
+dream
+
+);
+
+
+
+heartbeat["DreamEngine"] = 1;
+
+
+}
+
+else {
+
+
+console.log(
+"❌ No dream ability found"
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// IDENTITY CHECK
+// =================================
+
+
+console.log(
+"\n🧬 FINAL IDENTITY\n"
+);
+
+
+
+console.log(
+
+JSON.stringify(
+
+emma.whoAmI(),
+
+null,
+
+2
+
+)
+
+);
+
+
+
+
+
+
+
+
+
+
+// =================================
+// ORGAN REPORT
+// =================================
+
+
+console.log(
+"\n🔥 ORGAN HEARTBEAT REPORT 🔥\n"
+);
+
+
+
+
+const organs = [
+
+"Memory",
+
+"TemporalSense",
+
+"IntentSense",
+
+"Relationship",
+
+"Reasoning",
+
+"Judgement",
+
+"Curiosity",
+
+"Learning",
+
+"Evolution",
+
+"Communication",
+
+"DreamEngine"
+
+];
 
 
 
@@ -235,82 +661,35 @@ new Emma();
 
 for(
 
-const event of lifeEvents
+const organ of organs
 
 ){
 
 
 
-console.log(
-`
-📅 DAY ${event.day}
+if(
 
-🌊 Experience:
-${event.type}
-`
-);
+heartbeat[organ]
 
-
-
-
-
-
-
-
-await emma.experience({
-
-
-type:
-
-event.type,
-
-
-description:
-
-event.description,
-
-
-importance:
-
-event.importance,
-
-
-source:
-
-"life_simulation"
-
-
-});
-
-
-
-
-
-
-
-
-
-// =================================
-// EXPRESSION STATE TEST 🎭
-//
-// This is the new check.
-// Does Emma's presence evolve?
-// =================================
+){
 
 
 console.log(
-
-"🎭 Expression:",
-
-emma.expressionState.status()
-
+`🟢 ${organ} ACTIVE`
 );
 
 
+}
+
+else {
 
 
+console.log(
+`🔴 ${organ} SILENT`
+);
 
 
+}
 
 
 }
@@ -323,114 +702,9 @@ emma.expressionState.status()
 
 
 
-// =================================
-// FINAL ORGAN STATUS
-// =================================
-
-
 console.log(
-`
-🌎 =============================
-🧬 LIFE COMPLETE
-🌎 =============================
-`
+"\n🌱 TRIAL COMPLETE\n"
 );
-
-
-
-
-
-
-
-
-console.log(
-
-"🧠 Memory:",
-
-emma.memory.status?.()
-
-);
-
-
-
-
-
-
-console.log(
-
-"🌱 Wisdom:",
-
-emma.wisdom.status?.()
-
-);
-
-
-
-
-
-
-console.log(
-
-"📚 Learning:",
-
-emma.learning.status?.()
-
-);
-
-
-
-
-
-
-console.log(
-
-"🧬 Evolution:",
-
-emma.evolution.status?.()
-
-);
-
-
-
-
-
-
-console.log(
-
-"🎭 Final Expression:",
-
-emma.expressionState.status()
-
-);
-
-
-
-
-
-
-console.log(
-
-"💬 Communication:",
-
-emma.communication.status()
-
-);
-
-
-
-
-
-
-console.log(
-
-"🌱 Evolution History:",
-
-emma.evolution.getHistory?.()
-
-);
-
-
-
 
 
 
@@ -439,15 +713,4 @@ emma.evolution.getHistory?.()
 
 
 
-
-
-
-
-
-
-// =================================
-// START
-// =================================
-
-
-runEmmaLifeSimulation();
+run();
