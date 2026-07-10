@@ -2,33 +2,31 @@
 //
 // PROJECT BECOMING
 //
-// Emma Experience Engine v8.4
+// Emma Experience Engine v8.5
+//
+// TEMPORAL AWARENESS PATCH 🕰
 //
 // Emma's spinal cord.
 //
 // Added:
-// EmmaInitiative 🌱
-// EmmaExpressionState 🎭
-//
-// Fixed:
-// Initiative no longer blocks life.
-// Silence does not stop growth.
+// EmmaTemporalSense
 //
 // RULE:
 //
 // Do not think.
-// Do not decide.
+// Do not judge.
 // Do not learn.
 //
 // Only move experiences
 // between organs.
 //
-
+// Memory stores events.
+// Wisdom extracts meaning.
+// TemporalSense sees change over time.
+// SelfModel becomes.
+//
 
 class EmmaExperienceEngine {
-
-
-
 
 
 constructor({
@@ -44,6 +42,8 @@ expression=null,
 memory=null,
 
 wisdom=null,
+
+temporalSense=null,
 
 selfModel=null,
 
@@ -64,11 +64,9 @@ evolution=null
 } = {}){
 
 
-
 console.log(
-"🧬 Emma Experience Engine v8.4 alive"
+"🧬 Emma Experience Engine v8.5 alive"
 );
-
 
 
 
@@ -84,8 +82,6 @@ this.initiative =
 initiative;
 
 
-
-
 console.log(
 "🌱 Initiative connected:",
 !!this.initiative
@@ -93,11 +89,8 @@ console.log(
 
 
 
-
 this.expression =
 expression;
-
-
 
 
 console.log(
@@ -107,13 +100,27 @@ console.log(
 
 
 
-
 this.memory =
 memory;
 
 
 this.wisdom =
 wisdom;
+
+
+
+// NEW 🕰
+
+this.temporalSense =
+temporalSense;
+
+
+console.log(
+"🕰 TemporalSense connected:",
+!!this.temporalSense
+);
+
+
 
 
 this.selfModel =
@@ -148,10 +155,7 @@ this.evolution =
 evolution;
 
 
-
-
 this.cycles = 0;
-
 
 
 }
@@ -176,22 +180,16 @@ event={}
 ){
 
 
-
 console.log(
 "🌎 Life entered Emma"
 );
 
 
 
-
 this.cycles++;
 
 
-
-
-const timeline = [];
-
-
+const timeline=[];
 
 
 
@@ -213,16 +211,9 @@ event
 );
 
 
-
-
 timeline.push(
-
 "EXPERIENCE"
-
 );
-
-
-
 
 
 
@@ -242,7 +233,6 @@ this.stream?.record
 ){
 
 
-
 await this.stream.record(
 
 experience
@@ -250,19 +240,12 @@ experience
 );
 
 
-
-
 timeline.push(
-
 "STREAM"
-
 );
 
 
-
 }
-
-
 
 
 
@@ -276,9 +259,7 @@ timeline.push(
 // ===============================
 
 
-let attention = null;
-
-
+let attention=null;
 
 
 
@@ -287,7 +268,6 @@ if(
 this.attention?.evaluate
 
 ){
-
 
 
 attention =
@@ -299,19 +279,12 @@ experience
 );
 
 
-
-
 timeline.push(
-
 "ATTENTION"
-
 );
 
 
-
 }
-
-
 
 
 
@@ -329,29 +302,22 @@ const shouldIgnore =
 
 (
 
-attention?.depth === "IGNORE"
+attention?.depth==="IGNORE"
 
 ||
 
-attention?.result === "IGNORE"
+attention?.result==="IGNORE"
 
 ||
 
-attention === "IGNORE"
+attention==="IGNORE"
 
 );
 
 
 
 
-
-
-if(
-
-shouldIgnore
-
-){
-
+if(shouldIgnore){
 
 
 return {
@@ -371,13 +337,10 @@ reason:
 timeline,
 
 
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
-
 
 
 }
@@ -389,29 +352,12 @@ new Date()
 
 
 
-
-
 // ===============================
 // INITIATIVE 🌱
-//
-// Should Emma enter?
-//
-// Does NOT stop life.
 // ===============================
 
 
-let initiative = null;
-
-
-
-
-
-console.log(
-"🌱 Checking initiative..."
-);
-
-
-
+let initiative=null;
 
 
 
@@ -422,19 +368,9 @@ this.initiative?.evaluate
 ){
 
 
-
-console.log(
-"🌱 Initiative evaluating moment"
-);
-
-
-
-
-
 initiative =
 
 await this.initiative.evaluate({
-
 
 
 experience,
@@ -443,11 +379,7 @@ experience,
 attention
 
 
-
 });
-
-
-
 
 
 
@@ -457,15 +389,6 @@ initiative
 
 );
 
-
-
-
-
-
-
-// Important:
-// Silence affects communication,
-// not memory.
 
 
 initiative.canExpress =
@@ -478,17 +401,9 @@ initiative
 
 
 
-
-
-
-
-
 timeline.push(
-
 "INITIATIVE"
-
 );
-
 
 
 }
@@ -500,17 +415,12 @@ timeline.push(
 
 
 
-
 // ===============================
 // MEMORY 🧠
-//
-// Attention decides.
 // ===============================
 
 
-let memory = null;
-
-
+let memory=null;
 
 
 
@@ -518,21 +428,17 @@ const shouldRemember =
 
 (
 
-attention?.depth === "REMEMBER"
+attention?.depth==="REMEMBER"
 
 ||
 
-attention?.result === "REMEMBER"
+attention?.result==="REMEMBER"
 
 ||
 
-attention === "REMEMBER"
+attention==="REMEMBER"
 
 );
-
-
-
-
 
 
 
@@ -549,49 +455,27 @@ this.memory?.store
 
 
 
-console.log(
-"🧠 Sending experience to memory"
-);
-
-
-
-
-
-
 memory =
 
 await this.memory.store({
 
 
-
 ...experience,
 
 
-
 attention
-
 
 
 });
 
 
 
-
-
-
-
-
 timeline.push(
-
 "MEMORY"
-
 );
 
 
-
 }
-
-
 
 
 
@@ -605,9 +489,7 @@ timeline.push(
 // ===============================
 
 
-let wisdom = null;
-
-
+let wisdom=null;
 
 
 
@@ -624,7 +506,6 @@ wisdom =
 await this.wisdom.reflect({
 
 
-
 experience,
 
 
@@ -634,19 +515,66 @@ memory,
 initiative
 
 
-
 });
 
 
 
+timeline.push(
+"WISDOM"
+);
 
 
+}
+
+
+
+
+
+
+
+
+// ===============================
+// TEMPORAL SENSE 🕰
+//
+// NEW ORGAN
+// ===============================
+
+
+let temporal=null;
+
+
+
+if(
+
+this.temporalSense?.experienceTime
+
+){
+
+
+
+const history =
+
+this.memory?.getAll?.()
+
+||
+
+[];
+
+
+
+temporal =
+
+this.temporalSense.experienceTime(
+
+history
+
+);
 
 
 
 timeline.push(
 
-"WISDOM"
+"TEMPORAL_SENSE"
 
 );
 
@@ -654,14 +582,16 @@ timeline.push(
 
 }
 
+
 // ===============================
-// SELF MODEL
+// SELF MODEL 🧬
+//
+// Now receives:
+// moment + wisdom + time
 // ===============================
 
 
 let self = null;
-
-
 
 
 
@@ -688,13 +618,16 @@ wisdom,
 memory,
 
 
-initiative
+initiative,
+
+
+// NEW 🕰
+
+temporal
 
 
 
 });
-
-
 
 
 
@@ -718,14 +651,12 @@ timeline.push(
 
 
 
-
 // =================================
 // CURIOSITY
 // =================================
 
 
 let curiosity = null;
-
 
 
 
@@ -753,6 +684,9 @@ memory,
 wisdom,
 
 
+temporal,
+
+
 self,
 
 
@@ -761,9 +695,6 @@ initiative
 
 
 });
-
-
-
 
 
 
@@ -800,7 +731,6 @@ let reasoning = null;
 
 
 
-
 if(
 
 this.reasoning?.think
@@ -824,6 +754,9 @@ memory,
 wisdom,
 
 
+temporal,
+
+
 self,
 
 
@@ -835,8 +768,6 @@ initiative
 
 
 });
-
-
 
 
 
@@ -864,13 +795,10 @@ timeline.push(
 
 // =================================
 // JUDGEMENT
-//
-// Permission boundary
 // =================================
 
 
 let judgement = null;
-
 
 
 
@@ -895,6 +823,9 @@ reasoning,
 wisdom,
 
 
+temporal,
+
+
 self,
 
 
@@ -906,9 +837,6 @@ initiative
 
 
 });
-
-
-
 
 
 
@@ -943,7 +871,6 @@ let execution = null;
 
 
 
-
 if(
 
 judgement
@@ -963,10 +890,6 @@ await this.executor.execute(
 judgement
 
 );
-
-
-
-
 
 
 
@@ -992,13 +915,10 @@ timeline.push(
 
 // =================================
 // OUTCOME
-//
-// Reality mirror
 // =================================
 
 
 let outcomeResult = null;
-
 
 
 
@@ -1028,11 +948,9 @@ execution,
 {
 
 
-
 goal:
 
 experience.situation,
-
 
 
 source:
@@ -1040,15 +958,11 @@ source:
 experience.source
 
 
-
 }
 
 
 
 );
-
-
-
 
 
 
@@ -1075,13 +989,10 @@ timeline.push(
 
 // =================================
 // LEARNING
-//
-// Outcome → meaning
 // =================================
 
 
 let learning = null;
-
 
 
 
@@ -1118,9 +1029,6 @@ memory ? [memory] : []
 
 
 
-
-
-
 timeline.push(
 
 "LEARNING"
@@ -1141,14 +1049,11 @@ timeline.push(
 
 
 // =================================
-// EVOLUTION
-//
-// Slow becoming only
+// EVOLUTION 🌱
 // =================================
 
 
 let evolution = null;
-
 
 
 
@@ -1168,9 +1073,7 @@ await this.evolution.evolve({
 
 
 
-
 wisdomCandidates:
-
 
 this.learning?.getWisdomCandidates?.()
 
@@ -1182,23 +1085,27 @@ this.learning?.getWisdomCandidates?.()
 
 
 
-
 selfGrowthSignals:
-
 
 this.selfModel?.getGrowthSignals?.()
 
 ||
 
-[]
+[],
 
+
+
+
+// NEW 🕰
+
+temporalContext:
+
+temporal
 
 
 
 
 });
-
-
 
 
 
@@ -1224,15 +1131,15 @@ timeline.push(
 
 
 
+
 // =================================
 // EXPRESSION STATE 🎭
 //
-// Presence update
+// Now expression knows history
 // =================================
 
 
 let expression = null;
-
 
 
 
@@ -1251,7 +1158,6 @@ this.expression.observe({
 
 
 
-
 experience,
 
 
@@ -1259,6 +1165,9 @@ memory,
 
 
 wisdom,
+
+
+temporal,
 
 
 self,
@@ -1271,11 +1180,7 @@ evolution
 
 
 
-
 });
-
-
-
 
 
 
@@ -1310,17 +1215,11 @@ return {
 
 
 
-experienced:
-
-true,
+experienced:true,
 
 
 
-
-integrated:
-
-true,
-
+integrated:true,
 
 
 
@@ -1339,6 +1238,11 @@ memory,
 wisdom,
 
 
+// NEW 🕰
+
+temporal,
+
+
 self,
 
 
@@ -1354,13 +1258,9 @@ judgement,
 execution,
 
 
-
-
 outcome:
 
 outcomeResult,
-
-
 
 
 learning,
@@ -1376,18 +1276,15 @@ timeline,
 
 
 
-
 message:
 
-"Experience completed a full Emma life cycle.",
-
+"Experience completed full Emma temporal life cycle.",
 
 
 
 createdAt:
 
 new Date()
-
 
 
 
@@ -1424,11 +1321,9 @@ return {
 
 
 
-
 id:
 
 this.createId(),
-
 
 
 
@@ -1442,7 +1337,6 @@ event.type
 
 
 
-
 source:
 
 event.source
@@ -1450,7 +1344,6 @@ event.source
 ||
 
 "world",
-
 
 
 
@@ -1465,7 +1358,6 @@ event.user
 ||
 
 null,
-
 
 
 
@@ -1491,7 +1383,6 @@ null,
 
 
 
-
 result:
 
 event.result
@@ -1502,6 +1393,25 @@ null,
 
 
 
+importance:
+
+event.importance
+
+||
+
+0.5,
+
+
+
+emotion:
+
+event.emotion
+
+||
+
+"neutral",
+
+
 
 raw:
 
@@ -1509,11 +1419,13 @@ event,
 
 
 
-
 createdAt:
 
-new Date()
+event.timestamp
 
+||
+
+new Date()
 
 
 
@@ -1522,6 +1434,7 @@ new Date()
 
 
 }
+
 
 
 
@@ -1551,15 +1464,10 @@ crypto.randomUUID
 ){
 
 
-
 return crypto.randomUUID();
 
 
-
 }
-
-
-
 
 
 
@@ -1578,7 +1486,6 @@ Date.now()
 Math.random()
 
 );
-
 
 
 }
@@ -1612,18 +1519,15 @@ organ:
 
 
 
-
 version:
 
-"v8.4",
-
+"v8.5",
 
 
 
 role:
 
-"Central nervous system",
-
+"Temporal nervous system",
 
 
 
@@ -1633,16 +1537,13 @@ state:
 
 
 
-
 cycles:
 
 this.cycles,
 
 
 
-
 pipeline:[
-
 
 
 
@@ -1661,7 +1562,10 @@ pipeline:[
 "Wisdom",
 
 
-"SelfModel",
+"TemporalSense 🕰",
+
+
+"SelfModel 🧬",
 
 
 "Curiosity",
@@ -1689,28 +1593,21 @@ pipeline:[
 
 
 
-
 ],
-
-
-
 
 
 
 
 principle:
 
-"Move life between organs. Never become an organ.",
-
-
+"Move life between organs. Time creates continuity.",
 
 
 
 
 message:
 
-"I connect Emma's experiences into a continuous life cycle."
-
+"I connect Emma's experiences into a living timeline."
 
 
 
