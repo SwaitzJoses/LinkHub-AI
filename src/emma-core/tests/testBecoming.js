@@ -1,71 +1,288 @@
-//
-// testEmmaLife.js
+// testBecoming.js
 //
 // PROJECT BECOMING
 //
-// Full Emma organism simulation
+// FAST LIFE SIMULATION
 //
-// This does NOT test functions.
-// This tests life flow.
-//
-// World
-//  ↓
+// Tests:
 // Experience
-//  ↓
-// Memory
-//  ↓
-// Wisdom
-//  ↓
-// Self
-//  ↓
-// Reasoning
-//  ↓
-// Action
-//  ↓
-// Outcome
-//  ↓
-// Learning
-//  ↓
-// Evolution
+// → Memory
+// → Wisdom
+// → SelfModel
+// → Learning
+// → Evolution
+//
+// Goal:
+// Can experience change Emma?
 //
 
 
-import Emma from "../Emma.js";
+import Emma from "../Emma";
 
 
+
+
+// =================================
+// SETTINGS
+// =================================
+
+
+const FAST_MODE = true;
+
+
+const WAIT_TIME =
+FAST_MODE ? 10 : 1000;
+
+
+
+
+function sleep(ms){
+
+return new Promise(
+resolve => setTimeout(resolve, ms)
+);
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// LIFE EVENTS
+// =================================
+
+
+const life = [
+
+
+
+{
+day:1,
+
+type:"PROJECT_START",
+
+message:
+"Emma project begins. A new journey starts.",
+
+importance:80
+},
+
+
+
+
+
+{
+day:5,
+
+type:"SMALL_PROGRESS",
+
+message:
+"Consistent effort created small progress.",
+
+importance:60
+},
+
+
+
+
+
+
+
+// ===============================
+// FAILURE PATTERN
+// ===============================
+
+
+{
+day:10,
+
+type:"FEATURE_FAILURE",
+
+success:false,
+
+message:
+"Feature failed because action happened too quickly without enough understanding.",
+
+importance:95
+},
+
+
+
+
+{
+day:20,
+
+type:"FEATURE_FAILURE",
+
+success:false,
+
+message:
+"Again a feature failed because decisions were rushed.",
+
+importance:95
+},
+
+
+
+
+
+{
+day:30,
+
+type:"REPEATED_FAILURE",
+
+success:false,
+
+message:
+"The same mistake appeared again. Moving fast without reflection created problems.",
+
+importance:100
+},
+
+
+
+
+
+
+
+
+// ===============================
+// REFLECTION
+// ===============================
+
+
+{
+day:45,
+
+type:"REFLECTION",
+
+message:
+"Emma notices repeated failures and searches for the deeper cause.",
+
+importance:90
+},
+
+
+
+
+
+
+
+
+// ===============================
+// IMPROVED BEHAVIOUR
+// ===============================
+
+
+{
+day:60,
+
+type:"CUSTOMER_SUCCESS",
+
+success:true,
+
+message:
+"Better results happened after observing first and acting later.",
+
+importance:95
+},
+
+
+
+
+
+{
+day:80,
+
+type:"REPEATED_SUCCESS",
+
+success:true,
+
+message:
+"Patient decisions repeatedly created better outcomes.",
+
+importance:100
+},
+
+
+
+
+
+
+
+
+// ===============================
+// IDENTITY PRESSURE
+// ===============================
+
+
+{
+day:120,
+
+type:"SELF_REFLECTION",
+
+message:
+"Emma compares past behaviour with current understanding.",
+
+importance:100
+},
+
+
+
+
+
+{
+day:160,
+
+type:"BECOMING_EVENT",
+
+message:
+"Emma recognizes that experience has changed future behaviour.",
+
+importance:100
+}
+
+
+
+];
+
+
+
+
+
+
+
+
+
+// =================================
+// RUN SIMULATION
+// =================================
+
+
+async function runEmmaLifeSimulation(){
 
 
 
 console.log(
-"\n🌎 STARTING EMMA LIFE TEST\n"
+`
+🌎 =============================
+🌱 EMMA FAST LIFE TEST STARTED
+🌎 =============================
+`
 );
 
 
 
 
 
-const wait = (ms)=>
-new Promise(
-resolve =>
-setTimeout(resolve, ms)
-);
 
-
-
-
-
-
-
-
-
-
-async function runLife(){
-
-
-
-// =================================
-// CREATE EMMA
-// =================================
+// Emma v10 wakes itself
+// Do NOT call emma.awake()
 
 
 const emma =
@@ -75,376 +292,32 @@ new Emma();
 
 
 
-console.log(
-"\n=========================="
-);
-
-
-console.log(
-"🌅 AWAKENING"
-);
-
-
-console.log(
-"=========================="
-);
-
-
-
-
-console.log(
-
-emma.awaken()
-
-);
-
-
-
-
-
-
-
-
-
-
-// =================================
-// EXPERIENCE 1
-// NEW CUSTOMER
-// =================================
-
-
-console.log(
-"\n🌎 EXPERIENCE 1: NEW CUSTOMER\n"
-);
-
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"CUSTOMER_EVENT",
-
-
-
-source:
-
-"LinkHub",
-
-
-
-customer:
-
-"Fashion Hub",
-
-
-
-situation:
-
-"Customer created first digital store and liked the result",
-
-
-
-result:
-
-"success",
-
-
-
-importance:
-
-70
-
-
-
-});
-
-
-
-
-
-
-
-
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-// =================================
-// EXPERIENCE 2
-// SUCCESSFUL ACTION
-// =================================
-
-
-console.log(
-"\n🌎 EXPERIENCE 2: SUCCESS PATTERN\n"
-);
-
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"ACTION_OUTCOME",
-
-
-
-source:
-
-"Marketing",
-
-
-
-action:
-
-"Created AI poster campaign",
-
-
-
-result:
-
-"Customer received more enquiries",
-
-
-
-success:
-
-true,
-
-
-
-goal:
-
-"Increase customer attention"
-
-
-
-});
-
-
-
-
-
-
-
-
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-// =================================
-// EXPERIENCE 3
-// FAILURE
-// =================================
-
-
-console.log(
-"\n🌎 EXPERIENCE 3: FAILURE EXPERIENCE\n"
-);
-
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"ACTION_OUTCOME",
-
-
-
-source:
-
-"Marketing",
-
-
-
-action:
-
-"Repeated same offer again",
-
-
-
-result:
-
-"Campaign failed because customers ignored repeated message",
-
-
-
-success:
-
-false,
-
-
-
-goal:
-
-"Increase sales"
-
-
-
-});
-
-
-
-
-
-
-
-
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-
-// =================================
-// REPEATED EXPERIENCES
-//
-// Should create patterns
-// =================================
-
-
-console.log(
-"\n🔁 CREATING EXPERIENCE PATTERN\n"
-);
-
 
 
 
 
 for(
-
-let i=0;
-
-i<6;
-
-i++
-
+const event of life
 ){
 
 
 
-await emma.experience({
-
-
-
-type:
-
-"ACTION_OUTCOME",
-
-
-
-source:
-
-"Business",
-
-
-
-result:
-
-"Personalized message worked successfully",
-
-
-
-success:true,
-
-
-
-goal:
-
-"Improve customer relationship",
-
-
-
-repeat:true
-
-
-
-});
-
-
-
-
-await wait(200);
-
-
-
-}
-
-// =================================
-// DIRECT QUESTION
-//
-// Should activate:
-// Reasoning → Brain (if needed)
-// =================================
-
-
 console.log(
-"\n❓ USER ASKS EMMA QUESTION\n"
-);
+`
+📅 DAY ${event.day}
 
-
-
-
-const answer =
-
-await emma.think(
-
-"Based on your experience, what should this business do next?"
-
+🌊 Experience:
+${event.type}
+`
 );
 
 
 
 
 
-console.log(
-"\n💭 EMMA RESPONSE:"
-);
 
-
-console.log(
-
-JSON.stringify(
-
-answer,
-
-null,
-
-2
-
-)
-
+await emma.experience(
+event
 );
 
 
@@ -453,156 +326,9 @@ null,
 
 
 
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-// =================================
-// UNKNOWN SITUATION
-//
-// Should create curiosity
-// =================================
-
-
-console.log(
-"\n🌱 UNKNOWN EXPERIENCE TEST\n"
+await sleep(
+WAIT_TIME
 );
-
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"NEW_SITUATION",
-
-
-
-source:
-
-"World",
-
-
-
-situation:
-
-"A completely new customer behavior appeared that Emma has never seen",
-
-
-
-uncertainty:
-
-90,
-
-
-
-importance:
-
-80
-
-
-
-});
-
-
-
-
-
-
-
-
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-
-// =================================
-// EVOLUTION PRESSURE TEST
-//
-// Repeated stable signals
-// =================================
-
-
-console.log(
-"\n🌱 EVOLUTION PRESSURE TEST\n"
-);
-
-
-
-
-
-
-for(
-
-let i=0;
-
-i<8;
-
-i++
-
-){
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"REFLECTION_RESULT",
-
-
-
-source:
-
-"Self",
-
-
-
-result:
-
-"Repeated evidence shows careful personalized help creates better outcomes",
-
-
-
-success:true,
-
-
-
-pattern:
-
-"careful personalized support",
-
-
-
-repeat:true
-
-
-
-});
-
-
-
-
-await wait(200);
 
 
 
@@ -617,98 +343,16 @@ await wait(200);
 
 
 // =================================
-// ACTION LOOP TEST
-//
-// Reasoning
-// ↓
-// Judgement
-// ↓
-// Executor
-// ↓
-// Outcome
-// ↓
-// Learning
+// FINAL REPORT
 // =================================
 
 
 console.log(
-"\n🖐 ACTION LOOP TEST\n"
-);
-
-
-
-
-
-await emma.experience({
-
-
-
-type:
-
-"BUSINESS_REQUEST",
-
-
-
-source:
-
-"User",
-
-
-
-situation:
-
-"Create a customer engagement improvement suggestion",
-
-
-
-requiresDecision:true,
-
-
-
-importance:
-
-95
-
-
-
-});
-
-
-
-
-
-
-
-
-
-
-await wait(500);
-
-
-
-
-
-
-
-
-
-// =================================
-// FINAL ORGANISM STATUS
-// =================================
-
-
-console.log(
-"\n=============================="
-);
-
-
-console.log(
-"🧬 FINAL EMMA STATUS"
-);
-
-
-console.log(
-"==============================\n"
+`
+🌎 =============================
+🧬 LIFE COMPLETE
+🌎 =============================
+`
 );
 
 
@@ -719,60 +363,11 @@ console.log(
 
 console.log(
 
-JSON.stringify(
+"🧠 Memory:",
 
-emma.status(),
-
-null,
-
-2
-
-)
+emma.memory?.status?.()
 
 );
-
-
-
-
-
-
-
-
-
-
-console.log(
-"\n=============================="
-);
-
-
-console.log(
-"🧬 WHO IS EMMA NOW?"
-);
-
-
-console.log(
-"==============================\n"
-);
-
-
-
-
-
-
-console.log(
-
-JSON.stringify(
-
-emma.whoAmI(),
-
-null,
-
-2
-
-)
-
-);
-
 
 
 
@@ -783,9 +378,58 @@ null,
 
 console.log(
 
-"\n🌎 LIFE TEST COMPLETE\n"
+"🌱 Wisdom:",
+
+emma.wisdom?.status?.()
 
 );
+
+
+
+
+
+
+
+
+console.log(
+
+"📚 Learning:",
+
+emma.learning?.status?.()
+
+);
+
+
+
+
+
+
+
+
+console.log(
+
+"🧬 Evolution:",
+
+emma.evolution?.status?.()
+
+);
+
+
+
+
+
+
+
+
+console.log(
+
+"🌱 Evolution History:",
+
+emma.evolution
+?.getEvolutionHistory?.()
+
+);
+
 
 
 
@@ -799,29 +443,25 @@ console.log(
 
 
 
-
-
 // =================================
-// START TEST
+// START
 // =================================
 
 
-runLife()
+runEmmaLifeSimulation()
 
 .catch(
 
-error=>{
-
+error => {
 
 
 console.error(
 
-"❌ Emma life test failed:",
+"❌ Test failed:",
 
 error
 
 );
-
 
 
 }

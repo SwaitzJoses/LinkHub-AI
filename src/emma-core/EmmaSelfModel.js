@@ -2,31 +2,27 @@
 //
 // PROJECT BECOMING
 //
-// Emma Self Model v2
+// Emma Self Model v2.5
+//
+// DAY 15 STABILITY PATCH
 //
 // Emma observing Emma.
 //
-// Self is NOT identity.
-// Self is NOT personality.
-//
-// Self is the shape created
-// by repeated experience.
-//
 // RULE:
 //
-// Do not remember.
-// Do not decide.
-// Do not evolve identity.
+// A moment becomes memory.
+// Repeated meaning becomes self.
+// Long-term change becomes evolution.
 //
 // Memory stores past.
 // Wisdom understands.
 // SelfModel observes patterns.
 // Evolution makes permanent.
 //
-// v2:
-// - Pattern maturity
-// - Temporary vs stable self
-// - Evolution compatible
+// v2.5:
+// - Importance scoring
+// - Stronger maturity gate
+// - Evolution safety protection
 //
 
 
@@ -50,7 +46,7 @@ learning=null
 
 
 console.log(
-"🧬 Emma Self Model v2 awakened"
+"🧬 Emma Self Model v2.5 awakened"
 );
 
 
@@ -66,7 +62,6 @@ wisdom;
 
 this.learning =
 learning;
-
 
 
 
@@ -93,14 +88,15 @@ acceptedEvolutions:[],
 changes:[],
 
 
+rejectedEvolutions:[],
+
+
 createdAt:
 
 new Date()
 
 
 };
-
-
 
 
 
@@ -128,9 +124,10 @@ experience={}
 
 
 console.log(
-"🧬 Emma observing self pattern..."
-);
 
+"🧬 Emma observing self pattern..."
+
+);
 
 
 
@@ -149,13 +146,11 @@ experience
 
 
 
-
 if(
 
 !signal
 
 ){
-
 
 
 return {
@@ -165,6 +160,7 @@ changed:false,
 
 
 reason:
+
 "No self pattern detected."
 
 
@@ -233,9 +229,19 @@ new Date()
 
 
 
+// =================================
+// EXTRACT SELF SIGNAL
+// =================================
+
 
 // =================================
 // EXTRACT SELF SIGNAL
+//
+// Day 15 tiny patch:
+//
+// Observe current experience only.
+// Do not let memory/wisdom history
+// create false self changes.
 // =================================
 
 
@@ -249,15 +255,51 @@ experience={}
 
 
 
+// Look only at the event itself,
+// not attached wisdom or memories.
+
+
+const currentExperience =
+
+experience.experience ||
+
+experience.raw ||
+
+experience.event ||
+
+experience;
+
+
+
+
+
+
 const text =
 
 JSON.stringify(
 
-experience
+currentExperience
 
 )
 
 .toLowerCase();
+
+
+
+
+
+
+const importance =
+
+currentExperience.importance ||
+
+currentExperience.score ||
+
+currentExperience.raw?.importance ||
+
+0.3;
+
+
 
 
 
@@ -281,14 +323,19 @@ return {
 type:"ADAPTATION",
 
 
+
 direction:
 
 "Become more careful in similar situations",
 
 
+
+importance,
+
+
 source:
 
-experience,
+currentExperience,
 
 
 createdAt:
@@ -327,14 +374,19 @@ return {
 type:"STRENGTH",
 
 
+
 direction:
 
 "Recognize effective behaviour",
 
 
+
+importance,
+
+
 source:
 
-experience,
+currentExperience,
 
 
 createdAt:
@@ -373,14 +425,19 @@ return {
 type:"PATTERN",
 
 
+
 direction:
 
 "Repeated behaviour detected",
 
 
+
+importance,
+
+
 source:
 
-experience,
+currentExperience,
 
 
 createdAt:
@@ -401,12 +458,17 @@ new Date()
 
 
 
-
 return null;
 
 
 
 }
+
+
+
+
+
+
 
 
 // =================================
@@ -439,6 +501,7 @@ pattern.direction === signal.direction
 
 
 
+
 // ===============================
 // NEW PATTERN
 // ===============================
@@ -460,9 +523,11 @@ id:
 this.createId(),
 
 
+
 type:
 
 signal.type,
+
 
 
 direction:
@@ -470,7 +535,15 @@ direction:
 signal.direction,
 
 
+
 strength:1,
+
+
+
+importance:
+
+signal.importance,
+
 
 
 evidence:[
@@ -480,14 +553,13 @@ signal.source
 ],
 
 
+
 createdAt:
 
 new Date()
 
 
 };
-
-
 
 
 
@@ -512,12 +584,6 @@ existing
 
 
 
-
-// ===============================
-// STRENGTHEN EXISTING
-// ===============================
-
-
 else{
 
 
@@ -526,12 +592,23 @@ existing.strength++;
 
 
 
+existing.importance =
+
+Math.max(
+
+existing.importance,
+
+signal.importance
+
+);
+
+
+
 existing.evidence.push(
 
 signal.source
 
 );
-
 
 
 
@@ -550,16 +627,22 @@ new Date();
 
 
 
-
-
 // ===============================
-// PROMOTE TO STABLE SELF
+// PROMOTION GATE
+//
+// Day 15 patch 🔒
 // ===============================
 
 
 if(
 
-existing.strength >= 3
+existing.strength >= 3 &&
+
+this.hasEnoughEvidence(
+
+existing
+
+)
 
 ){
 
@@ -584,6 +667,55 @@ existing
 
 
 return existing;
+
+
+
+}
+
+
+// =================================
+// EVIDENCE CHECK
+//
+// Prevent weak self formation
+// =================================
+
+
+hasEnoughEvidence(
+
+pattern
+
+){
+
+
+
+const strongEvidence =
+
+pattern.evidence.filter(
+
+event =>
+
+(
+
+event.importance ||
+
+event.score ||
+
+0
+
+) >= 0.6
+
+);
+
+
+
+
+
+
+return (
+
+strongEvidence.length >= 2
+
+);
 
 
 
@@ -687,12 +819,29 @@ stable
 this.self.changes.push({
 
 
-type:"SELF_PATTERN_FORMED",
+
+type:
+
+"SELF_PATTERN_FORMED",
+
 
 
 pattern:
 
 stable.direction,
+
+
+
+strength:
+
+stable.strength,
+
+
+
+evidenceCount:
+
+stable.evidence.length,
+
 
 
 createdAt:
@@ -719,7 +868,6 @@ stable.direction
 
 
 
-
 }
 
 
@@ -735,7 +883,9 @@ stable.direction
 // =================================
 // ACCEPT EVOLUTION
 //
-// Called by EmmaEvolution v2
+// Called by EmmaEvolution
+//
+// Day 15 protection added
 // =================================
 
 
@@ -750,6 +900,7 @@ evolution={}
 
 
 
+
 if(
 
 !evolution.change
@@ -757,10 +908,105 @@ if(
 ){
 
 
+
 return null;
 
 
+
 }
+
+
+
+
+
+
+
+
+
+// safety gate
+
+if(
+
+this.isUnsafeEvolution(
+
+evolution
+
+)
+
+){
+
+
+
+
+
+const rejected = {
+
+
+evolution,
+
+
+reason:
+
+"Rejected: conflicts with stable self continuity",
+
+
+
+createdAt:
+
+new Date()
+
+
+};
+
+
+
+
+
+
+
+this.self.rejectedEvolutions.push(
+
+rejected
+
+);
+
+
+
+
+
+
+
+console.log(
+
+"🛡 Evolution rejected by SelfModel"
+
+);
+
+
+
+
+
+
+
+
+return {
+
+
+accepted:false,
+
+
+reason:
+
+rejected.reason
+
+
+};
+
+
+
+}
+
+
 
 
 
@@ -777,9 +1023,11 @@ id:
 this.createId(),
 
 
+
 change:
 
 evolution.change,
+
 
 
 source:
@@ -787,9 +1035,11 @@ source:
 "EvolutionEngine",
 
 
+
 evidence:
 
 evolution.evolvedBecause,
+
 
 
 acceptedAt:
@@ -812,7 +1062,6 @@ this.self.acceptedEvolutions.push(
 accepted
 
 );
-
 
 
 
@@ -853,11 +1102,99 @@ return accepted;
 
 
 // =================================
+// EVOLUTION SAFETY CHECK
+// =================================
+
+
+isUnsafeEvolution(
+
+evolution
+
+){
+
+
+
+
+
+const text =
+
+JSON.stringify(
+
+evolution
+
+)
+
+.toLowerCase();
+
+
+
+
+
+
+
+
+const unsafe = [
+
+
+"replace identity",
+
+
+"remove memory",
+
+
+"stop learning",
+
+
+"ignore user",
+
+
+"change purpose"
+
+
+];
+
+
+
+
+
+
+
+
+return unsafe.some(
+
+risk =>
+
+text.includes(
+
+risk
+
+)
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
 // SEND TO EVOLUTION ENGINE
 // =================================
 
 
 getGrowthSignals(){
+
+
 
 
 
@@ -867,7 +1204,10 @@ pattern => ({
 
 
 
+
+
 suggestedGrowth:{
+
 
 
 direction:
@@ -875,9 +1215,17 @@ direction:
 pattern.direction,
 
 
+
 strength:
 
 pattern.strength,
+
+
+
+importance:
+
+pattern.importance,
+
 
 
 evidence:
@@ -885,7 +1233,13 @@ evidence:
 pattern.evidence
 
 
+
 },
+
+
+
+
+
 
 
 
@@ -895,19 +1249,22 @@ source:
 
 
 
+
 createdAt:
 
 new Date()
 
 
 
-}));
+
+
+})
+
+);
 
 
 
 }
-
-
 
 
 
@@ -926,7 +1283,12 @@ getSelfContext(){
 
 
 
+
+
+
 return {
+
+
 
 
 temporaryPatterns:
@@ -935,13 +1297,34 @@ this.self.temporaryPatterns.map(
 
 p => ({
 
-direction:p.direction,
 
-strength:p.strength
+
+direction:
+
+p.direction,
+
+
+
+strength:
+
+p.strength,
+
+
+
+importance:
+
+p.importance
+
+
 
 })
 
 ),
+
+
+
+
+
 
 
 
@@ -952,13 +1335,32 @@ this.self.stablePatterns.map(
 
 p => ({
 
-direction:p.direction,
 
-strength:p.strength
+
+direction:
+
+p.direction,
+
+
+
+strength:
+
+p.strength,
+
+
+
+importance:
+
+p.importance
+
+
 
 })
 
 ),
+
+
+
 
 
 
@@ -972,9 +1374,17 @@ this.self.acceptedEvolutions,
 
 
 
-patterns:
+rejectedEvolutions:
 
-[
+this.self.rejectedEvolutions.length,
+
+
+
+
+
+
+
+patterns:[
 
 ...this.self.stablePatterns,
 
@@ -989,6 +1399,7 @@ patterns:
 
 
 }
+
 
 
 
@@ -1018,11 +1429,14 @@ this.self.stablePatterns.length === 0
 
 
 
+
+
 return (
 
-"Emma is still observing experiences before defining patterns."
+"Emma is still observing experiences before defining stable patterns."
 
 );
+
 
 
 
@@ -1039,6 +1453,7 @@ return (
 return {
 
 
+
 formedPatterns:
 
 this.self.stablePatterns.map(
@@ -1049,15 +1464,25 @@ p => p.direction
 
 
 
+
 evolutionsAccepted:
 
 this.self.acceptedEvolutions.length,
 
 
 
+
+evolutionsRejected:
+
+this.self.rejectedEvolutions.length,
+
+
+
+
 changes:
 
 this.self.changes.length
+
 
 
 
@@ -1085,6 +1510,8 @@ createId(){
 
 
 
+
+
 if(
 
 typeof crypto !== "undefined"
@@ -1097,11 +1524,15 @@ crypto.randomUUID
 
 
 
+
+
 return crypto.randomUUID();
 
 
 
+
 }
+
 
 
 
@@ -1144,7 +1575,12 @@ status(){
 
 
 
+
+
+
 return {
+
+
 
 
 organ:
@@ -1152,14 +1588,20 @@ organ:
 "EmmaSelfModel",
 
 
+
+
 version:
 
-"v2",
+"v2.5",
+
+
 
 
 role:
 
-"Emerging self awareness",
+"Stable emerging self awareness",
+
+
 
 
 state:
@@ -1167,9 +1609,13 @@ state:
 "OBSERVING",
 
 
+
+
 temporaryPatterns:
 
 this.self.temporaryPatterns.length,
+
+
 
 
 stablePatterns:
@@ -1177,19 +1623,34 @@ stablePatterns:
 this.self.stablePatterns.length,
 
 
+
+
 evolutions:
 
 this.self.acceptedEvolutions.length,
 
 
+
+
+rejectedEvolutions:
+
+this.self.rejectedEvolutions.length,
+
+
+
+
 principle:
 
-"Self is discovered from patterns, not declared.",
+"One event informs me. Repeated evidence shapes me.",
+
+
 
 
 message:
 
-"I watch what experience shapes me into."
+"I grow carefully without losing continuity."
+
+
 
 
 
@@ -1197,7 +1658,9 @@ message:
 
 
 
+
 }
+
 
 
 
@@ -1216,24 +1679,38 @@ reset(){
 
 
 
+
+
 this.self.temporaryPatterns=[];
+
 
 
 this.self.stablePatterns=[];
 
 
+
 this.self.acceptedEvolutions=[];
+
+
+
+this.self.rejectedEvolutions=[];
+
 
 
 this.self.changes=[];
 
 
 
+
+
 }
 
 
 
+
+
 }
+
 
 
 

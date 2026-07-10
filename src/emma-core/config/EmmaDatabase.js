@@ -502,37 +502,82 @@ return data;
 // ======================================
 
 
-async getMemories(context){
+// ======================================
+// LOAD MEMORIES
+//
+// Day 15 Scaling Patch
+//
+// Database filters first.
+// Emma thinks second.
+// ======================================
+
+
+async getMemories(context={}){
 
 
 
-let userId=null;
+let userId = null;
 
-let businessId=null;
+let businessId = null;
+
+let limit = 50;
+
+let importantOnly = false;
 
 
 
 
 
-// support old + new calling style
 
-if(typeof context==="object"){
+// support old + new style
+
+
+if(
+
+typeof context === "object"
+
+){
 
 
 userId =
-context.userId || null;
+
+context.userId ||
+
+null;
+
 
 
 businessId =
-context.businessId || null;
+
+context.businessId ||
+
+null;
+
+
+
+limit =
+
+context.limit ||
+
+50;
+
+
+
+importantOnly =
+
+context.importantOnly ||
+
+false;
+
 
 
 }
 
+
 else{
 
 
-businessId=context;
+businessId = context;
 
 
 }
@@ -546,14 +591,22 @@ businessId=context;
 
 console.log(
 
-"🔎 Loading Emma memories:",
+"🔎 Loading focused Emma memories:",
 
 {
+
 userId,
-businessId
+
+businessId,
+
+limit,
+
+importantOnly
+
 }
 
 );
+
 
 
 
@@ -566,20 +619,38 @@ let query =
 
 supabase
 
-.from("emma_memory")
+.from(
 
-.select("*");
+"emma_memory"
+
+)
+
+.select(
+
+"*"
+
+);
 
 
 
 
 
+
+
+
+
+// ==========================
+// OWNER FILTER FIRST
+// ==========================
 
 
 if(userId){
 
 
-query = query.eq(
+
+query =
+
+query.eq(
 
 "owner_id",
 
@@ -588,14 +659,20 @@ userId
 );
 
 
+
 }
 
 
-else if(businessId){
 
 
 
-query=query.eq(
+if(businessId){
+
+
+
+query =
+
+query.eq(
 
 "business_id",
 
@@ -604,6 +681,7 @@ businessId
 );
 
 
+
 }
 
 
@@ -613,17 +691,85 @@ businessId
 
 
 
-const {data,error}=
 
-await query.order(
+// ==========================
+// IMPORTANT FILTER
+// ==========================
+
+
+if(
+
+importantOnly
+
+){
+
+
+
+query =
+
+query.in(
+
+"importance",
+
+[
+
+"high",
+
+"critical"
+
+]
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ==========================
+// LIMIT BEFORE RETURN
+// ==========================
+
+
+const {
+
+data,
+
+error
+
+}=
+
+await query
+
+
+.order(
 
 "created_at",
 
 {
+
 ascending:false
+
 }
 
+)
+
+
+.limit(
+
+limit
+
 );
+
+
 
 
 
@@ -659,9 +805,11 @@ return [];
 
 
 
+
+
 console.log(
 
-"📚 DB memories found:",
+"📚 Focused memories found:",
 
 data?.length || 0
 
@@ -682,14 +830,15 @@ data || []
 
 .map(
 
-row=>this.convertMemory(row)
+row =>
+
+this.convertMemory(row)
 
 );
 
 
 
 },
-
 
 
 

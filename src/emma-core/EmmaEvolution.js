@@ -2,7 +2,7 @@
 //
 // PROJECT BECOMING
 //
-// Emma Evolution Engine v3.1
+// Emma Evolution Engine v3.3
 //
 // Evolution is becoming.
 //
@@ -17,11 +17,12 @@
 // SelfModel observes.
 // Evolution changes slowly.
 //
-// v3.1 PATCH:
-// - Removed hardcoded evolution limits
-// - Adaptive maturity
-// - Context aware thresholds
-// - Different experiences require different proof
+// v3.3 PATCH:
+// - Learning v4 bridge
+// - Meaning based evolution
+// - Preserves WHY change happened
+// - Evidence aware growth
+// - Prevents shallow evolution
 //
 
 
@@ -40,32 +41,22 @@ wisdom=null
 
 
 console.log(
-"🌱 Emma Evolution v3.1 awakened"
+"🌱 Emma Evolution v3.3 awakened"
 );
 
 
+this.identity = identity;
 
-this.identity =
-identity;
+this.selfModel = selfModel;
 
-
-this.selfModel =
-selfModel;
-
-
-this.wisdom =
-wisdom;
+this.wisdom = wisdom;
 
 
 
-
-// =================================
+// ================================
 // ADAPTIVE EVOLUTION RULES
-// =================================
-//
-// Not every change deserves
-// same evidence.
-//
+// ================================
+
 
 this.evolutionRules = {
 
@@ -89,8 +80,14 @@ confidence:80
 
 
 WISDOM_PATTERN:{
-evidence:25,
+evidence:20,
 confidence:85
+},
+
+
+BEHAVIOR_CHANGE:{
+evidence:10,
+confidence:80
 },
 
 
@@ -111,21 +108,16 @@ confidence:80
 
 
 
-// compressed evolution signals
-
 this.signals =
 new Map();
 
 
 
-
-// permanent evolution history
-
-this.history = [];
+this.history=[];
 
 
 
-this.cycles = 0;
+this.cycles=0;
 
 
 }
@@ -138,9 +130,9 @@ this.cycles = 0;
 
 
 
-// =================================
+// ================================
 // MAIN EVOLUTION LOOP
-// =================================
+// ================================
 
 
 async evolve(input={}){
@@ -157,8 +149,6 @@ this.cycles++;
 
 
 
-// collect possible changes
-
 const signals =
 this.extractSignals(
 input
@@ -167,8 +157,6 @@ input
 
 
 
-// compress evidence
-
 this.collectSignals(
 signals
 );
@@ -176,7 +164,6 @@ signals
 
 
 
-// check maturity
 
 const mature =
 this.findMatureSignals();
@@ -192,22 +179,19 @@ mature.length === 0
 
 return {
 
-
 evolved:false,
 
-
 reason:
-"Growth noticed. More experience required.",
-
+"Growth noticed. More life required.",
 
 pendingSignals:
 this.signals.size
-
 
 };
 
 
 }
+
 
 
 
@@ -221,18 +205,16 @@ mature
 
 
 
+
 return {
 
 
 evolved:true,
 
-
 changes,
 
-
 message:
-"Adaptive evidence created stable evolution."
-
+"Experience changed Emma."
 
 };
 
@@ -247,9 +229,10 @@ message:
 
 
 
-// =================================
-// EXTRACT EVOLUTION SIGNALS
-// =================================
+
+// ================================
+// EXTRACT SIGNALS
+// ================================
 
 
 extractSignals(input={}){
@@ -261,7 +244,9 @@ const signals=[];
 
 
 
-// SELF MODEL
+// ================================
+// SELF MODEL / LEARNING v4 BRIDGE
+// ================================
 
 
 if(
@@ -271,13 +256,17 @@ input.selfGrowthSignals
 ){
 
 
+
 input.selfGrowthSignals.forEach(
 
 signal=>{
 
 
+
 const growth =
 signal.suggestedGrowth;
+
+
 
 
 
@@ -290,41 +279,61 @@ growth?.direction
 signals.push({
 
 
+
 type:
-"SELF_PATTERN",
+"BEHAVIOR_CHANGE",
+
 
 
 change:
 growth.direction,
 
 
+
+reason:
+growth.reason || null,
+
+
+
+evidence:
+growth.evidence || 1,
+
+
+
 strength:
 growth.confidence || 30,
+
 
 
 source:
 signal
 
 
-});
-
-
-}
-
 
 });
+
 
 
 }
 
 
 
+});
+
+
+}
 
 
 
 
 
+
+
+
+
+// ================================
 // WISDOM
+// ================================
 
 
 if(
@@ -349,7 +358,16 @@ type:
 
 
 change:
+wisdom.principle ||
 wisdom.lesson,
+
+
+reason:
+wisdom.lesson,
+
+
+evidence:
+wisdom.evidence || 1,
 
 
 strength:
@@ -376,48 +394,78 @@ wisdom
 
 
 
-// REFLECTION
+
+// ================================
+// DIRECT EXPERIENCE
+// ================================
 
 
 if(
-input.reflection?.identityChanges
+input.experience
 ){
 
 
 
-input.reflection
-.identityChanges
-.forEach(
+const exp =
+input.experience;
 
-change=>{
+
+
+
+if(
+
+exp.type === "FAILURE_EVENT" ||
+
+exp.type === "SUCCESS_EVENT" ||
+
+exp.type === "DISCOVERY_EVENT" ||
+
+exp.type === "CONFLICT_EVENT"
+
+){
+
 
 
 signals.push({
 
 
 type:
-"SELF_PATTERN",
+exp.type,
 
 
 change:
-change.identityShift,
+exp.lesson ||
+exp.pattern ||
+exp.message ||
+exp.type,
+
+
+reason:
+exp.reason || null,
+
+
+evidence:
+1,
 
 
 strength:
-60,
+exp.importance || 50,
 
 
 source:
-change
+exp
 
 
 });
 
-
-});
 
 
 }
+
+
+
+}
+
 
 
 
@@ -438,9 +486,126 @@ return signals;
 
 
 
-// =================================
+
+// ================================
+// EVOLUTION QUALITY GATE
+// ================================
+
+
+isEvolutionWorthy(signal){
+
+
+
+if(
+!signal ||
+!signal.change
+){
+
+return false;
+
+}
+
+
+
+
+const text =
+JSON.stringify(signal)
+.toLowerCase();
+
+
+
+
+
+if(
+
+text.includes("noise") ||
+
+text.includes("meaningless")
+
+){
+
+return false;
+
+}
+
+
+
+
+
+
+
+// Learning v4 meaningful changes
+
+
+if(
+signal.type === "BEHAVIOR_CHANGE"
+){
+
+return (
+signal.strength >= 40
+);
+
+}
+
+
+
+
+
+
+if(
+
+signal.type === "WISDOM_PATTERN"
+
+){
+
+return true;
+
+}
+
+
+
+
+
+
+
+if(
+
+signal.type === "FAILURE_EVENT" ||
+
+signal.type === "SUCCESS_EVENT" ||
+
+signal.type === "DISCOVERY_EVENT" ||
+
+signal.type === "CONFLICT_EVENT"
+
+){
+
+return true;
+
+}
+
+
+
+
+
+
+
+return false;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================
 // SIGNAL COMPRESSION
-// =================================
+// ================================
 
 
 collectSignals(signals=[]){
@@ -451,18 +616,38 @@ signals.forEach(signal=>{
 
 
 
-if(!signal.change){
+
+
+if(
+!this.isEvolutionWorthy(signal)
+){
+
+
+console.log(
+
+"🍃 Evolution ignored:",
+
+signal?.change
+
+);
+
 
 return;
+
 
 }
 
 
 
 
+
+
 const key =
-String(signal.change)
+String(
+signal.change
+)
 .toLowerCase();
+
 
 
 
@@ -483,6 +668,10 @@ key,
 
 change:
 signal.change,
+
+
+reason:
+signal.reason,
 
 
 type:
@@ -518,6 +707,8 @@ lastSeen:null
 
 
 
+
+
 const stored =
 this.signals.get(key);
 
@@ -525,7 +716,8 @@ this.signals.get(key);
 
 
 
-stored.evidence++;
+stored.evidence +=
+signal.evidence || 1;
 
 
 
@@ -539,10 +731,14 @@ Math.min(
 stored.confidence +
 
 Math.round(
+
 signal.strength / 5
+
 )
 
 );
+
+
 
 
 
@@ -570,15 +766,22 @@ new Date();
 
 
 
+
 console.log(
 
 "🌱 Evolution evidence:",
 
 stored.change,
 
+"| because:",
+
+stored.reason,
+
+"| evidence:",
+
 stored.evidence,
 
-"confidence:",
+"| confidence:",
 
 stored.confidence
 
@@ -592,55 +795,32 @@ stored.confidence
 }
 
 
-// =================================
+
+
+
+// ================================
 // FIND MATURE EVOLUTIONS
-//
-// Adaptive maturity.
-// No hardcoded global numbers.
-// =================================
+// ================================
 
 
 findMatureSignals(){
 
 
-
-const mature = [];
-
-
+const mature=[];
 
 
 
 for(
-
-const [
-
-key,
-
-signal
-
-] of this.signals
-
+const [key,signal]
+of this.signals
 ){
 
 
 
-
-
-
-
 const requirements =
-
 this.getEvolutionRequirement(
-
 signal
-
 );
-
-
-
-
-
-
 
 
 
@@ -653,20 +833,18 @@ signal.change,
 {
 
 evidence:
-
 signal.evidence +
-
 "/" +
-
 requirements.evidence,
 
+
 confidence:
-
 signal.confidence +
-
 "/" +
+requirements.confidence,
 
-requirements.confidence
+reason:
+signal.reason
 
 }
 
@@ -677,112 +855,51 @@ requirements.confidence
 
 
 
-
-
-
-// ===============================
-// EVIDENCE CHECK
-// ===============================
-
-
 if(
-
 signal.evidence <
-
 requirements.evidence
-
 ){
 
-
-
 continue;
-
-
 
 }
 
 
 
 
-
-
-
-
-
-// ===============================
-// CONFIDENCE CHECK
-// ===============================
-
-
 if(
-
 signal.confidence <
-
 requirements.confidence
-
 ){
 
-
-
 continue;
-
-
 
 }
 
 
 
-
-
-
-
-
-
-// ===============================
-// DUPLICATE CHECK
-// ===============================
 
 
 if(
-
 this.alreadyEvolved(
-
 signal.change
-
 )
-
 ){
-
-
 
 continue;
 
-
-
 }
-
-
-
-
-
 
 
 
 
 
 mature.push(
-
 signal
-
 );
 
 
-
-
 }
-
-
-
 
 
 
@@ -791,7 +908,6 @@ signal
 return mature;
 
 
-
 }
 
 
@@ -802,70 +918,38 @@ return mature;
 
 
 
-// =================================
-// GET ADAPTIVE REQUIREMENT
-// =================================
+
+// ================================
+// ADAPTIVE REQUIREMENTS
+// ================================
 
 
-getEvolutionRequirement(
-
-signal
-
-){
+getEvolutionRequirement(signal){
 
 
-
-
-
-// direct type match
 
 if(
-
 this.evolutionRules[
-
 signal.type
-
 ]
-
 ){
 
-
-
 return this.evolutionRules[
-
 signal.type
-
 ];
 
-
-
 }
-
-
-
-
 
 
 
 
 const text =
-
-JSON.stringify(
-
-signal
-
-)
-
+JSON.stringify(signal)
 .toLowerCase();
 
 
 
 
-
-
-
-
-// mistakes should teach faster
 
 if(
 
@@ -873,78 +957,39 @@ text.includes("fail") ||
 
 text.includes("mistake") ||
 
-text.includes("danger") ||
-
-text.includes("risk")
+text.includes("wrong")
 
 ){
 
-
-
 return this.evolutionRules
-
 .FAILURE_PATTERN;
-
-
 
 }
 
 
 
-
-
-
-
-
-
-// safety matters quickly
 
 if(
 
 text.includes("safe") ||
 
-text.includes("protect") ||
+text.includes("avoid") ||
 
-text.includes("avoid")
+text.includes("protect")
 
 ){
 
-
-
 return this.evolutionRules
-
 .SAFETY;
 
-
-
 }
 
 
-
-
-
-
-
-
-
-// preferences need more proof
-
-if(
-
-text.includes("like") ||
-
-text.includes("prefer") ||
-
-text.includes("style")
-
-){
 
 
 
 return this.evolutionRules
-
-.PREFERENCE;
-
+.DEFAULT;
 
 
 }
@@ -958,47 +1003,18 @@ return this.evolutionRules
 
 
 
-return this.evolutionRules.DEFAULT;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
+// ================================
 // DUPLICATE PROTECTION
-// =================================
+// ================================
 
 
-alreadyEvolved(
-
-change
-
-){
-
-
+alreadyEvolved(change){
 
 
 
 const key =
-
-String(
-
-change
-
-)
-
+String(change)
 .toLowerCase();
-
-
-
 
 
 
@@ -1008,11 +1024,8 @@ return this.history.some(
 item =>
 
 String(
-
 item.change
-
 )
-
 .toLowerCase()
 
 ===
@@ -1020,7 +1033,6 @@ item.change
 key
 
 );
-
 
 
 }
@@ -1035,19 +1047,16 @@ key
 
 
 
-// =================================
+// ================================
 // APPLY EVOLUTION
-// =================================
+//
+// Evolution proposes.
+// SelfModel accepts.
+// Identity integrates.
+// ================================
 
 
-async applyEvolution(
-
-changes=[]
-
-){
-
-
-
+async applyEvolution(changes=[]){
 
 
 
@@ -1057,13 +1066,8 @@ const completed=[];
 
 
 
-
-
-
 for(
-
 const change of changes
-
 ){
 
 
@@ -1071,50 +1075,46 @@ const change of changes
 
 
 
-
-
-const evolution = {
+const evolution={
 
 
 
 id:
-
 this.createId(),
 
 
 
 change:
-
 change.change,
 
 
 
-type:
+reason:
+change.reason,
 
+
+
+type:
 change.type,
 
 
 
 evidenceCount:
-
 change.evidence,
 
 
 
 confidence:
-
 change.confidence,
 
 
 
 basedOn:
-
 change.sources,
 
 
 
 createdAt:
-
 new Date()
 
 
@@ -1129,30 +1129,55 @@ new Date()
 
 
 
+// ================================
+// SELFMODEL SAFETY CHECK
+// ================================
 
-// ===============================
-// SELF MODEL ACCEPTANCE
-// ===============================
+
+let accepted=true;
+
+
+
 
 
 if(
-
 this.selfModel?.acceptEvolution
-
 ){
 
 
 
-
-
+const result =
 await this.selfModel
-
 .acceptEvolution(
-
 evolution
+);
+
+
+
+
+
+if(
+result?.accepted === false
+){
+
+
+
+accepted=false;
+
+
+
+
+console.log(
+
+"🛡 Evolution rejected:",
+
+evolution.change
 
 );
 
+
+
+}
 
 
 
@@ -1165,30 +1190,61 @@ evolution
 
 
 
+if(!accepted){
 
-// ===============================
-// IDENTITY ACCEPTANCE
-// ===============================
+
+
+this.history.push({
+
+
+...evolution,
+
+
+rejected:true,
+
+
+reasonRejected:
+"Rejected by SelfModel",
+
+
+rejectedAt:
+new Date()
+
+
+});
+
+
+
+
+continue;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ================================
+// IDENTITY INTEGRATION
+// ================================
 
 
 if(
-
 this.identity?.integrateEvolution
-
 ){
-
-
 
 
 
 await this.identity
-
 .integrateEvolution(
-
 evolution
-
 );
-
 
 
 
@@ -1203,30 +1259,20 @@ evolution
 
 
 
+// ================================
+// STORE PERMANENT CHANGE
+// ================================
+
 
 this.history.push(
-
 evolution
-
 );
-
-
-
-
-
-
 
 
 
 completed.push(
-
 evolution
-
 );
-
-
-
-
 
 
 
@@ -1235,9 +1281,13 @@ evolution
 
 console.log(
 
-"🌱 Permanent evolution:",
+"🧬 Permanent evolution:",
 
-evolution.change
+evolution.change,
+
+"| because:",
+
+evolution.reason
 
 );
 
@@ -1248,39 +1298,22 @@ evolution.change
 
 
 
-
-// remove matured signal
-
-
 const key =
-
 String(
-
 change.change
-
 )
-
 .toLowerCase();
 
 
 
 
 this.signals.delete(
-
 key
-
 );
 
 
 
-
-
-
 }
-
-
-
-
 
 
 
@@ -1289,7 +1322,6 @@ key
 return completed;
 
 
-
 }
 
 
@@ -1300,35 +1332,27 @@ return completed;
 
 
 
-// =================================
+
+// ================================
 // HISTORY
-// =================================
+// ================================
 
 
 getEvolutionHistory(){
 
 
-
-
-
 return {
 
 
-
 total:
-
 this.history.length,
 
 
-
 history:
-
 this.history
 
 
-
 };
-
 
 
 }
@@ -1342,14 +1366,12 @@ this.history
 
 
 
-// =================================
-// CURRENT EVOLUTION STATE
-// =================================
+// ================================
+// CURRENT EVOLUTION
+// ================================
 
 
 getCurrentEvolution(){
-
-
 
 
 
@@ -1360,31 +1382,31 @@ item=>({
 
 
 change:
-
 item.change,
 
 
 
-type:
+reason:
+item.reason,
 
+
+
+type:
 item.type,
 
 
 
 confidence:
-
 item.confidence,
 
 
 
 evidence:
-
 item.evidenceCount,
 
 
 
 since:
-
 item.createdAt
 
 
@@ -1406,14 +1428,12 @@ item.createdAt
 
 
 
-// =================================
+// ================================
 // HELPERS
-// =================================
+// ================================
 
 
 createId(){
-
-
 
 
 
@@ -1440,7 +1460,6 @@ return crypto.randomUUID();
 
 
 
-
 return (
 
 Date.now()
@@ -1456,7 +1475,6 @@ Math.random()
 );
 
 
-
 }
 
 
@@ -1467,87 +1485,56 @@ Math.random()
 
 
 
-// =================================
+
+// ================================
 // STATUS
-// =================================
+// ================================
 
 
 status(){
 
 
 
-
-
 return {
 
 
-
 organ:
-
 "EmmaEvolution",
 
 
-
 version:
-
-"v3.1",
-
+"v3.3",
 
 
 role:
-
-"Adaptive becoming",
-
+"Becoming through lived evidence",
 
 
 state:
-
 "STABLE",
 
 
-
 cycles:
-
 this.cycles,
 
 
-
 compressedSignals:
-
 this.signals.size,
 
 
-
 completedEvolutions:
-
 this.history.length,
 
 
-
-rules:
-
-Object.keys(
-
-this.evolutionRules
-
-),
-
-
-
 principle:
-
-"Different experiences require different proof.",
-
+"Emma changes because experience created understanding.",
 
 
 message:
-
-"I change slowly, but not blindly."
-
+"I remember why I became this way."
 
 
 };
-
 
 
 }
@@ -1560,24 +1547,19 @@ message:
 
 
 
-
-// =================================
+// ================================
 // RESET
-// =================================
+// ================================
 
 
 reset(){
 
 
 
-
-
 this.signals.clear();
 
 
-
 this.history=[];
-
 
 
 this.cycles=0;
@@ -1589,7 +1571,6 @@ this.cycles=0;
 
 
 }
-
 
 
 
