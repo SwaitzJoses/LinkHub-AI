@@ -2,50 +2,25 @@
 //
 // PROJECT BECOMING
 //
-// FAST LIFE SIMULATION
+// Emma Life Simulation Test v5
 //
 // Tests:
+//
 // Experience
 // → Memory
-// → Wisdom
-// → SelfModel
 // → Learning
+// → Wisdom
 // → Evolution
+// → ExpressionState
+// → Communication
 //
 // Goal:
-// Can experience change Emma?
+// See if Emma's presence changes over time.
 //
 
 
-import Emma from "../Emma";
-
-
-
-
-// =================================
-// SETTINGS
-// =================================
-
-
-const FAST_MODE = true;
-
-
-const WAIT_TIME =
-FAST_MODE ? 10 : 1000;
-
-
-
-
-function sleep(ms){
-
-return new Promise(
-resolve => setTimeout(resolve, ms)
-);
-
-}
-
-
-
+import Emma
+from "../Emma";
 
 
 
@@ -57,196 +32,165 @@ resolve => setTimeout(resolve, ms)
 // =================================
 
 
-const life = [
-
+const lifeEvents = [
 
 
 {
+
 day:1,
 
 type:"PROJECT_START",
 
-message:
-"Emma project begins. A new journey starts.",
+description:
+"Emma begins experiencing the world.",
 
-importance:80
+importance:90
+
 },
 
 
 
 
-
 {
+
 day:5,
 
 type:"SMALL_PROGRESS",
 
-message:
-"Consistent effort created small progress.",
+description:
+"A small improvement happened.",
 
-importance:60
+importance:50
+
 },
 
 
 
 
-
-
-
-// ===============================
-// FAILURE PATTERN
-// ===============================
-
-
 {
+
 day:10,
 
 type:"FEATURE_FAILURE",
 
-success:false,
+description:
+"A feature failed because it was built before enough understanding.",
 
-message:
-"Feature failed because action happened too quickly without enough understanding.",
+importance:90
 
-importance:95
 },
 
 
 
 
 {
+
 day:20,
 
 type:"FEATURE_FAILURE",
 
-success:false,
+description:
+"The same failure pattern appeared again.",
 
-message:
-"Again a feature failed because decisions were rushed.",
+importance:90
 
-importance:95
 },
 
 
 
 
-
 {
+
 day:30,
 
 type:"REPEATED_FAILURE",
 
-success:false,
-
-message:
-"The same mistake appeared again. Moving fast without reflection created problems.",
+description:
+"Repeated failure shows a pattern.",
 
 importance:100
+
 },
 
 
 
 
-
-
-
-
-// ===============================
-// REFLECTION
-// ===============================
-
-
 {
+
 day:45,
 
 type:"REFLECTION",
 
-message:
-"Emma notices repeated failures and searches for the deeper cause.",
+description:
+"Emma reflects on previous experiences.",
 
-importance:90
+importance:80
+
 },
 
 
 
 
-
-
-
-
-// ===============================
-// IMPROVED BEHAVIOUR
-// ===============================
-
-
 {
+
 day:60,
 
 type:"CUSTOMER_SUCCESS",
 
-success:true,
+description:
+"A real success creates new understanding.",
 
-message:
-"Better results happened after observing first and acting later.",
+importance:90
 
-importance:95
 },
 
 
 
 
-
 {
+
 day:80,
 
 type:"REPEATED_SUCCESS",
 
-success:true,
+description:
+"A successful pattern repeats.",
 
-message:
-"Patient decisions repeatedly created better outcomes.",
+importance:95
 
-importance:100
 },
 
 
 
 
-
-
-
-
-// ===============================
-// IDENTITY PRESSURE
-// ===============================
-
-
 {
+
 day:120,
 
 type:"SELF_REFLECTION",
 
-message:
-"Emma compares past behaviour with current understanding.",
+description:
+"Emma observes how she has changed.",
 
-importance:100
+importance:90
+
 },
 
 
 
 
-
 {
+
 day:160,
 
 type:"BECOMING_EVENT",
 
-message:
-"Emma recognizes that experience has changed future behaviour.",
+description:
+"Emma integrates accumulated experience.",
 
 importance:100
-}
 
+}
 
 
 ];
@@ -260,18 +204,17 @@ importance:100
 
 
 // =================================
-// RUN SIMULATION
+// RUN TEST
 // =================================
 
 
 async function runEmmaLifeSimulation(){
 
 
-
 console.log(
 `
 🌎 =============================
-🌱 EMMA FAST LIFE TEST STARTED
+🌱 EMMA LIFE TEST STARTED
 🌎 =============================
 `
 );
@@ -281,11 +224,8 @@ console.log(
 
 
 
-// Emma v10 wakes itself
-// Do NOT call emma.awake()
-
-
 const emma =
+
 new Emma();
 
 
@@ -293,11 +233,10 @@ new Emma();
 
 
 
-
-
-
 for(
-const event of life
+
+const event of lifeEvents
+
 ){
 
 
@@ -316,19 +255,61 @@ ${event.type}
 
 
 
-await emma.experience(
-event
+
+
+await emma.experience({
+
+
+type:
+
+event.type,
+
+
+description:
+
+event.description,
+
+
+importance:
+
+event.importance,
+
+
+source:
+
+"life_simulation"
+
+
+});
+
+
+
+
+
+
+
+
+
+// =================================
+// EXPRESSION STATE TEST 🎭
+//
+// This is the new check.
+// Does Emma's presence evolve?
+// =================================
+
+
+console.log(
+
+"🎭 Expression:",
+
+emma.expressionState.status()
+
 );
 
 
 
 
 
-
-
-await sleep(
-WAIT_TIME
-);
 
 
 
@@ -343,7 +324,7 @@ WAIT_TIME
 
 
 // =================================
-// FINAL REPORT
+// FINAL ORGAN STATUS
 // =================================
 
 
@@ -361,15 +342,14 @@ console.log(
 
 
 
+
 console.log(
 
 "🧠 Memory:",
 
-emma.memory?.status?.()
+emma.memory.status?.()
 
 );
-
-
 
 
 
@@ -380,11 +360,9 @@ console.log(
 
 "🌱 Wisdom:",
 
-emma.wisdom?.status?.()
+emma.wisdom.status?.()
 
 );
-
-
 
 
 
@@ -395,11 +373,9 @@ console.log(
 
 "📚 Learning:",
 
-emma.learning?.status?.()
+emma.learning.status?.()
 
 );
-
-
 
 
 
@@ -410,11 +386,35 @@ console.log(
 
 "🧬 Evolution:",
 
-emma.evolution?.status?.()
+emma.evolution.status?.()
 
 );
 
 
+
+
+
+
+console.log(
+
+"🎭 Final Expression:",
+
+emma.expressionState.status()
+
+);
+
+
+
+
+
+
+console.log(
+
+"💬 Communication:",
+
+emma.communication.status()
+
+);
 
 
 
@@ -425,15 +425,17 @@ console.log(
 
 "🌱 Evolution History:",
 
-emma.evolution
-?.getEvolutionHistory?.()
+emma.evolution.getHistory?.()
 
 );
 
 
 
 
+
+
 }
+
 
 
 
@@ -448,22 +450,4 @@ emma.evolution
 // =================================
 
 
-runEmmaLifeSimulation()
-
-.catch(
-
-error => {
-
-
-console.error(
-
-"❌ Test failed:",
-
-error
-
-);
-
-
-}
-
-);
+runEmmaLifeSimulation();

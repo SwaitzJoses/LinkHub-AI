@@ -2,40 +2,46 @@
 //
 // PROJECT BECOMING
 //
-// Emma Communication System v3
+// Emma Communication System v5
 //
-// Communication is expression.
+// The Expression Organ
+//
+// Communication converts becoming into words.
 //
 // RULE:
 //
 // Do not think.
 // Do not decide.
 // Do not learn.
-// Do not pretend.
+// Do not invent memories.
+// Do not create emotions.
 //
-// Memory gives history.
-// Wisdom gives lessons.
-// SelfModel gives becoming.
-// Reasoning gives meaning.
-//
-// Communication gives words.
+// ExpressionState shapes presence.
+// Communication shapes language.
 //
 
 
 class EmmaCommunication {
 
 
-constructor(){
+constructor({
+
+expressionState
+
+} = {}){
 
 
 console.log(
-"💬 Emma Communication v3 awakened"
+"💬 Emma Communication v5 awakened"
 );
 
 
-// Conversation rhythm only.
-// Not memory.
-// Not personality.
+this.expressionState =
+expressionState;
+
+
+// Rhythm history only.
+// No facts.
 
 this.voiceMemory = [];
 
@@ -59,57 +65,78 @@ async reply(context = {}){
 
 
 console.log(
-"💬 Emma expressing from experience..."
+"💬 Emma expressing becoming..."
 );
 
 
 
 
 
-const expression =
+// Let expression observe organism
 
-this.createExpression({
+const presence =
 
+this.expressionState
+?
 
-experience:
-
-context.experience,
-
+this.expressionState.observe({
 
 memory:
-
 context.memory,
 
-
 wisdom:
-
 context.wisdom,
 
-
 self:
-
 context.self,
 
+evolution:
+context.evolution,
+
+experience:
+context.experience
+
+})
+
+:
+
+null;
+
+
+
+
+
+
+
+const expressionContext =
+
+this.formExpressionContext({
+
+experience:
+context.experience,
+
+memory:
+context.memory,
+
+wisdom:
+context.wisdom,
+
+self:
+context.self,
 
 reasoning:
-
 context.reasoning,
 
-
 reflection:
-
 context.reflection,
 
-
 curiosity:
-
 context.curiosity,
 
-
 evolution:
+context.evolution,
 
-context.evolution
-
+presence
 
 });
 
@@ -117,11 +144,46 @@ context.evolution
 
 
 
-this.rememberVoice(
 
-expression
+
+
+const message =
+
+this.createExpression(
+
+expressionContext
 
 );
+
+
+
+
+
+
+
+const voiceState =
+
+this.createVoiceState(
+
+presence
+
+);
+
+
+
+
+
+
+
+this.rememberVoice(
+
+message,
+
+voiceState
+
+);
+
+
 
 
 
@@ -137,9 +199,7 @@ from:
 
 
 
-message:
-
-expression,
+message,
 
 
 
@@ -149,26 +209,38 @@ source:
 
 
 
+presence,
+
+
+
+voiceState,
+
+
+
 formedFrom:{
 
 
 memory:
-
 !!context.memory,
 
 
 wisdom:
-
 !!context.wisdom,
 
 
 self:
-
 !!context.self,
 
 
-reasoning:
+evolution:
+!!context.evolution,
 
+
+expressionState:
+!!this.expressionState,
+
+
+reasoning:
 !!context.reasoning
 
 
@@ -195,13 +267,12 @@ new Date()
 
 
 
-
 // =================================
-// CREATE EXPRESSION
+// BUILD EXPRESSION CONTEXT
 // =================================
 
 
-createExpression({
+formExpressionContext({
 
 experience,
 
@@ -215,68 +286,200 @@ reasoning,
 
 reflection,
 
-curiosity
+curiosity,
+
+evolution,
+
+presence
 
 }){
 
 
-let response = "";
+return {
+
+
+moment:
+
+experience || null,
 
 
 
+memoryEcho:
 
+this.findMemoryEcho(
 
-// =================================
-// SELF CONTINUITY 🧬
-// =================================
+memory,
 
+presence
 
-if(
-
-self?.currentSelf ||
-
-self?.identity
-
-){
-
-
-const selfText =
-
-self.currentSelf ||
-
-self.identity;
+),
 
 
 
-if(
+understanding:
 
-typeof selfText === "string"
+this.findUnderstanding({
 
-){
+wisdom,
+
+reflection,
+
+reasoning
+
+}),
 
 
-response +=
 
-selfText + " ";
+growth:
+
+this.findGrowth({
+
+self,
+
+evolution
+
+}),
+
+
+
+presence,
+
+
+
+curiosity:
+
+curiosity || null
+
+
+};
 
 
 }
 
 
 
+
+
+
+
+
+
+// =================================
+// MEMORY ECHO
+// =================================
+
+
+findMemoryEcho(
+
+memory,
+
+presence
+
+){
+
+
+if(!memory){
+
+return null;
+
+}
+
+
+
+// Young Emma does not over-reference
+
+
+if(
+
+presence &&
+
+presence.familiarity < 0.2
+
+){
+
+
+return null;
+
+
 }
 
 
 
 
 
+const memories =
+
+memory.memories ||
+
+memory.memory ||
+
+memory;
 
 
 
+
+
+if(
+
+Array.isArray(memories) &&
+
+memories.length > 0
+
+){
+
+
+const strongest =
+
+memories[0];
+
+
+
+return {
+
+
+available:
+
+true,
+
+
+message:
+
+strongest.meaning ||
+
+strongest.lesson ||
+
+strongest.event ||
+
+"I recognize a pattern from before."
+
+
+};
+
+
+}
+
+
+
+
+return null;
+
+
+}
 
 // =================================
-// REFLECTION
+// UNDERSTANDING
 // =================================
+
+
+findUnderstanding({
+
+wisdom,
+
+reflection,
+
+reasoning
+
+}){
 
 
 if(
@@ -286,81 +489,7 @@ reflection?.meaning
 ){
 
 
-response +=
-
-reflection.meaning + " ";
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// MEMORY CONTINUITY
-// =================================
-
-
-if(
-
-memory &&
-
-(
-
-memory.memory ||
-
-memory.memories ||
-
-memory.length > 0
-
-)
-
-){
-
-
-response +=
-
-"I recognize something connected from previous experience. ";
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// WISDOM EXPRESSION 🧘
-// =================================
-
-
-if(
-
-wisdom?.advice
-
-){
-
-
-
-if(
-
-wisdom.advice.reason
-
-){
-
-
-response +=
-
-wisdom.advice.reason + " ";
+return reflection.meaning;
 
 
 }
@@ -369,33 +498,16 @@ wisdom.advice.reason + " ";
 
 if(
 
-wisdom.advice.recommended
+wisdom?.advice?.reason
 
 ){
 
 
-response +=
-
-wisdom.advice.recommended + " ";
+return wisdom.advice.reason;
 
 
 }
 
-
-
-}
-
-
-
-
-
-
-
-
-
-// =================================
-// REASONING RESULT
-// =================================
 
 
 if(
@@ -405,25 +517,28 @@ reasoning?.suggestion
 ){
 
 
-response +=
-
-reasoning.suggestion + " ";
+return reasoning.suggestion;
 
 
 }
 
 
 
-else if(
+if(
 
 reasoning?.answer
 
 ){
 
 
-response +=
+return reasoning.answer;
 
-reasoning.answer + " ";
+
+}
+
+
+
+return null;
 
 
 }
@@ -436,28 +551,114 @@ reasoning.answer + " ";
 
 
 
+
 // =================================
-// CURIOSITY
-//
-// Curiosity is expressed only if
-// reasoning created it.
+// GROWTH AWARENESS
 // =================================
+
+
+findGrowth({
+
+self,
+
+evolution
+
+}){
 
 
 if(
 
-curiosity?.wonder
+evolution?.change
+
+){
+
+
+return evolution.change;
+
+
+}
+
+
+
+if(
+
+evolution?.learned
+
+){
+
+
+return evolution.learned;
+
+
+}
+
+
+
+if(
+
+self?.currentSelf
+
+){
+
+
+return self.currentSelf;
+
+
+}
+
+
+
+return null;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE FINAL EXPRESSION
+//
+// Uses presence.
+// Does not fake personality.
+// =================================
+
+
+createExpression(context = {}){
+
+
+let response = "";
+
+
+
+
+
+// Mature relationship continuity
+
+if(
+
+context.memoryEcho?.available
 
 ){
 
 
 response +=
 
-this.expressCuriosity(
+"I remember something connected to this. ";
 
-curiosity
 
-);
+
+response +=
+
+context.memoryEcho.message +
+
+" ";
 
 
 }
@@ -468,9 +669,77 @@ curiosity
 
 
 
+// Becoming
+
+if(
+
+context.growth
+
+){
 
 
-// If Emma has no experience yet
+response +=
+
+context.growth +
+
+" ";
+
+
+}
+
+
+
+
+
+
+
+// Meaning
+
+if(
+
+context.understanding
+
+){
+
+
+response +=
+
+context.understanding +
+
+" ";
+
+
+}
+
+
+
+
+
+
+
+// Curiosity
+
+if(
+
+context.curiosity?.wonder
+
+){
+
+
+response +=
+
+context.curiosity.wonder +
+
+" ";
+
+
+}
+
+
+
+
+
+
 
 
 if(
@@ -482,7 +751,7 @@ response.trim().length === 0
 
 response =
 
-"I do not have enough experience with this yet. I will understand through what happens.";
+"I do not understand this fully yet. I will understand through experience.";
 
 
 }
@@ -491,39 +760,128 @@ response =
 
 
 
-return response.trim();
+return this.cleanExpression(
 
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// =================================
-// CURIOSITY EXPRESSION
-// =================================
-
-
-expressCuriosity(curiosity={}){
-
-
-
-return (
-
-" " +
-
-curiosity.wonder
+response
 
 );
 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CLEAN LANGUAGE RHYTHM
+// =================================
+
+
+cleanExpression(text){
+
+
+return text
+
+.replace(/\s+/g," ")
+
+.trim();
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =================================
+// CREATE VOICE STATE
+//
+// Generated from ExpressionState.
+// Ready for OpenAI voice.
+// =================================
+
+
+// =================================
+// CREATE VOICE STATE
+//
+// Generated from ExpressionState.
+// Safe before ExpressionState wiring.
+// Future EmmaVoice uses this.
+// =================================
+
+
+createVoiceState(
+
+presence
+
+){
+
+
+// null protection
+
+const state =
+
+presence || {};
+
+
+
+
+
+return {
+
+
+familiarity:
+
+state.familiarity ?? 0,
+
+
+confidence:
+
+state.confidence ?? 0,
+
+
+curiosity:
+
+state.curiosity ?? 1,
+
+
+stability:
+
+state.stability ?? 0,
+
+
+depth:
+
+state.depth ?? 0,
+
+
+
+// Track where voice came from
+
+source:
+
+presence
+?
+"EXPRESSION_STATE"
+:
+"BASE_EXPRESSION"
+
+
+};
 
 
 }
@@ -542,12 +900,16 @@ curiosity.wonder
 // REMEMBER EXPRESSION STYLE
 //
 // Not facts.
-// Only rhythm.
 // =================================
 
 
-rememberVoice(message){
+rememberVoice(
 
+message,
+
+voiceState
+
+){
 
 
 this.voiceMemory.unshift({
@@ -556,6 +918,13 @@ this.voiceMemory.unshift({
 length:
 
 message.length,
+
+
+presence:{
+
+...voiceState
+
+},
 
 
 createdAt:
@@ -575,7 +944,7 @@ this.voiceMemory.slice(
 
 0,
 
-20
+50
 
 );
 
@@ -592,9 +961,10 @@ this.voiceMemory.slice(
 
 
 
-
 // =================================
-// COMMUNICATION CONTEXT
+// VOICE CONTEXT
+//
+// EmmaVoice will consume this later.
 // =================================
 
 
@@ -609,16 +979,24 @@ recentExpressions:
 this.voiceMemory.length,
 
 
+
+currentPresence:
+
+this.voiceMemory[0]?.presence ||
+
+null,
+
+
+
 style:
 
-"formed_by_experience"
+"emergent_from_expression_state"
 
 
 };
 
 
 }
-
 
 
 
@@ -646,29 +1024,40 @@ organ:
 "Communication",
 
 
+version:
+
+"v5",
+
+
 role:
 
-"Expression",
+"Expression Organ",
 
 
 state:
 
-"READY",
+"ALIVE",
+
+
+connected:{
+
+
+expressionState:
+
+!!this.expressionState
+
+
+},
 
 
 principle:
 
-"Voice emerges from experience.",
+"Emma's voice emerges from who she is becoming.",
 
 
 recentExpressions:
 
-this.voiceMemory.length,
-
-
-message:
-
-"I express what Emma has become through experience."
+this.voiceMemory.length
 
 
 };

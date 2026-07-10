@@ -51,15 +51,11 @@ memory;
 
 
 
-
-// recent awareness
-
 this.focusHistory = [];
 
 
 
 
-// nervous system sensitivity
 
 this.sensitivity = {
 
@@ -78,14 +74,11 @@ remember:60
 
 
 
-// fatigue protection
-
 this.energy = 100;
 
 
 
 }
-
 
 
 
@@ -116,7 +109,6 @@ console.log(
 
 
 
-
 let awareness = {
 
 
@@ -137,35 +129,20 @@ reason:[]
 
 
 
-
-
-// ===============================
-// HUMAN SIGNAL
-// ===============================
-
-
 if(
 
 this.detectHuman(
-
 experience
-
 )
 
 ){
 
 
-
 this.addSignal(
-
 awareness,
-
 30,
-
 "HUMAN_RELATED"
-
 );
-
 
 
 }
@@ -175,37 +152,22 @@ awareness,
 
 
 
-
-
-
-
-// ===============================
-// CHANGE SIGNAL
-// ===============================
 
 
 if(
 
 this.detectChange(
-
 experience
-
 )
 
 ){
 
 
-
 this.addSignal(
-
 awareness,
-
 35,
-
 "CHANGE_OCCURRED"
-
 );
-
 
 
 }
@@ -215,37 +177,22 @@ awareness,
 
 
 
-
-
-
-
-// ===============================
-// RESULT SIGNAL
-// ===============================
 
 
 if(
 
 this.detectOutcome(
-
 experience
-
 )
 
 ){
 
 
-
 this.addSignal(
-
 awareness,
-
 40,
-
 "OUTCOME_EVENT"
-
 );
-
 
 
 }
@@ -255,46 +202,25 @@ awareness,
 
 
 
-
-
-
-
-// ===============================
-// NOVELTY SIGNAL
-// ===============================
 
 
 const novelty =
 
 await this.detectNovelty(
-
 experience
-
 );
 
 
 
 
-
-
-if(
-
-novelty
-
-){
-
+if(novelty){
 
 
 this.addSignal(
-
 awareness,
-
 20,
-
 "NEW_EXPERIENCE"
-
 );
-
 
 
 }
@@ -304,37 +230,23 @@ awareness,
 
 
 
-
-
-
-
-// ===============================
-// REPEATED NOISE
-// ===============================
 
 
 if(
 
 this.isRepeatedNoise(
-
 experience
-
 )
 
 ){
 
 
-
 awareness.importance -= 20;
 
 
-
 awareness.signals.push(
-
 "REPEATED_NOISE"
-
 );
-
 
 
 }
@@ -346,24 +258,11 @@ awareness.signals.push(
 
 
 
-
-
-// ===============================
-// ENERGY EFFECT
-// ===============================
-
-
 awareness.importance =
 
 this.applyEnergy(
-
 awareness.importance
-
 );
-
-
-
-
 
 
 
@@ -373,14 +272,8 @@ awareness.importance
 const depth =
 
 this.chooseDepth(
-
 awareness.importance
-
 );
-
-
-
-
 
 
 
@@ -393,6 +286,7 @@ const result = {
 noticed:
 
 depth !== "IGNORE",
+
 
 
 depth,
@@ -422,13 +316,9 @@ new Date()
 
 
 
-
 this.recordFocus(
-
 experience
-
 );
-
 
 
 
@@ -436,14 +326,9 @@ experience
 
 
 console.log(
-
 "👁 Attention result:",
-
 result.depth
-
 );
-
-
 
 
 
@@ -457,9 +342,11 @@ return result;
 }
 
 
-// =================================
-// ADD ATTENTION SIGNAL
-// =================================
+
+
+
+
+
 
 
 addSignal(
@@ -474,28 +361,18 @@ reason
 
 
 
-awareness.importance +=
-
-value;
-
-
+awareness.importance += value;
 
 
 
 awareness.signals.push(
-
 reason
-
 );
 
 
 
-
-
 awareness.reason.push(
-
 reason
-
 );
 
 
@@ -508,11 +385,6 @@ reason
 
 
 
-
-
-// =================================
-// CHOOSE EXPERIENCE DEPTH
-// =================================
 
 
 chooseDepth(
@@ -524,71 +396,42 @@ importance=0
 
 
 if(
-
-importance <
-
-this.sensitivity.ignore
-
+importance < this.sensitivity.ignore
 ){
-
 
 
 return "IGNORE";
 
 
-
 }
 
 
 
 
 
-
-
-
 if(
-
-importance <
-
-this.sensitivity.notice
-
+importance < this.sensitivity.notice
 ){
-
 
 
 return "OBSERVE";
 
 
-
 }
-
-
-
-
 
 
 
 
 
 if(
-
-importance <
-
-this.sensitivity.remember
-
+importance < this.sensitivity.remember
 ){
-
 
 
 return "NOTICE";
 
 
-
 }
-
-
-
-
 
 
 
@@ -608,18 +451,12 @@ return "REMEMBER";
 
 
 
-// =================================
-// NOVELTY DETECTION
-// =================================
-
 
 async detectNovelty(
 
 experience={}
 
 ){
-
-
 
 
 
@@ -630,9 +467,7 @@ if(
 ){
 
 
-
 return true;
-
 
 
 }
@@ -641,19 +476,11 @@ return true;
 
 
 
-
-
-
 const memories =
 
 await this.memory.getRelevantMemories(
-
 experience
-
 );
-
-
-
 
 
 
@@ -680,11 +507,6 @@ memories.length === 0
 
 
 
-// =================================
-// HUMAN DETECTION
-// =================================
-
-
 detectHuman(
 
 experience={}
@@ -696,13 +518,8 @@ experience={}
 const text =
 
 this.text(
-
 experience
-
 );
-
-
-
 
 
 
@@ -735,12 +552,6 @@ text.includes("relationship")
 
 
 
-
-// =================================
-// CHANGE DETECTION
-// =================================
-
-
 detectChange(
 
 experience={}
@@ -754,7 +565,6 @@ return this.contains(
 experience,
 
 [
-
 
 "changed",
 
@@ -772,7 +582,6 @@ experience,
 
 "unexpected"
 
-
 ]
 
 );
@@ -789,10 +598,6 @@ experience,
 
 
 
-// =================================
-// OUTCOME DETECTION
-// =================================
-
 
 detectOutcome(
 
@@ -804,11 +609,17 @@ experience={}
 
 return (
 
-experience.type === "ACTION_OUTCOME" ||
+experience.type === "ACTION_OUTCOME"
 
-experience.readyForLearning ||
+||
 
-!!experience.result ||
+experience.readyForLearning
+
+||
+
+!!experience.result
+
+||
 
 !!experience.consequence
 
@@ -827,11 +638,6 @@ experience.readyForLearning ||
 
 
 
-// =================================
-// REPEATED NOISE CHECK
-// =================================
-
-
 isRepeatedNoise(
 
 experience={}
@@ -840,18 +646,11 @@ experience={}
 
 
 
-
-
 const sig =
 
 this.signature(
-
 experience
-
 );
-
-
-
 
 
 
@@ -863,9 +662,6 @@ this.focusHistory.filter(
 item => item === sig
 
 ).length;
-
-
-
 
 
 
@@ -886,13 +682,6 @@ return repeats >= 3;
 
 
 
-// =================================
-// ENERGY SYSTEM
-//
-// High activity reduces sensitivity.
-// =================================
-
-
 applyEnergy(
 
 importance
@@ -908,14 +697,10 @@ this.energy < 30
 ){
 
 
-
 return importance - 20;
 
 
-
 }
-
-
 
 
 
@@ -934,11 +719,6 @@ return importance;
 
 
 
-
-
-// =================================
-// RECOVER ATTENTION ENERGY
-// =================================
 
 
 recoverEnergy(
@@ -962,7 +742,6 @@ this.energy + amount
 
 
 }
-
 
 
 
@@ -1003,10 +782,6 @@ this.energy - amount
 
 
 
-// =================================
-// RECORD FOCUS
-// =================================
-
 
 recordFocus(
 
@@ -1019,9 +794,7 @@ experience={}
 this.focusHistory.unshift(
 
 this.signature(
-
 experience
-
 )
 
 );
@@ -1030,21 +803,12 @@ experience
 
 
 
-
-
-
 this.focusHistory =
 
 this.focusHistory.slice(
-
 0,
-
 50
-
 );
-
-
-
 
 
 
@@ -1063,11 +827,6 @@ this.consumeEnergy();
 
 
 
-
-
-// =================================
-// EXPERIENCE SIGNATURE
-// =================================
 
 
 signature(
@@ -1113,11 +872,6 @@ experience.action
 
 
 
-// =================================
-// TEXT NORMALIZER
-// =================================
-
-
 text(
 
 experience={}
@@ -1129,30 +883,21 @@ experience={}
 try{
 
 
-
 return JSON.stringify(
-
 experience
-
 )
-
 .toLowerCase();
 
 
-
 }
-
-
 
 
 catch{
 
 
-
 return "";
 
 
-
 }
 
 
@@ -1166,11 +911,6 @@ return "";
 
 
 
-
-
-// =================================
-// WORD SEARCH
-// =================================
 
 
 contains(
@@ -1186,12 +926,8 @@ words=[]
 const content =
 
 this.text(
-
 experience
-
 );
-
-
 
 
 
@@ -1201,9 +937,7 @@ return words.some(
 word =>
 
 content.includes(
-
 word
-
 )
 
 );
@@ -1219,11 +953,6 @@ word
 
 
 
-
-
-// =================================
-// CURRENT STATE
-// =================================
 
 
 currentFocus(){
@@ -1248,7 +977,6 @@ message:
 "I control awareness before memory and reasoning."
 
 
-
 };
 
 
@@ -1263,10 +991,6 @@ message:
 
 
 
-// =================================
-// SENSITIVITY MODES
-// =================================
-
 
 quietMode(){
 
@@ -1280,16 +1004,14 @@ this.sensitivity.remember += 10;
 
 
 
-
 console.log(
-
 "🌙 Attention relaxed"
-
 );
 
 
 
 }
+
 
 
 
@@ -1306,11 +1028,8 @@ focusMode(){
 this.sensitivity.notice =
 
 Math.max(
-
 10,
-
 this.sensitivity.notice - 10
-
 );
 
 
@@ -1319,22 +1038,15 @@ this.sensitivity.notice - 10
 this.sensitivity.remember =
 
 Math.max(
-
 30,
-
 this.sensitivity.remember - 10
-
 );
 
 
 
 
-
-
 console.log(
-
 "🔥 Attention sharpened"
-
 );
 
 
@@ -1348,11 +1060,6 @@ console.log(
 
 
 
-
-
-// =================================
-// STATUS
-// =================================
 
 
 status(){
@@ -1407,7 +1114,6 @@ message:
 "I decide how deeply life enters Emma."
 
 
-
 };
 
 
@@ -1421,11 +1127,6 @@ message:
 
 
 
-
-
-// =================================
-// RESET
-// =================================
 
 
 reset(){

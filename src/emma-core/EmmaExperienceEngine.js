@@ -2,9 +2,17 @@
 //
 // PROJECT BECOMING
 //
-// Emma Experience Engine v8
+// Emma Experience Engine v8.4
 //
 // Emma's spinal cord.
+//
+// Added:
+// EmmaInitiative 🌱
+// EmmaExpressionState 🎭
+//
+// Fixed:
+// Initiative no longer blocks life.
+// Silence does not stop growth.
 //
 // RULE:
 //
@@ -14,12 +22,6 @@
 //
 // Only move experiences
 // between organs.
-//
-// v8:
-// - Attention aware routing
-// - Outcome feedback loop
-// - Executor connection
-// - Cleaner life cycle
 //
 
 
@@ -34,6 +36,10 @@ constructor({
 stream=null,
 
 attention=null,
+
+initiative=null,
+
+expression=null,
 
 memory=null,
 
@@ -60,7 +66,7 @@ evolution=null
 
 
 console.log(
-"🧬 Emma Experience Engine v8 alive"
+"🧬 Emma Experience Engine v8.4 alive"
 );
 
 
@@ -72,6 +78,34 @@ stream;
 
 this.attention =
 attention;
+
+
+this.initiative =
+initiative;
+
+
+
+
+console.log(
+"🌱 Initiative connected:",
+!!this.initiative
+);
+
+
+
+
+this.expression =
+expression;
+
+
+
+
+console.log(
+"🎭 Expression connected:",
+!!this.expression
+);
+
+
 
 
 this.memory =
@@ -149,6 +183,7 @@ console.log(
 
 
 
+
 this.cycles++;
 
 
@@ -162,8 +197,10 @@ const timeline = [];
 
 
 
+
+
 // ===============================
-// CREATE EXPERIENCE
+// EXPERIENCE
 // ===============================
 
 
@@ -174,8 +211,6 @@ this.createExperience(
 event
 
 );
-
-
 
 
 
@@ -235,8 +270,9 @@ timeline.push(
 
 
 
+
 // ===============================
-// ATTENTION
+// ATTENTION 👁️
 // ===============================
 
 
@@ -289,9 +325,30 @@ timeline.push(
 // ===============================
 
 
-if(
+const shouldIgnore =
+
+(
 
 attention?.depth === "IGNORE"
+
+||
+
+attention?.result === "IGNORE"
+
+||
+
+attention === "IGNORE"
+
+);
+
+
+
+
+
+
+if(
+
+shouldIgnore
 
 ){
 
@@ -335,7 +392,119 @@ new Date()
 
 
 // ===============================
-// MEMORY ROUTE
+// INITIATIVE 🌱
+//
+// Should Emma enter?
+//
+// Does NOT stop life.
+// ===============================
+
+
+let initiative = null;
+
+
+
+
+
+console.log(
+"🌱 Checking initiative..."
+);
+
+
+
+
+
+
+if(
+
+this.initiative?.evaluate
+
+){
+
+
+
+console.log(
+"🌱 Initiative evaluating moment"
+);
+
+
+
+
+
+initiative =
+
+await this.initiative.evaluate({
+
+
+
+experience,
+
+
+attention
+
+
+
+});
+
+
+
+
+
+
+this.initiative.record?.(
+
+initiative
+
+);
+
+
+
+
+
+
+
+// Important:
+// Silence affects communication,
+// not memory.
+
+
+initiative.canExpress =
+
+this.initiative.shouldExpress(
+
+initiative
+
+);
+
+
+
+
+
+
+
+
+timeline.push(
+
+"INITIATIVE"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// MEMORY 🧠
+//
+// Attention decides.
 // ===============================
 
 
@@ -345,9 +514,32 @@ let memory = null;
 
 
 
-if(
+const shouldRemember =
+
+(
 
 attention?.depth === "REMEMBER"
+
+||
+
+attention?.result === "REMEMBER"
+
+||
+
+attention === "REMEMBER"
+
+);
+
+
+
+
+
+
+
+
+if(
+
+shouldRemember
 
 &&
 
@@ -357,15 +549,33 @@ this.memory?.store
 
 
 
+console.log(
+"🧠 Sending experience to memory"
+);
+
+
+
+
+
+
 memory =
 
 await this.memory.store({
 
+
+
 ...experience,
+
+
 
 attention
 
+
+
 });
+
+
+
 
 
 
@@ -380,6 +590,7 @@ timeline.push(
 
 
 }
+
 
 
 
@@ -412,11 +623,22 @@ wisdom =
 
 await this.wisdom.reflect({
 
+
+
 experience,
 
-memory
+
+memory,
+
+
+initiative
+
+
 
 });
+
+
+
 
 
 
@@ -431,15 +653,6 @@ timeline.push(
 
 
 }
-
-
-
-
-
-
-
-
-
 
 // ===============================
 // SELF MODEL
@@ -464,13 +677,24 @@ self =
 
 await this.selfModel.observe({
 
+
+
 experience,
+
 
 wisdom,
 
-memory
+
+memory,
+
+
+initiative
+
+
 
 });
+
+
 
 
 
@@ -485,6 +709,15 @@ timeline.push(
 
 
 }
+
+
+
+
+
+
+
+
+
 
 // =================================
 // CURIOSITY
@@ -520,11 +753,15 @@ memory,
 wisdom,
 
 
-self
+self,
+
+
+initiative
 
 
 
 });
+
 
 
 
@@ -541,7 +778,6 @@ timeline.push(
 
 
 }
-
 
 
 
@@ -591,11 +827,15 @@ wisdom,
 self,
 
 
-curiosity
+curiosity,
+
+
+initiative
 
 
 
 });
+
 
 
 
@@ -612,7 +852,6 @@ timeline.push(
 
 
 }
-
 
 
 
@@ -659,7 +898,10 @@ wisdom,
 self,
 
 
-memory
+memory,
+
+
+initiative
 
 
 
@@ -691,11 +933,8 @@ timeline.push(
 
 
 
-
 // =================================
 // ACTION EXECUTOR
-//
-// Hands move only if allowed
 // =================================
 
 
@@ -707,7 +946,9 @@ let execution = null;
 
 if(
 
-judgement &&
+judgement
+
+&&
 
 this.executor?.execute
 
@@ -749,7 +990,6 @@ timeline.push(
 
 
 
-
 // =================================
 // OUTCOME
 //
@@ -765,7 +1005,9 @@ let outcomeResult = null;
 
 if(
 
-execution &&
+execution
+
+&&
 
 this.outcome?.record
 
@@ -786,9 +1028,11 @@ execution,
 {
 
 
+
 goal:
 
 experience.situation,
+
 
 
 source:
@@ -829,7 +1073,6 @@ timeline.push(
 
 
 
-
 // =================================
 // LEARNING
 //
@@ -845,7 +1088,9 @@ let learning = null;
 
 if(
 
-outcomeResult?.readyForLearning &&
+outcomeResult?.readyForLearning
+
+&&
 
 this.learning?.learn
 
@@ -895,7 +1140,6 @@ timeline.push(
 
 
 
-
 // =================================
 // EVOLUTION
 //
@@ -923,6 +1167,8 @@ await this.evolution.evolve({
 
 
 
+
+
 wisdomCandidates:
 
 
@@ -935,6 +1181,8 @@ this.learning?.getWisdomCandidates?.()
 
 
 
+
+
 selfGrowthSignals:
 
 
@@ -943,6 +1191,8 @@ this.selfModel?.getGrowthSignals?.()
 ||
 
 []
+
+
 
 
 
@@ -974,6 +1224,81 @@ timeline.push(
 
 
 
+// =================================
+// EXPRESSION STATE 🎭
+//
+// Presence update
+// =================================
+
+
+let expression = null;
+
+
+
+
+
+if(
+
+this.expression?.observe
+
+){
+
+
+
+expression =
+
+this.expression.observe({
+
+
+
+
+experience,
+
+
+memory,
+
+
+wisdom,
+
+
+self,
+
+
+initiative,
+
+
+evolution
+
+
+
+
+});
+
+
+
+
+
+
+
+
+timeline.push(
+
+"EXPRESSION"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
 
 // =================================
 // COMPLETE LIFE CYCLE
@@ -984,11 +1309,18 @@ return {
 
 
 
-experienced:true,
+
+experienced:
+
+true,
 
 
 
-integrated:true,
+
+integrated:
+
+true,
+
 
 
 
@@ -996,6 +1328,9 @@ experience,
 
 
 attention,
+
+
+initiative,
 
 
 memory,
@@ -1019,9 +1354,13 @@ judgement,
 execution,
 
 
+
+
 outcome:
 
 outcomeResult,
+
+
 
 
 learning,
@@ -1030,7 +1369,11 @@ learning,
 evolution,
 
 
+expression,
+
+
 timeline,
+
 
 
 
@@ -1040,9 +1383,11 @@ message:
 
 
 
+
 createdAt:
 
 new Date()
+
 
 
 
@@ -1051,7 +1396,6 @@ new Date()
 
 
 }
-
 
 
 
@@ -1080,57 +1424,82 @@ return {
 
 
 
+
 id:
 
 this.createId(),
 
 
 
+
 type:
 
-event.type ||
+event.type
+
+||
 
 "EXPERIENCE",
 
 
 
+
 source:
 
-event.source ||
+event.source
+
+||
 
 "world",
 
 
 
+
 person:
 
-event.person ||
+event.person
 
-event.user ||
+||
+
+event.user
+
+||
 
 null,
+
 
 
 
 situation:
 
-event.situation ||
+event.situation
 
-event.message ||
+||
 
-event.text ||
+event.message
 
-event.description ||
+||
+
+event.text
+
+||
+
+event.description
+
+||
 
 null,
+
 
 
 
 result:
 
-event.result ||
+event.result
+
+||
 
 null,
+
 
 
 
@@ -1140,9 +1509,11 @@ event,
 
 
 
+
 createdAt:
 
 new Date()
+
 
 
 
@@ -1220,6 +1591,7 @@ Math.random()
 
 
 
+
 // =================================
 // STATUS
 // =================================
@@ -1233,15 +1605,18 @@ return {
 
 
 
+
 organ:
 
 "EmmaExperienceEngine",
 
 
 
+
 version:
 
-"v8",
+"v8.4",
+
 
 
 
@@ -1251,9 +1626,11 @@ role:
 
 
 
+
 state:
 
 "ALIVE",
+
 
 
 
@@ -1263,7 +1640,9 @@ this.cycles,
 
 
 
+
 pipeline:[
+
 
 
 
@@ -1271,6 +1650,9 @@ pipeline:[
 
 
 "Attention",
+
+
+"Initiative",
 
 
 "Memory",
@@ -1300,11 +1682,18 @@ pipeline:[
 "Learning",
 
 
-"Evolution"
+"Evolution",
+
+
+"Expression"
+
 
 
 
 ],
+
+
+
 
 
 
@@ -1315,9 +1704,13 @@ principle:
 
 
 
+
+
+
 message:
 
 "I connect Emma's experiences into a continuous life cycle."
+
 
 
 
@@ -1326,8 +1719,6 @@ message:
 
 
 }
-
-
 
 
 
