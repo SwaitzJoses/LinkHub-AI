@@ -2,14 +2,14 @@
 //
 // PROJECT BECOMING
 //
-// Emma Experience Engine v8.5
+// Emma Experience Engine v8.6
 //
-// TEMPORAL AWARENESS PATCH 🕰
+// RELATIONSHIP HEARTBEAT PATCH ❤️
 //
 // Emma's spinal cord.
 //
 // Added:
-// EmmaTemporalSense
+// EmmaRelationshipModel
 //
 // RULE:
 //
@@ -20,10 +20,17 @@
 // Only move experiences
 // between organs.
 //
-// Memory stores events.
-// Wisdom extracts meaning.
-// TemporalSense sees change over time.
-// SelfModel becomes.
+// Memory:
+// stores events.
+//
+// TemporalSense:
+// understands change.
+//
+// SelfModel:
+// understands Emma.
+//
+// RelationshipModel:
+// understands "us".
 //
 
 class EmmaExperienceEngine {
@@ -47,6 +54,12 @@ temporalSense=null,
 
 selfModel=null,
 
+
+// NEW ❤️
+
+relationshipModel=null,
+
+
 curiosity=null,
 
 reasoning=null,
@@ -61,31 +74,47 @@ learning=null,
 
 evolution=null
 
+
 } = {}){
 
 
+
 console.log(
-"🧬 Emma Experience Engine v8.5 alive"
+"🧬 Emma Experience Engine v8.6 alive"
 );
 
+
+
+
+// ===============================
+// CONNECTIONS
+// ===============================
 
 
 this.stream =
 stream;
 
 
+
 this.attention =
 attention;
+
 
 
 this.initiative =
 initiative;
 
 
+
+
 console.log(
+
 "🌱 Initiative connected:",
+
 !!this.initiative
+
 );
+
 
 
 
@@ -93,10 +122,16 @@ this.expression =
 expression;
 
 
+
+
 console.log(
+
 "🎭 Expression connected:",
+
 !!this.expression
+
 );
+
 
 
 
@@ -104,69 +139,134 @@ this.memory =
 memory;
 
 
+
+
 this.wisdom =
 wisdom;
 
 
 
-// NEW 🕰
+
+
+
+
+// ===============================
+// TEMPORAL SENSE 🕰
+// ===============================
+
 
 this.temporalSense =
 temporalSense;
 
 
+
+
 console.log(
+
 "🕰 TemporalSense connected:",
+
 !!this.temporalSense
+
 );
 
 
+
+
+
+
+
+
+// ===============================
+// SELF MODEL 🧬
+// ===============================
 
 
 this.selfModel =
 selfModel;
 
 
+
+
+
+
+
+
+// ===============================
+// RELATIONSHIP MODEL ❤️
+// ===============================
+
+
+this.relationshipModel =
+relationshipModel;
+
+
+
+
+console.log(
+
+"❤️ RelationshipModel connected:",
+
+!!this.relationshipModel
+
+);
+
+
+
+
+
+
+
+
 this.curiosity =
 curiosity;
+
+
 
 
 this.reasoning =
 reasoning;
 
 
+
+
 this.judgement =
 judgement;
+
+
 
 
 this.executor =
 executor;
 
 
+
+
 this.outcome =
 outcome;
+
+
 
 
 this.learning =
 learning;
 
 
+
+
 this.evolution =
 evolution;
+
+
+
+
+
 
 
 this.cycles = 0;
 
 
+
 }
-
-
-
-
-
-
-
-
 
 // =================================
 // LIFE PROCESS
@@ -180,16 +280,25 @@ event={}
 ){
 
 
+
 console.log(
+
 "🌎 Life entered Emma"
+
 );
+
+
 
 
 
 this.cycles++;
 
 
+
+
 const timeline=[];
+
+
 
 
 
@@ -211,9 +320,17 @@ event
 );
 
 
+
+
+
 timeline.push(
+
 "EXPERIENCE"
+
 );
+
+
+
 
 
 
@@ -233,6 +350,7 @@ this.stream?.record
 ){
 
 
+
 await this.stream.record(
 
 experience
@@ -240,12 +358,19 @@ experience
 );
 
 
+
+
 timeline.push(
+
 "STREAM"
+
 );
 
 
+
 }
+
+
 
 
 
@@ -263,11 +388,14 @@ let attention=null;
 
 
 
+
+
 if(
 
 this.attention?.evaluate
 
 ){
+
 
 
 attention =
@@ -279,12 +407,20 @@ experience
 );
 
 
+
+
+
 timeline.push(
+
 "ATTENTION"
+
 );
 
 
+
 }
+
+
 
 
 
@@ -317,16 +453,27 @@ attention==="IGNORE"
 
 
 
-if(shouldIgnore){
+
+
+
+if(
+
+shouldIgnore
+
+){
+
 
 
 return {
 
 
+
 experienced:true,
 
 
+
 integrated:false,
+
 
 
 reason:
@@ -334,16 +481,24 @@ reason:
 "Attention ignored low value signal.",
 
 
+
 timeline,
 
 
-createdAt:new Date()
+
+createdAt:
+
+new Date()
+
 
 
 };
 
 
+
 }
+
+
 
 
 
@@ -361,6 +516,9 @@ let initiative=null;
 
 
 
+
+
+
 if(
 
 this.initiative?.evaluate
@@ -368,18 +526,32 @@ this.initiative?.evaluate
 ){
 
 
+
+
+
 initiative =
 
 await this.initiative.evaluate({
 
 
+
+
 experience,
+
+
 
 
 attention
 
 
+
+
 });
+
+
+
+
+
 
 
 
@@ -388,6 +560,10 @@ this.initiative.record?.(
 initiative
 
 );
+
+
+
+
 
 
 
@@ -401,12 +577,22 @@ initiative
 
 
 
+
+
+
+
+
 timeline.push(
+
 "INITIATIVE"
+
 );
 
 
+
 }
+
+
 
 
 
@@ -421,6 +607,8 @@ timeline.push(
 
 
 let memory=null;
+
+
 
 
 
@@ -443,6 +631,10 @@ attention==="REMEMBER"
 
 
 
+
+
+
+
 if(
 
 shouldRemember
@@ -455,24 +647,39 @@ this.memory?.store
 
 
 
+
+
 memory =
 
 await this.memory.store({
 
 
+
+
 ...experience,
 
 
+
+
 attention
+
+
 
 
 });
 
 
 
+
+
+
+
 timeline.push(
+
 "MEMORY"
+
 );
+
 
 
 }
@@ -484,12 +691,16 @@ timeline.push(
 
 
 
+
+
 // ===============================
-// WISDOM
+// WISDOM 🌱
 // ===============================
 
 
 let wisdom=null;
+
+
 
 
 
@@ -501,27 +712,45 @@ this.wisdom?.reflect
 
 
 
+
+
 wisdom =
 
 await this.wisdom.reflect({
 
 
+
+
 experience,
+
+
 
 
 memory,
 
 
+
+
 initiative
+
+
 
 
 });
 
 
 
+
+
+
+
+
 timeline.push(
+
 "WISDOM"
+
 );
+
 
 
 }
@@ -533,14 +762,16 @@ timeline.push(
 
 
 
+
+
 // ===============================
 // TEMPORAL SENSE 🕰
-//
-// NEW ORGAN
 // ===============================
 
 
 let temporal=null;
+
+
 
 
 
@@ -552,13 +783,24 @@ this.temporalSense?.experienceTime
 
 
 
+
+
 const history =
 
-this.memory?.getAll?.()
+await this.memory?.getRecentImportant?.(
+
+50
+
+)
 
 ||
 
 [];
+
+
+
+
+
 
 
 
@@ -569,6 +811,11 @@ this.temporalSense.experienceTime(
 history
 
 );
+
+
+
+
+
 
 
 
@@ -583,15 +830,22 @@ timeline.push(
 }
 
 
+
+
+
+
+
+
+
+
 // ===============================
 // SELF MODEL 🧬
-//
-// Now receives:
-// moment + wisdom + time
 // ===============================
 
 
-let self = null;
+let self=null;
+
+
 
 
 
@@ -603,31 +857,44 @@ this.selfModel?.observe
 
 
 
+
+
 self =
 
 await this.selfModel.observe({
 
 
 
+
 experience,
 
 
-wisdom,
 
 
 memory,
 
 
+
+
+wisdom,
+
+
+
+
 initiative,
 
 
-// NEW 🕰
+
 
 temporal
 
 
 
+
 });
+
+
+
 
 
 
@@ -651,12 +918,104 @@ timeline.push(
 
 
 
+
+// ===============================
+// RELATIONSHIP MODEL ❤️
+//
+// NEW v8.6
+//
+// Understands:
+// Emma + Person history
+// ===============================
+
+
+let relationship=null;
+
+
+
+
+
+
+if(
+
+this.relationshipModel?.observe
+
+){
+
+
+
+
+
+relationship =
+
+await this.relationshipModel.observe({
+
+
+
+
+
+experience,
+
+
+
+
+
+memory,
+
+
+
+
+
+wisdom,
+
+
+
+
+
+temporal,
+
+
+
+
+
+self
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+timeline.push(
+
+"RELATIONSHIP_MODEL"
+
+);
+
+
+
+}
+
 // =================================
-// CURIOSITY
+// CURIOSITY ❓
+//
+// v8.6:
+//
+// Curiosity now knows:
+//
+// "Who am I exploring with?"
 // =================================
 
 
-let curiosity = null;
+let curiosity=null;
+
 
 
 
@@ -669,32 +1028,65 @@ this.curiosity?.explore
 
 
 
+
+
 curiosity =
 
 await this.curiosity.explore({
 
 
 
+
+
 experience,
+
+
+
 
 
 memory,
 
 
+
+
+
 wisdom,
+
+
+
 
 
 temporal,
 
 
+
+
+
 self,
+
+
+
+
+
+// NEW ❤️
+
+relationship,
+
+
+
 
 
 initiative
 
 
 
+
+
 });
+
+
+
+
 
 
 
@@ -718,15 +1110,24 @@ timeline.push(
 
 
 
-
 // =================================
-// REASONING
+// REASONING 💭
 //
-// Meaning formation only
+// Meaning formation only.
+//
+// Now includes:
+//
+// Memory
+// Wisdom
+// Time
+// Self
+// Relationship ❤️
 // =================================
 
 
-let reasoning = null;
+let reasoning=null;
+
+
 
 
 
@@ -739,35 +1140,80 @@ this.reasoning?.think
 
 
 
+
+
+
 reasoning =
 
 await this.reasoning.think({
 
 
 
+
+
+
 experience,
+
+
+
+
 
 
 memory,
 
 
+
+
+
+
 wisdom,
+
+
+
+
 
 
 temporal,
 
 
+
+
+
+
 self,
 
 
+
+
+
+
+// NEW ❤️
+
+relationship,
+
+
+
+
+
+
 curiosity,
+
+
+
+
 
 
 initiative
 
 
 
+
+
+
 });
+
+
+
 
 
 
@@ -792,13 +1238,16 @@ timeline.push(
 
 
 
-
 // =================================
-// JUDGEMENT
+// JUDGEMENT ⚖️
+//
+// Decisions consider relationship
 // =================================
 
 
-let judgement = null;
+let judgement=null;
+
+
 
 
 
@@ -811,32 +1260,74 @@ this.judgement?.judge
 
 
 
+
+
+
 judgement =
 
 await this.judgement.judge({
 
 
 
+
+
+
 reasoning,
+
+
+
+
 
 
 wisdom,
 
 
+
+
+
+
 temporal,
+
+
+
+
 
 
 self,
 
 
+
+
+
+
+// NEW ❤️
+
+relationship,
+
+
+
+
+
+
 memory,
+
+
+
+
 
 
 initiative
 
 
 
+
+
+
 });
+
+
+
+
 
 
 
@@ -862,11 +1353,13 @@ timeline.push(
 
 
 // =================================
-// ACTION EXECUTOR
+// ACTION EXECUTOR 🤲
 // =================================
 
 
-let execution = null;
+let execution=null;
+
+
 
 
 
@@ -883,6 +1376,9 @@ this.executor?.execute
 
 
 
+
+
+
 execution =
 
 await this.executor.execute(
@@ -890,6 +1386,10 @@ await this.executor.execute(
 judgement
 
 );
+
+
+
+
 
 
 
@@ -914,11 +1414,14 @@ timeline.push(
 
 
 // =================================
-// OUTCOME
+// OUTCOME 🌎
 // =================================
 
 
-let outcomeResult = null;
+let outcomeResult=null;
+
+
+
 
 
 
@@ -935,9 +1438,14 @@ this.outcome?.record
 
 
 
+
+
+
 outcomeResult =
 
 await this.outcome.record(
+
+
 
 
 
@@ -945,7 +1453,10 @@ execution,
 
 
 
+
+
 {
+
 
 
 goal:
@@ -953,16 +1464,23 @@ goal:
 experience.situation,
 
 
+
 source:
 
 experience.source
+
 
 
 }
 
 
 
+
+
 );
+
+
+
 
 
 
@@ -988,11 +1506,14 @@ timeline.push(
 
 
 // =================================
-// LEARNING
+// LEARNING 📚
 // =================================
 
 
-let learning = null;
+let learning=null;
+
+
+
 
 
 
@@ -1009,9 +1530,14 @@ this.learning?.learn
 
 
 
+
+
+
 learning =
 
 await this.learning.learn(
+
+
 
 
 
@@ -1019,11 +1545,26 @@ outcomeResult,
 
 
 
-memory ? [memory] : []
+
+
+memory
+
+?
+
+[memory]
+
+:
+
+[]
+
+
 
 
 
 );
+
+
+
 
 
 
@@ -1050,10 +1591,19 @@ timeline.push(
 
 // =================================
 // EVOLUTION 🌱
+//
+// Evolution now receives:
+//
+// - wisdom growth
+// - self growth
+// - relationship growth ❤️
 // =================================
 
 
-let evolution = null;
+let evolution=null;
+
+
+
 
 
 
@@ -1066,9 +1616,15 @@ this.evolution?.evolve
 
 
 
+
+
+
 evolution =
 
 await this.evolution.evolve({
+
+
+
 
 
 
@@ -1085,6 +1641,9 @@ this.learning?.getWisdomCandidates?.()
 
 
 
+
+
+
 selfGrowthSignals:
 
 this.selfModel?.getGrowthSignals?.()
@@ -1096,16 +1655,38 @@ this.selfModel?.getGrowthSignals?.()
 
 
 
-// NEW 🕰
+
+
+
 
 temporalContext:
 
-temporal
+temporal,
+
+
+
+
+
+
+
+
+// NEW ❤️
+
+relationshipContext:
+
+relationship
+
+
+
+
 
 
 
 
 });
+
+
+
 
 
 
@@ -1123,23 +1704,23 @@ timeline.push(
 }
 
 
-
-
-
-
-
-
-
-
-
 // =================================
 // EXPRESSION STATE 🎭
 //
-// Now expression knows history
+// v8.6:
+//
+// Expression now understands:
+//
+// - experience
+// - memory
+// - time
+// - self
+// - relationship ❤️
 // =================================
 
 
-let expression = null;
+let expression=null;
+
 
 
 
@@ -1152,35 +1733,81 @@ this.expression?.observe
 
 
 
+
+
+
 expression =
 
 this.expression.observe({
 
 
 
+
+
+
 experience,
+
+
+
+
 
 
 memory,
 
 
+
+
+
+
 wisdom,
+
+
+
+
 
 
 temporal,
 
 
+
+
+
+
 self,
 
 
+
+
+
+
+// NEW ❤️
+
+relationship,
+
+
+
+
+
+
 initiative,
+
+
+
+
 
 
 evolution
 
 
 
+
+
+
 });
+
+
+
+
 
 
 
@@ -1219,43 +1846,76 @@ experienced:true,
 
 
 
+
 integrated:true,
+
 
 
 
 experience,
 
 
+
+
 attention,
+
+
 
 
 initiative,
 
 
+
+
 memory,
+
+
 
 
 wisdom,
 
 
-// NEW 🕰
+
+
+// TIME 🕰
 
 temporal,
 
 
+
+
+// SELF 🧬
+
 self,
+
+
+
+
+// RELATIONSHIP ❤️
+
+relationship,
+
+
 
 
 curiosity,
 
 
+
+
 reasoning,
+
+
 
 
 judgement,
 
 
+
+
 execution,
+
+
 
 
 outcome:
@@ -1263,22 +1923,34 @@ outcome:
 outcomeResult,
 
 
+
+
 learning,
+
+
 
 
 evolution,
 
 
+
+
 expression,
+
+
 
 
 timeline,
 
 
 
+
+
 message:
 
-"Experience completed full Emma temporal life cycle.",
+"Experience completed relational life cycle.",
+
+
 
 
 
@@ -1288,7 +1960,9 @@ new Date()
 
 
 
+
 };
+
 
 
 
@@ -1317,13 +1991,18 @@ event={}
 
 
 
+
+
 return {
+
 
 
 
 id:
 
 this.createId(),
+
+
 
 
 
@@ -1337,6 +2016,9 @@ event.type
 
 
 
+
+
+
 source:
 
 event.source
@@ -1344,6 +2026,9 @@ event.source
 ||
 
 "world",
+
+
+
 
 
 
@@ -1358,6 +2043,10 @@ event.user
 ||
 
 null,
+
+
+
+
 
 
 
@@ -1379,7 +2068,15 @@ event.description
 
 ||
 
+event.question
+
+||
+
 null,
+
+
+
+
 
 
 
@@ -1393,6 +2090,11 @@ null,
 
 
 
+
+
+
+
+
 importance:
 
 event.importance
@@ -1400,6 +2102,11 @@ event.importance
 ||
 
 0.5,
+
+
+
+
+
 
 
 
@@ -1413,9 +2120,19 @@ event.emotion
 
 
 
+
+
+
+
+
 raw:
 
 event,
+
+
+
+
+
 
 
 
@@ -1429,11 +2146,15 @@ new Date()
 
 
 
+
+
 };
 
 
 
+
 }
+
 
 
 
@@ -1453,6 +2174,9 @@ createId(){
 
 
 
+
+
+
 if(
 
 typeof crypto !== "undefined"
@@ -1464,10 +2188,15 @@ crypto.randomUUID
 ){
 
 
+
 return crypto.randomUUID();
 
 
+
 }
+
+
+
 
 
 
@@ -1488,7 +2217,9 @@ Math.random()
 );
 
 
+
 }
+
 
 
 
@@ -1508,7 +2239,10 @@ status(){
 
 
 
+
+
 return {
+
 
 
 
@@ -1519,15 +2253,21 @@ organ:
 
 
 
+
+
 version:
 
-"v8.5",
+"v8.6",
+
+
 
 
 
 role:
 
-"Temporal nervous system",
+"Relational nervous system",
+
+
 
 
 
@@ -1537,9 +2277,16 @@ state:
 
 
 
+
+
 cycles:
 
 this.cycles,
+
+
+
+
+
 
 
 
@@ -1547,49 +2294,103 @@ pipeline:[
 
 
 
+
+
+
 "Experience",
 
 
-"Attention",
 
 
-"Initiative",
+
+"Attention 👁️",
 
 
-"Memory",
 
 
-"Wisdom",
+
+"Initiative 🌱",
+
+
+
+
+
+"Memory 🧠",
+
+
+
+
+
+"Wisdom 🌱",
+
+
+
 
 
 "TemporalSense 🕰",
 
 
+
+
+
 "SelfModel 🧬",
 
 
-"Curiosity",
 
 
-"Reasoning",
+
+"RelationshipModel ❤️",
 
 
-"Judgement",
 
 
-"Executor",
+
+"Curiosity ❓",
 
 
-"Outcome",
 
 
-"Learning",
+
+"Reasoning 💭",
 
 
-"Evolution",
 
 
-"Expression"
+
+"Judgement ⚖️",
+
+
+
+
+
+"Executor 🤲",
+
+
+
+
+
+"Outcome 🌎",
+
+
+
+
+
+"Learning 📚",
+
+
+
+
+
+"Evolution 🌱",
+
+
+
+
+
+"Expression 🎭"
+
+
+
 
 
 
@@ -1598,16 +2399,26 @@ pipeline:[
 
 
 
+
+
+
+
 principle:
 
-"Move life between organs. Time creates continuity.",
+"Move experiences between organs until moments become shared history.",
+
+
+
 
 
 
 
 message:
 
-"I connect Emma's experiences into a living timeline."
+"I connect Emma's life into relationships over time."
+
+
+
 
 
 
@@ -1615,7 +2426,10 @@ message:
 
 
 
+
 }
+
+
 
 
 

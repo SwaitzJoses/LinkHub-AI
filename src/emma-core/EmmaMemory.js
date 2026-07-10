@@ -2,29 +2,26 @@
 //
 // PROJECT BECOMING
 //
-// Emma Living Experience Memory v5.1
+// Emma Living Experience Memory v5.2
 //
-// DAY 15 STABILITY PATCH
+// TEMPORAL MEMORY PATCH 🕰
 //
 // Memory is not storage.
 // Memory is Emma's life.
 //
+// v5.2:
+//
+// - TemporalSense support
+// - Safe timeline recall
+// - No full lifetime scans
+// - Cache-first memory
+// - Important history retrieval
+//
 // RULE:
 //
-// Events become memories.
-// Memories become wisdom.
-// Wisdom changes future behaviour.
+// Remember a lifetime.
+// Recall what matters.
 //
-// v5.1:
-//
-// - Scalable recall
-// - Candidate memory retrieval
-// - Importance filtering
-// - No full memory scan while thinking
-//
-// Vector memory comes later.
-//
-
 
 import { EmmaDB }
 from "./config/EmmaDatabase";
@@ -42,21 +39,21 @@ class EmmaMemory {
 
 
 
-
 constructor(){
 
 
 
 console.log(
-"🧠 Emma Living Memory v5.1 awake"
+"🧠 Emma Living Memory v5.2 awake"
 );
 
 
 
 
 // =============================
-// CONSCIOUS MEMORY
+// ACTIVE CONSCIOUS MEMORY
 // =============================
+
 
 this.activeMemory = [];
 
@@ -67,14 +64,16 @@ this.activeMemory = [];
 // LONG TERM CACHE
 // =============================
 
+
 this.memoryCache = [];
 
 
 
 
 // =============================
-// LIFE DEFINING MEMORY
+// CORE LIFE MEMORIES
 // =============================
+
 
 this.coreMemories = [];
 
@@ -84,6 +83,7 @@ this.coreMemories = [];
 // =============================
 // ASSOCIATION GRAPH
 // =============================
+
 
 this.associations =
 new Map();
@@ -95,6 +95,7 @@ new Map();
 // FALLBACK MEMORY
 // =============================
 
+
 this.localMemories = [];
 
 
@@ -104,19 +105,29 @@ this.localMemories = [];
 this.lastSync = null;
 
 
+
 this.cacheLife =
+
 1000 * 60 * 5;
 
 
 
 
 
-// Day 15 scaling patch
+// =============================
+// LIMITS
+// =============================
+
 
 this.memoryLimit = 50;
 
 
 this.recallLimit = 15;
+
+
+// NEW 🕰
+
+this.timelineLimit = 50;
 
 
 
@@ -135,14 +146,17 @@ new EmmaIdentityMemory();
 this.defaultOwner = {
 
 
-userId:"owner",
+userId:
+
+"owner",
 
 
-businessId:null
+businessId:
+
+null
 
 
 };
-
 
 
 
@@ -169,7 +183,6 @@ experience={}
 ){
 
 
-
 console.log(
 "🌊 Experience entered Emma memory"
 );
@@ -183,9 +196,7 @@ experience
 );
 
 
-
 }
-
 
 
 
@@ -222,7 +233,6 @@ experience.signal?.userId ||
 
 
 
-
 const businessId =
 
 experience.businessId ||
@@ -230,7 +240,6 @@ experience.businessId ||
 experience.signal?.businessId ||
 
 null;
-
 
 
 
@@ -276,17 +285,11 @@ experience={}
 
 
 
-
-
-if(
-
-!experience
-
-)
+if(!experience){
 
 return null;
 
-
+}
 
 
 
@@ -303,8 +306,6 @@ experience
 
 
 
-
-
 const knowledge =
 
 this.createKnowledge(
@@ -312,9 +313,6 @@ this.createKnowledge(
 experience
 
 );
-
-
-
 
 
 
@@ -334,16 +332,12 @@ experience
 
 
 
-
-
-
-// ================================
+// =============================
 // IDENTITY MEMORY
-// ================================
+// =============================
 
 
 let personMemory = null;
-
 
 
 
@@ -359,14 +353,7 @@ experience.signal?.person;
 
 
 
-
-
-
-if(
-
-person
-
-){
+if(person){
 
 
 
@@ -384,11 +371,9 @@ event:
 experience.type,
 
 
-
 lesson:
 
 knowledge.lesson,
-
 
 
 emotion:
@@ -396,11 +381,9 @@ emotion:
 knowledge.emotion,
 
 
-
 date:
 
 new Date()
-
 
 
 }
@@ -408,7 +391,6 @@ new Date()
 );
 
 
-
 }
 
 
@@ -418,16 +400,12 @@ new Date()
 
 
 
-
-
-// ================================
+// =============================
 // MEMORY OBJECT
-// ================================
-
+// =============================
 
 
 const memory = {
-
 
 
 id:
@@ -440,18 +418,14 @@ Date.now(),
 
 
 
-
-
 ownerId:
 
 owner.ownerId,
 
 
-
 userId:
 
 owner.userId,
-
 
 
 businessId:
@@ -460,14 +434,9 @@ owner.businessId,
 
 
 
-
-
-
-
 type:
 
 knowledge.type,
-
 
 
 importance:
@@ -475,13 +444,10 @@ importance:
 knowledge.importance,
 
 
-
 strength,
 
 
-
 age:0,
-
 
 
 createdAt:
@@ -491,18 +457,12 @@ Date.now(),
 
 
 
-
-
-
-
 memory:{
-
 
 
 person:
 
 personMemory,
-
 
 
 
@@ -516,19 +476,13 @@ experience.type ||
 
 
 
-
-
 context:
 
 experience,
 
 
 
-
-
-
 outcome:{
-
 
 
 success:
@@ -536,18 +490,12 @@ success:
 knowledge.success,
 
 
-
 result:
 
 experience.outcome || null
 
 
-
 },
-
-
-
-
 
 
 
@@ -556,13 +504,9 @@ lesson:
 knowledge.lesson,
 
 
-
-
 futureRule:
 
 knowledge.futureRule,
-
-
 
 
 patterns:
@@ -570,13 +514,9 @@ patterns:
 knowledge.patterns,
 
 
-
-
 emotion:
 
 knowledge.emotion,
-
-
 
 
 tags:
@@ -584,16 +524,10 @@ tags:
 knowledge.tags,
 
 
-
-
 reinforced:0,
 
 
-
-
 associations:[],
-
-
 
 
 createdAt:
@@ -603,9 +537,7 @@ new Date()
 .toISOString()
 
 
-
 }
-
 
 
 };
@@ -617,11 +549,9 @@ new Date()
 
 
 
-
-// ================================
+// =============================
 // ACTIVE MEMORY
-// ================================
-
+// =============================
 
 
 this.activeMemory.unshift(
@@ -629,7 +559,6 @@ this.activeMemory.unshift(
 memory
 
 );
-
 
 
 
@@ -642,7 +571,6 @@ this.activeMemory.slice(
 50
 
 );
-
 
 
 
@@ -666,15 +594,6 @@ memory
 
 
 
-
-
-
-
-// ================================
-// ASSOCIATIONS
-// ================================
-
-
 this.buildAssociations(
 
 memory
@@ -684,15 +603,6 @@ memory
 
 
 
-
-
-
-
-
-
-// ================================
-// CORE MEMORY
-// ================================
 
 
 if(
@@ -732,26 +642,19 @@ console.log(
 
 
 
-
-// ================================
-// SAVE LONG TERM
-// ================================
+// =============================
+// LONG TERM STORAGE
+// =============================
 
 
 if(
 
-this.shouldPersist(
-
-memory
-
-)
+this.shouldPersist(memory)
 
 ){
 
 
-
 try{
-
 
 
 await EmmaDB.saveMemory(
@@ -769,13 +672,10 @@ console.log(
 );
 
 
-
 }
 
 
-
 catch(error){
-
 
 
 console.warn(
@@ -787,13 +687,10 @@ error.message
 );
 
 
-
 }
 
 
-
 }
-
 
 
 else{
@@ -812,12 +709,12 @@ console.log(
 
 
 
-
 return memory;
 
 
 
 }
+
 
 // =================================
 // EXPERIENCE → KNOWLEDGE
@@ -833,11 +730,13 @@ experience={}
 
 
 let type =
+
 "OBSERVED_EXPERIENCE";
 
 
-let success =
-null;
+
+let success = null;
+
 
 
 let importance =
@@ -847,7 +746,9 @@ experience.importance ||
 "NORMAL";
 
 
+
 let emotion =
+
 "neutral";
 
 
@@ -864,20 +765,22 @@ experience.success === true
 
 
 type =
+
 "POSITIVE_EXPERIENCE";
 
 
-success =
-true;
+
+success = true;
+
 
 
 emotion =
+
 "positive";
 
 
 
 }
-
 
 
 
@@ -893,18 +796,23 @@ experience.success === false
 
 
 type =
+
 "FAILED_EXPERIENCE";
 
 
-success =
-false;
+
+success = false;
+
 
 
 importance =
+
 "HIGH";
 
 
+
 emotion =
+
 "negative";
 
 
@@ -916,8 +824,8 @@ emotion =
 
 
 
-
 return {
+
 
 
 type,
@@ -935,7 +843,9 @@ emotion,
 
 lesson:
 
-experience.lesson ||
+experience.lesson
+
+||
 
 this.extractLesson(
 
@@ -948,10 +858,11 @@ type
 
 
 
-
 futureRule:
 
-experience.futureBehavior ||
+experience.futureBehavior
+
+||
 
 this.createFutureRule(
 
@@ -962,13 +873,13 @@ success
 
 
 
-
 patterns:
 
-experience.patternsFound || [],
+experience.patternsFound
 
+||
 
-
+[],
 
 
 tags:
@@ -1023,9 +934,15 @@ if(
 
 knowledge.importance === "HIGH"
 
-)
+||
+
+knowledge.importance === "critical"
+
+){
 
 score += 40;
+
+}
 
 
 
@@ -1035,9 +952,11 @@ if(
 
 knowledge.success !== null
 
-)
+){
 
 score += 25;
+
+}
 
 
 
@@ -1047,9 +966,11 @@ if(
 
 experience.person
 
-)
+){
 
 score += 15;
+
+}
 
 
 
@@ -1059,12 +980,11 @@ if(
 
 knowledge.patterns.length
 
-)
+){
 
 score += 20;
 
-
-
+}
 
 
 
@@ -1089,6 +1009,7 @@ score,
 
 
 
+
 // =================================
 // CORE MEMORY DETECTION
 // =================================
@@ -1104,14 +1025,13 @@ memory
 
 return (
 
+memory.strength >= 80
 
-memory.strength >= 80 ||
-
+||
 
 memory.type ===
 
 "FAILED_EXPERIENCE"
-
 
 );
 
@@ -1127,9 +1047,8 @@ memory.type ===
 
 
 
-
 // =================================
-// SHOULD SAVE LONG TERM
+// SHOULD PERSIST
 // =================================
 
 
@@ -1143,12 +1062,15 @@ memory
 
 return (
 
+memory.strength >= 30
 
-memory.strength >= 30 ||
-
+||
 
 memory.importance === "HIGH"
 
+||
+
+memory.importance === "critical"
 
 );
 
@@ -1178,8 +1100,6 @@ memory
 
 
 
-
-
 const words =
 
 JSON.stringify(
@@ -1194,10 +1114,9 @@ memory
 
 .filter(
 
-w => w.length > 4
+word => word.length > 4
 
 );
-
 
 
 
@@ -1217,8 +1136,6 @@ memory.memory.associations =
 
 
 
-
-
 for(
 
 const word of words
@@ -1227,14 +1144,11 @@ const word of words
 
 
 
-
-
 if(
 
 !this.associations.has(word)
 
 ){
-
 
 
 this.associations.set(
@@ -1246,10 +1160,7 @@ word,
 );
 
 
-
 }
-
-
 
 
 
@@ -1280,10 +1191,9 @@ memory.id
 
 
 
+
 // =================================
 // RECALL
-//
-// v5.1 scalable recall
 // =================================
 
 
@@ -1297,12 +1207,9 @@ context={}
 
 console.log(
 
-"🔎 Emma focused remembering..."
+"🔎 Emma focused remembering"
 
 );
-
-
-
 
 
 
@@ -1315,8 +1222,6 @@ await this.getMemoryCandidates(
 context
 
 );
-
-
 
 
 
@@ -1338,17 +1243,13 @@ memories
 
 
 
-
-
 return {
-
 
 
 
 relevantExperiences:
 
 relevant,
-
 
 
 
@@ -1365,8 +1266,6 @@ this.coreMemories.slice(
 
 
 
-
-
 wisdom:
 
 this.extractWisdom(
@@ -1374,8 +1273,6 @@ this.extractWisdom(
 relevant
 
 ),
-
-
 
 
 
@@ -1391,8 +1288,6 @@ relevant
 
 
 
-
-
 patterns:
 
 this.extractPatterns(
@@ -1400,21 +1295,6 @@ this.extractPatterns(
 relevant
 
 ),
-
-
-
-
-
-
-reason:
-
-this.explainRecall(
-
-relevant
-
-),
-
-
 
 
 
@@ -1445,12 +1325,11 @@ relevant.length
 
 
 
+
 // =================================
 // MEMORY CANDIDATES
 //
-// IMPORTANT PATCH
-//
-// No full life scan.
+// Fast thinking recall
 // =================================
 
 
@@ -1459,10 +1338,6 @@ async getMemoryCandidates(
 context={}
 
 ){
-
-
-
-
 
 
 
@@ -1482,8 +1357,6 @@ let candidates = [
 
 
 
-
-
 if(
 
 candidates.length >=
@@ -1491,8 +1364,6 @@ candidates.length >=
 this.recallLimit
 
 ){
-
-
 
 
 
@@ -1507,9 +1378,6 @@ this.memoryLimit
 
 
 }
-
-
-
 
 
 
@@ -1558,9 +1426,7 @@ true
 
 
 
-
-
-return [
+return this.removeDuplicates([
 
 
 ...candidates,
@@ -1569,9 +1435,7 @@ return [
 ...stored
 
 
-];
-
-
+]);
 
 
 
@@ -1584,16 +1448,11 @@ catch(error){
 
 
 
-
-
 console.warn(
 
 "⚠️ Memory fallback mode"
 
 );
-
-
-
 
 
 
@@ -1624,6 +1483,345 @@ this.memoryLimit
 
 
 // =================================
+// RECENT IMPORTANT MEMORIES 🕰
+//
+// Used by TemporalSense
+//
+// Prevents Supabase timeout
+// =================================
+
+
+async getRecentImportant(
+
+limit = 50
+
+){
+
+
+
+console.log(
+
+"🕰 Loading timeline memories"
+
+);
+
+
+
+
+
+let memories = [
+
+
+...this.activeMemory,
+
+
+...this.coreMemories
+
+
+];
+
+
+
+
+
+
+
+// cache first
+
+
+if(
+
+this.memoryCache.length
+
+){
+
+
+
+memories.push(
+
+...this.memoryCache
+
+);
+
+
+
+}
+
+
+
+
+
+
+memories =
+
+this.removeDuplicates(
+
+memories
+
+);
+
+
+
+
+
+
+
+if(
+
+memories.length >= limit
+
+){
+
+
+
+return memories
+
+
+.sort(
+
+(a,b)=>
+
+(b.createdAt || 0)
+
+-
+
+(a.createdAt || 0)
+
+)
+
+
+.slice(
+
+0,
+
+limit
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// Database only if needed
+
+
+try{
+
+
+
+const stored =
+
+await EmmaDB.getMemories({
+
+
+
+userId:
+
+this.defaultOwner.userId,
+
+
+
+businessId:
+
+this.defaultOwner.businessId,
+
+
+
+limit,
+
+
+importantOnly:true
+
+
+
+});
+
+
+
+
+
+
+
+return this.removeDuplicates([
+
+
+...memories,
+
+
+...stored
+
+
+])
+
+.slice(
+
+0,
+
+limit
+
+);
+
+
+
+
+}
+
+
+
+catch(error){
+
+
+
+console.warn(
+
+"⚠️ Temporal memory fallback",
+
+error.message
+
+);
+
+
+
+
+return this.localMemories.slice(
+
+0,
+
+limit
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// SAFE GET ALL
+//
+// Compatibility for old organs
+// =================================
+
+
+async getAll(){
+
+
+
+console.log(
+
+"🛡 Safe getAll redirected"
+
+);
+
+
+
+
+return await this.getRecentImportant(
+
+this.timelineLimit
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// =================================
+// REMOVE DUPLICATES
+// =================================
+
+
+removeDuplicates(
+
+memories=[]
+
+){
+
+
+
+const seen =
+
+new Set();
+
+
+
+
+
+return memories.filter(
+
+memory=>{
+
+
+
+const id =
+
+memory.id ||
+
+JSON.stringify(memory);
+
+
+
+
+
+if(
+
+seen.has(id)
+
+){
+
+return false;
+
+}
+
+
+
+
+seen.add(id);
+
+
+
+return true;
+
+
+
+});
+
+
+
+}
+
+
+// =================================
 // MEANING BASED RECALL
 // =================================
 
@@ -1635,8 +1833,6 @@ context={},
 memories=[]
 
 ){
-
-
 
 
 
@@ -1654,8 +1850,6 @@ context
 
 
 
-
-
 return memories
 
 
@@ -1664,14 +1858,9 @@ return memories
 
 
 
-
-
-
 let score =
 
 memory.strength || 0;
-
-
 
 
 
@@ -1694,15 +1883,15 @@ text.includes(tag)
 
 ){
 
+
 score += 20;
 
-}
-
-
 
 }
 
 
+
+}
 
 
 
@@ -1711,7 +1900,9 @@ score += 20;
 
 if(
 
-memory.memory?.emotion &&
+memory.memory?.emotion
+
+&&
 
 text.includes(
 
@@ -1734,8 +1925,6 @@ score += 15;
 
 
 
-
-
 score +=
 
 (
@@ -1749,8 +1938,6 @@ memory.memory?.reinforced ||
 *
 
 10;
-
-
 
 
 
@@ -1778,18 +1965,13 @@ score
 
 
 
-
-
-
 .filter(
 
-m =>
+memory =>
 
-m._relevanceScore > 25
+memory._relevanceScore > 25
 
 )
-
-
 
 
 
@@ -1809,9 +1991,6 @@ a._relevanceScore
 
 
 
-
-
-
 .slice(
 
 0,
@@ -1823,6 +2002,15 @@ a._relevanceScore
 
 
 }
+
+
+
+
+
+
+
+
+
 
 // =================================
 // MEMORY REINFORCEMENT
@@ -1841,18 +2029,16 @@ if(
 
 !memory.memory
 
-)
+){
 
 return;
 
-
+}
 
 
 
 
 memory.memory.reinforced++;
-
-
 
 
 
@@ -1866,8 +2052,6 @@ memory.strength + 10,
 100
 
 );
-
-
 
 
 
@@ -1886,11 +2070,11 @@ return memory;
 
 
 
+
 // =================================
 // SLEEP CONSOLIDATION
 //
-// Full memory thinking happens here,
-// not during normal recall.
+// Deep reflection happens here.
 // =================================
 
 
@@ -1898,21 +2082,16 @@ async sleep(){
 
 
 
-
-
 console.log(
 
-"💤 Emma sleeping..."
+"💤 Emma sleeping"
 
 );
 
 
 
 
-
-
 this.ageMemories();
-
 
 
 
@@ -1924,16 +2103,11 @@ this.formWisdom();
 
 
 
-
-
-
 console.log(
 
 "🌙 Emma woke with wisdom"
 
 );
-
-
 
 
 
@@ -1962,16 +2136,11 @@ ageMemories(){
 
 
 
-
-
 this.memoryCache =
 
 this.memoryCache.filter(
 
-memory => {
-
-
-
+memory=>{
 
 
 
@@ -1980,23 +2149,15 @@ memory.age++;
 
 
 
-
-
-
 if(
 
-this.isCoreMemory(
+this.isCoreMemory(memory)
 
-memory
-
-)
-
-)
+){
 
 return true;
 
-
-
+}
 
 
 
@@ -2008,14 +2169,11 @@ memory.strength -= 5;
 
 
 
-
-
 return (
 
 memory.strength > 0
 
 );
-
 
 
 
@@ -2035,13 +2193,11 @@ memory.strength > 0
 
 
 // =================================
-// EXPERIENCE → WISDOM
+// FORM WISDOM
 // =================================
 
 
 formWisdom(){
-
-
 
 
 
@@ -2056,7 +2212,6 @@ memory =>
 memory.strength >= 60
 
 )
-
 
 
 
@@ -2084,9 +2239,7 @@ memory.type
 
 
 
-})
-
-);
+}));
 
 
 
@@ -2101,13 +2254,16 @@ memory.type
 
 
 
+// =================================
+// EXTRACT WISDOM
+// =================================
+
+
 extractWisdom(
 
 memories=[]
 
 ){
-
-
 
 
 
@@ -2122,7 +2278,6 @@ memory =>
 memory.strength >= 60
 
 )
-
 
 
 
@@ -2150,9 +2305,7 @@ memory.type
 
 
 
-})
-
-);
+}));
 
 
 
@@ -2166,8 +2319,9 @@ memory.type
 
 
 
+
 // =================================
-// EXPLAIN WHY REMEMBERED
+// EXPLAIN RECALL
 // =================================
 
 
@@ -2176,8 +2330,6 @@ explainRecall(
 memories=[]
 
 ){
-
-
 
 
 
@@ -2211,9 +2363,7 @@ memory._relevanceScore
 
 
 
-})
-
-);
+}));
 
 
 
@@ -2229,17 +2379,14 @@ memory._relevanceScore
 
 
 // =================================
-// FULL MEMORY LOAD
+// DEEP MEMORY LOAD
 //
-// DO NOT USE DURING THINKING
-//
-// Sleep / maintenance only.
+// Sleep only.
+// Not active thinking.
 // =================================
 
 
 async getAllMemories(){
-
-
 
 
 
@@ -2252,19 +2399,17 @@ console.log(
 
 
 
-
-
-
 if(
 
 this.isCacheValid()
 
-)
+){
+
 
 return this.memoryCache;
 
 
-
+}
 
 
 
@@ -2272,8 +2417,6 @@ return this.memoryCache;
 
 
 try{
-
-
 
 
 
@@ -2308,13 +2451,9 @@ this.memoryLimit
 
 
 
-
-
 this.memoryCache =
 
 memories;
-
-
 
 
 
@@ -2325,11 +2464,7 @@ Date.now();
 
 
 
-
-
 return memories;
-
-
 
 
 
@@ -2337,21 +2472,16 @@ return memories;
 
 
 
+
 catch(error){
-
-
-
 
 
 
 console.warn(
 
-"DB unavailable, using local memory"
+"DB unavailable, local memory used"
 
 );
-
-
-
 
 
 
@@ -2374,6 +2504,7 @@ return this.localMemories;
 
 
 
+
 // =================================
 // CACHE CHECK
 // =================================
@@ -2383,14 +2514,13 @@ isCacheValid(){
 
 
 
-
-
 return (
 
 
+this.lastSync
 
-this.lastSync &&
 
+&&
 
 
 Date.now()
@@ -2402,7 +2532,6 @@ this.lastSync
 <
 
 this.cacheLife
-
 
 
 );
@@ -2435,16 +2564,11 @@ type
 
 
 
-
-
 if(
 
-type ===
+type === "FAILED_EXPERIENCE"
 
-"FAILED_EXPERIENCE"
-
-)
-
+){
 
 
 return (
@@ -2454,7 +2578,7 @@ return (
 );
 
 
-
+}
 
 
 
@@ -2462,12 +2586,9 @@ return (
 
 if(
 
-type ===
+type === "POSITIVE_EXPERIENCE"
 
-"POSITIVE_EXPERIENCE"
-
-)
-
+){
 
 
 return (
@@ -2477,7 +2598,7 @@ return (
 );
 
 
-
+}
 
 
 
@@ -2510,14 +2631,7 @@ success
 
 
 
-
-
-if(
-
-success === false
-
-)
-
+if(success === false){
 
 
 return (
@@ -2527,17 +2641,13 @@ return (
 );
 
 
+}
 
 
 
 
 
-if(
-
-success === true
-
-)
-
+if(success === true){
 
 
 return (
@@ -2547,7 +2657,7 @@ return (
 );
 
 
-
+}
 
 
 
@@ -2577,8 +2687,6 @@ extractRules(
 memories=[]
 
 ){
-
-
 
 
 
@@ -2619,13 +2727,10 @@ memories=[]
 
 
 
-
-
 return [
 
 
 ...new Set(
-
 
 
 memories.flatMap(
@@ -2637,9 +2742,7 @@ memory.memory?.patterns || []
 )
 
 
-
 )
-
 
 
 ];
@@ -2667,8 +2770,6 @@ type
 
 
 
-
-
 return [
 
 
@@ -2682,7 +2783,6 @@ experience.type,
 
 
 experience.situation
-
 
 
 
@@ -2726,8 +2826,6 @@ status(){
 
 
 
-
-
 return {
 
 
@@ -2740,13 +2838,13 @@ organ:
 
 version:
 
-"v5.1",
+"v5.2",
 
 
 
 state:
 
-"LIVING_MEMORY",
+"LIVING_TEMPORAL_MEMORY",
 
 
 
@@ -2768,15 +2866,48 @@ this.coreMemories.length,
 
 
 
+recallLimit:
+
+this.recallLimit,
+
+
+
+timelineLimit:
+
+this.timelineLimit,
+
+
+
+supports:[
+
+
+"Experience Memory",
+
+
+"Meaning Recall",
+
+
+"TemporalSense Timeline",
+
+
+"Safe History Retrieval"
+
+
+],
+
+
+
+
 principle:
 
-"Remember meaning, not everything.",
+"Remember a lifetime. Recall only what matters now.",
+
 
 
 
 message:
 
-"I recall what matters before I think."
+"My past is large, but my attention is focused."
 
 
 
@@ -2788,10 +2919,7 @@ message:
 
 
 
-
-
 }
-
 
 
 
