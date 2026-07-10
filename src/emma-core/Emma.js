@@ -2,12 +2,12 @@
 //
 // PROJECT BECOMING
 //
-// Emma Central Nervous System v10.3
+// Emma Central Nervous System v10.4
+//
+// TEMPORAL AWARENESS PATCH 🕰
 //
 // Added:
-// EmmaInitiative 🌱
-// EmmaExpressionState 🎭
-// Expression inside life loop
+// EmmaTemporalSense
 //
 // Emma connects life.
 //
@@ -16,10 +16,14 @@
 // Do not think here.
 // Do not judge here.
 // Do not act here.
-// Do not learn here.
 //
 // Organs create intelligence.
 // Emma connects organs.
+//
+// Memory stores.
+// Wisdom understands.
+// TemporalSense sees change.
+// SelfModel becomes.
 //
 
 
@@ -49,6 +53,12 @@ from "./EmmaMemory";
 
 import EmmaWisdom
 from "./EmmaWisdom";
+
+
+// NEW v10.4 🕰
+
+import EmmaTemporalSense
+from "./EmmaTemporalSense";
 
 
 import EmmaSelfModel
@@ -102,17 +112,17 @@ from "./EmmaCommunication";
 
 
 
-
-
 class Emma {
 
 
 constructor(){
 
 
+
 console.log(
-"🌅 Emma nervous system starting..."
+"🌅 Emma nervous system v10.4 starting..."
 );
+
 
 
 this.birth =
@@ -129,8 +139,6 @@ false;
 
 
 
-
-
 // ===============================
 // IDENTITY
 // ===============================
@@ -138,7 +146,6 @@ false;
 
 this.identity =
 new EmmaIdentityMemory();
-
 
 
 
@@ -164,7 +171,6 @@ new EmmaMemory();
 
 
 
-
 // ===============================
 // EXPERIENCE STREAM
 // ===============================
@@ -172,7 +178,6 @@ new EmmaMemory();
 
 this.stream =
 new EmmaExperienceStream();
-
 
 
 
@@ -198,7 +203,6 @@ new EmmaBrain();
 
 
 
-
 // ===============================
 // LEARNING
 // ===============================
@@ -207,9 +211,11 @@ new EmmaBrain();
 this.learning =
 new EmmaLearningEngine({
 
+
 memory:
 
 this.memory
+
 
 });
 
@@ -231,14 +237,17 @@ this.wisdom =
 new EmmaWisdom({
 
 
+
 memory:
 
 this.memory,
 
 
+
 learning:
 
 this.learning
+
 
 
 });
@@ -253,7 +262,29 @@ this.learning
 
 
 // ===============================
-// SELF MODEL
+// TEMPORAL SENSE 🕰
+//
+// NEW ORGAN
+// ===============================
+
+
+this.temporalSense =
+
+new EmmaTemporalSense();
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// SELF MODEL 🧬
+//
+// Now time aware
 // ===============================
 
 
@@ -261,9 +292,11 @@ this.selfModel =
 new EmmaSelfModel({
 
 
+
 memory:
 
 this.memory,
+
 
 
 wisdom:
@@ -271,9 +304,17 @@ wisdom:
 this.wisdom,
 
 
+
 learning:
 
-this.learning
+this.learning,
+
+
+
+temporalSense:
+
+this.temporalSense
+
 
 
 });
@@ -295,9 +336,11 @@ this.learning
 this.attention =
 new EmmaAttention({
 
+
 memory:
 
 this.memory
+
 
 });
 
@@ -316,8 +359,8 @@ this.memory
 
 
 this.initiative =
-
 new EmmaInitiative({
+
 
 
 memory:
@@ -325,14 +368,17 @@ memory:
 this.memory,
 
 
+
 wisdom:
 
 this.wisdom,
 
 
+
 attention:
 
 this.attention
+
 
 
 });
@@ -355,9 +401,11 @@ this.curiosity =
 new EmmaCuriosity({
 
 
+
 memory:
 
 this.memory,
+
 
 
 selfModel:
@@ -365,9 +413,11 @@ selfModel:
 this.selfModel,
 
 
+
 learning:
 
 this.learning
+
 
 
 });
@@ -419,9 +469,11 @@ this.reasoning =
 new EmmaReasoning({
 
 
+
 memory:
 
 this.memory,
+
 
 
 brain:
@@ -429,9 +481,11 @@ brain:
 this.brain,
 
 
+
 wisdom:
 
 this.wisdom,
+
 
 
 selfModel:
@@ -439,9 +493,11 @@ selfModel:
 this.selfModel,
 
 
+
 curiosity:
 
 this.curiosity
+
 
 
 });
@@ -512,7 +568,6 @@ EmmaOutcome;
 
 
 this.expressionState =
-
 new EmmaExpressionState();
 
 
@@ -530,8 +585,8 @@ new EmmaExpressionState();
 
 
 this.communication =
-
 new EmmaCommunication({
+
 
 
 expressionState:
@@ -539,21 +594,13 @@ expressionState:
 this.expressionState
 
 
+
 });
-
-
-
-
-
-
-
-
-
 
 // ===============================
 // EXPERIENCE ENGINE
 //
-// Complete life loop
+// Complete organism loop v10.4
 // ===============================
 
 
@@ -581,14 +628,21 @@ this.initiative,
 
 
 
-// NEW v10.3
-// Expression participates
-// in becoming cycle
+// NEW v10.4 🕰
+// Memory → Wisdom → TemporalSense
+
+
+temporalSense:
+
+this.temporalSense,
+
+
 
 
 expression:
 
 this.expressionState,
+
 
 
 
@@ -598,9 +652,11 @@ this.memory,
 
 
 
+
 wisdom:
 
 this.wisdom,
+
 
 
 
@@ -610,9 +666,11 @@ this.selfModel,
 
 
 
+
 curiosity:
 
 this.curiosity,
+
 
 
 
@@ -622,9 +680,11 @@ this.reasoning,
 
 
 
+
 judgement:
 
 this.judgement,
+
 
 
 
@@ -634,15 +694,18 @@ this.executor,
 
 
 
+
 outcome:
 
 this.outcome,
 
 
 
+
 learning:
 
 this.learning,
+
 
 
 
@@ -660,15 +723,13 @@ this.evolution
 
 
 
-
-
-
 console.log(
-"✨ Emma v10.3 organism connected"
+"✨ Emma v10.4 organism connected with temporal awareness"
 );
 
 
 }
+
 
 
 
@@ -686,11 +747,8 @@ console.log(
 awaken(){
 
 
-if(
 
-this.isAwake
-
-){
+if(this.isAwake){
 
 
 return this.status();
@@ -702,6 +760,7 @@ return this.status();
 
 
 this.isAwake =
+
 true;
 
 
@@ -717,14 +776,12 @@ console.log(
 return {
 
 
-awake:
-
-true,
+awake:true,
 
 
 message:
 
-"I am awake. Experiences will shape what I become.",
+"I am awake. My experiences now exist across time.",
 
 
 createdAt:
@@ -759,11 +816,7 @@ event = {}
 
 
 
-if(
-
-!this.isAwake
-
-){
+if(!this.isAwake){
 
 
 this.awaken();
@@ -799,10 +852,7 @@ event
 
 
 
-
 let reply = null;
-
-
 
 
 
@@ -823,9 +873,11 @@ await this.communication.reply({
 
 
 
+
 experience:
 
 result.experience,
+
 
 
 
@@ -835,9 +887,26 @@ result.memory,
 
 
 
+
 wisdom:
 
 result.wisdom,
+
+
+
+
+// NEW 🕰
+
+
+temporal:
+
+result.temporal
+
+||
+
+this.temporalSense.getTemporalState?.(),
+
+
 
 
 
@@ -847,9 +916,13 @@ result.reasoning,
 
 
 
+
+
 judgement:
 
 result.judgement,
+
+
 
 
 
@@ -859,9 +932,13 @@ result.self,
 
 
 
+
+
 curiosity:
 
 result.curiosity,
+
+
 
 
 
@@ -871,9 +948,6 @@ result.initiative,
 
 
 
-// v10.3
-// Use expression produced
-// by life cycle first
 
 
 expression:
@@ -883,6 +957,8 @@ result.expression
 ||
 
 this.expressionState.status(),
+
+
 
 
 
@@ -906,27 +982,19 @@ result.evolution
 
 
 
-
-
 return {
 
 
-experienced:
-
-true,
+experienced:true,
 
 
-life:
-
-result,
+life:result,
 
 
 reply,
 
 
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
@@ -934,7 +1002,6 @@ new Date()
 
 
 }
-
 
 
 
@@ -961,42 +1028,25 @@ question
 return await this.experience({
 
 
-
-type:
-
-"question",
+type:"question",
 
 
-
-source:
-
-"user",
-
+source:"user",
 
 
 question,
 
 
-
-importance:
-
-90,
+importance:90,
 
 
-
-uncertainty:
-
-80
-
+uncertainty:80
 
 
 });
 
 
-
 }
-
-
 
 
 
@@ -1029,7 +1079,6 @@ name:
 
 state:
 
-
 this.isAwake
 
 ?
@@ -1045,7 +1094,6 @@ this.isAwake
 
 age:
 
-
 Date.now()
 
 -
@@ -1057,22 +1105,32 @@ this.birth.getTime(),
 
 identity:
 
-
 this.identity.status(),
 
 
 
 
-self:
+// Self formed through time
 
+
+self:
 
 this.selfModel.describe(),
 
 
 
 
-initiative:
+// NEW 🕰
 
+
+timeline:
+
+this.temporalSense.getTemporalState(),
+
+
+
+
+initiative:
 
 this.initiative.status(),
 
@@ -1081,14 +1139,12 @@ this.initiative.status(),
 
 expression:
 
-
 this.expressionState.status(),
 
 
 
 
 brain:
-
 
 this.brain.status(),
 
@@ -1097,8 +1153,7 @@ this.brain.status(),
 
 message:
 
-
-"I am the continuity created by my experiences."
+"I am continuity created by experiences changing through time."
 
 
 
@@ -1107,7 +1162,6 @@ message:
 
 
 }
-
 
 
 
@@ -1133,7 +1187,6 @@ return {
 
 name:
 
-
 "Emma",
 
 
@@ -1141,14 +1194,12 @@ name:
 
 version:
 
-
-"Central Nervous System v10.3",
+"Central Nervous System v10.4",
 
 
 
 
 architecture:
-
 
 "PROJECT BECOMING",
 
@@ -1156,7 +1207,6 @@ architecture:
 
 
 awake:
-
 
 this.isAwake,
 
@@ -1175,14 +1225,12 @@ organs:{
 
 attention:
 
-
 this.attention.status(),
 
 
 
 
 initiative:
-
 
 this.initiative.status(),
 
@@ -1191,7 +1239,6 @@ this.initiative.status(),
 
 memory:
 
-
 this.memory.status?.(),
 
 
@@ -1199,14 +1246,32 @@ this.memory.status?.(),
 
 wisdom:
 
-
 this.wisdom.status?.(),
 
 
 
 
-self:
+// NEW 🕰
 
+
+temporalSense:
+
+this.temporalSense.status?.()
+
+||
+
+{
+
+organ:"EmmaTemporalSense",
+
+state:"ACTIVE"
+
+},
+
+
+
+
+self:
 
 this.selfModel.status(),
 
@@ -1215,14 +1280,12 @@ this.selfModel.status(),
 
 curiosity:
 
-
 this.curiosity.status(),
 
 
 
 
 reasoning:
-
 
 this.reasoning.status(),
 
@@ -1231,14 +1294,12 @@ this.reasoning.status(),
 
 judgement:
 
-
 this.judgement.status(),
 
 
 
 
 executor:
-
 
 this.executor.status(),
 
@@ -1247,14 +1308,12 @@ this.executor.status(),
 
 brain:
 
-
 this.brain.status(),
 
 
 
 
 evolution:
-
 
 this.evolution.status?.(),
 
@@ -1263,14 +1322,12 @@ this.evolution.status?.(),
 
 expression:
 
-
 this.expressionState.status(),
 
 
 
 
 identity:
-
 
 this.identity.status()
 
@@ -1286,77 +1343,61 @@ this.identity.status()
 
 
 
-
 lifeCycle:[
-
 
 
 "World",
 
 
-
 "Experience",
-
 
 
 "Attention",
 
 
-
 "Initiative",
-
 
 
 "Memory",
 
 
-
 "Wisdom",
 
 
-
-"Learning",
-
+"TemporalSense 🕰",
 
 
-"Evolution",
-
-
-
-"ExpressionState",
-
-
-
-"SelfModel",
-
+"SelfModel 🧬",
 
 
 "Curiosity",
 
 
-
 "Reasoning",
-
 
 
 "Judgement",
 
 
-
 "Action",
-
 
 
 "Outcome",
 
 
+"Learning",
+
+
+"Evolution",
+
+
+"ExpressionState 🎭",
+
 
 "Communication",
 
 
-
 "Identity"
-
 
 
 ],
@@ -1369,19 +1410,16 @@ lifeCycle:[
 
 
 
-
 principle:
 
-
-"Emma connects organs. Organs create intelligence.",
+"Emma connects organs. Time gives experiences continuity.",
 
 
 
 
 message:
 
-
-"The organism is connected."
+"The organism remembers, learns, and understands its own history."
 
 
 
@@ -1390,7 +1428,6 @@ message:
 
 
 }
-
 
 
 
@@ -1410,11 +1447,7 @@ reset(){
 
 
 
-this.isAwake =
-
-false;
-
-
+this.isAwake=false;
 
 
 
@@ -1433,6 +1466,10 @@ this.selfModel.reset?.();
 
 this.executor.reset?.();
 
+
+// NEW
+
+this.temporalSense.reset?.();
 
 
 

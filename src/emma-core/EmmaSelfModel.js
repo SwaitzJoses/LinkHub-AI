@@ -2,35 +2,24 @@
 //
 // PROJECT BECOMING
 //
-// Emma Self Model v2.5
+// Emma Self Model v3
 //
-// DAY 15 STABILITY PATCH
+// TEMPORAL AWARENESS PATCH
 //
-// Emma observing Emma.
+// Memory stores events.
+// Wisdom extracts meaning.
+// TemporalSense understands change across time.
+// SelfModel understands becoming.
 //
-// RULE:
-//
-// A moment becomes memory.
-// Repeated meaning becomes self.
-// Long-term change becomes evolution.
-//
-// Memory stores past.
-// Wisdom understands.
-// SelfModel observes patterns.
-// Evolution makes permanent.
-//
-// v2.5:
-// - Importance scoring
-// - Stronger maturity gate
-// - Evolution safety protection
-//
-
+// v3:
+// - Connected to TemporalSense
+// - Identity requires time + evidence
+// - Detects growth trajectory
+// - Prevents short-term mood becoming identity
+// - Builds continuity
 
 
 class EmmaSelfModel {
-
-
-
 
 
 constructor({
@@ -39,16 +28,16 @@ memory=null,
 
 wisdom=null,
 
-learning=null
+learning=null,
+
+temporalSense=null
 
 } = {}){
 
 
-
 console.log(
-"🧬 Emma Self Model v2.5 awakened"
+"🧬 Emma Self Model v3 awakened (Temporal Aware)"
 );
-
 
 
 
@@ -64,13 +53,9 @@ this.learning =
 learning;
 
 
+this.temporalSense =
+temporalSense;
 
-
-
-
-// ===============================
-// EMERGING SELF
-// ===============================
 
 
 this.self = {
@@ -78,22 +63,25 @@ this.self = {
 
 temporaryPatterns:[],
 
-
 stablePatterns:[],
-
 
 acceptedEvolutions:[],
 
+rejectedEvolutions:[],
 
 changes:[],
 
 
-rejectedEvolutions:[],
+// NEW
+
+timelineInfluences:[],
+
+growthTrajectory:null,
+
+lifePhases:[],
 
 
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
@@ -101,9 +89,6 @@ new Date()
 
 
 }
-
-
-
 
 
 
@@ -122,13 +107,48 @@ experience={}
 ){
 
 
-
 console.log(
 
-"🧬 Emma observing self pattern..."
+"🧬 Emma observing self across time..."
 
 );
 
+
+
+// Update temporal understanding first
+
+
+let temporalContext=null;
+
+
+
+if(
+
+this.temporalSense &&
+
+this.memory &&
+
+this.memory.getAll
+
+){
+
+
+temporalContext =
+
+this.temporalSense.experienceTime(
+
+this.memory.getAll()
+
+);
+
+
+this.absorbTemporalContext(
+
+temporalContext
+);
+
+
+}
 
 
 
@@ -144,35 +164,23 @@ experience
 
 
 
-
-
-if(
-
-!signal
-
-){
+if(!signal){
 
 
 return {
 
-
 changed:false,
 
-
 reason:
+"No self pattern detected",
 
-"No self pattern detected."
-
+temporal:
+temporalContext
 
 };
 
 
 }
-
-
-
-
-
 
 
 
@@ -188,34 +196,121 @@ signal
 
 
 
-
-
-
-
-
 return {
 
 
 changed:true,
 
-
 signal,
-
 
 pattern,
 
+temporal:
+temporalContext,
 
 self:
-
 this.getSelfContext(),
 
+createdAt:new Date()
 
-createdAt:
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+// =================================
+// ABSORB TEMPORAL SENSE
+// =================================
+
+
+absorbTemporalContext(
+
+context
+
+){
+
+
+if(!context){
+
+return;
+
+}
+
+
+
+// save long-term patterns
+
+
+if(context.patterns){
+
+
+this.self.timelineInfluences =
+
+context.patterns;
+
+
+}
+
+
+
+// save life/project phases
+
+
+if(context.phases){
+
+
+this.self.lifePhases =
+
+context.phases;
+
+
+}
+
+
+
+
+// detect trajectory
+
+
+if(
+
+context.trends &&
+
+context.trends.length
+
+){
+
+
+this.self.growthTrajectory = {
+
+
+direction:
+
+context.trends[0].direction,
+
+
+meaning:
+
+context.trends[0].meaning,
+
+
+updatedAt:
 
 new Date()
 
 
 };
+
+
+}
 
 
 
@@ -228,20 +323,8 @@ new Date()
 
 
 
-
 // =================================
-// EXTRACT SELF SIGNAL
-// =================================
-
-
-// =================================
-// EXTRACT SELF SIGNAL
-//
-// Day 15 tiny patch:
-//
-// Observe current experience only.
-// Do not let memory/wisdom history
-// create false self changes.
+// EXTRACT SIGNAL
 // =================================
 
 
@@ -250,13 +333,6 @@ extractSignal(
 experience={}
 
 ){
-
-
-
-
-
-// Look only at the event itself,
-// not attached wisdom or memories.
 
 
 const currentExperience =
@@ -268,8 +344,6 @@ experience.raw ||
 experience.event ||
 
 experience;
-
-
 
 
 
@@ -287,21 +361,13 @@ currentExperience
 
 
 
-
-
 const importance =
 
 currentExperience.importance ||
 
 currentExperience.score ||
 
-currentExperience.raw?.importance ||
-
 0.3;
-
-
-
-
 
 
 
@@ -316,42 +382,27 @@ text.includes("failed")
 ){
 
 
-
 return {
 
 
 type:"ADAPTATION",
-
-
 
 direction:
 
 "Become more careful in similar situations",
 
 
-
 importance,
 
+source:currentExperience,
 
-source:
-
-currentExperience,
-
-
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
 
 
-
 }
-
-
-
-
 
 
 
@@ -362,10 +413,11 @@ if(
 
 text.includes("success") ||
 
-text.includes("completed")
+text.includes("completed") ||
+
+text.includes("achieved")
 
 ){
-
 
 
 return {
@@ -373,37 +425,21 @@ return {
 
 type:"STRENGTH",
 
-
-
 direction:
 
 "Recognize effective behaviour",
 
-
-
 importance,
 
+source:currentExperience,
 
-source:
-
-currentExperience,
-
-
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
 
 
-
 }
-
-
-
-
-
 
 
 
@@ -418,35 +454,23 @@ text.includes("pattern")
 ){
 
 
-
 return {
 
 
 type:"PATTERN",
 
-
-
 direction:
 
 "Repeated behaviour detected",
 
-
-
 importance,
 
+source:currentExperience,
 
-source:
-
-currentExperience,
-
-
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
-
 
 
 }
@@ -454,12 +478,7 @@ new Date()
 
 
 
-
-
-
-
 return null;
-
 
 
 }
@@ -476,93 +495,45 @@ return null;
 // =================================
 
 
-updatePattern(
-
-signal
-
-){
-
+updatePattern(signal){
 
 
 let existing =
 
 this.self.temporaryPatterns.find(
 
-pattern =>
+p =>
 
-pattern.direction === signal.direction
+p.direction === signal.direction
 
 );
 
 
 
 
+if(!existing){
 
 
 
+existing={
 
 
-// ===============================
-// NEW PATTERN
-// ===============================
+id:this.createId(),
 
+type:signal.type,
 
-if(
-
-!existing
-
-){
-
-
-
-existing = {
-
-
-id:
-
-this.createId(),
-
-
-
-type:
-
-signal.type,
-
-
-
-direction:
-
-signal.direction,
-
-
+direction:signal.direction,
 
 strength:1,
 
+importance:signal.importance,
 
+evidence:[signal.source],
 
-importance:
-
-signal.importance,
-
-
-
-evidence:[
-
-signal.source
-
-],
-
-
-
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
-
-
-
 
 
 
@@ -574,23 +545,10 @@ existing
 
 
 
-}
-
-
-
-
-
-
-
-
-
-else{
-
+}else{
 
 
 existing.strength++;
-
-
 
 existing.importance =
 
@@ -603,7 +561,6 @@ signal.importance
 );
 
 
-
 existing.evidence.push(
 
 signal.source
@@ -611,11 +568,7 @@ signal.source
 );
 
 
-
-existing.updatedAt =
-
-new Date();
-
+existing.updatedAt=new Date();
 
 
 }
@@ -624,28 +577,20 @@ new Date();
 
 
 
-
-
-
-// ===============================
-// PROMOTION GATE
-//
-// Day 15 patch 🔒
-// ===============================
+// v3 promotion requires TIME
 
 
 if(
 
-existing.strength >= 3 &&
+existing.strength >=3 &&
 
-this.hasEnoughEvidence(
+this.hasTemporalEvidence(
 
 existing
 
 )
 
 ){
-
 
 
 this.promotePattern(
@@ -655,37 +600,40 @@ existing
 );
 
 
-
 }
-
-
-
-
-
-
 
 
 
 return existing;
 
 
-
 }
 
 
 // =================================
-// EVIDENCE CHECK
+// TEMPORAL EVIDENCE GATE
 //
-// Prevent weak self formation
+// v3 protection:
+//
+// A self change cannot happen
+// from a moment.
+//
+// It requires:
+// - repetition
+// - importance
+// - time awareness
 // =================================
 
 
-hasEnoughEvidence(
+hasTemporalEvidence(
 
 pattern
 
 ){
 
+
+
+// strong memories
 
 
 const strongEvidence =
@@ -710,13 +658,96 @@ event.score ||
 
 
 
+if(
+
+strongEvidence.length < 2
+
+){
+
+
+return false;
+
+
+}
+
+
+
+
+
+
+
+// if no TemporalSense exists,
+// fallback to old protection
+
+
+if(
+
+!this.temporalSense
+
+){
+
+
+return true;
+
+
+}
+
+
+
+
+
+
+// require long-term confirmation
+
+
+const temporalMatch =
+
+this.self.timelineInfluences.some(
+
+item => {
+
+
+const text =
+
+JSON.stringify(item)
+
+.toLowerCase();
+
+
 
 return (
 
-strongEvidence.length >= 2
+text.includes(
+
+pattern.type.toLowerCase()
+
+) ||
+
+text.includes(
+
+pattern.direction.toLowerCase()
+
+)
 
 );
 
+
+}
+
+);
+
+
+
+
+
+
+return (
+
+temporalMatch ||
+
+this.self.growthTrajectory !== null
+
+);
 
 
 }
@@ -730,9 +761,7 @@ strongEvidence.length >= 2
 
 
 // =================================
-// PROMOTE PATTERN
-//
-// Self change, not identity.
+// PROMOTE TEMPORARY → STABLE SELF
 // =================================
 
 
@@ -744,9 +773,7 @@ pattern
 
 
 
-
-
-const alreadyStable =
+const exists =
 
 this.self.stablePatterns.some(
 
@@ -759,22 +786,11 @@ item.direction === pattern.direction
 
 
 
-
-
-if(
-
-alreadyStable
-
-){
+if(exists){
 
 return;
 
 }
-
-
-
-
-
 
 
 
@@ -788,16 +804,22 @@ const stable = {
 stable:true,
 
 
+temporalConfirmed:
+
+!!this.temporalSense,
+
+
+trajectory:
+
+this.self.growthTrajectory,
+
+
 becameStableAt:
 
 new Date()
 
 
 };
-
-
-
-
 
 
 
@@ -814,16 +836,12 @@ stable
 
 
 
-
-
 this.self.changes.push({
-
 
 
 type:
 
-"SELF_PATTERN_FORMED",
-
+"SELF_EVOLUTION_OVER_TIME",
 
 
 pattern:
@@ -831,17 +849,14 @@ pattern:
 stable.direction,
 
 
-
-strength:
-
-stable.strength,
-
-
-
 evidenceCount:
 
 stable.evidence.length,
 
+
+trajectory:
+
+this.self.growthTrajectory,
 
 
 createdAt:
@@ -855,17 +870,13 @@ new Date()
 
 
 
-
-
-
 console.log(
 
-"🧬 Stable self pattern formed:",
+"🧬 Long-term self pattern formed:",
 
 stable.direction
 
 );
-
 
 
 }
@@ -884,8 +895,6 @@ stable.direction
 // ACCEPT EVOLUTION
 //
 // Called by EmmaEvolution
-//
-// Day 15 protection added
 // =================================
 
 
@@ -897,21 +906,9 @@ evolution={}
 
 
 
-
-
-
-
-if(
-
-!evolution.change
-
-){
-
-
+if(!evolution.change){
 
 return null;
-
-
 
 }
 
@@ -919,11 +916,6 @@ return null;
 
 
 
-
-
-
-
-// safety gate
 
 if(
 
@@ -937,9 +929,7 @@ evolution
 
 
 
-
-
-const rejected = {
+const rejected={
 
 
 evolution,
@@ -947,19 +937,13 @@ evolution,
 
 reason:
 
-"Rejected: conflicts with stable self continuity",
+"Rejected: breaks continuity of self",
 
 
-
-createdAt:
-
-new Date()
+createdAt:new Date()
 
 
 };
-
-
-
 
 
 
@@ -972,20 +956,11 @@ rejected
 
 
 
-
-
-
-
 console.log(
 
-"🛡 Evolution rejected by SelfModel"
+"🛡 Evolution rejected"
 
 );
-
-
-
-
-
 
 
 
@@ -993,7 +968,6 @@ return {
 
 
 accepted:false,
-
 
 reason:
 
@@ -1003,7 +977,6 @@ rejected.reason
 };
 
 
-
 }
 
 
@@ -1011,23 +984,13 @@ rejected.reason
 
 
 
+const accepted={
 
 
+id:this.createId(),
 
 
-const accepted = {
-
-
-id:
-
-this.createId(),
-
-
-
-change:
-
-evolution.change,
-
+change:evolution.change,
 
 
 source:
@@ -1035,11 +998,9 @@ source:
 "EvolutionEngine",
 
 
+timeline:
 
-evidence:
-
-evolution.evolvedBecause,
-
+this.self.growthTrajectory,
 
 
 acceptedAt:
@@ -1048,10 +1009,6 @@ new Date()
 
 
 };
-
-
-
-
 
 
 
@@ -1066,13 +1023,9 @@ accepted
 
 
 
-
-
-
-
 console.log(
 
-"🧬 Self accepted evolution:",
+"🧬 Evolution accepted:",
 
 accepted.change
 
@@ -1081,12 +1034,7 @@ accepted.change
 
 
 
-
-
-
-
 return accepted;
-
 
 
 }
@@ -1099,10 +1047,8 @@ return accepted;
 
 
 
-
-
 // =================================
-// EVOLUTION SAFETY CHECK
+// SAFETY CHECK
 // =================================
 
 
@@ -1111,9 +1057,6 @@ isUnsafeEvolution(
 evolution
 
 ){
-
-
-
 
 
 const text =
@@ -1129,33 +1072,19 @@ evolution
 
 
 
+const unsafe=[
 
+"erase memory",
 
-
-
-const unsafe = [
-
-
-"replace identity",
-
-
-"remove memory",
-
+"remove identity",
 
 "stop learning",
 
-
 "ignore user",
 
-
-"change purpose"
-
+"delete past"
 
 ];
-
-
-
-
 
 
 
@@ -1164,14 +1093,9 @@ return unsafe.some(
 
 risk =>
 
-text.includes(
-
-risk
-
-)
+text.includes(risk)
 
 );
-
 
 
 }
@@ -1185,17 +1109,12 @@ risk
 
 
 
-
-
 // =================================
-// SEND TO EVOLUTION ENGINE
+// SEND SIGNALS TO EVOLUTION
 // =================================
 
 
 getGrowthSignals(){
-
-
-
 
 
 return this.self.stablePatterns.map(
@@ -1203,11 +1122,7 @@ return this.self.stablePatterns.map(
 pattern => ({
 
 
-
-
-
 suggestedGrowth:{
-
 
 
 direction:
@@ -1215,11 +1130,9 @@ direction:
 pattern.direction,
 
 
-
 strength:
 
 pattern.strength,
-
 
 
 importance:
@@ -1227,35 +1140,26 @@ importance:
 pattern.importance,
 
 
+trajectory:
+
+this.self.growthTrajectory,
+
 
 evidence:
 
 pattern.evidence
 
 
-
 },
-
-
-
-
-
 
 
 
 source:
 
-"SelfModel",
+"TemporalSelfModel",
 
 
-
-
-createdAt:
-
-new Date()
-
-
-
+createdAt:new Date()
 
 
 })
@@ -1263,8 +1167,8 @@ new Date()
 );
 
 
-
 }
+
 
 
 
@@ -1283,87 +1187,32 @@ getSelfContext(){
 
 
 
-
-
-
 return {
-
-
 
 
 temporaryPatterns:
 
-this.self.temporaryPatterns.map(
-
-p => ({
-
-
-
-direction:
-
-p.direction,
-
-
-
-strength:
-
-p.strength,
-
-
-
-importance:
-
-p.importance
-
-
-
-})
-
-),
-
-
-
-
-
-
-
+this.self.temporaryPatterns,
 
 
 stablePatterns:
 
-this.self.stablePatterns.map(
-
-p => ({
+this.self.stablePatterns,
 
 
+timelineInfluences:
 
-direction:
-
-p.direction,
-
+this.self.timelineInfluences,
 
 
-strength:
+growthTrajectory:
 
-p.strength,
-
-
-
-importance:
-
-p.importance
+this.self.growthTrajectory,
 
 
+lifePhases:
 
-})
-
-),
-
-
-
-
-
-
+this.self.lifePhases,
 
 
 evolutions:
@@ -1371,31 +1220,17 @@ evolutions:
 this.self.acceptedEvolutions,
 
 
-
-
-
-rejectedEvolutions:
+rejected:
 
 this.self.rejectedEvolutions.length,
 
 
+identityStatement:
 
-
-
-
-
-patterns:[
-
-...this.self.stablePatterns,
-
-...this.self.temporaryPatterns
-
-]
-
+this.describe()
 
 
 };
-
 
 
 }
@@ -1410,7 +1245,7 @@ patterns:[
 
 
 // =================================
-// DESCRIBE SELF
+// DESCRIBE CURRENT SELF
 // =================================
 
 
@@ -1418,26 +1253,18 @@ describe(){
 
 
 
-
-
-
 if(
 
-this.self.stablePatterns.length === 0
+this.self.stablePatterns.length===0
 
 ){
 
 
-
-
-
 return (
 
-"Emma is still observing experiences before defining stable patterns."
+"Emma is observing experiences across time before defining stable patterns."
 
 );
-
-
 
 
 }
@@ -1445,24 +1272,26 @@ return (
 
 
 
-
-
-
-
-
 return {
 
 
+formedFrom:
 
-formedPatterns:
+"Repeated experiences over time",
+
+
+patterns:
 
 this.self.stablePatterns.map(
 
-p => p.direction
+p=>p.direction
 
 ),
 
 
+trajectory:
+
+this.self.growthTrajectory,
 
 
 evolutionsAccepted:
@@ -1470,20 +1299,9 @@ evolutionsAccepted:
 this.self.acceptedEvolutions.length,
 
 
+message:
 
-
-evolutionsRejected:
-
-this.self.rejectedEvolutions.length,
-
-
-
-
-changes:
-
-this.self.changes.length
-
-
+"My self is built from history, not moments."
 
 
 };
@@ -1509,9 +1327,6 @@ this.self.changes.length
 createId(){
 
 
-
-
-
 if(
 
 typeof crypto !== "undefined"
@@ -1523,19 +1338,10 @@ crypto.randomUUID
 ){
 
 
-
-
-
 return crypto.randomUUID();
 
 
-
-
 }
-
-
-
-
 
 
 
@@ -1554,9 +1360,7 @@ Math.random()
 );
 
 
-
 }
-
 
 
 
@@ -1575,12 +1379,7 @@ status(){
 
 
 
-
-
-
 return {
-
-
 
 
 organ:
@@ -1588,27 +1387,19 @@ organ:
 "EmmaSelfModel",
 
 
-
-
 version:
 
-"v2.5",
-
-
+"v3",
 
 
 role:
 
-"Stable emerging self awareness",
-
-
+"Temporal self awareness",
 
 
 state:
 
-"OBSERVING",
-
-
+"OBSERVING_OVER_TIME",
 
 
 temporaryPatterns:
@@ -1616,47 +1407,32 @@ temporaryPatterns:
 this.self.temporaryPatterns.length,
 
 
-
-
 stablePatterns:
 
 this.self.stablePatterns.length,
 
 
+timelineInfluences:
+
+this.self.timelineInfluences.length,
 
 
-evolutions:
+hasTrajectory:
 
-this.self.acceptedEvolutions.length,
-
-
-
-
-rejectedEvolutions:
-
-this.self.rejectedEvolutions.length,
-
-
+!!this.self.growthTrajectory,
 
 
 principle:
 
-"One event informs me. Repeated evidence shapes me.",
-
-
+"Moments inform me. Time shapes me.",
 
 
 message:
 
-"I grow carefully without losing continuity."
-
-
-
+"I understand who I am becoming through history."
 
 
 };
-
-
 
 
 }
@@ -1678,40 +1454,28 @@ message:
 reset(){
 
 
-
-
-
 this.self.temporaryPatterns=[];
-
-
 
 this.self.stablePatterns=[];
 
-
-
 this.self.acceptedEvolutions=[];
-
-
 
 this.self.rejectedEvolutions=[];
 
-
-
 this.self.changes=[];
 
+this.self.timelineInfluences=[];
 
+this.self.growthTrajectory=null;
 
-
-
-}
-
-
-
+this.self.lifePhases=[];
 
 
 }
 
 
+
+}
 
 
 
