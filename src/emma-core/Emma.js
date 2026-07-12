@@ -63,6 +63,9 @@ from "./EmmaWisdom";
 import EmmaLearningEngine
 from "./EmmaLearningEngine";
 
+import EmmaReflection
+from "./EmmaReflection";
+
 
 import EmmaEvolution
 from "./EmmaEvolution";
@@ -341,7 +344,29 @@ new EmmaLearningEngine({
 
 });
 
+// ===============================
+// REFLECTION 🪞
+//
+// Emma looks inward before
+// learning from experience.
+// ===============================
 
+this.reflection =
+new EmmaReflection({
+
+  ai:
+    this.brain,
+
+  memory:
+    this.memory,
+
+  wisdom:
+    this.wisdom,
+
+  identity:
+    this.selfModel
+
+});
 
 
 
@@ -998,7 +1023,6 @@ new EmmaDreamEngine();
 
 
 
-
 // =================================
 //
 // ORCHESTRATOR 🧠
@@ -1184,15 +1208,16 @@ new EmmaOrchestrator({
 
 
 
+// growth
 
-  // growth
+learning:
+  this.learning,
 
-  learning:
-    this.learning,
+reflection:
+  this.reflection,
 
-
-  evolution:
-    this.evolution,
+evolution:
+  this.evolution,
 
 
 

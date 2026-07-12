@@ -92,6 +92,57 @@ createdAt:new Date()
 
 
 
+// =================================
+// MEMORY ENTRY POINT
+//
+// Called by EmmaMemory
+// =================================
+
+async observeMemory(memory){
+
+if(!memory){
+
+return {
+
+changed:false,
+
+reason:"No memory received"
+
+};
+
+}
+
+const experience = {
+
+experience:
+
+memory.memory?.context ||
+
+memory.memory ||
+
+memory,
+
+importance:
+
+memory.strength / 100,
+
+memoryId:
+
+memory.id,
+
+source:
+
+"EmmaMemory"
+
+};
+
+return await this.observe(
+
+experience
+
+);
+
+}
 
 
 
@@ -133,11 +184,15 @@ this.memory.getAll
 ){
 
 
+const memories =
+
+await this.memory.getAll();
+
 temporalContext =
 
 this.temporalSense.experienceTime(
 
-this.memory.getAll()
+memories
 
 );
 
@@ -358,7 +413,17 @@ currentExperience
 
 .toLowerCase();
 
+const success =
 
+currentExperience.outcome?.success ??
+
+currentExperience.success;
+
+const lesson =
+
+currentExperience.lesson ||
+
+"";
 
 
 const importance =
@@ -369,7 +434,49 @@ currentExperience.score ||
 
 0.3;
 
+// =================================
+// Structured outcome learning
+// =================================
 
+if(success === true){
+
+return {
+
+type:"CONFIDENCE",
+
+direction:
+
+"My guidance proved reliable",
+
+importance,
+
+source:currentExperience,
+
+createdAt:new Date()
+
+};
+
+}
+
+if(success === false){
+
+return {
+
+type:"ADAPTATION",
+
+direction:
+
+"I should become more careful",
+
+importance,
+
+source:currentExperience,
+
+createdAt:new Date()
+
+};
+
+}
 
 
 
@@ -1364,7 +1471,31 @@ Math.random()
 
 
 
+// =================================
+// MEASURE IDENTITY TENSION
+// =================================
 
+measureIdentityTension(context = {}) {
+
+    const contradictions =
+
+        context.contradictions || [];
+
+    if (contradictions.length === 0) {
+
+        return 0;
+
+    }
+
+    return Math.min(
+
+        1,
+
+        contradictions.length * 0.25
+
+    );
+
+}
 
 
 

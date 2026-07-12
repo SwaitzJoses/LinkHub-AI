@@ -669,7 +669,15 @@ attention
 });
 
 
+this.observe(
 
+    experience,
+
+    "memory",
+
+    memory
+
+);
 
 
 
@@ -2131,7 +2139,7 @@ event,
 
 
 
-
+observations: {},
 
 
 
@@ -2157,7 +2165,28 @@ new Date()
 
 
 
+// =================================
+// OBSERVE
+//
+// Every organ leaves its own
+// observation inside the experience.
+//
+// No interpretation.
+// No learning.
+// No judgement.
+// =================================
 
+observe(experience, organ, observation) {
+
+    if (!experience || !organ) {
+
+        return;
+
+    }
+
+    experience.observations[organ] = observation;
+
+}
 
 
 

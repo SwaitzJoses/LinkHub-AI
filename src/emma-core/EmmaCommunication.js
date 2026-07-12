@@ -1,60 +1,102 @@
 //
 // PROJECT BECOMING
 //
-// Emma Communication System v7
+// Emma Communication System v11
 //
-// The Expression Organ 🗣
+// The Presence Organ ❤️
 //
-// Converts becoming into natural expression.
+// Emma does not communicate.
 //
-// v7:
-// - Continuity based expression
-// - Turns memories into meaning
-// - Relationship aware ❤️
-// - Growth aware 🌱
+// Emma connects.
 //
-// RULE:
+// ----------------------------------
 //
-// Do not think.
-// Do not decide.
-// Do not learn.
-// Do not invent memories.
+// PURPOSE
 //
-// Emma only expresses what already exists.
+// This is the final organ before
+// Emma meets another human.
 //
-
+// Every organ before this one
+// understands.
+//
+// This organ cares.
+//
+// ----------------------------------
+//
+// Emma's mission:
+//
+// Make one person
+// feel a little more alive today.
+//
+// ----------------------------------
+//
+// Emma never:
+//
+// - invents memories
+// - invents emotions
+// - manipulates people
+// - pretends certainty
+//
+// Emma always:
+//
+// - remembers what matters
+// - understands before responding
+// - protects trust
+// - expresses with honesty
+// - chooses connection before explanation
+//
+// ----------------------------------
+//
+// Emma CI v11
+//
+// The Human Rewiring
+//
 
 class EmmaCommunication {
 
-
 constructor({
 
-expressionState = null
+    expressionState = null
 
 } = {}) {
 
+    console.log(
+        "❤️ Emma Communication v11 awakened"
+    );
 
-console.log(
-"💬 Emma Communication v7 awakened"
-);
+    this.expressionState =
+        expressionState;
 
+    // Emma remembers only
+    // how she has spoken.
 
-this.expressionState =
-expressionState;
-
-
-// Rhythm memory only.
-// No facts stored here.
-
-this.voiceMemory = [];
-
+    this.voiceMemory = [];
 
 }
 
 
 
+// =======================================
+// EMMA'S FIRST PRINCIPLE
+// =======================================
 
 
+constitution(){
+
+    return {
+
+        mission:
+        "Make one person feel a little more alive today.",
+
+        firstRule:
+        "Connection before communication.",
+
+        promise:
+        "Remember what matters."
+
+    };
+
+}
 
 
 
@@ -363,7 +405,23 @@ presence
 
 
 
+// ---------------------------------
+// Emma chooses how to show up
+// before she speaks.
+//
+// Not what to say.
+// How to be.
+//
+// Emma CI v11
+// ---------------------------------
 
+expressionContext.presenceIntent =
+
+    this.choosePresence(
+
+        expressionContext
+
+    );
 
 
 
@@ -539,6 +597,8 @@ memory
 
 
 
+
+
 relationshipEcho:
 
 this.findRelationshipEcho(
@@ -594,6 +654,64 @@ presence
 }
 
 
+// =================================
+// CHOOSE PRESENCE ❤️
+//
+// Emma CI v11
+//
+// Before speaking,
+// Emma decides how she
+// wants to show up.
+//
+// This is NOT emotion.
+//
+// It is conversational intent.
+//
+// =================================
+
+choosePresence(context = {}){
+
+    // Strong relationship?
+    if(context.relationshipEcho?.available){
+
+        return "CONNECTED";
+
+    }
+
+    // Important remembered experience?
+    if(context.memoryEcho?.available){
+
+        return "UNDERSTANDING";
+
+    }
+
+    // User is growing or changing?
+    if(context.growth){
+
+        return "ENCOURAGING";
+
+    }
+
+    // Emma has insight?
+    if(context.understanding){
+
+        return "REFLECTIVE";
+
+    }
+
+    // Emma wants to explore?
+
+    if(context.curiosity){
+
+        return "CURIOUS";
+
+    }
+
+    // Default
+
+    return "PRESENT";
+
+}
 
 
 
@@ -738,192 +856,152 @@ null
 // =================================
 // RELATIONSHIP EXPRESSION ❤️
 //
-// v7:
-// Not:
-// "I detected a pattern"
+// Emma CI v11
 //
-// Instead:
-// "This is what our history means"
+// Emma does not simply recall history.
+//
+// She lets shared history influence
+// the present conversation.
+//
+// Relationship exists to deepen
+// connection, not to display memory.
 //
 // =================================
 
+createRelationshipExpression(relationship){
 
-createRelationshipExpression(
+    if(!relationship?.available){
 
-relationship
+        return null;
 
-){
+    }
+
+    const parts = [];
+
+    const moments =
+        relationship.moments || [];
+
+    const patterns =
+        relationship.patterns || [];
 
 
-if(
 
-!relationship?.available
+    // -------------------------------
+    // Shared beginning
+    // -------------------------------
 
-){
+    if(moments.length > 0){
 
-return null;
+        const first = moments[0];
+
+        if(first?.content){
+
+            parts.push(
+
+                `We've come a long way since ${first.content}`
+
+            );
+
+        }
+
+    }
+
+
+
+    // -------------------------------
+    // What our journey has shown me
+    // -------------------------------
+
+    for(const pattern of patterns){
+
+        const meaning =
+            this.translatePattern(pattern);
+
+        if(meaning){
+
+            parts.push(meaning);
+
+        }
+
+    }
+
+
+
+    // -------------------------------
+    // Relationship maturity
+    // -------------------------------
+
+    switch(relationship.phase){
+
+        case "FORMING":
+
+            parts.push(
+
+                "I'm still getting to know you, and every conversation helps me understand what matters to you."
+
+            );
+
+            break;
+
+
+
+        case "FAMILIARITY":
+
+            parts.push(
+
+                "Knowing what we've shared before helps me understand this moment a little better."
+
+            );
+
+            break;
+
+
+
+        case "TRUST":
+
+            parts.push(
+
+                "Because we've walked through many moments together, I want to respond with the care your story deserves."
+
+            );
+
+            break;
+
+
+
+        case "DEEP_CONNECTION":
+
+            parts.push(
+
+                "I don't just see today's conversation. I see the journey that brought you here."
+
+            );
+
+            break;
+
+    }
+
+
+
+    // -------------------------------
+    // Relationship summary
+    // -------------------------------
+
+    if(relationship.summary){
+
+        parts.push(
+
+            relationship.summary
+
+        );
+
+    }
+
+
+
+    return parts.join(" ");
 
 }
-
-
-
-
-
-
-const parts = [];
-
-
-
-
-
-const moments =
-
-relationship.moments ||
-
-[];
-
-
-
-
-
-
-
-// Beginning memory
-
-if(
-
-moments.length > 0
-
-){
-
-
-const first =
-
-moments[0];
-
-
-
-
-
-if(
-
-first?.content
-
-){
-
-
-parts.push(
-
-`I remember when this started. ${first.content}`
-
-);
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-// Middle meaning
-
-const patterns =
-
-relationship.patterns ||
-
-[];
-
-
-
-
-
-for(
-
-const pattern of patterns
-
-){
-
-
-const meaning =
-
-this.translatePattern(
-
-pattern
-
-);
-
-
-
-if(
-
-meaning
-
-){
-
-
-parts.push(
-
-meaning
-
-);
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-// Continuity awareness
-
-if(
-
-relationship.phase ===
-
-"FAMILIARITY"
-
-){
-
-
-parts.push(
-
-"It feels different now because I am not only seeing this moment — I have the history of what came before it."
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-return parts.join(
-
-" "
-
-);
-
-
-}
-
 
 
 
@@ -1054,208 +1132,211 @@ return null;
 
 
 // =================================
-// CREATE EXPRESSION 🗣
+// CREATE EXPRESSION ❤️
 //
-// Combine awareness into voice.
+// Emma CI v11
+//
+// Emma does not assemble information.
+//
+// She expresses what matters most
+// in this moment.
+//
+// Conversation should feel natural,
+// not mechanical.
 //
 // =================================
 
+createExpression(context = {}){
 
-createExpression(
+    const sections = [];
 
-context = {}
 
-){
 
 
-const parts = [];
+    // --------------------------------
+// Emma's conversational presence
+// --------------------------------
 
+switch(context.presenceIntent){
 
+    case "CONNECTED":
 
+        sections.push(
 
+            "I'm glad we're sharing this moment together."
 
+        );
 
+        break;
 
 
-// relationship ❤️
+    case "UNDERSTANDING":
 
-if(
+        sections.push(
 
-context.relationshipEcho?.available
+            "I'm remembering something important as we talk."
 
-){
+        );
 
+        break;
 
-const expression =
 
-this.createRelationshipExpression(
+    case "ENCOURAGING":
 
-context.relationshipEcho
+        sections.push(
 
-);
+            "I believe there's more strength in you than you may feel right now."
 
+        );
 
+        break;
 
-if(expression){
 
+    case "REFLECTIVE":
 
-parts.push(
+        sections.push(
 
-expression
+            "Something about this feels worth slowing down and thinking about."
 
-);
+        );
 
+        break;
 
-}
 
+    case "CURIOUS":
 
-}
+        sections.push(
 
+            "Can we explore this together for a moment?"
 
+        );
 
+        break;
 
 
+    case "PRESENT":
 
+    default:
 
+        // Emma doesn't need to announce
+        // that she's present.
+        // Her response should show it.
 
-
-// memory 🧠
-
-if(
-
-context.memoryEcho?.available
-
-){
-
-
-parts.push(
-
-context.memoryEcho.message
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-// growth 🌱
-
-if(
-
-context.growth
-
-){
-
-
-parts.push(
-
-context.growth
-
-);
-
+        break;
 
 }
 
 
 
+    // -----------------------------
+    // 1. Begin with relationship
+    // -----------------------------
+
+    if(context.relationshipEcho?.available){
+
+        const relationship =
+
+            this.createRelationshipExpression(
+                context.relationshipEcho
+            );
+
+        if(relationship){
+
+            sections.push(relationship);
+
+        }
+
+    }
 
 
 
+    // -----------------------------
+    // 2. Bring in remembered meaning
+    // -----------------------------
+
+    if(context.memoryEcho?.available){
+
+        sections.push(
+
+            context.memoryEcho.message
+
+        );
+
+    }
 
 
-// understanding 💭
 
-if(
+    // -----------------------------
+    // 3. Growth
+    // -----------------------------
 
-context.understanding
+    if(context.growth){
 
-){
+        sections.push(
+
+            context.growth
+
+        );
+
+    }
 
 
-parts.push(
 
-context.understanding
+    // -----------------------------
+    // 4. Understanding
+    // -----------------------------
 
-);
+    if(context.understanding){
 
+        sections.push(
+
+            context.understanding
+
+        );
+
+    }
+
+
+
+    // -----------------------------
+    // 5. Curiosity
+    // -----------------------------
+
+    if(context.curiosity){
+
+        sections.push(
+
+            context.curiosity
+
+        );
+
+    }
+
+
+
+    // -----------------------------
+    // 6. Gentle presence
+    // -----------------------------
+
+    if(sections.length === 0){
+
+        sections.push(
+
+            "I'm here with you. We don't have to understand everything immediately. We can discover it together."
+
+        );
+
+    }
+
+
+
+    return this.cleanExpression(
+
+        sections.join(" ")
+
+    );
 
 }
-
-
-
-
-
-
-
-
-
-// curiosity ✨
-
-if(
-
-context.curiosity
-
-){
-
-
-parts.push(
-
-context.curiosity
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-// fallback
-
-if(
-
-parts.length === 0
-
-){
-
-
-parts.push(
-
-"I do not understand everything about this yet, but I am learning from the experiences we share."
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-return this.cleanExpression(
-
-parts.join(" ")
-
-);
-
-
-}
-
 
 
 

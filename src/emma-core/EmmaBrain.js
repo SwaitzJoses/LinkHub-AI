@@ -446,7 +446,31 @@ new Date()
 
 
 
+// =================================
+// REFLECT
+//
+// Used by EmmaReflection
+// =================================
 
+async reflect(messages = []) {
+
+    const response =
+
+        await this.openai.chat.completions.create({
+
+            model: "gpt-4.1-mini",
+
+            messages,
+
+            temperature: 0.2,
+
+            max_tokens: 600
+
+        });
+
+    return response;
+
+}
 
 
 

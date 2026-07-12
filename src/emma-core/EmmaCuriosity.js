@@ -1116,7 +1116,25 @@ Math.random()
 
 
 
+// =================================
+// MEASURE DRIVE
+// =================================
 
+measureDrive(context = {}) {
+
+    const wonder =
+
+        context.curiosity?.wonder;
+
+    if (!wonder) {
+
+        return 0;
+
+    }
+
+    return 1;
+
+}
 
 
 

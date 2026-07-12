@@ -42,7 +42,6 @@ class EmmaReasoning {
 
 
 
-
 constructor({
 
 memory=null,
@@ -52,6 +51,8 @@ brain=null,
 wisdom=null,
 
 selfModel=null,
+
+relationshipModel=null,
 
 curiosity=null,
 
@@ -83,6 +84,8 @@ wisdom;
 this.selfModel =
 selfModel;
 
+this.relationshipModel =
+relationshipModel;
 
 this.curiosity =
 curiosity;
@@ -96,7 +99,17 @@ identity;
 this.reasoningCount =
 0;
 
+// =================================
+// CURRENT UNDERSTANDING
+// =================================
 
+this.currentUnderstanding = null;
+
+// =================================
+// BRAIN DECISION HISTORY
+// =================================
+
+this.brainHistory = [];
 }
 
 
@@ -211,7 +224,39 @@ this.selfModel.getSelfContext();
 }
 
 
+// ===============================
+// RELATIONSHIP CONTEXT
+// ===============================
 
+let relationship = null;
+
+if(
+
+this.relationshipModel?.getRelationshipContext
+
+){
+
+const person =
+
+input.person ||
+
+input.user ||
+
+input.owner ||
+
+input.userId ||
+
+"unknown";
+
+relationship =
+
+this.relationshipModel.getRelationshipContext(
+
+person
+
+);
+
+}
 
 
 
@@ -239,7 +284,9 @@ memories,
 
 wisdom,
 
-self
+self,
+
+relationship
 
 });
 
@@ -314,6 +361,10 @@ lessons,
 
 wisdom,
 
+self,
+
+relationship,
+
 contradictions
 
 });
@@ -353,6 +404,9 @@ wisdom,
 
 
 self,
+
+
+relationship,
 
 
 curiosity,
@@ -398,10 +452,20 @@ let brainThought = null;
 
 
 
-if(
+const cognitiveState =
+
+this.buildCognitiveState(
+    reasoningContext
+);
+
+const reflectionDecision =
+
 this.needsReflection(
-reasoningContext
-)
+    cognitiveState
+);
+
+if(
+reflectionDecision.shouldReflect
 ){
 
 
@@ -465,7 +529,23 @@ contradictions
 
 });
 
+// =================================
+// REMEMBER WHETHER THINKING HELPED
+// =================================
 
+this.learnBrainDecision({
+
+    load:
+
+        reflectionDecision.load,
+
+    brainUsed: true,
+
+    useful:
+
+        brainThought?.thought === true
+
+});
 
 
 }
@@ -505,6 +585,8 @@ reason:
 else{
 
 
+
+
 console.log(
 "🦉 Existing understanding sufficient"
 );
@@ -542,6 +624,8 @@ wisdom,
 
 self,
 
+relationship,
+
 curiosity,
 
 confidence,
@@ -554,7 +638,11 @@ brainThought
 });
 
 
+// =================================
+// KEEP LATEST UNDERSTANDING
+// =================================
 
+this.currentUnderstanding = understanding;
 
 
 
@@ -680,6 +768,8 @@ lessons,
 wisdom,
 
 self,
+
+relationship,
 
 curiosity,
 
@@ -882,7 +972,45 @@ summary +=
 
 
 
+// ===============================
+// RELATIONSHIP
+// ===============================
 
+if(
+
+relationship?.known
+
+){
+
+summary +=
+
+`Our relationship is in the ${relationship.phase} phase. `;
+
+if(
+
+relationship.trust >= 70
+
+){
+
+summary +=
+
+"There is strong shared trust influencing my understanding. ";
+
+}
+
+else if(
+
+relationship.trust >= 30
+
+){
+
+summary +=
+
+"We have meaningful shared history to consider. ";
+
+}
+
+}
 
 
 
@@ -1205,6 +1333,10 @@ lessons,
 
 wisdom,
 
+self,
+
+relationship,
+
 contradictions
 
 }){
@@ -1250,7 +1382,53 @@ confidence += 20;
 }
 
 
+// ===============================
+// SELF CONFIDENCE
+// ===============================
 
+if(
+
+self?.stablePatterns?.length
+
+){
+
+confidence +=
+
+Math.min(
+
+15,
+
+self.stablePatterns.length * 3
+
+);
+
+}
+
+// ===============================
+// RELATIONSHIP CONFIDENCE
+// ===============================
+
+if(
+
+relationship?.known
+
+){
+
+confidence +=
+
+Math.min(
+
+15,
+
+Math.floor(
+
+relationship.trust / 10
+
+)
+
+);
+
+}
 
 confidence -=
 
@@ -1392,140 +1570,208 @@ memory.outcome?.lesson
 
 
 }
+// =================================
+// MEASURE UNCERTAINTY
+// =================================
 
+measureUncertainty(context = {}) {
 
+    const confidence =
 
+        context.confidence ?? 0;
 
+    return Math.max(
 
+        0,
 
+        1 - (confidence / 100)
+
+    );
+
+}
+
+// =================================
+// BUILD COGNITIVE STATE
+// =================================
+
+buildCognitiveState(context = {}) {
+
+    const cognitiveState = {
+
+        novelty:
+            this.memory?.measureNovelty?.(context) ?? 0,
+
+        uncertainty:
+            this.measureUncertainty(context),
+
+        relationshipImpact:
+            this.relationshipModel?.measureImportance?.(context) ?? 0,
+
+        wisdomConflict:
+            this.wisdom?.measureConflict?.(context) ?? 0,
+
+        curiosity:
+            this.curiosity?.measureDrive?.(context) ?? 0,
+
+        identityTension:
+            this.selfModel?.measureIdentityTension?.(context) ?? 0
+
+    };
+
+    // =================================
+// COGNITIVE LOAD
+// =================================
+
+const weights = {
+
+    novelty: 0.25,
+
+    uncertainty: 0.20,
+
+    relationshipImpact: 0.15,
+
+    wisdomConflict: 0.20,
+
+    curiosity: 0.10,
+
+    identityTension: 0.10
+
+};
+
+let totalWeight = 0;
+let weightedLoad = 0;
+
+for (const [name, value] of Object.entries(cognitiveState)) {
+
+    const weight = weights[name] ?? 0;
+
+    weightedLoad += value * weight;
+
+    totalWeight += weight;
+
+}
+
+cognitiveState.load =
+
+    totalWeight === 0
+
+        ? 0
+
+        : weightedLoad / totalWeight;
+
+    return cognitiveState;
+
+}
 
 
 
 
 // =================================
-// SHOULD THINK DEEPER?
+// COGNITIVE LOAD
+//
+// Emma decides whether deep thinking
+// is worth the cost.
 // =================================
 
+needsReflection(cognitiveState = {}) {
 
-needsReflection(
-context={}
-){
+    cognitiveState.shouldReflect =
 
+        this.shouldUseBrain(
+            cognitiveState.load
+        );
 
+    return cognitiveState;
 
-const experience =
+}
+// =================================
+// SHOULD USE BRAIN?
+// Learned entirely from experience.
+// =================================
 
-context.experience || {};
+shouldUseBrain(load = 0) {
 
+    // No experience yet?
 
+    if (this.brainHistory.length === 0) {
 
+        return true;
 
+    }
 
-// User directly asks
+    // Look for similar past loads
 
-if(
+    const similar =
 
-experience.question ||
+        this.brainHistory.filter(item =>
 
-experience.type === "question"
+            Math.abs(item.load - load) < 0.10
 
-){
+        );
 
-return true;
+    // Never experienced this level before
+
+    if (similar.length === 0) {
+
+        return true;
+
+    }
+
+    const useful =
+
+        similar.filter(item => item.useful);
+
+    return useful.length >= (similar.length / 2);
 
 }
 
 
 
+// =================================
+// CURRENT UNDERSTANDING
+// =================================
 
+getCurrentUnderstanding(){
 
-// Low confidence
-
-if(
-context.confidence < 40
-&&
-context.memories?.length > 0
-){
-
-return true;
+    return this.currentUnderstanding;
 
 }
 
+// =================================
+// LEARN BRAIN DECISION
+// =================================
 
+learnBrainDecision({
 
+    load = 0,
 
+    brainUsed = false,
 
-// Conflicting knowledge
+    useful = false
 
-if(
-context.contradictions?.length > 0
-){
+} = {}){
 
-return true;
+    this.brainHistory.push({
 
-}
+        load,
 
+        brainUsed,
 
+        useful,
 
+        createdAt: new Date()
 
+    });
 
+    // Keep only the latest 200 decisions
 
-// Important event
+    if(this.brainHistory.length > 200){
 
-if(
-experience.importance >= 90
-){
+        this.brainHistory.shift();
 
-return true;
-
-}
-
-
-
-
-
-// Decision required
-
-if(
-experience.requiresDecision
-){
-
-return true;
+    }
 
 }
-
-
-
-
-
-
-// New things are observed first
-
-if(
-context.memories?.length === 0
-){
-
-return false;
-
-}
-
-
-
-
-
-return false;
-
-
-
-}
-
-
-
-
-
-
-
-
 
 
 // =================================

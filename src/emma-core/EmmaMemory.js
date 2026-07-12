@@ -139,6 +139,14 @@ this.identityMemory =
 new EmmaIdentityMemory();
 
 
+// =================================
+// DAY 15 ORGAN REFERENCES
+// =================================
+
+this.selfModel = null;
+
+this.relationshipModel = null;
+
 
 
 
@@ -162,19 +170,29 @@ null
 
 }
 
+// =================================
+// CONNECT ORGANISM
+// =================================
 
+connect({
 
+selfModel = null,
 
+relationshipModel = null
 
+} = {}){
 
+this.selfModel = selfModel;
 
+this.relationshipModel = relationshipModel;
 
+return this;
 
+}
 
 // =================================
 // EXPERIENCE ENTRY POINT
 // =================================
-
 
 async store(
 
@@ -593,17 +611,9 @@ memory
 
 
 
-
 this.buildAssociations(
-
 memory
-
 );
-
-
-
-
-
 
 if(
 
@@ -615,15 +625,11 @@ memory
 
 ){
 
-
-
 this.coreMemories.unshift(
 
 memory
 
 );
-
-
 
 console.log(
 
@@ -631,9 +637,20 @@ console.log(
 
 );
 
-
-
 }
+
+// =============================
+// DAY 15
+// Notify organism
+// =============================
+
+await this.notifySelfModel(
+memory
+);
+
+await this.notifyRelationshipModel(
+memory
+);
 
 
 
@@ -715,6 +732,74 @@ return memory;
 
 }
 
+
+// =================================
+// NOTIFY SELF MODEL
+// =================================
+
+async notifySelfModel(memory){
+
+if(!this.selfModel){
+
+return;
+
+}
+
+try{
+
+if(typeof this.selfModel.observeMemory === "function"){
+
+await this.selfModel.observeMemory(memory);
+
+}
+
+}catch(error){
+
+console.warn(
+
+"⚠️ SelfModel notification failed",
+
+error.message
+
+);
+
+}
+
+}
+
+// =================================
+// NOTIFY RELATIONSHIP MODEL
+// =================================
+
+async notifyRelationshipModel(memory){
+
+if(!this.relationshipModel){
+
+return;
+
+}
+
+try{
+
+if(typeof this.relationshipModel.observeMemory === "function"){
+
+await this.relationshipModel.observeMemory(memory);
+
+}
+
+}catch(error){
+
+console.warn(
+
+"⚠️ Relationship notification failed",
+
+error.message
+
+);
+
+}
+
+}
 
 // =================================
 // EXPERIENCE → KNOWLEDGE
@@ -2810,6 +2895,36 @@ String(item)
 
 
 
+// =================================
+// MEASURE NOVELTY
+// =================================
+
+measureNovelty(context = {}) {
+
+    const memories = context.memories || [];
+
+    if (memories.length === 0) {
+
+        return 1;
+
+    }
+
+    if (memories.length <= 2) {
+
+        return 0.7;
+
+    }
+
+    if (memories.length <= 5) {
+
+        return 0.4;
+
+    }
+
+    return 0.1;
+
+}
+
 
 
 
@@ -2877,22 +2992,13 @@ timelineLimit:
 this.timelineLimit,
 
 
-
 supports:[
-
-
 "Experience Memory",
-
-
 "Meaning Recall",
-
-
 "TemporalSense Timeline",
-
-
-"Safe History Retrieval"
-
-
+"Safe History Retrieval",
+"SelfModel Updates",
+"Relationship Updates"
 ],
 
 

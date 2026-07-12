@@ -530,8 +530,12 @@ observed:true,
 
 effect:"UNKNOWN",
 
+relationshipImpact:null,
 
-details:null
+
+details:null,
+
+
 
 
 };

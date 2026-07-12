@@ -1246,7 +1246,31 @@ return String(text)
 
 
 
+// =================================
+// MEASURE CONFLICT
+// =================================
 
+measureConflict(context = {}) {
+
+    const contradictions =
+
+        context.contradictions || [];
+
+    if (contradictions.length === 0) {
+
+        return 0;
+
+    }
+
+    return Math.min(
+
+        1,
+
+        contradictions.length * 0.3
+
+    );
+
+}
 
 
 

@@ -120,7 +120,6 @@ class EmmaOrchestrator {
 
 
 
-
     //
     // 1. Awareness 👁
     //
@@ -145,7 +144,7 @@ class EmmaOrchestrator {
 
         ],
 
-        input
+       input
 
       );
 
@@ -1227,7 +1226,24 @@ class EmmaOrchestrator {
 
 
 
+//
+// 15.5 Reflection 🪞
+//
 
+const reflectionResult =
+
+    await this.organs.reflection.reflect(
+
+        input,
+
+        reasoning?.understanding ||
+
+        this.organs.reasoning
+            ?.getCurrentUnderstanding?.() ||
+
+        null
+
+    );
 
 
 
@@ -1239,25 +1255,31 @@ class EmmaOrchestrator {
     // 16. Learning 📚
     //
 
-    const learning =
+  const learning =
 
-      await this.call(
+await this.call(
 
-        this.organs.learning,
+    this.organs.learning,
 
-        [
+    [
 
-          "learn",
+        "learn",
 
-          "update",
+        "update",
 
-          "process"
+        "process"
 
-        ],
+    ],
 
-        outcome
+    {
 
-      );
+        outcome,
+
+        reflection: reflectionResult
+
+    }
+
+);
 
 
 

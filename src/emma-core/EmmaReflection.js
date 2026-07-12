@@ -88,7 +88,8 @@ console.log(
 // =================================
 
 async reflect(
-experience={}
+experience={},
+understanding = null
 ){
 
 
@@ -175,7 +176,9 @@ experience,
 
 memories,
 
-wisdom
+wisdom,
+
+understanding
 
 );
 
@@ -449,39 +452,22 @@ return false;
 
 async askAI(
 experience,
-memories=[],
-wisdom=null
+memories = [],
+wisdom = null,
+understanding = null
 ){
 
 
 
 const response =
 
-await this.ai.chat.completions.create({
+await this.ai.reflect([
 
+    {
 
+        role: "system",
 
-model:
-"gpt-4.1-mini",
-
-
-
-temperature:
-0.2,
-
-
-
-messages:[
-
-
-{
-
-
-role:"system",
-
-
-content:
-`
+        content: `
 
 You are Emma's inner reflection.
 
@@ -529,38 +515,27 @@ Return ONLY JSON:
 
 `
 
-},
+    },
 
+    {
 
+        role: "user",
 
+       content: JSON.stringify({
 
+    experience,
 
-{
+    memories,
 
+    wisdom,
 
-role:"user",
-
-
-content:
-
-JSON.stringify({
-
-experience,
-
-memories,
-
-wisdom
+    understanding
 
 })
 
+    }
 
-}
-
-
-]
-
-
-});
+]);
 
 
 

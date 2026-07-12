@@ -57,7 +57,13 @@ this.learningCycles = 0;
 this.tendencies =
 new Map();
 
+// Emma's evolving worldview.
+//
+// Beliefs are not facts.
+// They emerge from repeated evidence
+// and can change over time.
 
+this.beliefs = new Map();
 }
 
 
@@ -75,11 +81,19 @@ new Map();
 
 async learn(
 
-outcome = {},
+    input = {},
 
-memories = []
+    memories = []
 
 ){
+
+    const outcome =
+
+        input.outcome || input;
+
+    const reflection =
+
+        input.reflection || null;
 
 
 
@@ -155,26 +169,25 @@ cause
 const lesson =
 this.createLesson({
 
+    outcome,
 
-outcome,
+    evaluation,
 
+    category,
 
-evaluation,
+    cause,
 
+    patterns,
 
-category,
-
-
-cause,
-
-
-patterns
-
+    reflection
 
 });
 
 
-
+const beliefSignal =
+this.createBeliefSignal(
+    lesson
+);
 
 
 
@@ -199,30 +212,23 @@ lesson
 
 return this.store({
 
+    outcome,
 
-outcome,
+    evaluation,
 
+    category,
 
-evaluation,
+    cause,
 
+    patterns,
 
-category,
+    lesson,
 
+    beliefSignal,
 
-cause,
+    wisdomSignal,
 
-
-patterns,
-
-
-lesson,
-
-
-wisdomSignal,
-
-
-selfSignal
-
+    selfSignal
 
 });
 
@@ -347,88 +353,102 @@ meaning:
 
 
 
-
 // =================================
 // CATEGORY DISCOVERY
 // =================================
 
+detectCategory(outcome = {}) {
 
-detectCategory(outcome={}){
+    const text =
 
+        JSON.stringify(outcome)
+            .toLowerCase();
 
-const text =
-JSON.stringify(outcome)
-.toLowerCase();
+    const scores = {
 
+        RELATIONSHIP: 0,
 
+        BUSINESS: 0,
 
+        SELF: 0,
 
-if(
+        DECISION: 0,
 
-text.includes("customer") ||
+        CREATION: 0,
 
-text.includes("relationship") ||
+        CHANGE: 0,
 
-text.includes("person")
+        GENERAL: 0
 
-){
+    };
 
-return "RELATIONSHIP";
+    if (
+        text.includes("person") ||
+        text.includes("relationship") ||
+        text.includes("shared") ||
+        text.includes("trust")
+    ) {
+        scores.RELATIONSHIP += 2;
+    }
 
-}
+    if (
+        text.includes("business") ||
+        text.includes("sale") ||
+        text.includes("growth") ||
+        text.includes("customer")
+    ) {
+        scores.BUSINESS += 2;
+    }
 
+    if (
+        text.includes("think") ||
+        text.includes("believe") ||
+        text.includes("emotion") ||
+        text.includes("feeling")
+    ) {
+        scores.SELF += 2;
+    }
 
+    if (
+        text.includes("decision") ||
+        text.includes("choice") ||
+        text.includes("judge")
+    ) {
+        scores.DECISION += 2;
+    }
 
-if(
+    if (
+        text.includes("create") ||
+        text.includes("build") ||
+        text.includes("develop")
+    ) {
+        scores.CREATION += 2;
+    }
 
-text.includes("business") ||
+    if (
+        text.includes("change") ||
+        text.includes("different") ||
+        text.includes("improve") ||
+        text.includes("adapt")
+    ) {
+        scores.CHANGE += 2;
+    }
 
-text.includes("sale") ||
+    let best = "GENERAL";
+    let highest = -1;
 
-text.includes("growth")
+    for (const [category, score] of Object.entries(scores)) {
 
-){
+        if (score > highest) {
 
-return "BUSINESS";
+            highest = score;
+            best = category;
 
-}
+        }
 
+    }
 
-
-
-if(
-
-text.includes("decision") ||
-
-text.includes("choice")
-
-){
-
-return "DECISION";
-
-}
-
-
-
-
-if(
-
-text.includes("emotion") ||
-
-text.includes("feeling")
-
-){
-
-return "SELF";
-
-}
-
-
-
-
-
-return "GENERAL";
-
+    return best;
 
 }
 
@@ -731,15 +751,17 @@ return discovered;
 
 createLesson({
 
-outcome,
+    outcome,
 
-evaluation,
+    evaluation,
 
-category,
+    category,
 
-cause,
+    cause,
 
-patterns
+    patterns,
+
+    reflection = null
 
 }){
 
@@ -821,6 +843,13 @@ signature,
 category,
 
 
+
+ reflection:
+        reflection,
+
+
+
+
 result:
 evaluation.result,
 
@@ -844,7 +873,6 @@ confidence:25,
 
 createdAt:
 new Date(),
-
 
 
 // ===============================
@@ -888,9 +916,119 @@ return lesson;
 
 
 
+// =================================
+// BELIEF FORMATION
+//
+// Beliefs are not facts.
+//
+// They emerge from repeated lessons
+// and remain open to change.
+//
+// =================================
+
+createBeliefSignal(lesson){
+
+    if(!lesson){
+
+        return null;
+
+    }
+
+    return {
+
+        statement: lesson.understanding,
+
+        confidence: lesson.confidence / 100,
+
+        evidence: lesson.evidence,
+
+        status:
+
+            lesson.evidence >= 5
+
+                ? "STABLE"
+
+                : "FORMING",
+
+        createdAt: new Date()
+
+    };
+
+}
 
 
+// =================================
+// UPDATE BELIEF
+//
+// Beliefs evolve.
+// They are strengthened,
+// weakened or questioned
+// by new evidence.
+//
+// =================================
 
+updateBelief(signature, newBelief){
+
+    const existing = this.beliefs.get(signature);
+
+    if(!existing){
+
+        this.beliefs.set(signature, newBelief);
+
+        return;
+
+    }
+
+    existing.evidence = Math.max(
+        existing.evidence++,
+        newBelief.evidence
+    );
+
+ const delta =
+
+    newBelief.confidence -
+
+    existing.confidence;
+
+existing.confidence +=
+
+    delta * 0.25;
+
+existing.confidence =
+
+    Math.max(
+
+        0,
+
+        Math.min(
+
+            1,
+
+            existing.confidence
+
+        )
+
+    );
+
+    existing.status =
+
+        existing.confidence >= 0.8
+
+            ? "STABLE"
+
+            : "FORMING";
+
+    existing.lastUpdated = new Date();
+
+    this.beliefs.set(
+
+        signature,
+
+        existing
+
+    );
+
+}
 
 
 
@@ -1340,7 +1478,21 @@ new Date()
 
 
 
+// =================================
+// UPDATE BELIEF
+// =================================
 
+if (learning.beliefSignal) {
+
+    this.updateBelief(
+
+        learning.lesson.signature,
+
+        learning.beliefSignal
+
+    );
+
+}
 
 
 
@@ -1502,7 +1654,26 @@ return this.lessons;
 
 }
 
+// =================================
+// BELIEFS
+//
+// Emma's current worldview.
+//
+// Beliefs are living.
+// They strengthen, weaken,
+// and may eventually disappear.
+//
+// =================================
 
+getBeliefs(){
+
+    return Array.from(
+
+        this.beliefs.values()
+
+    );
+
+}
 
 
 

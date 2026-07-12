@@ -121,6 +121,52 @@ new Date()
 }
 
 
+//
+// =================================
+//
+// MEMORY ENTRY POINT ❤️
+//
+// Called by EmmaMemory
+//
+// =================================
+
+async observeMemory(memory){
+
+if(!memory){
+
+return {
+
+changed:false,
+
+reason:"No memory received"
+
+};
+
+}
+
+const experience =
+
+memory.memory?.context ||
+
+memory.memory ||
+
+memory;
+
+return await this.observe({
+
+experience,
+
+memory,
+
+wisdom:this.wisdom,
+
+temporal:this.temporalSense,
+
+self:this.selfModel
+
+});
+
+}
 
 
 
@@ -290,7 +336,9 @@ const person =
 
 this.identifyPerson(
 
-experience
+experience,
+
+memory
 
 );
 
@@ -399,7 +447,13 @@ moment
 
 
 
+this.evolveRelationship(
 
+    relationship,
+
+    moment
+
+);
 
 
 
@@ -554,10 +608,11 @@ person
 //
 // =================================
 
-
 identifyPerson(
 
-experience = {}
+experience = {},
+
+memory = null
 
 ){
 
@@ -565,33 +620,35 @@ experience = {}
 
 return (
 
+memory?.memory?.person?.id
 
-  experience.person
+||
 
+memory?.memory?.person?.name
 
-  ||
+||
 
+experience.person
 
-  experience.user
+||
 
+experience.user
 
-  ||
+||
 
+experience.owner
 
-  experience.owner
+||
 
+experience.source
 
-  ||
+||
 
+experience.userId
 
-  experience.source
+||
 
-
-  ||
-
-
-  "unknown"
-
+"unknown"
 
 );
 
@@ -686,7 +743,39 @@ preferences:[]
 
 },
 
+// =================================
+// RELATIONSHIP DYNAMICS ❤️
+//
+// Emma never decides who she is.
+//
+// The relationship slowly discovers
+// who we are becoming together.
+//
+// These are not personalities.
+//
+// They are evolving dimensions.
+//
+// =================================
 
+dynamic:{
+
+    creativity:0,
+
+    challenge:0,
+
+    companionship:0,
+
+    reflection:0,
+
+    playfulness:0,
+
+    structure:0,
+
+    curiosity:0,
+
+    trustDepth:0
+
+},
 
 
 
@@ -835,7 +924,11 @@ experience.situation
 "",
 
 
+outcome:
 
+experience.outcome ||
+
+null,
 
 
 
@@ -941,17 +1034,27 @@ null,
 
 
 
-emmaState:
+emmaState:{
 
+identity:
 
-
-self?.identityStatement
-
-
-||
-
+self?.identityStatement ||
 
 null,
+
+trajectory:
+
+self?.growthTrajectory ||
+
+null,
+
+stablePatterns:
+
+self?.stablePatterns?.length ||
+
+0
+
+},
 
 
 
@@ -1012,7 +1115,72 @@ return moment;
 
 
 
+// =================================
+//
+// EVOLVE RELATIONSHIP ❤️
+//
+// Relationships do not switch.
+//
+// They drift.
+//
+// Every meaningful experience
+// changes us a little.
+//
+// =================================
 
+evolveRelationship(
+
+    relationship,
+
+    moment = {}
+
+){
+
+    const d = relationship.dynamic;
+
+    // --------------------------
+    // Trust grows through
+    // important experiences.
+    // --------------------------
+
+    if(moment.importance >= 0.8){
+
+        d.trustDepth = Math.min(
+            100,
+            d.trustDepth + 2
+        );
+
+    }
+
+    // --------------------------
+    // Shared success
+    // strengthens creativity.
+    // --------------------------
+
+    if(moment.outcome?.success){
+
+        d.creativity = Math.min(
+            100,
+            d.creativity + 1
+        );
+
+    }
+
+    // --------------------------
+    // Reflection deepens when
+    // emotions are shared.
+    // --------------------------
+
+    if(moment.emotion !== "neutral"){
+
+        d.reflection = Math.min(
+            100,
+            d.reflection + 1
+        );
+
+    }
+
+}
 
 
 
@@ -1076,7 +1244,8 @@ relationship
 
 
 
-
+const dynamic =
+relationship.dynamic;
 
 
 
@@ -2088,13 +2257,39 @@ growth += 3;
 }
 
 
+// =================================
+// Learn from successful outcomes
+// =================================
 
+const success =
 
+moment.outcome?.success === true;
 
+if(
 
+success
 
+){
 
+growth += 2;
 
+}
+
+else if(
+
+moment.outcome?.success === false
+
+){
+
+growth = Math.max(
+
+1,
+
+growth - 1
+
+);
+
+}
 
 if(
 
@@ -2102,22 +2297,9 @@ relationship.history.length >= 5
 
 ){
 
-
-
 growth += 2;
 
-
-
 }
-
-
-
-
-
-
-
-
-
 
 if(
 
@@ -2125,46 +2307,21 @@ relationship.patterns.length > 0
 
 ){
 
-
-
 growth +=
 
 relationship.patterns.length;
 
-
-
 }
 
-
-
-
-
-
-
-
-
-
 relationship.trust =
-
 
 Math.min(
 
 100,
 
-
 relationship.trust + growth
 
-
 );
-
-
-
-
-
-
-
-
-
 
 this.state.trust[
 
@@ -2177,17 +2334,6 @@ relationship.trust;
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2927,7 +3073,31 @@ this.state
 
 
 
+// =================================
+// MEASURE IMPORTANCE
+// =================================
 
+measureImportance(context = {}) {
+
+    const relationship =
+
+        context.relationship;
+
+    if (!relationship?.known) {
+
+        return 0.2;
+
+    }
+
+    return Math.min(
+
+        1,
+
+        relationship.trust / 100
+
+    );
+
+}
 
 
 
