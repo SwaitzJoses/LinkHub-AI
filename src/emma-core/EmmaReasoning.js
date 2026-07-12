@@ -138,22 +138,27 @@ this.reasoningCount++;
 // MEMORY SEARCH
 // ===============================
 
-let memories = [];
+let memories =
 
+    input.memories || [];
 
-if(
-this.memory?.getRelevantMemories
-){
+if (
 
+    memories.length === 0 &&
 
-memories =
-await this.memory.getRelevantMemories(
-input
-);
+    this.memory?.getRelevantMemories
 
+) {
+
+    memories =
+
+        await this.memory.getRelevantMemories(
+
+            input
+
+        );
 
 }
-
 
 
 
@@ -236,15 +241,17 @@ this.relationshipModel?.getRelationshipContext
 
 ){
 
+const experience = input.experience || input;
+
 const person =
 
-input.person ||
+experience.person ||
 
-input.user ||
+experience.user ||
 
-input.owner ||
+experience.owner ||
 
-input.userId ||
+experience.userId ||
 
 "unknown";
 
@@ -385,7 +392,7 @@ const reasoningContext = {
 
 experience:
 
-input,
+input.experience || input,
 
 
 memories,
@@ -485,7 +492,7 @@ brainThought =
 await this.brain.think({
 
 
-...input,
+...(input.experience || input),
 
 
 

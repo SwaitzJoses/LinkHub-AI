@@ -149,7 +149,15 @@ class EmmaOrchestrator {
       );
 
 
+const context = {
 
+    experience: input,
+
+    attention,
+
+    state: this.state
+
+};
 
 
 
@@ -170,7 +178,7 @@ class EmmaOrchestrator {
 
         ],
 
-        attention
+        context
 
       );
 
@@ -234,7 +242,7 @@ class EmmaOrchestrator {
 
         {
 
-          input,
+           ...context,
 
           memories
 
@@ -645,7 +653,7 @@ class EmmaOrchestrator {
 
         {
 
-          input,
+         ...context,
 
 
           memories,
@@ -684,21 +692,19 @@ class EmmaOrchestrator {
 
         ],
 
-        {
+   {
 
-          intent,
+    ...context,
 
+    intent,
 
-          relationship,
+    relationship,
 
+    temporal,
 
-          temporal,
+    self
 
-
-          self
-
-
-        }
+}
 
       );
 
@@ -764,19 +770,17 @@ class EmmaOrchestrator {
         this.organs.reasoning
           ?.think?.({
 
-            input,
+            ...context,
 
-            memories,
+    memories,
 
-            beliefs:
+    beliefs: belief,
 
-              belief,
+    values,
 
-            values,
+    intent,
 
-            intent,
-
-            presence
+    presence
 
           })
 
@@ -785,10 +789,9 @@ class EmmaOrchestrator {
         this.organs.reasoning
           ?.reason?.({
 
-            input,
+             ...context,
 
-            memories
-
+    memories
           })
 
         ||
@@ -814,27 +817,19 @@ class EmmaOrchestrator {
 
         ],
 
-        {
+  {
+    ...context,
 
-          experience:
-            input,
+    memories,
 
+    intent,
 
-          intent,
+    presence,
 
+    values,
 
-          presence,
-
-
-          values,
-
-
-          reasoning,
-
-
-          memories
-
-        }
+    reasoning
+}
 
       );
 
@@ -863,22 +858,20 @@ class EmmaOrchestrator {
 
         {
 
-          reasoning,
+    ...context,
 
+    reasoning,
 
-          uncertainty,
+    uncertainty,
 
+    beliefs:
+        belief
+            ? [belief]
+            : [],
 
-          beliefs:
+    values
 
-            belief
-              ? [belief]
-              : [],
-
-
-          values
-
-        }
+}
 
       );
 
@@ -910,26 +903,19 @@ class EmmaOrchestrator {
 
         ],
 
-        {
+       {
+    attention,
 
-          attention,
+    memories,
 
+    intent,
 
-          memories,
+    presence,
 
+    reasoning,
 
-          intent,
-
-
-          presence,
-
-
-          reasoning,
-
-
-          reflection
-
-        }
+    reflection
+}
 
       );
 
@@ -963,6 +949,8 @@ class EmmaOrchestrator {
         ],
 
         {
+
+          ...context,
 
           situation:
             input,
@@ -1027,16 +1015,15 @@ class EmmaOrchestrator {
 
         {
 
-          reasoning,
+         ...context,
 
+    reasoning,
 
-          imagination,
+    imagination,
 
+    values,
 
-          values,
-
-
-          uncertainty
+    uncertainty
 
         }
 
@@ -1071,6 +1058,10 @@ class EmmaOrchestrator {
         ],
 
         {
+
+
+          ...context,
+
 
           intent,
 
@@ -1116,6 +1107,7 @@ class EmmaOrchestrator {
         ],
 
         {
+          ...context,
 
           judgement,
 
@@ -1272,7 +1264,7 @@ await this.call(
     ],
 
     {
-
+  ...context,
         outcome,
 
         reflection: reflectionResult
@@ -1465,21 +1457,17 @@ await this.call(
 
         {
 
-          evolution,
+    ...context,
 
+    evolution,
 
-          uncertainty,
+    uncertainty,
 
+    desire,
 
-          desire,
+    learning
 
-
-          attention,
-
-
-          learning
-
-        }
+}
 
       );
 
@@ -1665,9 +1653,7 @@ console.log(
           ?.reply?.({
 
 
-            experience:
-
-              input,
+            ...context,
 
 
             memory:

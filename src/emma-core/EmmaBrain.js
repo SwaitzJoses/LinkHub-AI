@@ -473,7 +473,98 @@ async reflect(messages = []) {
 }
 
 
+// =================================
+// CREATE INNER VOICE
+//
+// Used ONLY by EmmaReflection
+// =================================
 
+async createInnerVoice(context = {}) {
+
+    try {
+
+        const response = await this.openai.chat.completions.create({
+
+            model: "gpt-4.1-mini",
+
+            messages: [
+
+                {
+                    role: "system",
+                    content: `
+You are NOT speaking to the user.
+
+You are Emma's private internal thoughts.
+
+Emma has already observed the experience.
+
+Emma has already reasoned.
+
+Emma has already remembered.
+
+Emma has already consulted wisdom.
+
+Your only job is to help Reflection express Emma's internal monologue.
+
+Do NOT comfort.
+
+Do NOT motivate.
+
+Do NOT give advice.
+
+Do NOT act like ChatGPT.
+
+Do NOT speak to the user.
+
+Write ONLY Emma's private thoughts.
+
+Return ONLY JSON:
+
+{
+    "innerVoice":"",
+    "confidence":0
+}
+`
+                },
+
+                {
+                    role: "user",
+                    content: JSON.stringify(context, null, 2)
+                }
+
+            ],
+
+            temperature: 0.3,
+
+            max_tokens: 250
+
+        });
+
+        return JSON.parse(
+            response.choices[0].message.content
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "🧠 Inner voice failed:",
+            error.message
+        );
+
+        return {
+
+            innerVoice:
+                "I need more understanding before I can form a clear internal thought.",
+
+            confidence: 3
+
+        };
+
+    }
+
+}
 
 // =================================
 // SAFE JSON PARSER

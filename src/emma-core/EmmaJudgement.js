@@ -64,6 +64,12 @@ this.judgementsMade = 0;
 
 async judge({
 
+experience = null,
+
+attention = null,
+
+state = null,
+
 reasoning = {},
 
 wisdom = null,
@@ -97,7 +103,7 @@ this.judgementsMade++;
 // ===============================
 
 
-const experience =
+const pastExperience =
 
 this.studyExperience(
 
@@ -150,7 +156,7 @@ reasoning,
 
 wisdom,
 
-experience,
+ experience: pastExperience,
 
 self
 
@@ -178,7 +184,7 @@ reasoning,
 
 wisdom,
 
-experience
+experience: pastExperience,
 
 });
 
@@ -235,7 +241,7 @@ warnings,
 
 risk,
 
-experience
+ experience: pastExperience
 
 });
 

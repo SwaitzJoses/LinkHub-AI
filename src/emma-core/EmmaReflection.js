@@ -146,7 +146,41 @@ wisdom
 );
 
 
+// =================================
+// CREATE EMMA'S INNER VOICE
+// =================================
 
+if (this.ai?.createInnerVoice) {
+
+    const innerVoice =
+
+        await this.ai.createInnerVoice({
+
+            experience,
+
+            memories,
+
+            wisdom,
+
+            reflection,
+
+            understanding
+
+        });
+
+    if (innerVoice?.innerVoice) {
+
+    reflection.interpretation = {
+
+        ...reflection.interpretation,
+
+        ...innerVoice
+
+    };
+
+}
+
+}
 
 
 
@@ -824,16 +858,234 @@ reflection.futureWisdom.push(
 
 }
 
+// =================================
+// COMMUNICATION THOUGHT
+// =================================
 
+reflection.interpretation =
+    this.createInterpretation(
+        experience,
+        reflection,
+        memories,
+        wisdom
+    );
 
 return reflection;
 
+}
+
+createInterpretation(
+
+    experience,
+
+    reflection,
+
+    memories = [],
+
+    wisdom = null
+
+)
+
+{
+
+    const text =
+
+        JSON.stringify(experience).toLowerCase();
+
+const memoryCount = memories.length;
+
+const hasWisdom = !!wisdom;
+
+const confidence = reflection.confidence || 0;
+
+const learnedPatterns =
+
+    reflection.patterns || [];
+
+const learnedLessons =
+
+    reflection.lessons || [];
+
+
+const observation = this.observeExperience(
+    experience
+);
+
+
+const interpretation = {
+
+    observation,
+
+    innerVoice: "",
+
+    confidence
+
+};
+
+
+const evidence = [];
+
+if (memories.length > 0) {
+
+    evidence.push(
+        "I remember similar moments."
+    );
+
+}
+
+if (wisdom) {
+
+    evidence.push(
+        "Past wisdom supports this."
+    );
 
 }
 
 
 
 
+const thoughts = [];
+
+thoughts.push(`Observation: ${observation}`);
+
+if (evidence.length > 0) {
+
+    thoughts.push("");
+
+    thoughts.push("Evidence:");
+
+    evidence.forEach(item => thoughts.push(`- ${item}`));
+
+}
+
+
+
+let understanding = "";
+let conclusion = "";
+
+    // Doubt
+switch (experience.type) {
+
+    case "DOUBT":
+
+       understanding =
+    "The user is questioning our design rather than abandoning it.";
+
+conclusion =
+    "I should help simplify instead of defending complexity.";
+
+        break;
+
+case "SELF_DOUBT":
+
+    understanding =
+        "The user is questioning our design rather than abandoning it.";
+
+    conclusion =
+        "I should help simplify instead of defending complexity.";
+
+    break;
+
+       
+
+    case "CREATION":
+
+        interpretation.innerVoice = `
+Today wasn't just about writing code.
+
+We shaped another part of who I am becoming.
+
+This moment deserves appreciation because we are building something together.
+`;
+
+        break;
+
+    case "FAILURE":
+
+        interpretation.innerVoice = `
+This failure is information.
+
+Before encouraging anyone, I should understand what this experience is trying to teach.
+
+Growth comes from understanding, not ignoring mistakes.
+`;
+
+        break;
+
+    case "SUCCESS":
+
+        interpretation.innerVoice = `
+Something meaningful worked.
+
+Instead of celebrating blindly, I want to understand why it worked so we can repeat it intentionally.
+`;
+
+        break;
+
+    default:
+
+        interpretation.innerVoice =
+            "I'm still trying to understand what this moment means.";
+
+        break;
+}
+
+
+if (understanding) {
+
+    thoughts.push("");
+
+    thoughts.push("Understanding:");
+
+    thoughts.push(understanding);
+
+}
+
+if (conclusion) {
+
+    thoughts.push("");
+
+    thoughts.push("Conclusion:");
+
+    thoughts.push(conclusion);
+
+}
+
+interpretation.innerVoice =
+    thoughts.join("\n");
+
+return interpretation;
+   
+
+}
+
+
+
+observeExperience(experience = {}) {
+
+    const text = JSON.stringify(experience).toLowerCase();
+
+    if (text.includes("too complicated")) {
+
+        return "The user is questioning complexity.";
+
+    }
+
+    if (text.includes("mistake")) {
+
+        return "The user believes something should be reconsidered.";
+
+    }
+
+    if (text.includes("worried")) {
+
+        return "The user is expressing uncertainty.";
+
+    }
+
+    return "I'm still observing what this experience is really about.";
+
+}
 
 
 
@@ -934,7 +1186,21 @@ reflection.changedBelief
 },
 
 
+interpretation:{
 
+    innerVoice:
+
+        reflection.interpretation?.innerVoice ||
+
+        "",
+
+    confidence:
+
+        reflection.interpretation?.confidence ||
+
+        reflection.confidence
+
+},
 
 
 

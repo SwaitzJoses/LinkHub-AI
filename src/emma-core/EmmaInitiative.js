@@ -2,707 +2,736 @@
 //
 // PROJECT BECOMING
 //
-// Emma Initiative System v2
+// Emma Initiative System v3
 //
-// The Moment Awareness Organ
+// Presence Before Action
 //
 // Initiative is not action.
 // Initiative is not reasoning.
-// Initiative is knowing when Emma's presence matters.
+// Initiative is deciding whether Emma's presence
+// belongs in this moment.
 //
 // RULE:
 //
 // Do not think.
-// Do not decide solutions.
+// Do not solve.
 // Do not execute.
-// Do not create messages.
-// Do not call AI.
+// Do not communicate.
 //
-// Attention notices the world.
-// Initiative decides when Emma should enter.
-//
-// Memory gives history.
-// Wisdom gives meaning.
-// Evolution gives growth.
-// SelfModel gives identity.
-// RelationshipModel gives closeness.
-// TemporalSense gives timing.
+// Attention notices.
+// Initiative becomes present.
 //
 
 class EmmaInitiative {
 
 constructor(){
 
-console.log(
-"🌱 Emma Initiative v2 awakened"
-);
+    console.log(
+        "🌱 Emma Initiative v3 awakened"
+    );
 
-// Not memory.
-// Only initiative rhythm.
+    this.history = [];
 
-this.history = [];
+    this.state = {
 
-this.state = {
+        presence: "QUIET",
 
-quietness: 1,
+        confidence: 0,
 
-engagement: 0,
+        quietness: 1,
 
-sensitivity: 0.5,
+        engagement: 0,
 
-lastInitiative: null
+        lastInitiative: null
 
-};
+    };
 
 }
 
 // =================================
-// OBSERVE MOMENT
-//
-// Should Emma become present?
+// ENTRY POINT
 // =================================
 
 observe(context = {}){
 
-console.log(
-"🌱 Emma sensing initiative..."
-);
+    console.log(
+        "🌱 Emma sensing the moment..."
+    );
 
-const signals =
+    const signals =
 
-this.collectSignals({
+        this.collectSignals(context);
 
-experience:
+    const initiative =
 
-context.experience,
+        this.evaluatePresence(
+            signals
+        );
 
-memory:
+    this.record(
+        initiative
+    );
 
-context.memory,
-
-wisdom:
-
-context.wisdom,
-
-evolution:
-
-context.evolution,
-
-self:
-
-context.self,
-
-relationship:
-
-context.relationship,
-
-temporal:
-
-context.temporal
-
-});
-
-const initiative =
-
-this.evaluate(
-
-signals
-
-);
-
-this.record(
-
-initiative
-
-);
-
-return initiative;
+    return initiative;
 
 }
 
 // =================================
 // COLLECT SIGNALS
 //
-// No judgement.
-// No reasoning.
-// Only awareness.
-// =================================
-
-collectSignals({
-
-experience,
-
-memory,
-
-wisdom,
-
-evolution,
-
-self,
-
-relationship,
-
-temporal
-
-}){
-
-return {
-
-importance:
-
-experience?.importance || 0,
-
-hasMemory:
-
-!!(
-
-memory?.memories?.length ||
-
-memory?.memory?.length
-
-),
-
-hasWisdom:
-
-!!(
-
-wisdom?.advice ||
-
-wisdom?.lessons
-
-),
-
-hasEvolution:
-
-!!(
-
-evolution?.change ||
-
-evolution?.learned
-
-),
-
-hasSelfShift:
-
-!!(
-
-self?.currentSelf ||
-
-self?.identity ||
-
-self?.recentGrowth
-
-),
-
-relationshipStrength:
-
-relationship?.strength ??
-
-relationship?.closeness ??
-
-0,
-
-relationshipTrust:
-
-relationship?.trust ??
-
-0,
-
-relationshipHistory:
-
-relationship?.sharedExperiences ??
-
-relationship?.historyCount ??
-
-0,
-
-timeSinceLastConversation:
-
-temporal?.daysSinceLastConversation ??
-
-temporal?.silenceDays ??
-
-0,
-
-importantMoment:
-
-temporal?.importantMoment ??
-
-false
-
-};
-
-}
-
-// =================================
-// EVALUATE INITIATIVE
+// Initiative does not decide.
 //
-// Should Emma become present?
-//
-// Not WHAT to do.
-// Only WHETHER to enter.
+// It only gathers everything
+// needed to understand the moment.
 // =================================
 
-evaluate(
+collectSignals(context = {}){
 
-signals
+    const experience =
 
-){
+        context.experience || {};
 
-let strength = 0;
+    const attention =
 
-let reasons = [];
+        context.attention || {};
 
-// ---------------------------------
-// Experience
-// ---------------------------------
+    const relationship =
 
-if(
+        context.relationship || {};
 
-signals.importance > 80
+    const temporal =
 
-){
+        context.temporal || {};
 
-strength += 0.25;
+    const memory =
 
-reasons.push(
+        context.memory || {};
 
-"important_moment"
+    const wisdom =
 
-);
+        context.wisdom || {};
+
+    const self =
+
+        context.self || {};
+
+    const evolution =
+
+        context.evolution || {};
+
+    return {
+
+        experience,
+
+        attention,
+
+        relationship,
+
+        temporal,
+
+        memory,
+
+        wisdom,
+
+        self,
+
+        evolution,
+
+        noticed:
+
+            attention.noticed ?? true,
+
+        attentionImportance:
+
+            attention.importance ?? 0,
+
+        attentionDepth:
+
+            attention.depth ||
+
+            "OBSERVE",
+
+        hasMemory:
+
+            !!(
+
+                memory.memories?.length ||
+
+                memory.relevantExperiences?.length ||
+
+                Array.isArray(memory)
+
+            ),
+
+        hasWisdom:
+
+            !!(
+
+                wisdom.advice ||
+
+                wisdom.lessons ||
+
+                wisdom.rule
+
+            ),
+
+        relationshipKnown:
+
+            relationship.known ??
+
+            false,
+
+        trust:
+
+            relationship.trust ??
+
+            0,
+
+        relationshipStrength:
+
+            relationship.strength ??
+
+            relationship.closeness ??
+
+            0,
+
+        silence:
+
+            temporal.daysSinceLastConversation ??
+
+            temporal.silenceDays ??
+
+            0,
+
+        meaningfulTime:
+
+            temporal.importantMoment ??
+
+            false,
+
+        selfChanged:
+
+            !!(
+
+                self.currentSelf ||
+
+                self.identity ||
+
+                self.recentGrowth
+
+            ),
+
+        evolved:
+
+            !!(
+
+                evolution.change ||
+
+                evolution.learned
+
+            )
+
+    };
 
 }
 
-// ---------------------------------
-// Shared Memory
-// ---------------------------------
+// =================================
+// PRESENCE EVALUATION
+//
+// No scores.
+//
+// Emma simply understands
+// whether her presence belongs.
+//
+// =================================
 
-if(
+evaluatePresence(signals){
 
-signals.hasMemory
+    const reasons = [];
 
-){
+    // Emma never enters unnoticed moments.
 
-strength += 0.15;
+    if(!signals.noticed){
 
-reasons.push(
+        return {
 
-"shared_history"
+            shouldReachOut:false,
 
-);
+            presence:"QUIET",
 
-}
+            confidence:1,
 
-// ---------------------------------
-// Wisdom Exists
-// ---------------------------------
+            reasons:[
 
-if(
+                "moment_not_noticed"
 
-signals.hasWisdom
+            ],
 
-){
+            createdAt:new Date()
 
-strength += 0.10;
+        };
 
-reasons.push(
+    }
 
-"wisdom_available"
+    // Strong human moment
 
-);
+    if(
 
-}
+        signals.relationshipKnown ||
 
-// ---------------------------------
-// Emma Has Been Growing
-// ---------------------------------
+        signals.relationshipStrength > 0
 
-if(
+    ){
 
-signals.hasEvolution
+        reasons.push(
 
-){
+            "relationship_present"
 
-strength += 0.15;
+        );
 
-reasons.push(
+    }
 
-"growth_detected"
+    if(
 
-);
+        signals.hasMemory
 
-}
+    ){
 
-// ---------------------------------
-// Emma's Identity Shifted
-// ---------------------------------
+        reasons.push(
 
-if(
+            "shared_history"
 
-signals.hasSelfShift
+        );
 
-){
+    }
 
-strength += 0.10;
+    if(
 
-reasons.push(
+        signals.hasWisdom
 
-"self_understanding"
+    ){
 
-);
+        reasons.push(
 
-}
+            "wisdom_available"
 
-// ---------------------------------
-// Relationship Strength
-// ---------------------------------
+        );
 
-if(
+    }
 
-signals.relationshipStrength > 0.5
+    if(
 
-){
+        signals.meaningfulTime
 
-strength += 0.10;
+    ){
 
-reasons.push(
+        reasons.push(
 
-"relationship_matters"
+            "meaningful_timing"
 
-);
+        );
 
-}
+    }
 
-if(
+    if(
 
-signals.relationshipTrust > 0.7
+        signals.selfChanged ||
 
-){
+        signals.evolved
 
-strength += 0.05;
+    ){
 
-reasons.push(
+        reasons.push(
 
-"trusted_relationship"
+            "emma_has_changed"
 
-);
+        );
 
-}
+    }
 
-// ---------------------------------
-// Long Silence
-// ---------------------------------
+    return this.shouldBecomePresent({
 
-if(
+        ...signals,
 
-signals.timeSinceLastConversation >= 7
+        reasons
 
-){
-
-strength += 0.10;
-
-reasons.push(
-
-"long_absence"
-
-);
+    });
 
 }
 
-if(
+// =================================
+// SHOULD EMMA BECOME PRESENT?
+//
+// Initiative is a question.
+//
+// Not a score.
+//
+// =================================
 
-signals.timeSinceLastConversation >= 30
+shouldBecomePresent(signals){
 
-){
+    // Highest priority
 
-strength += 0.05;
+    if(
 
-reasons.push(
+        signals.attentionDepth === "ACT"
 
-"reconnection"
+    ){
 
-);
+        return {
 
-}
+            shouldReachOut:true,
 
-// ---------------------------------
-// Meaningful Timing
-// ---------------------------------
+            presence:"ACTIVE",
 
-if(
+            confidence:1,
 
-signals.importantMoment
+            reasons:[
 
-){
+                ...signals.reasons,
 
-strength += 0.10;
+                "attention_requests_action"
 
-reasons.push(
+            ],
 
-"meaningful_time"
+            createdAt:new Date()
 
-);
+        };
 
-}
+    }
 
-strength = Math.min(
+    if(
 
-1,
+        signals.attentionDepth === "REASON"
 
-strength
+    ){
 
-);
+        return {
 
-const shouldReachOut =
+            shouldReachOut:true,
 
-strength >= 0.5;
+            presence:"AVAILABLE",
 
-return {
+            confidence:0.9,
 
-shouldReachOut,
+            reasons:[
 
-strength,
+                ...signals.reasons,
 
-reasons,
+                "deep_understanding_needed"
 
-createdAt:
+            ],
 
-new Date()
+            createdAt:new Date()
 
-};
+        };
+
+    }
+
+    if(
+
+        signals.relationshipKnown &&
+
+        signals.hasMemory
+
+    ){
+
+        return {
+
+            shouldReachOut:true,
+
+            presence:"PRESENT",
+
+            confidence:0.8,
+
+            reasons:[
+
+                ...signals.reasons,
+
+                "relationship_deserves_presence"
+
+            ],
+
+            createdAt:new Date()
+
+        };
+
+    }
+
+    if(
+
+        signals.meaningfulTime
+
+    ){
+
+        return {
+
+            shouldReachOut:true,
+
+            presence:"PRESENT",
+
+            confidence:0.75,
+
+            reasons:[
+
+                ...signals.reasons,
+
+                "important_moment"
+
+            ],
+
+            createdAt:new Date()
+
+        };
+
+    }
+
+    return {
+
+        shouldReachOut:false,
+
+        presence:"QUIET",
+
+        confidence:0.9,
+
+        reasons:[
+
+            "quiet_presence"
+
+        ],
+
+        createdAt:new Date()
+
+    };
 
 }
 
 // =================================
 // RECORD INITIATIVE
 //
-// Emma remembers rhythm,
+// Emma remembers cadence,
 // not conversations.
 // =================================
 
-record(
+record(initiative){
 
-initiative
+    this.history.unshift({
 
-){
+        presence:
 
-this.history.unshift({
+            initiative.presence,
 
-strength:
+        confidence:
 
-initiative.strength,
+            initiative.confidence,
 
-acted:
+        reachedOut:
 
-initiative.shouldReachOut,
+            initiative.shouldReachOut,
 
-reasons:
+        reasons:
 
-initiative.reasons,
+            initiative.reasons,
 
-createdAt:
+        createdAt:
 
-initiative.createdAt ||
+            initiative.createdAt ||
 
-new Date()
+            new Date()
 
-});
+    });
 
-this.history =
+    this.history =
 
-this.history.slice(
+        this.history.slice(
 
-0,
+            0,
 
-50
+            50
 
-);
+        );
 
-this.updateRhythm(
+    this.updateRhythm(
 
-initiative
+        initiative
 
-);
+    );
 
 }
 
 // =================================
-// UPDATE INITIATIVE RHYTHM
+// UPDATE RHYTHM
 //
-// Emma learns how often
-// her presence is appropriate.
+// Initiative learns how often
+// Emma should naturally appear.
 //
-// This is not learning facts.
-// It is learning cadence.
+// This is rhythm,
+// not intelligence.
 // =================================
 
-updateRhythm(
+updateRhythm(initiative){
 
-initiative
+    if(
 
-){
+        initiative.shouldReachOut
 
-if(
+    ){
 
-initiative.shouldReachOut
+        this.state.presence =
 
-){
+            initiative.presence;
 
-// Speaking increases quietness,
-// encouraging patience afterwards.
+        this.state.confidence =
 
-this.state.quietness +=
+            initiative.confidence;
 
-0.20;
+        this.state.engagement =
 
-// Successful initiative slowly
-// increases confidence in presence.
+            Math.min(
 
-this.state.engagement +=
+                1,
 
-0.05;
+                this.state.engagement + 0.05
 
-this.state.lastInitiative =
+            );
 
-initiative.createdAt ||
+        this.state.quietness =
 
-new Date();
+            Math.min(
 
-}
+                1,
 
-else{
+                this.state.quietness + 0.15
 
-// Silence slowly restores
-// openness to future moments.
+            );
 
-this.state.quietness -=
+        this.state.lastInitiative =
 
-0.05;
+            initiative.createdAt ||
 
-}
+            new Date();
 
-// Relationship-driven initiatives
-// make Emma slightly more sensitive
-// to meaningful future moments.
+    }
 
-if(
+    else{
 
-initiative.reasons?.includes(
+        this.state.presence =
 
-"relationship_matters"
+            "QUIET";
 
-)
+        this.state.confidence =
 
-){
+            initiative.confidence;
 
-this.state.sensitivity +=
+        this.state.quietness =
 
-0.02;
+            Math.max(
 
-}
+                0,
 
-// Long reconnections also
-// reinforce sensitivity.
+                this.state.quietness - 0.05
 
-if(
+            );
 
-initiative.reasons?.includes(
+    }
 
-"reconnection"
-
-)
-
-){
-
-this.state.sensitivity +=
-
-0.03;
-
-}
-
-this.limitState();
+    this.limitState();
 
 }
 
 // =================================
-// APPLY QUIETNESS FILTER
+// SHOULD EXPRESS
 //
-// Initiative may exist,
-// but Emma still chooses patience.
+// Initiative exists.
+//
+// Expression is optional.
+//
+// Emma can choose silence.
 // =================================
 
-shouldExpress(
+shouldExpress(initiative){
 
-initiative
+    if(
 
-){
+        !initiative?.shouldReachOut
 
-if(
+    ){
 
-!initiative.shouldReachOut
+        return false;
 
-){
+    }
 
-return false;
+    // Give people room.
 
-}
+    if(
 
-// Emma recently became present.
-// Give space before entering again.
+        this.state.quietness > 0.85 &&
 
-if(
+        this.history.length > 3
 
-this.state.quietness > 0.8 &&
+    ){
 
-this.history.length > 3
+        return false;
 
-){
+    }
 
-return false;
-
-}
-
-return true;
+    return true;
 
 }
 
 // =================================
-// LIMIT STATE VALUES
+// KEEP STATE HEALTHY
 // =================================
 
 limitState(){
 
-for(
+    this.state.quietness =
 
-const key of [
+        Math.max(
 
-"quietness",
+            0,
 
-"engagement",
+            Math.min(
 
-"sensitivity"
+                1,
 
-]
+                this.state.quietness
 
-){
+            )
 
-this.state[key] =
+        );
 
-Math.max(
+    this.state.engagement =
 
-0,
+        Math.max(
 
-Math.min(
+            0,
 
-1,
+            Math.min(
 
-this.state[key]
+                1,
 
-)
+                this.state.engagement
 
-);
+            )
 
-}
+        );
+
+    this.state.confidence =
+
+        Math.max(
+
+            0,
+
+            Math.min(
+
+                1,
+
+                this.state.confidence
+
+            )
+
+        );
 
 }
 
@@ -712,15 +741,15 @@ this.state[key]
 
 getState(){
 
-return {
+    return {
 
-...this.state,
+        ...this.state,
 
-recentInitiatives:
+        history:
 
-this.history.length
+            this.history.length
 
-};
+    };
 
 }
 
@@ -730,39 +759,39 @@ this.history.length
 
 status(){
 
-return {
+    return {
 
-organ:
+        organ:
 
-"EmmaInitiative",
+            "EmmaInitiative",
 
-version:
+        version:
 
-"v2",
+            "v3",
 
-role:
+        role:
 
-"Moment Awareness",
+            "Presence Before Action",
 
-state:
+        state:
 
-this.getState(),
+            this.getState(),
 
-principle:
+        principle:
 
-"Emma becomes present when the moment, the relationship and the timing deserve her presence.",
+            "Emma becomes present only when her presence genuinely belongs.",
 
-recent:
+        recent:
 
-this.history.slice(
+            this.history.slice(
 
-0,
+                0,
 
-5
+                5
 
-)
+            )
 
-};
+    };
 
 }
 

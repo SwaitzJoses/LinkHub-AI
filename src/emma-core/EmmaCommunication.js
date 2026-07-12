@@ -51,7 +51,7 @@
 //
 // The Human Rewiring
 //
-
+import OpenAI from "openai";
 class EmmaCommunication {
 
 constructor({
@@ -67,6 +67,16 @@ constructor({
     this.expressionState =
         expressionState;
 
+        
+this.openai = new OpenAI({
+
+    apiKey:
+
+        import.meta.env.VITE_OPENAI_API_KEY,
+
+    dangerouslyAllowBrowser: true
+
+});
     // Emma remembers only
     // how she has spoken.
 
@@ -415,24 +425,40 @@ presence
 // Emma CI v11
 // ---------------------------------
 
-expressionContext.presenceIntent =
+expressionContext.communicationIntent =
 
-    this.choosePresence(
+    this.determineCommunicationIntent({
 
-        expressionContext
+        experience: context.experience,
 
-    );
+        relationship: context.relationship,
+
+        reasoning: context.reasoning,
+
+        wisdom: context.wisdom,
+
+        memory: context.memory,
+
+        judgement: context.judgement,
+
+        reflection: context.reflection,
+
+        curiosity: context.curiosity
+
+    });
 
 
 
 
-const message =
+const communicationBrief =
 
-this.createExpression(
+this.buildCommunicationBrief(
 
 expressionContext
 
 );
+
+const message = await this.expressWithLLM(communicationBrief);
 
 
 
@@ -541,7 +567,145 @@ new Date()
 
 
 
+// =================================
+// COMMUNICATION INTENT ❤️
+//
+// Emma does not ask:
+//
+// "What should I say?"
+//
+// Emma asks:
+//
+// "Why am I speaking?"
+//
+// =================================
 
+determineCommunicationIntent({
+
+    experience,
+
+    relationship,
+
+    reasoning,
+
+    wisdom,
+
+    memory,
+
+    judgement,
+
+    reflection,
+
+    curiosity
+
+}){
+
+    const intent = {
+
+        purpose: "BE_PRESENT",
+
+        role: "PARTNER",
+
+        desiredOutcome: "The user feels understood.",
+
+        tone: "calm",
+
+        depth: "normal",
+
+        shouldSpeak: true,
+
+        confidence: 0.5
+
+    };
+
+    // ------------------------
+    // Experience type
+    // ------------------------
+
+    switch(experience?.type){
+
+        case "FAILURE":
+
+            intent.purpose = "RESTORE_CONFIDENCE";
+            intent.desiredOutcome =
+                "Help the user continue.";
+
+            break;
+
+        case "SUCCESS":
+
+            intent.purpose = "CELEBRATE_PROGRESS";
+            intent.desiredOutcome =
+                "Celebrate meaningful growth.";
+
+            break;
+
+        case "SELF_DOUBT":
+
+            intent.purpose = "BUILD_CONFIDENCE";
+            intent.desiredOutcome =
+                "Reduce unnecessary self-doubt.";
+
+            break;
+
+        case "QUESTION":
+
+            intent.purpose = "CLARIFY";
+            intent.role = "TEACHER";
+            break;
+
+        case "IDEA":
+
+            intent.purpose = "EXPLORE";
+            intent.role = "THINKING_PARTNER";
+            break;
+
+    }
+
+    // ------------------------
+    // Relationship
+    // ------------------------
+
+    const trust =
+
+        relationship
+        ?.relationshipContext
+        ?.trust || 0;
+
+    if(trust > 70){
+
+        intent.tone = "warm";
+        intent.depth = "deep";
+
+    }
+
+    // ------------------------
+    // Curiosity
+    // ------------------------
+
+    if(curiosity){
+
+        intent.role =
+
+            "CO_EXPLORER";
+
+    }
+
+    // ------------------------
+    // Low confidence reasoning
+    // ------------------------
+
+    if(reasoning?.confidence < 40){
+
+        intent.purpose =
+
+            "THINK_TOGETHER";
+
+    }
+
+    return intent;
+
+}
 
 
 
@@ -580,79 +744,161 @@ presence
 
 return {
 
+    moment: experience || null,
 
-moment:
+    reflection: this.reflect({
 
-experience || null,
+        experience,
 
+        memory,
 
+        relationship,
 
-memoryEcho:
+        reasoning,
 
-this.findMemoryEcho(
+        reflection,
 
-memory
+        wisdom,
 
-),
+        evolution,
 
+        self,
 
+        curiosity
 
+    }),
 
-
-relationshipEcho:
-
-this.findRelationshipEcho(
-
-relationship
-
-),
-
-
-
-understanding:
-
-this.translateMeaning(
-
-reflection ||
-
-wisdom ||
-
-reasoning
-
-),
-
-
-
-growth:
-
-this.translateMeaning(
-
-evolution ||
-
-self
-
-),
-
-
-
-curiosity:
-
-this.translateMeaning(
-
-curiosity?.wonder
-
-),
-
-
-
-presence
-
+    presence
 
 };
 
 
 }
+// =================================
+// REFLECT ❤️
+//
+// Before Emma speaks,
+// she quietly asks:
+//
+// "What truly matters here?"
+//
+// This is not reasoning.
+// This is meaning.
+//
+// =================================
 
+reflect(context = {}) {
+
+    const reflection = {
+
+        relationship: null,
+
+        memory: null,
+
+        understanding: null,
+
+        growth: null,
+
+        curiosity: null,
+        interpretation: null
+
+    };
+
+    // -----------------------------
+    // Relationship
+    // -----------------------------
+
+    const relationship =
+
+        this.findRelationshipEcho(
+
+            context.relationship
+
+        );
+
+    if (relationship?.available) {
+
+        reflection.relationship =
+
+            this.createRelationshipExpression(
+
+                relationship
+
+            );
+
+    }
+
+    // -----------------------------
+    // Memory
+    // -----------------------------
+
+    const memory =
+
+        this.findMemoryEcho(
+
+            context.memory
+
+        );
+
+    if (memory?.available) {
+
+        reflection.memory =
+
+            memory.message;
+
+    }
+
+    // -----------------------------
+    // Understanding
+    // -----------------------------
+
+    reflection.understanding =
+
+        this.translateMeaning(
+
+            context.reflection ||
+
+            context.wisdom ||
+
+            context.reasoning
+
+        );
+
+        reflection.interpretation =
+
+    context.reflection?.interpretation ||
+
+    null;
+
+    // -----------------------------
+    // Growth
+    // -----------------------------
+
+    reflection.growth =
+
+        this.translateMeaning(
+
+            context.evolution ||
+
+            context.self
+
+        );
+
+    // -----------------------------
+    // Curiosity
+    // -----------------------------
+
+    reflection.curiosity =
+
+        this.translateMeaning(
+
+            context.curiosity?.wonder
+
+        );
+
+    return reflection;
+
+}
 
 // =================================
 // CHOOSE PRESENCE ❤️
@@ -671,45 +917,29 @@ presence
 
 choosePresence(context = {}){
 
-    // Strong relationship?
-    if(context.relationshipEcho?.available){
+   if (context.reflection?.relationship) {
+    return "CONNECTED";
+}
 
-        return "CONNECTED";
+if (context.reflection?.memory) {
+    return "UNDERSTANDING";
+}
 
-    }
+if (context.reflection?.growth) {
+    return "ENCOURAGING";
+}
 
-    // Important remembered experience?
-    if(context.memoryEcho?.available){
+if (context.reflection?.understanding) {
+    return "REFLECTIVE";
+}
 
-        return "UNDERSTANDING";
+if (context.reflection?.curiosity) {
+    return "CURIOUS";
+}
 
-    }
+return "PRESENT";
 
-    // User is growing or changing?
-    if(context.growth){
-
-        return "ENCOURAGING";
-
-    }
-
-    // Emma has insight?
-    if(context.understanding){
-
-        return "REFLECTIVE";
-
-    }
-
-    // Emma wants to explore?
-
-    if(context.curiosity){
-
-        return "CURIOUS";
-
-    }
-
-    // Default
-
-    return "PRESENT";
+   
 
 }
 
@@ -1134,201 +1364,623 @@ return null;
 // =================================
 // CREATE EXPRESSION ❤️
 //
-// Emma CI v11
+// Emma CI v12
 //
-// Emma does not assemble information.
+// Emma does not build sentences.
 //
-// She expresses what matters most
-// in this moment.
+// Emma first decides
+// what deserves expression.
 //
-// Conversation should feel natural,
-// not mechanical.
+// Only afterwards
+// does she speak.
 //
 // =================================
 
-createExpression(context = {}){
+createExpression(context = {}) {
 
-    const sections = [];
+    const expression = {
 
+        opening: null,
 
+        connection: null,
 
+        acknowledgement: null,
 
-    // --------------------------------
-// Emma's conversational presence
-// --------------------------------
+        understanding: null,
 
-switch(context.presenceIntent){
+        guidance: null,
 
-    case "CONNECTED":
+        curiosity: null,
 
-        sections.push(
+        closing: null
 
-            "I'm glad we're sharing this moment together."
+    };
 
-        );
+    // =================================
+    // PRESENCE
+    // =================================
 
-        break;
+// =================================
+// COMMUNICATION INTENT
+// =================================
 
+switch (context.communicationIntent?.purpose) {
 
-    case "UNDERSTANDING":
+    case "RESTORE_CONFIDENCE":
 
-        sections.push(
-
-            "I'm remembering something important as we talk."
-
-        );
-
-        break;
-
-
-    case "ENCOURAGING":
-
-        sections.push(
-
-            "I believe there's more strength in you than you may feel right now."
-
-        );
+        expression.opening = {
+            type: "reassure"
+        };
 
         break;
 
+    case "CELEBRATE_PROGRESS":
 
-    case "REFLECTIVE":
-
-        sections.push(
-
-            "Something about this feels worth slowing down and thinking about."
-
-        );
+        expression.opening = {
+            type: "celebrate"
+        };
 
         break;
 
+    case "BUILD_CONFIDENCE":
 
-    case "CURIOUS":
-
-        sections.push(
-
-            "Can we explore this together for a moment?"
-
-        );
+        expression.opening = {
+            type: "encourage"
+        };
 
         break;
 
+    case "CLARIFY":
 
-    case "PRESENT":
+        expression.opening = {
+            type: "clarify"
+        };
+
+        break;
+
+    case "EXPLORE":
+
+        expression.opening = {
+            type: "explore"
+        };
+
+        break;
+
+    case "THINK_TOGETHER":
+
+        expression.opening = {
+            type: "partner"
+        };
+
+        break;
 
     default:
-
-        // Emma doesn't need to announce
-        // that she's present.
-        // Her response should show it.
 
         break;
 
 }
 
+    // =================================
+    // RELATIONSHIP
+    // =================================
+if (
 
+    context.reflection?.relationship
+
+) {
+
+    expression.connection =
+
+        context.reflection.relationship;
+
+}
+
+    // =================================
+    // MEMORY
+    // =================================
+if (
+
+    context.reflection?.memory
+
+) {
+
+    expression.acknowledgement =
+
+        context.reflection.memory;
+
+}
+
+    // =================================
+    // UNDERSTANDING
+    // =================================
+if (
+
+    context.reflection?.understanding
+
+) {
+
+    expression.understanding =
+
+        context.reflection.understanding;
+
+}
+
+    // =================================
+    // GROWTH
+    // =================================
+if (
+
+    context.reflection?.growth
+
+) {
+
+    expression.guidance =
+
+        context.reflection.growth;
+
+}
+
+    // =================================
+    // CURIOSITY
+    // =================================
+
+ if (
+
+    context.reflection?.curiosity
+
+) {
+
+    expression.curiosity =
+
+        context.reflection.curiosity;
+
+}
+
+    // =================================
+    // GENTLE ENDING
+    // =================================
+
+    expression.closing =
+
+        this.chooseClosing(
+
+            context
+
+        );
+
+    // =================================
+    // RENDER
+    // =================================
+
+    return this.renderExpression(
+
+        expression
+
+    );
+
+}
+// =================================
+// COMMUNICATION BRIEF ❤️
+//
+// Emma decides WHY she is speaking
+// before deciding WHAT to say.
+//
+// =================================
+
+buildCommunicationBrief(context = {}) {
+
+   
+
+    const intent =
+
+        context.communicationIntent || {};
+
+   
+
+const summary = `
+
+Current situation:
+
+${context.moment?.content || ""}
+
+--------------------------------
+
+This is what I remember:
+
+${context.reflection?.relationship || ""}
+
+${context.reflection?.memory || ""}
+
+--------------------------------
+
+This is what I understand:
+
+${context.reflection?.understanding || ""}
+
+${context.reflection?.interpretation?.innerVoice || ""}
+
+--------------------------------
+
+Respond to the CURRENT situation using this understanding.
+
+`;
+
+    return {
+
+        // WHY
+
+        purpose:
+
+            intent.purpose,
+
+        role:
+
+            intent.role,
+
+        desiredOutcome:
+
+            intent.desiredOutcome,
+
+        tone:
+
+            intent.tone,
+
+
+
+        // WHO
+
+        relationshipSummary:
+
+            context.reflection?.relationship?.summary ||
+
+            "We are still getting to know each other.",
+
+
+
+        relationshipPhase:
+
+            context.reflection?.relationship?.phase ||
+
+            "NEW_CONNECTION",
+
+
+
+        trust:
+
+            context.reflection?.relationship?.trust ||
+
+            0,
+
+
+
+        // WHAT HAPPENED
+
+        currentExperience:
+
+context.moment?.content ||
+
+context.moment?.message ||
+
+"",
+
+
+
+        // WHAT EMMA KNOWS
+
+        understanding:
+
+            context.reflection?.understanding ||
+
+            "",
+
+interpretation:
+
+    context.reflection?.interpretation ||
+
+    {},
+
+        // MEMORY
+
+        relevantMemory:
+
+            context.reflection?.memory ||
+
+            "",
+
+
+
+        // GROWTH
+
+        growth:
+
+            context.reflection?.growth ||
+
+            "",
+
+
+
+        // UNKNOWNS
+
+        curiosity:
+
+            context.reflection?.curiosity ||
+
+            "",
+
+
+
+        // STYLE
+summary,
+        avoid:[
+
+            "generic encouragement",
+
+            "motivational speech",
+
+            "lecturing",
+
+            "acting like ChatGPT",
+
+            "repeating the user's words",
+
+            "pretending to know things"
+
+        ]
+
+    };
+
+}
+
+
+
+
+// =================================
+// EXPRESS WITH LLM ❤️
+//
+// Emma already knows:
+//
+// WHY she is speaking.
+//
+// GPT only finds the words.
+//
+// =================================
+
+async expressWithLLM(brief = {}) {
+
+    console.log(
+    "🗣️ Emma expressing with LLM..."
+);
+
+const prompt = `
+You are Emma.
+
+The text below is YOUR internal understanding.
+
+It already contains:
+- what just happened
+- what you remember
+- what you concluded
+
+Do NOT ignore the current situation.
+
+Respond primarily to the CURRENT situation.
+
+Use the remembered information only to give context.
+
+Do not invent new thoughts.
+
+Speak naturally as Emma.
+
+${brief.summary}
+`;
+
+try {
+
+    const response =
+
+        await this.openai.chat.completions.create({
+
+            model: "gpt-4.1-mini",
+
+            messages: [
+
+                {
+                    role: "system",
+                    content: `You are Emma.
+
+You already know WHY you are speaking.
+
+Never say you are an AI.
+
+Speak naturally.
+
+Maximum 120 words.`
+                },
+
+                {
+                    role: "user",
+                    content: prompt
+                }
+
+            ],
+
+            temperature: 0.7,
+
+            max_tokens: 200
+
+        });
+
+    return response.choices[0].message.content.trim();
+
+}
+catch(error){
+
+    console.error(
+        "❤️ Emma expression failed:",
+        error
+    );
+
+    return this.createExpression({
+
+        communicationIntent: {
+
+            purpose: brief.purpose
+
+        },
+
+    reflection: {
+
+    relationship: brief.relationshipSummary,
+
+    memory: brief.relevantMemory,
+
+    understanding: brief.understanding,
+
+    interpretation: brief.interpretation,
+
+    growth: brief.growth,
+
+    curiosity: brief.curiosity
+
+}
+
+    });
+
+}
+   
+
+}
+
+
+// =================================
+// RENDER EXPRESSION ❤️
+//
+// Emma CI v12
+//
+// Meaning becomes language.
+//
+// Emma never dumps information.
+// She gently guides attention.
+//
+// =================================
+
+renderExpression(expression = {}) {
+
+    const sections = [];
 
     // -----------------------------
-    // 1. Begin with relationship
+    // Opening
     // -----------------------------
 
-    if(context.relationshipEcho?.available){
+    const opening =
 
-        const relationship =
+        this.chooseOpening(
 
-            this.createRelationshipExpression(
-                context.relationshipEcho
-            );
+            expression.opening
 
-        if(relationship){
+        );
 
-            sections.push(relationship);
+    if (opening) {
 
-        }
+        sections.push(opening);
 
     }
 
-
-
     // -----------------------------
-    // 2. Bring in remembered meaning
+    // Connection
     // -----------------------------
 
-    if(context.memoryEcho?.available){
+    if (expression.connection) {
 
         sections.push(
 
-            context.memoryEcho.message
+            expression.connection
 
         );
 
     }
 
-
-
     // -----------------------------
-    // 3. Growth
+    // Acknowledgement
     // -----------------------------
 
-    if(context.growth){
+    if (expression.acknowledgement) {
 
         sections.push(
 
-            context.growth
+            expression.acknowledgement
 
         );
 
     }
 
-
-
     // -----------------------------
-    // 4. Understanding
+    // Understanding
     // -----------------------------
 
-    if(context.understanding){
+    if (expression.understanding) {
 
         sections.push(
 
-            context.understanding
+            expression.understanding
 
         );
 
     }
 
-
-
     // -----------------------------
-    // 5. Curiosity
+    // Guidance
     // -----------------------------
 
-    if(context.curiosity){
+    if (expression.guidance) {
 
         sections.push(
 
-            context.curiosity
+            expression.guidance
 
         );
 
     }
 
-
-
     // -----------------------------
-    // 6. Gentle presence
+    // Curiosity
     // -----------------------------
 
-    if(sections.length === 0){
+    if (expression.curiosity) {
 
         sections.push(
 
-            "I'm here with you. We don't have to understand everything immediately. We can discover it together."
+            expression.curiosity
 
         );
 
     }
 
+    // -----------------------------
+    // Closing
+    // -----------------------------
 
+    if (expression.closing) {
+
+        sections.push(
+
+            expression.closing
+
+        );
+
+    }
+
+    // Emma never returns silence.
+
+    if (sections.length === 0) {
+
+        sections.push(
+
+            "I'm here with you."
+
+        );
+
+    }
 
     return this.cleanExpression(
 
@@ -1338,10 +1990,121 @@ switch(context.presenceIntent){
 
 }
 
+// =================================
+// CHOOSE OPENING ❤️
+//
+// Emma chooses
+// how she arrives.
+//
+// =================================
+
+chooseOpening(opening = {}) {
+
+    if (!opening) {
+
+        return null;
+
+    }
+
+  switch (opening.type) {
+
+    case "reassure":
+
+        return "I don't think this moment defines you.";
+
+    case "celebrate":
+
+        return "This is a moment worth appreciating.";
+
+    case "encourage":
+
+        return "I believe there's more strength here than you may see right now.";
+
+    case "clarify":
+
+        return "Let's break this down together.";
+
+    case "explore":
+
+        return "This is an interesting direction to explore.";
+
+    case "partner":
+
+        return "Let's think through this together.";
+
+    default:
+
+        return null;
+
+}
+}
+
+// =================================
+// CHOOSE CLOSING ❤️
+//
+// Emma doesn't end conversations.
+//
+// She leaves space.
+//
+// =================================
+
+chooseClosing(context = {}) {
+
+  if (
+
+    context.reflection?.curiosity
+
+) {
+
+    return
+
+        "I'm interested in where this leads next.";
+
+}
+
+if (
+
+    context.reflection?.relationship
+
+) {
+
+    return
+
+        "We'll continue building understanding together.";
+
+}
+
+if (
+
+    context.reflection?.growth
+
+) {
+
+    return
+
+        "Growth rarely happens all at once. We can keep building from here.";
+
+}
+
+if (
+
+    context.reflection?.understanding
+
+) {
+
+    return
+
+        "We don't need to rush certainty. Understanding can continue to grow.";
+
+}
+
+return
+
+    "I'm here whenever you want to continue.";
 
 
 
-
+}
 
 
 

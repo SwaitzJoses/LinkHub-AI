@@ -309,7 +309,15 @@ return null;
 
 }
 
+// =================================
+// Shared Context Support
+// =================================
 
+if (experience.experience) {
+
+    experience = experience.experience;
+
+}
 
 
 
@@ -334,8 +342,7 @@ experience
 
 
 
-
-const strength =
+let strength =
 
 this.calculateStrength(
 
@@ -344,6 +351,20 @@ knowledge,
 experience
 
 );
+
+// =============================
+// Attention Influence
+// =============================
+
+const attention = experience.attention;
+
+if (attention?.importance) {
+
+    strength += Math.floor(attention.importance / 10);
+
+}
+
+strength = Math.min(strength, 100);
 
 
 
@@ -1307,7 +1328,6 @@ await this.getMemoryCandidates(
 context
 
 );
-
 
 
 
