@@ -88,7 +88,31 @@ this.coreMemories = [];
 this.associations =
 new Map();
 
+// =============================
+// SEMANTIC ASSOCIATIONS
+// =============================
 
+this.semanticAssociations = {
+
+    people: new Map(),
+
+    projects: new Map(),
+
+    goals: new Map(),
+
+    topics: new Map(),
+
+    lessons: new Map(),
+
+    patterns: new Map(),
+
+    relationships: new Map(),
+
+    organizations: new Map(),
+
+    locations: new Map()
+
+};
 
 
 // =============================
@@ -342,29 +366,25 @@ experience
 
 
 
-let strength =
-
-this.calculateStrength(
-
-knowledge,
-
-experience
-
-);
-
 // =============================
-// Attention Influence
+// MEMORY STATE
+//
+// Store first.
+// Retrieval decides importance.
+//
 // =============================
 
-const attention = experience.attention;
+const memoryState = {
 
-if (attention?.importance) {
+    recallCount:0,
 
-    strength += Math.floor(attention.importance / 10);
+    lastRecalled:null,
 
-}
+    firstSeen:new Date().toISOString(),
 
-strength = Math.min(strength, 100);
+    lastUpdated:new Date().toISOString()
+
+};
 
 
 
@@ -478,13 +498,12 @@ type:
 knowledge.type,
 
 
-importance:
+memoryWeight:
 
-knowledge.importance,
+knowledge.memoryWeight,
 
 
-strength,
-
+state: memoryState,
 
 age:0,
 
@@ -685,66 +704,52 @@ memory
 // =============================
 
 
-if(
+{
 
-this.shouldPersist(memory)
 
-){
+// =================================
+// STORE EVERYTHING
+// Emma never decides whether an
+// experience deserves to exist.
+// Retrieval decides what matters.
+// =================================
 
+// =============================
+// LONG TERM STORAGE
+//
+// Store Everything.
+// Emma never decides whether
+// an experience deserves
+// to exist.
+//
+// Retrieval decides what
+// matters later.
+// =============================
 
 try{
 
+    await EmmaDB.saveMemory(memory);
 
-await EmmaDB.saveMemory(
-
-memory
-
-);
-
-
-
-console.log(
-
-"💾 Long term memory stored"
-
-);
-
+    console.log(
+        "💾 Experience stored"
+    );
 
 }
-
 
 catch(error){
 
+    console.warn(
 
-console.warn(
+        "⚠️ Database unavailable. Stored locally.",
 
-"⚠️ Memory sleeping locally:",
+        error.message
 
-error.message
-
-);
-
+    );
 
 }
 
 
 }
-
-
-else{
-
-
-console.log(
-
-"🍃 Temporary experience"
-
-);
-
-
-}
-
-
-
 
 
 return memory;
@@ -845,9 +850,9 @@ let success = null;
 
 
 
-let importance =
+let memoryWeight =
 
-experience.importance ||
+experience.memoryWeight ||
 
 "NORMAL";
 
@@ -911,7 +916,7 @@ success = false;
 
 
 
-importance =
+memoryWeight =
 
 "HIGH";
 
@@ -940,7 +945,7 @@ type,
 success,
 
 
-importance,
+memoryWeight,
 
 
 emotion,
@@ -1015,99 +1020,6 @@ type
 
 
 
-// =================================
-// MEMORY STRENGTH
-// =================================
-
-
-calculateStrength(
-
-knowledge,
-
-experience
-
-){
-
-
-
-let score = 10;
-
-
-
-
-
-if(
-
-knowledge.importance === "HIGH"
-
-||
-
-knowledge.importance === "critical"
-
-){
-
-score += 40;
-
-}
-
-
-
-
-
-if(
-
-knowledge.success !== null
-
-){
-
-score += 25;
-
-}
-
-
-
-
-
-if(
-
-experience.person
-
-){
-
-score += 15;
-
-}
-
-
-
-
-
-if(
-
-knowledge.patterns.length
-
-){
-
-score += 20;
-
-}
-
-
-
-
-return Math.min(
-
-score,
-
-100
-
-);
-
-
-
-}
-
-
 
 
 
@@ -1131,13 +1043,9 @@ memory
 
 return (
 
-memory.strength >= 80
+    memory.memoryWeight === "CORE" ||
 
-||
-
-memory.type ===
-
-"FAILED_EXPERIENCE"
+    memory.type === "FOUNDATIONAL_EXPERIENCE"
 
 );
 
@@ -1153,36 +1061,6 @@ memory.type ===
 
 
 
-// =================================
-// SHOULD PERSIST
-// =================================
-
-
-shouldPersist(
-
-memory
-
-){
-
-
-
-return (
-
-memory.strength >= 30
-
-||
-
-memory.importance === "HIGH"
-
-||
-
-memory.importance === "critical"
-
-);
-
-
-
-}
 
 
 
@@ -1195,104 +1073,558 @@ memory.importance === "critical"
 
 // =================================
 // ASSOCIATION GRAPH
+//
+// Stores:
+// 1. Word associations
+// 2. Semantic associations
+//
+// Store Everything.
+// Retrieve Wisely.
+//
 // =================================
 
+buildAssociations(memory){
 
-buildAssociations(
+    // ---------------------------------
+    // WORD ASSOCIATIONS (existing)
+    // ---------------------------------
 
-memory
+    const words =
 
-){
+        JSON.stringify(memory)
+
+        .toLowerCase()
+
+        .split(/\W+/)
+
+        .filter(word => word.length > 4);
+
+    memory.memory.associations =
+
+        [...new Set(words)];
+
+    for(const word of words){
+
+        if(!this.associations.has(word)){
+
+            this.associations.set(
+
+                word,
+
+                []
+
+            );
+
+        }
+
+        this.associations
+
+            .get(word)
+
+            .push(memory.id);
+
+    }
+
+    // ---------------------------------
+    // SEMANTIC ASSOCIATIONS
+    // ---------------------------------
+
+    const context =
+
+        memory.memory?.context || {};
+
+    this.indexSemantic(
+
+        "people",
+
+        context.people
+
+    );
+
+    this.indexSemantic(
+
+        "projects",
+
+        context.projects
+
+    );
+
+    this.indexSemantic(
+
+        "goals",
+
+        context.goals
+
+    );
+
+    this.indexSemantic(
+
+        "topics",
+
+        context.topics
+
+    );
+
+    this.indexSemantic(
+
+        "patterns",
+
+        context.patternsFound
+
+    );
+
+    this.indexSemantic(
+
+        "organizations",
+
+        context.organizations
+
+    );
+
+    this.indexSemantic(
+
+        "locations",
+
+        context.locations
+
+    );
+
+    // single values
+
+    if(context.person){
+
+        this.indexSemantic(
+
+            "people",
+
+            [context.person]
+
+        );
+
+    }
+
+    if(context.relationship){
+
+        this.indexSemantic(
+
+            "relationships",
+
+            [context.relationship]
+
+        );
+
+    }
+
+    if(context.lesson){
+
+        this.indexSemantic(
+
+            "lessons",
+
+            [context.lesson]
+
+        );
+
+    }
+
+}
 
 
 
-const words =
+// =================================
+// BUILD EVIDENCE
+//
+// Memory never decides.
+//
+// Memory only explains WHY
+// a memory may be relevant.
+//
+// =================================
 
-JSON.stringify(
+buildEvidence(memory, context = {}) {
 
-memory
+    return {
 
-)
+        people:
+            this.matchPeople(memory, context),
 
-.toLowerCase()
+        projects:
+            this.matchProjects(memory, context),
 
-.split(/\W+/)
+        goals:
+            this.matchGoals(memory, context),
 
-.filter(
+        topics:
+            this.matchTopics(memory, context),
 
-word => word.length > 4
+        relationships:
+            this.matchRelationships(memory, context),
 
-);
+        timeline:
+            this.matchTimeline(memory),
+
+        patterns:
+            this.matchPatterns(memory),
+
+        recall:
+            this.matchRecallHistory(memory)
+
+    };
+
+}
 
 
 
 
+// =================================
+// MATCH PEOPLE
+// =================================
 
+matchPeople(memory, context = {}) {
 
-memory.memory.associations =
+    const memoryPeople = [
 
-[
+        ...(memory.memory?.context?.people || []),
 
-...new Set(words)
+        memory.memory?.context?.person
+
+    ].filter(Boolean);
+
+    const currentPeople = [
+
+        ...(context.people || []),
+
+        context.person
+
+    ].filter(Boolean);
+
+   const matched = [
+
+    ...new Set(
+
+        memoryPeople.filter(person =>
+
+            currentPeople.includes(person)
+
+        )
+
+    )
 
 ];
+    return {
 
+        matched: matched.length > 0,
 
+        values: matched,
 
+        count: matched.length
 
+    };
 
+}
 
-for(
+// =================================
+// MATCH PROJECTS
+// =================================
 
-const word of words
+matchProjects(memory, context = {}) {
 
-){
+    const memoryProjects =
 
+        memory.memory?.context?.projects || [];
 
+    const currentProjects =
 
-if(
+        context.projects || [];
 
-!this.associations.has(word)
+    const matched = memoryProjects.filter(project =>
 
-){
+        currentProjects.includes(project)
 
+    );
 
-this.associations.set(
+    return {
 
-word,
+        matched: matched.length > 0,
 
-[]
+        values: matched,
 
-);
+        count: matched.length
 
+    };
+
+}
+
+// =================================
+// MATCH GOALS
+// =================================
+
+matchGoals(memory, context = {}) {
+
+    const memoryGoals =
+
+        memory.memory?.context?.goals || [];
+
+    const currentGoals =
+
+        context.goals || [];
+
+    const matched = memoryGoals.filter(goal =>
+
+        currentGoals.includes(goal)
+
+    );
+
+    return {
+
+        matched: matched.length > 0,
+
+        values: matched,
+
+        count: matched.length
+
+    };
+
+}
+
+// =================================
+// MATCH TOPICS
+// =================================
+
+matchTopics(memory, context = {}) {
+
+    const memoryTopics =
+
+        memory.memory?.context?.topics || [];
+
+    const currentTopics =
+
+        context.topics || [];
+
+    const matched = memoryTopics.filter(topic =>
+
+        currentTopics.includes(topic)
+
+    );
+
+    return {
+
+        matched: matched.length > 0,
+
+        values: matched,
+
+        count: matched.length
+
+    };
 
 }
 
 
+// =================================
+// MATCH RELATIONSHIPS
+// =================================
 
+matchRelationships(memory, context = {}) {
 
-this.associations
+    const memoryRelationship =
 
-.get(word)
+        memory.memory?.context?.relationship;
 
-.push(
+    const currentRelationship =
 
-memory.id
+        context.relationship;
 
-);
+    if(
 
+        !memoryRelationship ||
 
+        !currentRelationship
+
+    ){
+
+        return {
+
+            matched:false,
+
+            values:[],
+
+            count:0
+
+        };
+
+    }
+
+    const matched =
+
+        memoryRelationship === currentRelationship;
+
+    return {
+
+        matched,
+
+        values:
+
+            matched
+
+            ? [memoryRelationship]
+
+            : [],
+
+        count:
+
+            matched ? 1 : 0
+
+    };
+
+}
+
+// =================================
+// MATCH TIMELINE
+// =================================
+
+matchTimeline(memory) {
+
+    return {
+
+        createdAt:
+
+            memory.createdAt ||
+
+            memory.time ||
+
+            null,
+
+        lastRecalled:
+
+            memory.state?.lastRecalled ||
+
+            null,
+
+        recallCount:
+
+            memory.state?.recallCount ||
+
+            0
+
+    };
+
+}
+
+// =================================
+// MATCH PATTERNS
+// =================================
+
+matchPatterns(memory) {
+
+    return {
+
+        patterns:
+
+            memory.memory?.context?.patternsFound ||
+
+            []
+
+    };
 
 }
 
 
+// =================================
+// MATCH RECALL HISTORY
+// =================================
+
+matchRecallHistory(memory) {
+
+    return {
+
+        recallCount:
+
+            memory.state?.recallCount ||
+
+            0,
+
+        lastRecalled:
+
+            memory.state?.lastRecalled ||
+
+            null
+
+    };
 
 }
 
+// =================================
+// SEMANTIC INDEXER
+// =================================
 
+indexSemantic(type, values = []){
 
+    if(!values){
 
+        return;
 
+    }
+
+    if(!Array.isArray(values)){
+
+        values = [values];
+
+    }
+
+    const graph =
+
+        this.semanticAssociations[type];
+
+    if(!graph){
+
+        return;
+
+    }
+
+    for(const value of values){
+
+        if(!value){
+
+            continue;
+
+        }
+
+        const key =
+
+            String(value)
+
+            .trim()
+
+            .toLowerCase();
+
+        if(!graph.has(key)){
+
+            graph.set(
+
+                key,
+
+                []
+
+            );
+
+        }
+
+        // Store only the semantic value for now.
+        // Later we'll evolve this to store memory IDs.
+
+        graph
+
+            .get(key)
+
+            .push(
+
+                value
+
+            );
+
+    }
+
+}
 
 
 
@@ -1343,7 +1675,15 @@ memories
 
 );
 
+// =================================
+// MEMORY WAS USEFUL
+// =================================
 
+relevant.forEach(memory=>{
+
+    this.reinforce(memory);
+
+});
 
 
 
@@ -1512,15 +1852,7 @@ this.defaultOwner.businessId,
 
 
 
-limit:
-
-this.memoryLimit,
-
-
-
-importantOnly:
-
-true
+ limit:50
 
 
 
@@ -1744,7 +2076,7 @@ this.defaultOwner.businessId,
 limit,
 
 
-importantOnly:true
+importantOnly:false
 
 
 
@@ -1932,187 +2264,68 @@ return true;
 
 
 getRelevantMemories(
+    context = {},
+    memories = []
+) {
 
-context={},
+    return memories
 
-memories=[]
+        .map(memory => {
 
-){
+      this.reinforce(memory);
 
-
-
-const text =
-
-JSON.stringify(
-
-context
-
-)
-
-.toLowerCase();
-
-
-
-
-
-return memories
-
-
-
-.map(memory=>{
-
-
-
-let score =
-
-memory.strength || 0;
-
-
-
-
-
-
-for(
-
-const tag of
-
-memory.memory?.tags || []
-
-){
-
-
-
-if(
-
-text.includes(tag)
-
-){
-
-
-score += 20;
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-if(
-
-memory.memory?.emotion
-
-&&
-
-text.includes(
-
-memory.memory.emotion
-
-)
-
-){
-
-
-
-score += 15;
-
-
-
-}
-
-
-
-
-
-
-score +=
-
-(
-
-memory.memory?.reinforced ||
-
-0
-
-)
-
-*
-
-10;
-
-
-
-
-
+const evidence = this.buildEvidence(
+    memory,
+    context
+);
 
 return {
 
+    ...memory,
 
-...memory,
-
-
-_relevanceScore:
-
-score
-
+    evidence
 
 };
 
+        })
 
+        .filter(memory => {
 
-})
+            const e = memory.evidence;
 
+            return (
+                e.people.matched ||
+                e.projects.matched ||
+                e.goals.matched ||
+                e.topics.matched ||
+                e.relationships.matched
+            );
 
+        })
 
+        .sort((a, b) => {
 
+            const count = (memory) => {
 
-.filter(
+                let total = 0;
 
-memory =>
+                if (memory.evidence.people.matched) total++;
+                if (memory.evidence.projects.matched) total++;
+                if (memory.evidence.goals.matched) total++;
+                if (memory.evidence.topics.matched) total++;
+                if (memory.evidence.relationships.matched) total++;
 
-memory._relevanceScore > 25
+                return total;
 
-)
+            };
 
+            return count(b) - count(a);
 
+        })
 
-
-
-.sort(
-
-(a,b)=>
-
-b._relevanceScore -
-
-a._relevanceScore
-
-)
-
-
-
-
-
-.slice(
-
-0,
-
-10
-
-);
-
-
+        .slice(0, 10);
 
 }
-
-
-
-
-
-
 
 
 
@@ -2122,51 +2335,37 @@ a._relevanceScore
 // =================================
 
 
-reinforce(
+reinforce(memory){
 
-memory
+    if(!memory.memory){
 
-){
+        return memory;
 
+    }
 
+    memory.memory.reinforced++;
 
-if(
+    memory.state = {
 
-!memory.memory
+        ...memory.state,
 
-){
+        recallCount:
 
-return;
+            (memory.state?.recallCount || 0) + 1,
 
-}
+        lastRecalled:
 
+            new Date().toISOString(),
 
+        lastUpdated:
 
+            new Date().toISOString()
 
-memory.memory.reinforced++;
+    };
 
-
-
-
-memory.strength =
-
-Math.min(
-
-memory.strength + 10,
-
-100
-
-);
-
-
-
-
-return memory;
-
-
+    return memory;
 
 }
-
 
 
 
@@ -2243,47 +2442,23 @@ ageMemories(){
 
 this.memoryCache =
 
-this.memoryCache.filter(
+this.memoryCache.filter(memory=>{
 
-memory=>{
+    memory.age++;
 
+    if(
 
+        this.isCoreMemory(memory)
 
-memory.age++;
+    ){
 
+        return true;
 
+    }
 
-
-if(
-
-this.isCoreMemory(memory)
-
-){
-
-return true;
-
-}
-
-
-
-
-
-memory.strength -= 5;
-
-
-
-
-
-return (
-
-memory.strength > 0
-
-);
-
-
+    return true;
 
 });
-
 
 
 }
@@ -2302,51 +2477,37 @@ memory.strength > 0
 // =================================
 
 
-formWisdom(){
+formWisdom() {
 
+    return this.memoryCache
 
+        .filter(memory =>
 
-return this.memoryCache
+            memory.memory?.lesson ||
 
+            memory.memory?.futureRule
 
+        )
 
-.filter(
+        .map(memory => ({
 
-memory =>
+            lesson:
 
-memory.strength >= 60
+                memory.memory.lesson,
 
-)
+            rule:
 
+                memory.memory.futureRule,
 
+            formedFrom:
 
-.map(
+                memory.type,
 
-memory => ({
+            evidence:
 
+                memory.state
 
-
-lesson:
-
-memory.memory.lesson,
-
-
-
-rule:
-
-memory.memory.futureRule,
-
-
-
-formedFrom:
-
-memory.type
-
-
-
-}));
-
-
+        }));
 
 }
 
@@ -2376,11 +2537,11 @@ return memories
 
 
 
-.filter(
+.filter(memory =>
 
-memory =>
+    memory.memory?.lesson ||
 
-memory.strength >= 60
+    memory.memory?.futureRule
 
 )
 
@@ -2429,51 +2590,37 @@ memory.type
 // EXPLAIN RECALL
 // =================================
 
+explainRecall(memories = []) {
 
-explainRecall(
+    return memories.map(memory => ({
 
-memories=[]
+        because:
 
-){
+            memory.memory?.lesson ||
 
+            "Retrieved because related evidence was found.",
 
+        evidence:
 
-return memories.map(
+            memory.evidence ||
 
-memory => ({
+            {},
 
+        recallHistory:
 
+            memory.state ||
 
-because:
+            {},
 
-memory.memory?.lesson,
+        emotion:
 
+            memory.memory?.emotion ||
 
+            "neutral"
 
-strength:
-
-memory.strength,
-
-
-
-emotion:
-
-memory.memory?.emotion,
-
-
-
-relevance:
-
-memory._relevanceScore
-
-
-
-}));
-
-
+    }));
 
 }
-
 
 
 
@@ -2688,12 +2835,11 @@ return (
 
 
 
+type:
 
-if(
+experience.type ||
 
-type === "POSITIVE_EXPERIENCE"
-
-){
+"EXPERIENCE";{
 
 
 return (
@@ -3026,7 +3172,7 @@ supports:[
 
 principle:
 
-"Remember a lifetime. Recall only what matters now.",
+"Store Everything. Retrieve Wisely.",
 
 
 
