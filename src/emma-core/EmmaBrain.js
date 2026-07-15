@@ -32,9 +32,11 @@
 // - Cost protected
 //
 
+import LLMAdapter from "../connectors/LLMAdapter";
+import OpenAIConnector from "../connectors/OpenAIConnector";
+import ClaudeConnector from "../connectors/ClaudeConnector";
 
-import OpenAI
-from "openai";
+import GeminiConnector from "../connectors/GeminiConnector";
 
 
 
@@ -45,7 +47,9 @@ class EmmaBrain {
 
 
 
-constructor(){
+constructor(
+    settings = {}
+){
 
 
 
@@ -55,22 +59,55 @@ console.log(
 
 
 
+this.ai = new LLMAdapter();
 
-this.openai =
-new OpenAI({
+switch(settings.preferredLLM){
 
+    case "claude":
 
-apiKey:
+        this.ai.setProvider(
 
-import.meta.env.VITE_OPENAI_API_KEY,
+            new ClaudeConnector(
 
+                settings.claudeKey
 
-dangerouslyAllowBrowser:true
+            )
 
+        );
 
-});
+        break;
 
+    case "gemini":
 
+        this.ai.setProvider(
+
+            new GeminiConnector(
+
+                settings.geminiKey
+
+            )
+
+        );
+
+        break;
+
+    default:
+
+        this.ai.setProvider(
+
+            new OpenAIConnector(
+
+                settings.openaiKey ||
+
+                import.meta.env.VITE_OPENAI_API_KEY
+
+            )
+
+        );
+
+        break;
+
+}
 
 
 
@@ -205,7 +242,7 @@ try{
 
 const response =
 
-await this.openai.chat.completions.create({
+await this.ai.generate.completions.create({
 
 
 
@@ -456,7 +493,7 @@ async reflect(messages = []) {
 
     const response =
 
-        await this.openai.chat.completions.create({
+        await this.ai.generate.completions.create({
 
             model: "gpt-4.1-mini",
 
@@ -483,7 +520,7 @@ async createInnerVoice(context = {}) {
 
     try {
 
-        const response = await this.openai.chat.completions.create({
+        const response = await this.ai.generate.completions.create({
 
             model: "gpt-4.1-mini",
 
