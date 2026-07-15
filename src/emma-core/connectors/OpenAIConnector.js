@@ -7,7 +7,10 @@ class OpenAIConnector {
 
     this.client = new OpenAI({
 
-        apiKey
+       apiKey,
+
+    dangerouslyAllowBrowser: true
+
 
     });
 
@@ -27,8 +30,11 @@ class OpenAIConnector {
 
             model: "gpt-5.5",
 
-            messages
+            messages,
 
+       
+
+max_completion_tokens: 600
         });
 
     return response;

@@ -32,14 +32,16 @@
 // - Cost protected
 //
 
-import LLMAdapter from "../connectors/LLMAdapter";
-import OpenAIConnector from "../connectors/OpenAIConnector";
-import ClaudeConnector from "../connectors/ClaudeConnector";
+// import LLMAdapter from "./connectors/LLMAdapter";
+// import OpenAIConnector from "../connectors/OpenAIConnector";
+// // import ClaudeConnector from "../connectors/ClaudeConnector";
 
-import GeminiConnector from "../connectors/GeminiConnector";
+// import GeminiConnector from "../connectors/GeminiConnector";
 
 
-
+import LLMAdapter from "./connectors/LLMAdapter";
+import OpenAIConnector from "./connectors/OpenAIConnector";
+import GeminiConnector from "./connectors/GeminiConnector";
 
 
 class EmmaBrain {
@@ -63,27 +65,15 @@ this.ai = new LLMAdapter();
 
 switch(settings.preferredLLM){
 
-    case "claude":
-
-        this.ai.setProvider(
-
-            new ClaudeConnector(
-
-                settings.claudeKey
-
-            )
-
-        );
-
-        break;
-
     case "gemini":
 
         this.ai.setProvider(
 
             new GeminiConnector(
 
-                settings.geminiKey
+                settings.geminiKey ||
+
+                import.meta.env.VITE_GEMINI_API_KEY
 
             )
 
@@ -240,31 +230,13 @@ try{
 
 
 
-const response =
+const response = await this.ai.generate([
 
-await this.ai.generate.completions.create({
+    {
 
+        role:"system",
 
-
-model:
-
-"gpt-4.1-mini",
-
-
-
-messages:[
-
-
-
-{
-
-
-role:"system",
-
-
-content:
-
-`
+        content:`
 You are Emma's Brain organ.
 
 IMPORTANT:
@@ -308,47 +280,19 @@ Return ONLY JSON:
 "missingInformation":[],
 "confidence":0
 }
-
 `
 
-},
+    },
 
+    {
 
+        role:"user",
 
+        content:prompt
 
+    }
 
-
-
-{
-
-
-role:"user",
-
-
-content:
-
-prompt
-
-
-}
-
-
-
-],
-
-
-
-
-
-temperature:0.2,
-
-
-
-max_tokens:600
-
-
-
-});
+]);
 
 
 
@@ -495,13 +439,7 @@ async reflect(messages = []) {
 
         await this.ai.generate.completions.create({
 
-            model: "gpt-4.1-mini",
-
-            messages,
-
-            temperature: 0.2,
-
-            max_tokens: 600
+             messages
 
         });
 
@@ -520,15 +458,11 @@ async createInnerVoice(context = {}) {
 
     try {
 
-        const response = await this.ai.generate.completions.create({
+      const response = await this.ai.generate([
 
-            model: "gpt-4.1-mini",
-
-            messages: [
-
-                {
-                    role: "system",
-                    content: `
+    {
+        role: "system",
+        content: `
 You are NOT speaking to the user.
 
 You are Emma's private internal thoughts.
@@ -562,21 +496,14 @@ Return ONLY JSON:
     "confidence":0
 }
 `
-                },
+    },
 
-                {
-                    role: "user",
-                    content: JSON.stringify(context, null, 2)
-                }
+    {
+        role: "user",
+        content: JSON.stringify(context, null, 2)
+    }
 
-            ],
-
-            temperature: 0.3,
-
-            max_tokens: 250
-
-        });
-
+]);
         return JSON.parse(
             response.choices[0].message.content
         );
