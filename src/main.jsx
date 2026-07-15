@@ -7,7 +7,7 @@ import "./index.css";
 
 import App from "./App.jsx";
 
-import "./emma-core/tests/memoryTest";
+import "./emma-core/tests/reflectionTest";
 // import "./emma-core/tests/testBecoming"; // TEMP TEST
 
 // import "./emma-core/testEmma.js";   // 👈 TEMP TEST

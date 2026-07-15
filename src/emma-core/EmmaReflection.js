@@ -127,24 +127,48 @@ await this.consultWisdom(
 experience
 );
 
+const observation = this.observe(
+
+    experience,
+
+    memories,
+
+    wisdom
+
+);
 
 
+const context =
 
+this.buildReflectionContext(
 
+    experience,
+
+    memories,
+
+    wisdom,
+
+    understanding
+
+);
 
 // ===============================
 // 3. Local understanding first
 // ===============================
 
-
 let reflection =
 
 this.localReflect(
-experience,
-memories,
-wisdom
-);
 
+    experience,
+
+    observation,
+
+    memories,
+
+    wisdom
+
+);
 
 // =================================
 // CREATE EMMA'S INNER VOICE
@@ -205,15 +229,7 @@ try{
 const deeper =
 
 await this.askAI(
-
-experience,
-
-memories,
-
-wisdom,
-
-understanding
-
+    context
 );
 
 
@@ -411,6 +427,76 @@ return null;
 
 }
 
+
+// =================================
+// BUILD REFLECTION CONTEXT
+// =================================
+
+buildReflectionContext(
+    experience,
+    memories,
+    wisdom,
+    understanding
+){
+
+    return {
+
+        experience,
+
+        memories,
+
+        wisdom,
+
+        understanding
+
+    };
+
+}
+
+
+// =================================
+// BUILD REFLECTION PROMPT
+// =================================
+
+buildReflectionPrompt(
+   
+){
+
+    return `
+
+You are Emma's Reflection.
+
+You do not decide.
+
+You do not act.
+
+You only understand.
+
+
+
+Return ONLY valid JSON.
+
+{
+
+"observation":"",
+
+"evidence":[],
+
+"understanding":"",
+
+"conclusion":"",
+
+"innerVoice":"",
+
+"confidence":5
+
+}
+
+`;
+
+}
+
+
 // =================================
 // SHOULD EMMA THINK DEEPER?
 // =================================
@@ -485,15 +571,18 @@ return false;
 // =================================
 
 async askAI(
-experience,
-memories = [],
-wisdom = null,
-understanding = null
+    context
 ){
 
+const prompt =
 
+    this.buildReflectionPrompt(
+        
+    );
 
 const response =
+
+
 
 await this.ai.reflect([
 
@@ -501,53 +590,7 @@ await this.ai.reflect([
 
         role: "system",
 
-        content: `
-
-You are Emma's inner reflection.
-
-You are NOT Emma's brain.
-
-Never answer the user.
-Never make decisions.
-
-You only understand experiences.
-
-Study:
-
-- What happened?
-- Why did it matter?
-- What pattern appeared?
-- Did Emma misunderstand something?
-- Did Emma change?
-- What wisdom formed?
-
-Return ONLY JSON:
-
-{
-
-"meaning":"",
-
-"emotion":"",
-
-"patterns":[],
-
-"mistakes":[],
-
-"lessons":[],
-
-"futureWisdom":[],
-
-"identityShift":false,
-
-"identityChange":"",
-
-"changedBelief":"",
-
-"confidence":0
-
-}
-
-`
+content: prompt
 
     },
 
@@ -555,17 +598,11 @@ Return ONLY JSON:
 
         role: "user",
 
-       content: JSON.stringify({
-
-    experience,
-
-    memories,
-
-    wisdom,
-
-    understanding
-
-})
+content: JSON.stringify(
+    context,
+    null,
+    2
+)
 
     }
 
@@ -597,7 +634,23 @@ response
 
 
 
+observe(
+    experience,
+    memories = [],
+    wisdom = null
+){
 
+return {
+
+    observation:
+
+        this.observeExperience(
+            experience
+        )
+
+};
+
+}
 
 
 
@@ -606,9 +659,10 @@ response
 // =================================
 
 localReflect(
-experience,
-memories=[],
-wisdom=null
+    experience,
+    observation,
+    memories = [],
+    wisdom = null
 ){
 
 
