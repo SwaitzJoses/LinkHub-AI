@@ -7,7 +7,11 @@ import "./index.css";
 
 import App from "./App.jsx";
 
-import "./emma-core/tests/testLLMConnector"
+import "./emma-core/tests/testConnectors";
+
+// import "./emma-core/tests/testGitHubConnector";
+
+// import "./emma-core/tests/testLLMConnector"
 
 // import "./emma-core/tests/reflectionTest";
 // import "./emma-core/tests/testBecoming"; // TEMP TEST

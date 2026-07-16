@@ -42,6 +42,8 @@
 import LLMAdapter from "./connectors/LLMAdapter";
 import OpenAIConnector from "./connectors/OpenAIConnector";
 import GeminiConnector from "./connectors/GeminiConnector";
+import ClaudeConnector from "./connectors/ClaudeConnector";
+// import GrokConnector from "./connectors/GrokConnector";
 
 
 class EmmaBrain {
@@ -63,7 +65,43 @@ console.log(
 
 this.ai = new LLMAdapter();
 
-switch(settings.preferredLLM){
+this.ai = new LLMAdapter();
+
+switch (settings.preferredLLM) {
+
+    case "openai":
+
+        this.ai.setProvider(
+
+            new OpenAIConnector(
+
+                settings.openaiKey ||
+
+                import.meta.env.VITE_OPENAI_API_KEY
+
+            )
+
+        );
+
+        break;
+
+
+    case "claude":
+
+        this.ai.setProvider(
+
+            new ClaudeConnector(
+
+                settings.claudeKey ||
+
+                import.meta.env.VITE_CLAUDE_API_KEY
+
+            )
+
+        );
+
+        break;
+
 
     case "gemini":
 
@@ -81,7 +119,29 @@ switch(settings.preferredLLM){
 
         break;
 
+
+    case "grok":
+
+        this.ai.setProvider(
+
+            new GrokConnector(
+
+                settings.grokKey ||
+
+                import.meta.env.VITE_GROK_API_KEY
+
+            )
+
+        );
+
+        break;
+
+
     default:
+
+        console.warn(
+            "⚠ Unknown LLM. Falling back to OpenAI."
+        );
 
         this.ai.setProvider(
 

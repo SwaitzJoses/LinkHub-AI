@@ -10,9 +10,9 @@ this.client = new Anthropic({
 
 });
 
-    console.log(
-        "🤖 OpenAI Connector Ready"
-    );
+   console.log(
+    "🤖 Claude Connector Ready"
+);
 
 }
 
