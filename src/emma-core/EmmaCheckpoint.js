@@ -3,19 +3,19 @@
 //
 // EmmaCheckpoint.js
 //
-// Emma Checkpoint v1.0
+// Emma Checkpoint v2.0
 //
 // Captures a snapshot of Emma's internal state
-// after every meaningful experience.
+// together with the conversation that produced it.
 //
 
 class EmmaCheckpoint {
 
     constructor() {
 
-        console.log("📍 Emma Checkpoint v1.0 alive");
+        console.log("📍 Emma Checkpoint v2.0 alive");
 
-        this.version = "1.0";
+        this.version = "2.0";
     }
 
     create(context = {}) {
@@ -32,7 +32,10 @@ class EmmaCheckpoint {
             relationship = null,
             curiosity = null,
             reasoning = null,
-            judgement = null
+            judgement = null,
+
+            // NEW
+            conversation = {}
 
         } = context;
 
@@ -43,6 +46,10 @@ class EmmaCheckpoint {
             createdAt: new Date().toISOString(),
 
             version: this.version,
+
+            // =====================================================
+            // Experience
+            // =====================================================
 
             experience: {
 
@@ -62,15 +69,20 @@ class EmmaCheckpoint {
 
             },
 
+            // =====================================================
+            // Evidence
+            // =====================================================
+
             evidence: {
 
-               memoriesRetrieved:
+                memoriesRetrieved:
 
-    Array.isArray(memory)
-        ? memory.length
-        : Array.isArray(memory?.memories)
-            ? memory.memories.length
-            : 0,
+                    Array.isArray(memory)
+                        ? memory.length
+                        : Array.isArray(memory?.memories)
+                            ? memory.memories.length
+                            : 0,
+
                 wisdomAvailable:
                     !!wisdom,
 
@@ -82,29 +94,31 @@ class EmmaCheckpoint {
 
             },
 
+            // =====================================================
+            // Emma Understanding
+            // =====================================================
+
             understanding: {
 
                 reasoning:
 
                     reasoning?.summary ??
-
                     reasoning?.message ??
-
                     reasoning ??
-
                     null,
 
                 judgement:
 
                     judgement?.decision ??
-
                     judgement?.summary ??
-
                     judgement ??
-
                     null
 
             },
+
+            // =====================================================
+            // Emma State
+            // =====================================================
 
             state: {
 
@@ -115,6 +129,42 @@ class EmmaCheckpoint {
                 relationship,
 
                 self
+
+            },
+
+            // =====================================================
+            // Conversation Snapshot
+            // Immutable source of truth
+            // =====================================================
+
+            conversation: {
+
+                provider:
+                    conversation.provider ?? "chatgpt",
+
+                conversationId:
+                    conversation.conversationId ?? null,
+
+                checkpointNumber:
+                    conversation.checkpointNumber ?? null,
+
+                firstMessageId:
+                    conversation.firstMessageId ?? null,
+
+                lastMessageId:
+                    conversation.lastMessageId ?? null,
+
+                messageCount:
+                    conversation.messageCount ?? 0,
+
+                compression:
+                    conversation.compression ?? "brotli",
+
+                compressedChat:
+                    conversation.compressedChat ?? null,
+
+                hash:
+                    conversation.hash ?? null
 
             }
 

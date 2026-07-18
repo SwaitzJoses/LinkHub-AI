@@ -4,25 +4,116 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     try {
 
-        console.log("📩 Raw Message:", message);
+        console.log("📩 Background Received:", message);
 
-        if (!message || message.type !== "EMMA_EVENT") {
-            sendResponse({ ok: false });
-            return;
+        if (!message) {
+
+            sendResponse({
+                ok: false,
+                error: "Empty message"
+            });
+
+            return true;
+
         }
 
-        console.log("🧠 Background Received");
-        console.log(message.payload);
+        // =====================================
+        // CREATE CHECKPOINT
+        // =====================================
 
-        sendResponse({ ok: true });
+        if (message.action === "CREATE_CHECKPOINT") {
 
-    } catch (err) {
+            console.log("📍 Checkpoint Requested");
+
+            if (!sender.tab?.id) {
+
+                sendResponse({
+                    ok: false,
+                    error: "No active tab."
+                });
+
+                return true;
+
+            }
+
+            chrome.tabs.sendMessage(
+
+                sender.tab.id,
+
+                {
+
+                    action: "CREATE_CHECKPOINT"
+
+                },
+
+                (response) => {
+
+                    if (chrome.runtime.lastError) {
+
+                        console.error(
+                            chrome.runtime.lastError.message
+                        );
+
+                        sendResponse({
+                            ok: false,
+                            error: chrome.runtime.lastError.message
+                        });
+
+                        return;
+
+                    }
+
+                    sendResponse(response);
+
+                }
+
+            );
+
+            return true;
+
+        }
+
+        // =====================================
+        // NORMAL EMMA EVENTS
+        // =====================================
+
+        if (message.type === "EMMA_EVENT") {
+
+            console.log("🧠 Emma Event");
+            console.log(message.payload);
+
+            sendResponse({
+                ok: true
+            });
+
+            return true;
+
+        }
+
+        // =====================================
+        // UNKNOWN MESSAGE
+        // =====================================
+
+        sendResponse({
+
+            ok: false,
+
+            error: "Unknown message."
+
+        });
+
+    }
+
+    catch (err) {
 
         console.error("❌ Background Error:", err);
 
         sendResponse({
+
             ok: false,
+
             error: err.message
+
         });
 
     }

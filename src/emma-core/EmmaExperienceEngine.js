@@ -2253,7 +2253,107 @@ Math.random()
 
 
 
+// =================================
+//
+// CREATE CHECKPOINT 📍
+//
+// Freezes the current intelligence
+// together with the conversation.
+//
+// =================================
 
+async createCheckpoint(conversation = {}) {
+
+    if (!this.checkpoint?.create) {
+
+        console.warn("📍 EmmaCheckpoint not connected.");
+
+        return null;
+
+    }
+
+    console.log("📍 Creating Emma Checkpoint...");
+
+    try {
+
+        const memories =
+            await this.memory?.getRecentImportant?.(100) || [];
+
+        const wisdom =
+            this.wisdom?.snapshot?.()
+            || this.wisdom?.status?.()
+            || null;
+
+        const temporal =
+            this.temporalSense?.snapshot?.()
+            || this.temporalSense?.status?.()
+            || null;
+
+        const self =
+            this.selfModel?.snapshot?.()
+            || this.selfModel?.describe?.()
+            || null;
+
+        const relationship =
+            this.relationshipModel?.snapshot?.()
+            || this.relationshipModel?.getAll?.()
+            || null;
+
+        const reasoning =
+            this.reasoning?.snapshot?.()
+            || null;
+
+        const judgement =
+            this.judgement?.snapshot?.()
+            || null;
+
+        const checkpoint = await this.checkpoint.create({
+
+            experience: {
+
+                id: this.createId(),
+
+                type: "CHECKPOINT",
+
+                source: "user",
+
+                createdAt: new Date()
+
+            },
+
+            memory: memories,
+
+            wisdom,
+
+            temporal,
+
+            self,
+
+            relationship,
+
+            reasoning,
+
+            judgement,
+
+            conversation
+
+        });
+
+        console.log("✅ Emma Checkpoint Created");
+
+        return checkpoint;
+
+    }
+
+    catch (err) {
+
+        console.error("❌ Checkpoint failed:", err);
+
+        throw err;
+
+    }
+
+}
 
 
 

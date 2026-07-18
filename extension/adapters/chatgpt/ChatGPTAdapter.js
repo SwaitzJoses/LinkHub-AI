@@ -135,10 +135,10 @@
 
                 if (!text) return;
 
-                console.log("-----");
-                console.log("ROLE:", role);
-                console.log("TEXT:", text);
-                console.log("ELEMENT:", message);
+                // console.log("-----");
+                // console.log("ROLE:", role);
+                // console.log("TEXT:", text);
+                // console.log("ELEMENT:", message);
 
                 if (this.isBooting) {
 

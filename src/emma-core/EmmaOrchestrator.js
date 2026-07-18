@@ -1714,6 +1714,7 @@ console.log("📍 CHECKPOINT INPUT", {
     curiosity,
     reasoning,
     judgement
+    
 });
 //
 // 23. Checkpoint 📍
@@ -1731,27 +1732,20 @@ const checkpoint =
 
         ],
 
-        {
+   {
+    experience: input,
+    memory: memories,
+    wisdom,
+    temporal,
+    self,
+    relationship,
+    curiosity,
+    reasoning,
+    judgement,
 
-            experience: input,
-
-            memory: memories,
-
-            wisdom,
-
-            temporal,
-
-            self,
-
-            relationship,
-
-           curiosity,
-
-            reasoning,
-
-            judgement
-
-        }
+    conversation:
+        input.conversation
+}
 
     );
 
