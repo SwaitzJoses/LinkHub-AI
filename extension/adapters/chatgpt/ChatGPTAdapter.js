@@ -5,18 +5,16 @@
         constructor() {
 
             this.name = "ChatGPT";
-
             this.provider = "chatgpt";
 
             this.eventBus = window.EmmaCore.EventBus;
 
             this.currentConversation = null;
-
             this.processedMessages = new Set();
 
             this.observer = null;
-
             this.scanScheduled = false;
+            this.isBooting = true;
 
         }
 
@@ -30,7 +28,8 @@
 
             console.log("🤖 ChatGPT Adapter Started");
 
-            this.scan(false);
+            this.scan();
+            this.isBooting = false;
 
             this.observer = new MutationObserver(() => {
 
@@ -42,10 +41,13 @@
 
                     this.processedMessages.clear();
 
-                    this.scan(false);
+                    this.isBooting = true;
+
+                    this.scan();
+
+                    this.isBooting = false;
 
                     return;
-
                 }
 
                 this.scheduleScan();
@@ -62,7 +64,7 @@
 
         getConversationId() {
 
-            const match = location.pathname.match(/\/c\/([^/]+)/);
+            const match = location.pathname.match(/\/\/c\/([^/]+)/);
 
             return match ? match[1] : null;
 
@@ -78,13 +80,40 @@
 
                 this.scanScheduled = false;
 
-                this.scan(true);
+                this.scan();
 
             });
 
         }
 
-        scan(emit = true) {
+        extractMessageText(message) {
+
+            const containers = message.querySelectorAll(
+                ".markdown, [data-message-content], .whitespace-pre-wrap"
+            );
+
+            if (containers.length === 0) {
+                return message.innerText.trim();
+            }
+
+            return Array.from(containers)
+                .map(el => el.innerText.trim())
+                .filter(Boolean)
+                .join("\n\n");
+
+        }
+
+        isAssistantStreaming(message) {
+
+            return (
+                document.querySelector("[data-testid='stop-button']") ||
+                message.querySelector(".result-streaming") ||
+                message.querySelector("[data-is-streaming='true']")
+            );
+
+        }
+
+        scan() {
 
             const messages = document.querySelectorAll("[data-message-author-role]");
 
@@ -96,16 +125,24 @@
 
                 if (this.processedMessages.has(messageId)) return;
 
-                const text = message.innerText.trim();
+                const role = message.getAttribute("data-message-author-role");
+
+                if (role === "assistant" && this.isAssistantStreaming(message)) {
+                    return;
+                }
+
+                const text = this.extractMessageText(message);
 
                 if (!text) return;
 
-                const role = message.getAttribute("data-message-author-role");
+                console.log("-----");
+                console.log("ROLE:", role);
+                console.log("TEXT:", text);
+                console.log("ELEMENT:", message);
 
-                if (!emit) {
+                if (this.isBooting) {
 
                     this.processedMessages.add(messageId);
-
                     return;
 
                 }
@@ -139,7 +176,6 @@
     }
 
     window.EmmaAdapters = window.EmmaAdapters || {};
-
     window.EmmaAdapters.ChatGPTAdapter = ChatGPTAdapter;
 
 })();

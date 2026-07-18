@@ -661,24 +661,13 @@ this.memory?.store
 
 
 
-memory =
 
-await this.memory.store({
-
-
-
-
-...experience,
-
-
-
-
-attention
-
-
-
-
-});
+memory = await this.memory.store(
+    experience,
+    {
+        attention
+    }
+);
 
 
 this.observe(
