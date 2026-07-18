@@ -1575,13 +1575,20 @@ buildCommunicationBrief(context = {}) {
 
         context.communicationIntent || {};
 
-   
+   const lastReply =
+    this.voiceMemory?.[0]?.message || "";
 
 const summary = `
 
 Current situation:
 
 ${context.moment?.content || ""}
+
+--------------------------------
+
+My previous reply:
+
+${lastReply}
 
 --------------------------------
 
@@ -2260,50 +2267,24 @@ voiceState
 
 ){
 
+    this.voiceMemory.unshift({
 
-this.voiceMemory.unshift({
+        message,
 
+        length: message.length,
 
-length:
+        presence: {
+            ...voiceState
+        },
 
-message.length,
+        createdAt: new Date()
 
+    });
 
-
-presence:{
-
-...voiceState
-
-},
-
-
-
-createdAt:
-
-new Date()
-
-
-});
-
-
-
-
-
-
-
-this.voiceMemory =
-
-this.voiceMemory.slice(
-
-0,
-
-50
-
-);
-
+    this.voiceMemory =
+        this.voiceMemory.slice(0,50);
 
 }
-
 
 
 

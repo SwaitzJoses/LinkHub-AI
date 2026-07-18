@@ -33,10 +33,15 @@
 // understands "us".
 //
 
+
+import EmmaCheckpoint from "./EmmaCheckpoint";
+
 class EmmaExperienceEngine {
 
 
 constructor({
+
+
 
 stream=null,
 
@@ -59,6 +64,7 @@ selfModel=null,
 
 relationshipModel=null,
 
+checkpoint=null,
 
 curiosity=null,
 
@@ -212,7 +218,13 @@ console.log(
 
 
 
+this.checkpoint =
+checkpoint;
 
+console.log(
+    "📍 Checkpoint connected:",
+    !!this.checkpoint
+);
 
 
 

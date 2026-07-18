@@ -12,6 +12,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+import Emma from "./src/emma-core/Emma.js";
+
+const emma = new Emma({
+    id: "emma-server"
+});
+
+
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -123,9 +132,38 @@ app.post(
   }
 );
 
+
+
+
+
+
 // ======================
 // Start Server
 // ======================
+
+
+app.post("/emma/experience", async (req, res) => {
+
+  try {
+
+    const result = await emma.experience(req.body);
+
+    res.json(result);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
+
+
+
 app.post("/emma", async (req, res) => {
   try {
     const { prompt } = req.body;

@@ -192,31 +192,17 @@ const context = {
 
 
 
-    //
-    // 2. Memory + Wisdom 🧠🌱
-    //
+//
+// 2. Memory + Wisdom 🧠🌱
+//
 
-    const memories =
+const memoryResult =
 
-      await (
+    await this.organs.memory.recall(input);
 
-        this.organs.memory
-          ?.getRelevantMemories?.(input)
+const memories =
 
-        ||
-
-        this.organs.memory
-          ?.recall?.(input)
-
-        ||
-
-        []
-
-      );
-
-
-
-
+    memoryResult?.relevantExperiences || [];
 
 
 
@@ -264,26 +250,21 @@ const context = {
     // 3. World Understanding 🌍
     //
 
-    const temporal =
+   const temporal =
 
-      await this.call(
+  await this.call(
 
-        this.organs.temporalSense,
+    this.organs.temporalSense,
 
-        [
+    [
 
-          "understand",
+      "experienceTime"
 
-          "process",
+    ],
 
-          "evaluate"
+    memories
 
-        ],
-
-        input
-
-      );
-
+  );
 
 
 
@@ -347,60 +328,57 @@ const context = {
     // 4. Identity 🧬❤️
     //
 
-    const self =
+  //
+// 4. Identity 🧬❤️
+//
 
-      await this.call(
+const self =
 
-        this.organs.selfModel,
+  await this.call(
 
-        [
+    this.organs.selfModel,
 
-          "reflect",
+    [
 
-          "understand",
+      "observe",
 
-          "update"
+      "reflect",
 
-        ],
+      "understand",
 
-        input
+      "update"
 
-      );
+    ],
 
+    input
 
+  );
 
+const relationship =
 
+  await this.call(
 
+    this.organs.relationshipModel,
 
+    [
 
+      "understand",
 
+      "reflect",
 
-    const relationship =
+      "update"
 
-      await this.call(
+    ],
 
-        this.organs.relationshipModel,
+    {
 
-        [
+      input,
 
-          "understand",
+      memories
 
-          "reflect",
+    }
 
-          "update"
-
-        ],
-
-        {
-
-          input,
-
-          memories
-
-        }
-
-      );
-
+  );
 
 
 
@@ -753,7 +731,39 @@ const context = {
 
 
 
+//
+// 4.5 Curiosity 🌱
+//
 
+const curiosity =
+
+  await this.call(
+
+    this.organs.curiosity,
+
+    [
+
+      "explore"
+
+    ],
+
+    {
+
+      experience: input,
+
+      memories,
+
+      self,
+
+      temporal,
+
+      relationship,
+
+      reasoning: null
+
+    }
+
+  );
 
 
 
@@ -1684,10 +1694,7 @@ console.log(
             evolution,
 
 
-            curiosity:
-
-              intent?.curiosity || null
-
+            curiosity
 
           })
 
@@ -1699,8 +1706,54 @@ console.log(
 
 
 
+console.log("📍 CHECKPOINT INPUT", {
+    memories,
+    temporal,
+    self,
+    relationship,
+    curiosity,
+    reasoning,
+    judgement
+});
+//
+// 23. Checkpoint 📍
+//
 
+const checkpoint =
 
+    await this.call(
+
+        this.organs.checkpoint,
+
+        [
+
+            "create"
+
+        ],
+
+        {
+
+            experience: input,
+
+            memory: memories,
+
+            wisdom,
+
+            temporal,
+
+            self,
+
+            relationship,
+
+           curiosity,
+
+            reasoning,
+
+            judgement
+
+        }
+
+    );
 
 
 
@@ -1743,6 +1796,8 @@ console.log(
 
       communication,
 
+      checkpoint,
+
 
       reasoning,
 
@@ -1776,6 +1831,8 @@ console.log(
 
 
    return {
+
+    checkpoint,
 
 
   presence,

@@ -1,0 +1,41 @@
+:root{
+
+    /* Colors */
+
+    --background:#FAFAFA;
+    --surface:#FFFFFF;
+
+    --text:#111111;
+    --text-light:#666666;
+
+    --border:#EAEAEA;
+
+    --primary:#111111;
+
+    /* Typography */
+
+    --font:'Inter',sans-serif;
+
+    --hero:56px;
+    --title:32px;
+    --heading:22px;
+    --body:18px;
+    --small:15px;
+
+    /* Layout */
+
+    --radius:18px;
+
+    --space-xs:8px;
+    --space-sm:16px;
+    --space-md:24px;
+    --space-lg:40px;
+    --space-xl:64px;
+
+    /* Animation */
+
+    --fast:200ms;
+    --normal:400ms;
+    --slow:800ms;
+
+}

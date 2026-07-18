@@ -46,7 +46,8 @@ import EmmaInitiative
 from "./EmmaInitiative";
 
 
-
+import EmmaCheckpoint
+from "./EmmaCheckpoint";
 
 // ===============================
 // MEMORY + LEARNING
@@ -117,12 +118,12 @@ from "./EmmaSocialModel";
 // MEANING LAYERS
 // ===============================
 
-import EmmaNarrativeIdentity
-from "./EmmaNarrativeIdentity";
+// import EmmaNarrativeIdentity
+// from "./EmmaNarrativeIdentity";
 
 
-import EmmaBeliefSystem
-from "./EmmaBeliefSystem";
+// import EmmaBeliefSystem
+// from "./EmmaBeliefSystem";
 
 
 import EmmaUncertaintyModel
@@ -493,8 +494,8 @@ new EmmaSocialModel();
 // "What story is unfolding?"
 // ===============================
 
-this.narrativeIdentity =
-new EmmaNarrativeIdentity();
+// this.narrativeIdentity =
+// new EmmaNarrativeIdentity();
 
 
 
@@ -506,8 +507,8 @@ new EmmaNarrativeIdentity();
 // "What do I currently believe?"
 // ===============================
 
-this.beliefSystem =
-new EmmaBeliefSystem();
+// this.beliefSystem =
+// new EmmaBeliefSystem();
 
 
 
@@ -888,7 +889,7 @@ new EmmaCommunication({
 
 
 
-
+this.checkpoint = new EmmaCheckpoint();
 
 
 
@@ -1091,8 +1092,8 @@ new EmmaOrchestrator({
     this.relationshipModel,
 
 
-  narrativeIdentity:
-    this.narrativeIdentity,
+  // narrativeIdentity:
+  //   this.narrativeIdentity,
 
 
 
@@ -1100,8 +1101,8 @@ new EmmaOrchestrator({
 
   // beliefs
 
-  beliefSystem:
-    this.beliefSystem,
+  // beliefSystem:
+  //   this.beliefSystem,
 
 
   uncertaintyModel:
@@ -1257,8 +1258,12 @@ evolution:
 
 // expression
 
+checkpoint:
+  this.checkpoint,
+
 communication:
   this.communication
+
 
 
 
@@ -1787,7 +1792,7 @@ status(){
 
       narrative:
 
-        "📖 ACTIVE",
+        null,
 
 
 

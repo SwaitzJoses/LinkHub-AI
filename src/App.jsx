@@ -534,7 +534,7 @@ path="/emma-ai"
 
 element={
 
-<EmmaAI />
+<EmmaAI emma={emma} />
 
 }
 

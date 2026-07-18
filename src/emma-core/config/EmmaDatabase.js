@@ -520,7 +520,7 @@ let userId = null;
 
 let businessId = null;
 
-let limit = 50;
+let limit = 10;
 
 let importantOnly = false;
 
@@ -559,7 +559,7 @@ limit =
 
 context.limit ||
 
-50;
+10;
 
 
 

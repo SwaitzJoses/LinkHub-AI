@@ -7,7 +7,7 @@ import "./index.css";
 
 import App from "./App.jsx";
 
-import "./emma-core/tests/testConnectors";
+// import "./emma-core/tests/testConnectors";
 
 // import "./emma-core/tests/testGitHubConnector";
 

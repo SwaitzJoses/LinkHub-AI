@@ -1852,7 +1852,7 @@ this.defaultOwner.businessId,
 
 
 
- limit:50
+ limit:10
 
 
 
@@ -2262,72 +2262,105 @@ return true;
 // MEANING BASED RECALL
 // =================================
 
-
 getRelevantMemories(
     context = {},
     memories = []
 ) {
 
-    return memories
+    const scoredMemories = memories.map(memory => {
 
-        .map(memory => {
+        this.reinforce(memory);
 
-      this.reinforce(memory);
+        const evidence = this.buildEvidence(
+            memory,
+            context
+        );
 
-const evidence = this.buildEvidence(
-    memory,
-    context
-);
+        console.log("🧪 MEMORY EVIDENCE", {
+            id: memory.id,
+            type: memory.type,
+            people: evidence.people,
+            projects: evidence.projects,
+            goals: evidence.goals,
+            topics: evidence.topics,
+            relationships: evidence.relationships
+        });
 
-return {
+        return {
 
-    ...memory,
+            ...memory,
 
-    evidence
+            evidence
 
-};
+        };
 
-        })
+    });
+
+    const countMatches = (memory) => {
+
+        let total = 0;
+
+        if (memory.evidence.people.matched) total++;
+        if (memory.evidence.projects.matched) total++;
+        if (memory.evidence.goals.matched) total++;
+        if (memory.evidence.topics.matched) total++;
+        if (memory.evidence.relationships.matched) total++;
+
+        return total;
+
+    };
+
+    const relevant = scoredMemories
 
         .filter(memory => {
 
             const e = memory.evidence;
 
             return (
+
                 e.people.matched ||
+
                 e.projects.matched ||
+
                 e.goals.matched ||
+
                 e.topics.matched ||
+
                 e.relationships.matched
+
             );
 
         })
 
-        .sort((a, b) => {
+        .sort((a, b) => countMatches(b) - countMatches(a));
 
-            const count = (memory) => {
+    console.log("🧠 MEMORY RETRIEVAL", {
 
-                let total = 0;
+        candidates: memories.length,
 
-                if (memory.evidence.people.matched) total++;
-                if (memory.evidence.projects.matched) total++;
-                if (memory.evidence.goals.matched) total++;
-                if (memory.evidence.topics.matched) total++;
-                if (memory.evidence.relationships.matched) total++;
+        relevant: relevant.length,
 
-                return total;
+        returnedIds: relevant.map(m => m.id)
 
-            };
+    });
 
-            return count(b) - count(a);
+    // =====================================
+    // FALLBACK: Return recent memories
+    // if nothing matched.
+    // =====================================
 
-        })
+    if (relevant.length === 0) {
 
-        .slice(0, 10);
+        console.log("🧠 No direct matches. Returning recent memories.");
+
+        return scoredMemories
+            .slice(0, 10);
+
+    }
+
+    return relevant.slice(0, 10);
 
 }
-
-
 
 
 // =================================
