@@ -25,6 +25,8 @@ from "./emma-core/connectors/EmmaGmailConnect";
 import EmmaCard
 from "./emma-core/components/emma/EmmaCard";
 
+import EmmaTest from "./pages/EmmaTest";
+
 
 
 // ================================
@@ -360,17 +362,20 @@ Enable later when connected:
 
 
 
-
+{/* 
 <Route
 
 path="/"
 
 element={<Navigate to="/dashboard" />}
 
+/> */}
+
+
+<Route
+    path="/"
+    element={<EmmaTest />}
 />
-
-
-
 
 
 <Route

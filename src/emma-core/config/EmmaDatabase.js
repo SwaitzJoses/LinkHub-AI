@@ -490,6 +490,115 @@ return data;
 
 
 
+// ======================================
+// SAVE CHECKPOINT
+// ======================================
+
+async saveCheckpoint(checkpoint) {
+
+    console.log("📍 Saving checkpoint");
+
+    const payload = {
+
+        id: checkpoint.id,
+
+        created_at: checkpoint.createdAt,
+
+        conversation_id:
+            checkpoint.conversation?.conversationId,
+
+        provider:
+            checkpoint.experience?.provider,
+
+        checkpoint: checkpoint,
+
+        hash:
+            checkpoint.hash ?? null
+
+    };
+
+    console.log("📦 Checkpoint Payload:", payload);
+
+    const { data, error } = await supabase
+        .from("emma_checkpoints")
+        .insert(payload)
+        .select()
+        .single();
+
+    if (error) {
+
+        console.error(
+            "❌ CHECKPOINT SAVE ERROR:",
+            error
+        );
+
+        throw error;
+    }
+
+    console.log("✅ Checkpoint Saved");
+
+    return data;
+
+},
+
+
+// ======================================
+// GET LATEST CHECKPOINT
+// ======================================
+
+async getLatestCheckpoint(conversationId){
+
+    if(!conversationId){
+
+        return null;
+
+    }
+
+    const { data, error } = await supabase
+
+        .from("emma_checkpoints")
+
+        .select("*")
+
+        .eq(
+            "conversation_id",
+            conversationId
+        )
+
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        )
+
+        .limit(1)
+        .maybeSingle();
+
+    if(error){
+
+        console.error(
+            "❌ GET CHECKPOINT ERROR:",
+            error
+        );
+
+        throw error;
+
+    }
+
+    return data;
+
+},
+
+
+
+
+
+
+
+
+
+
 
 
 

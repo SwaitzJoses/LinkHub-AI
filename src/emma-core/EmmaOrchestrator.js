@@ -13,6 +13,7 @@
 // Organs receive completed states,
 // not Promise containers.
 //
+import { EmmaDB } from "./config/EmmaDatabase";
 
 class EmmaOrchestrator {
 
@@ -40,9 +41,49 @@ class EmmaOrchestrator {
   }
 
 
+prepareConversationForCheckpoint(conversation, previousCheckpoint = null) {
 
+    console.log("📦 Conversation entering checkpoint:", conversation);
+    console.log("📨 Messages:", conversation?.messages);
 
+    console.log("📍 Previous checkpoint:", previousCheckpoint);
 
+    if (!conversation) {
+        return null;
+    }
+
+    let messages = conversation.messages ?? [];
+
+  const lastMessageId =
+    previousCheckpoint?.checkpoint?.conversation?.lastMessageId;
+
+if (lastMessageId) {
+
+    console.log("✅ Previous lastMessageId:", lastMessageId);
+
+    const index = messages.findIndex(
+        m => m.id === lastMessageId
+    );
+
+        console.log("📍 Found previous message at index:", index);
+
+        if (index >= 0) {
+            messages = messages.slice(index + 1);
+        }
+    } else {
+        console.log("❌ No previous checkpoint supplied");
+    }
+
+    console.log("📊 Messages after delta:", messages.length);
+
+    return {
+        ...conversation,
+        firstMessageId: messages[0]?.id ?? null,
+        lastMessageId: messages[messages.length - 1]?.id ?? null,
+        messageCount: messages.length,
+        messages
+    };
+}
 
 
   //
@@ -96,9 +137,19 @@ class EmmaOrchestrator {
 
 
 
+// async conversationPhase(input) {
 
+//     const memoryResult =
+//         await this.organs.memory.recall(input);
 
+//     const memories =
+//         memoryResult?.relevantExperiences || [];
 
+//     return {
+//         memories
+//     };
+
+// }
 
 
 
@@ -1716,6 +1767,13 @@ console.log("📍 CHECKPOINT INPUT", {
     judgement
     
 });
+
+
+
+const previousCheckpoint =
+    await EmmaDB.getLatestCheckpoint(
+        input.conversation?.conversationId
+    );
 //
 // 23. Checkpoint 📍
 //
@@ -1743,14 +1801,21 @@ const checkpoint =
     reasoning,
     judgement,
 
-    conversation:
-        input.conversation
+ conversation:
+    this.prepareConversationForCheckpoint(
+        input.conversation,
+        previousCheckpoint
+    )
 }
 
     );
 
 
+if (checkpoint) {
 
+    await EmmaDB.saveCheckpoint(checkpoint);
+
+}
 
 
 

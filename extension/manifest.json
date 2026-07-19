@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Emma",
+  "description": "Continuity Layer for AI",
   "version": "1.0.0",
 
   "permissions": [
@@ -12,7 +13,12 @@
   ],
 
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html"
   },
 
   "content_scripts": [
@@ -21,13 +27,20 @@
         "https://chatgpt.com/*"
       ],
       "js": [
-        "core/EmmaEvent.js",
-        "core/EmmaEventBus.js",
-        "core/EmmaRuntime.js",
-        "adapters/chatgpt/ChatGPTAdapter.js",
         "content/content.js"
       ],
       "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "*"
+      ],
+      "matches": [
+        "https://chatgpt.com/*"
+      ]
     }
   ]
 }

@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             sendResponse({
                 ok: false,
-                error: "Empty message"
+                error: "Empty message."
             });
 
             return true;
@@ -25,48 +25,52 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             console.log("📍 Checkpoint Requested");
 
-            if (!sender.tab?.id) {
-
-                sendResponse({
-                    ok: false,
-                    error: "No active tab."
-                });
-
-                return true;
-
-            }
-
-            chrome.tabs.sendMessage(
-
-                sender.tab.id,
-
+            chrome.tabs.query(
                 {
-
-                    action: "CREATE_CHECKPOINT"
-
+                    active: true,
+                    currentWindow: true
                 },
+                (tabs) => {
 
-                (response) => {
+                    const tab = tabs[0];
 
-                    if (chrome.runtime.lastError) {
-
-                        console.error(
-                            chrome.runtime.lastError.message
-                        );
+                    if (!tab || !tab.id) {
 
                         sendResponse({
                             ok: false,
-                            error: chrome.runtime.lastError.message
+                            error: "No active ChatGPT tab."
                         });
 
                         return;
 
                     }
 
-                    sendResponse(response);
+                    chrome.tabs.sendMessage(
+                        tab.id,
+                        {
+                            action: "CREATE_CHECKPOINT"
+                        },
+                        (response) => {
+
+                            if (chrome.runtime.lastError) {
+
+                                console.error(chrome.runtime.lastError);
+
+                                sendResponse({
+                                    ok: false,
+                                    error: chrome.runtime.lastError.message
+                                });
+
+                                return;
+
+                            }
+
+                            sendResponse(response);
+
+                        }
+                    );
 
                 }
-
             );
 
             return true;
@@ -95,11 +99,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // =====================================
 
         sendResponse({
-
             ok: false,
-
             error: "Unknown message."
-
         });
 
     }
@@ -109,11 +110,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.error("❌ Background Error:", err);
 
         sendResponse({
-
             ok: false,
-
             error: err.message
-
         });
 
     }
