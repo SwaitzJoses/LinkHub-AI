@@ -25,49 +25,23 @@ from "./emma-core/connectors/EmmaGmailConnect";
 import EmmaCard
 from "./emma-core/components/emma/EmmaCard";
 
-import EmmaTest from "./pages/EmmaTest";
 
+
+
+////////////////////////////////////
+
+import EmmaHome from "./pages/EmmaHome";
 
 
 // ================================
 // REAL EMMA ORGANISM
 // ================================
 
-import Emma from "./emma-core/Emma";
 
 
 
+import EmmaRuntime from "./emma-core/EmmaRuntime";
 
-
-// Create ONE Emma instance
-// Emma should live for app lifetime
-
-const emma = new Emma({
-
-  id:"emma-main",
-
-  identity:{
-
-    name:"Emma",
-
-    purpose:
-    "Become an intelligent partner through experience",
-
-    principles:[
-
-      "Observe before acting",
-
-      "Remember important experiences",
-
-      "Learn from outcomes",
-
-      "Improve future decisions"
-
-    ]
-
-  }
-
-});
 
 
 
@@ -191,143 +165,6 @@ function App(){
 
 
 
-// ================================
-// EMMA WAKE EXPERIENCE
-// ================================
-//
-// Browser opens
-// Emma wakes
-// Emma experiences existence
-//
-// ================================
-
-
-useEffect(()=>{
-
-
-
-async function wakeEmma(){
-
-
-
-console.log(
-
-"🌅 Waking Emma..."
-
-);
-
-
-
-
-try{
-
-
-
-const response =
-
-await emma.experience({
-
-
-source:"system",
-
-
-type:"wake",
-
-
-event:
-"Application started",
-
-
-message:
-"Emma has entered the environment and is observing current state",
-
-
-importance:5
-
-
-
-});
-
-
-
-
-
-
-console.log(
-
-"🤍 EMMA RESPONSE",
-
-response
-
-);
-
-
-
-
-
-
-
-if(emma.self){
-
-
-const selfState =
-
-await emma.self();
-
-
-
-console.log(
-
-"🧠 EMMA SELF",
-
-selfState
-
-);
-
-
-}
-
-
-
-}
-
-
-
-catch(error){
-
-
-
-console.error(
-
-"❌ Emma wake failed",
-
-error
-
-);
-
-
-
-}
-
-
-
-}
-
-
-
-
-wakeEmma();
-
-
-
-
-},[]);
-
-
-
-
-
-
 
 
 
@@ -341,7 +178,6 @@ return (
 
 
 <BrowserRouter>
-
 
 
 {/*
@@ -360,6 +196,10 @@ Enable later when connected:
 <Routes>
 
 
+<Route
+  path="/"
+  element={<Navigate to="/dashboard" replace />}
+/>
 
 
 {/* 
@@ -372,10 +212,7 @@ element={<Navigate to="/dashboard" />}
 /> */}
 
 
-<Route
-    path="/"
-    element={<EmmaTest />}
-/>
+
 
 
 <Route
@@ -539,14 +376,21 @@ path="/emma-ai"
 
 element={
 
-<EmmaAI emma={emma} />
+<EmmaAI />
 
 }
 
 />
 
 
-
+<Route
+  path="/emma"
+  element={
+    <ProtectedRoute>
+      <EmmaHome />
+    </ProtectedRoute>
+  }
+/>
 
 
 </Routes>

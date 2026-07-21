@@ -51,23 +51,25 @@ class EmmaCheckpoint {
             // Experience
             // =====================================================
 
-            experience: {
+           experience: {
 
-                source:
-                    experience.source ?? null,
+    ...experience,
 
-                type:
-                    experience.type ?? null,
+    source:
+        experience.source ?? null,
 
-                content:
-                    experience.content ??
-                    experience.message ??
-                    null,
+    type:
+        experience.type ?? null,
 
-                importance:
-                    experience.importance ?? 0
+    content:
+        experience.content ??
+        experience.message ??
+        null,
 
-            },
+    importance:
+        experience.importance ?? 0
+
+},
 
             // =====================================================
             // Evidence
@@ -138,9 +140,10 @@ class EmmaCheckpoint {
             // =====================================================
 
             conversation: {
-
-                provider:
-                    conversation.provider ?? "chatgpt",
+provider:
+    conversation.provider ??
+    experience.provider ??
+    "unknown",
 
                 conversationId:
                     conversation.conversationId ?? null,

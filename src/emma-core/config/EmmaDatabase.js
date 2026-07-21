@@ -497,6 +497,9 @@ return data;
 async saveCheckpoint(checkpoint) {
 
     console.log("📍 Saving checkpoint");
+console.log("📦 Full checkpoint:", checkpoint);
+console.log("🧠 Experience:", checkpoint.experience);
+console.log("🌐 Provider:", checkpoint.experience?.provider);
 
     const payload = {
 

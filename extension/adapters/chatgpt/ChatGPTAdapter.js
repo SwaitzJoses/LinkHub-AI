@@ -64,28 +64,29 @@ export default class ChatGPTAdapter {
 
         elements.forEach((element, index) => {
 
-            const role =
-                element.getAttribute(
-                    "data-message-author-role"
-                ) || "assistant";
+    const role =
+    element.getAttribute(
+        "data-message-author-role"
+    ) || "assistant";
 
-            const content =
-                element.innerText?.trim() || "";
+const content =
+    element.innerText?.trim() || "";
 
-            if (!content) return;
+if (!content) return;
 
-            messages.push({
+const stableId =
+    element.getAttribute("data-message-id") ??
+    btoa(unescape(encodeURIComponent(`${role}:${content}`)));
 
-                id:
-                    element.getAttribute(
-                        "data-message-id"
-                    ) || `message-${index}`,
+messages.push({
 
-                role,
+    id: stableId,
 
-                content
+    role,
 
-            });
+    content
+
+});
 
         });
 

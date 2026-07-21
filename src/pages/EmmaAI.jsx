@@ -1,8 +1,11 @@
 import "../styles/EmmaAI.css";
 import { useState } from "react";
+import EmmaRuntime from "../emma-core/EmmaRuntime";
 
+export default function EmmaAI() {
 
-export default function EmmaAI({ emma }) {
+  const emma = EmmaRuntime.getEmma();
+
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");

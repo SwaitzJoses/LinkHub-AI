@@ -54,7 +54,7 @@ prepareConversationForCheckpoint(conversation, previousCheckpoint = null) {
 
     let messages = conversation.messages ?? [];
 
-  const lastMessageId =
+ const lastMessageId =
     previousCheckpoint?.checkpoint?.conversation?.lastMessageId;
 
 if (lastMessageId) {
@@ -65,24 +65,31 @@ if (lastMessageId) {
         m => m.id === lastMessageId
     );
 
-        console.log("📍 Found previous message at index:", index);
+    console.log("📍 Found previous message at index:", index);
 
-        if (index >= 0) {
-            messages = messages.slice(index + 1);
-        }
-    } else {
-        console.log("❌ No previous checkpoint supplied");
+    if (index >= 0) {
+        messages = messages.slice(index + 1);
     }
 
-    console.log("📊 Messages after delta:", messages.length);
+} else {
+    console.log("❌ No previous checkpoint supplied");
+}
 
-    return {
-        ...conversation,
-        firstMessageId: messages[0]?.id ?? null,
-        lastMessageId: messages[messages.length - 1]?.id ?? null,
-        messageCount: messages.length,
-        messages
-    };
+console.log("📊 Messages after delta:", messages.length);
+
+// ✅ Don't create a checkpoint if nothing changed
+if (messages.length === 0) {
+    console.log("⏭️ No new messages. Skipping checkpoint.");
+    return null;
+}
+
+return {
+    ...conversation,
+    firstMessageId: messages[0]?.id ?? null,
+    lastMessageId: messages[messages.length - 1]?.id ?? null,
+    messageCount: messages.length,
+    messages
+};
 }
 
 
@@ -1778,6 +1785,24 @@ const previousCheckpoint =
 // 23. Checkpoint 📍
 //
 
+const conversation =
+    this.prepareConversationForCheckpoint(
+        input.conversation,
+        previousCheckpoint
+    );
+
+if (!conversation) {
+
+    console.log("⏭️ Checkpoint skipped. No new messages.");
+
+    return {
+        success: true,
+        skipped: true,
+        reason: "NO_NEW_MESSAGES"
+    };
+
+}
+
 const checkpoint =
 
     await this.call(
@@ -1790,33 +1815,26 @@ const checkpoint =
 
         ],
 
-   {
-    experience: input,
-    memory: memories,
-    wisdom,
-    temporal,
-    self,
-    relationship,
-    curiosity,
-    reasoning,
-    judgement,
-
- conversation:
-    this.prepareConversationForCheckpoint(
-        input.conversation,
-        previousCheckpoint
-    )
-}
+        {
+            experience: input,
+            memory: memories,
+            wisdom,
+            temporal,
+            self,
+            relationship,
+            curiosity,
+            reasoning,
+            judgement,
+            conversation
+        }
 
     );
-
 
 if (checkpoint) {
 
     await EmmaDB.saveCheckpoint(checkpoint);
 
 }
-
 
 
 
