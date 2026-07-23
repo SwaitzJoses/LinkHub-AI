@@ -4,9 +4,10 @@
   "description": "Continuity Layer for AI",
   "version": "1.0.0",
 
-  "permissions": [
-    "storage"
-  ],
+ "permissions": [
+    "storage",
+    "downloads"
+],
 
   "host_permissions": [
     "https://chatgpt.com/*"

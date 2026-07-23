@@ -48,7 +48,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     chrome.tabs.sendMessage(
                         tab.id,
                         {
-                            action: "CREATE_CHECKPOINT"
+                            action: "CREATE_CHECKPOINT",
+                              title: message.title,
+        notes: message.notes
                         },
                         (response) => {
 
@@ -93,6 +95,46 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return true;
 
         }
+
+        // =====================================
+// DOWNLOAD FILE
+// =====================================
+
+if (message.action === "DOWNLOAD_FILE") {
+
+    console.log("💾 Download Request");
+
+    chrome.downloads.download({
+
+        url: message.url,
+
+        filename: message.filename,
+
+        saveAs: true
+
+    }, (downloadId) => {
+
+        if (chrome.runtime.lastError) {
+
+            sendResponse({
+                ok: false,
+                error: chrome.runtime.lastError.message
+            });
+
+            return;
+
+        }
+
+        sendResponse({
+            ok: true,
+            downloadId
+        });
+
+    });
+
+    return true;
+
+}
 
         // =====================================
         // UNKNOWN MESSAGE

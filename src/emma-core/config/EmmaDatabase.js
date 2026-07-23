@@ -501,24 +501,25 @@ console.log("📦 Full checkpoint:", checkpoint);
 console.log("🧠 Experience:", checkpoint.experience);
 console.log("🌐 Provider:", checkpoint.experience?.provider);
 
-    const payload = {
+   const payload = {
+    id: checkpoint.id,
+    created_at: checkpoint.createdAt,
 
-        id: checkpoint.id,
+    repository_id: checkpoint.repositoryId,
+    branch_id: checkpoint.branchId,
+    session_id: checkpoint.sessionId,
 
-        created_at: checkpoint.createdAt,
+    title: checkpoint.title,
+    notes: checkpoint.notes,
 
-        conversation_id:
-            checkpoint.conversation?.conversationId,
+    conversation_id: checkpoint.conversation?.conversationId,
 
-        provider:
-            checkpoint.experience?.provider,
+    provider: checkpoint.experience?.provider,
 
-        checkpoint: checkpoint,
+    checkpoint: checkpoint,
 
-        hash:
-            checkpoint.hash ?? null
-
-    };
+    hash: checkpoint.hash ?? null
+};
 
     console.log("📦 Checkpoint Payload:", payload);
 
@@ -543,6 +544,64 @@ console.log("🌐 Provider:", checkpoint.experience?.provider);
     return data;
 
 },
+
+
+
+
+async getCurrentState(workspaceId) {
+
+    if (!workspaceId) {
+        return null;
+    }
+
+    const { data, error } = await supabase
+        .from("emma_state")
+        .select("state")
+        .eq("workspace_id", workspaceId)
+        .maybeSingle();
+
+    if (error) {
+
+        console.error(
+            "❌ GET CURRENT STATE ERROR:",
+            error
+        );
+
+        throw error;
+    }
+
+    return data?.state ?? null;
+},
+
+async saveCurrentState(workspaceId, state) {
+
+    const { data, error } = await supabase
+        .from("emma_state")
+        .upsert({
+            workspace_id: workspaceId,
+            state,
+            updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+    if (error) {
+
+        console.error(
+            "❌ SAVE CURRENT STATE ERROR:",
+            error
+        );
+
+        throw error;
+    }
+
+    console.log("✅ Current state saved");
+
+    return data;
+},
+
+
+
 
 
 // ======================================
@@ -588,7 +647,7 @@ async getLatestCheckpoint(conversationId){
         throw error;
 
     }
-
+console.log("🧪 Latest checkpoint from DB:", data);
     return data;
 
 },

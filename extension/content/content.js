@@ -67,19 +67,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             console.log("📦 Starting Checkpoint...");
 
-            const checkpoint =
-                await window.runtime.checkpoint("ChatGPT");
+const checkpoint =
+    await window.runtime.checkpoint("ChatGPT");
 
-            console.log("✅ Checkpoint Complete");
+checkpoint.title = message.title ?? "";
+checkpoint.notes = message.notes ?? "";
 
-            console.log(checkpoint);
+await exportCheckpoint(checkpoint);
 
-            sendResponse({
+console.log("✅ Checkpoint Complete");
 
-                ok: true,
-                checkpoint
+sendResponse({
+    ok: true
+});
 
-            });
+
+
 
         }
 
@@ -101,3 +104,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
 
 });
+
+async function exportCheckpoint(checkpoint) {
+
+    const json = JSON.stringify(checkpoint, null, 2);
+
+    const blob = new Blob(
+        [json],
+        {
+            type: "application/json"
+        }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    return new Promise((resolve) => {
+
+        chrome.runtime.sendMessage({
+
+            action: "DOWNLOAD_FILE",
+
+            url,
+
+            filename: "intelligence.json"
+
+        }, (response) => {
+
+            URL.revokeObjectURL(url);
+
+            console.log("💾 Download Response:", response);
+
+            resolve(response);
+
+        });
+
+    });
+
+}

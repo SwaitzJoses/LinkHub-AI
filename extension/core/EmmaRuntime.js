@@ -1,12 +1,29 @@
 export default class EmmaRuntime {
 
-    constructor(emma) {
+  constructor(emma) {
 
-        this.emma = emma;
-        this.adapters = new Map();
+    this.emma = emma;
+    this.adapters = new Map();
 
-    }
+    this.workspace = {
+        repository: null,
+        branch: null,
+        session: null
+    };
 
+}
+setWorkspace(workspace) {
+
+    this.workspace = workspace;
+
+}
+
+
+getWorkspace() {
+
+    return this.workspace;
+
+}
     // =====================================
     // Adapter Registration
     // =====================================
@@ -130,18 +147,24 @@ console.log(
     "📨 Last message:",
     conversation.messages[conversation.messages.length - 1]
 );
-        const result =
-            await this.emma.experience({
 
-                type: "CHECKPOINT",
+console.log("🗂 Workspace:", this.getWorkspace());
 
-                provider,
 
-                conversation,
+ const result =
+    await this.emma.experience({
 
-                createdAt: Date.now()
+        type: "CHECKPOINT",
 
-            });
+        provider,
+
+        conversation,
+
+        workspaceId: conversation.conversationId,
+
+        createdAt: Date.now()
+
+    });
 
         console.log("✅ Checkpoint Complete");
 

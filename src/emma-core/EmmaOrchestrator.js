@@ -54,12 +54,31 @@ prepareConversationForCheckpoint(conversation, previousCheckpoint = null) {
 
     let messages = conversation.messages ?? [];
 
+
  const lastMessageId =
     previousCheckpoint?.checkpoint?.conversation?.lastMessageId;
+
+    
+    console.log(
+    "Contains previous ID:",
+    messages.some(
+        m => m.id === lastMessageId
+    )
+);
 
 if (lastMessageId) {
 
     console.log("✅ Previous lastMessageId:", lastMessageId);
+
+
+    console.log("================================");
+console.log("Saved lastMessageId:", lastMessageId);
+
+messages.forEach((m, i) => {
+    console.log(i, m.id);
+});
+
+console.log("================================");
 
     const index = messages.findIndex(
         m => m.id === lastMessageId
@@ -207,7 +226,20 @@ return {
       );
 
 
+
+const workspaceId =
+    input.workspaceId ??
+    input.conversation?.conversationId;
+
+const currentState =
+    await EmmaDB.getCurrentState(
+        workspaceId
+    );
+
+
 const context = {
+
+    currentState,
 
     experience: input,
 
@@ -1803,6 +1835,217 @@ if (!conversation) {
 
 }
 
+console.log(
+    "🧠 Current State from DB:",
+    currentState
+);
+
+
+const intelligenceState = {
+
+    id: crypto.randomUUID(),
+
+    version: "1.0",
+
+    createdAt: new Date().toISOString(),
+
+    // =====================================================
+    // ENTITY
+    // =====================================================
+
+    entity: {
+
+        id: input.workspaceId ?? input.id ?? "",
+
+        name: input.workspaceName ?? "",
+
+        type: "workspace",
+
+        description: input.description ?? "",
+
+        status: "ACTIVE",
+
+        provider: conversation?.provider ?? "unknown",
+
+        conversationId: conversation?.conversationId ?? "",
+
+        createdAt: this.state.aliveSince,
+
+        lastUpdated: new Date().toISOString()
+
+    },
+
+    // =====================================================
+    // EXPERIENCE
+    // =====================================================
+
+    experience: {
+
+        input,
+
+        attention,
+
+        memories,
+
+        conversation
+
+    },
+
+    // =====================================================
+    // SELF
+    // =====================================================
+
+    self: {
+
+        self,
+
+        relationship,
+
+        narrative,
+
+        belief,
+
+        identityContinuity: continuity
+
+    },
+
+    // =====================================================
+    // WORLD
+    // =====================================================
+
+    world: {
+
+        temporal,
+
+        world,
+
+        social,
+
+        uncertainty
+
+    },
+
+    // =====================================================
+    // PURPOSE
+    // =====================================================
+
+    purpose: {
+
+        purpose,
+
+        values,
+
+        desire,
+
+        intent,
+
+        presence,
+
+        curiosity
+
+    },
+
+    // =====================================================
+    // THINKING
+    // =====================================================
+
+    intelligence: {
+
+        wisdom,
+
+        reasoning,
+
+        reflection,
+
+        meta,
+
+        consciousState,
+
+        imagination
+
+    },
+
+    // =====================================================
+    // DECISION MAKING
+    // =====================================================
+
+    decisions: {
+
+        judgement,
+
+        agency,
+
+        ethics,
+
+        awareness
+
+    },
+
+    // =====================================================
+    // ACTION
+    // =====================================================
+
+    action: {
+
+        action,
+
+        outcome,
+
+        communication
+
+    },
+
+    // =====================================================
+    // EVOLUTION
+    // =====================================================
+
+    evolution: {
+
+        learning,
+
+        evolution,
+
+        integration,
+
+        attentionGrowth,
+
+        balance,
+
+        lifecycle
+
+    },
+
+    // =====================================================
+    // INTERNAL STATE
+    // =====================================================
+
+    state: structuredClone(this.state),
+
+    // =====================================================
+    // METADATA
+    // =====================================================
+
+    metadata: {
+
+        schemaVersion: "1.0",
+
+        orchestratorVersion: this.state.version,
+
+        checkpointType: "UPDATE",
+
+        experiencesProcessed: this.state.experiencesProcessed,
+
+        generatedBy: "EmmaOrchestrator"
+
+    }
+
+};
+
+
+
+
+
+
 const checkpoint =
 
     await this.call(
@@ -1815,24 +2058,26 @@ const checkpoint =
 
         ],
 
-        {
-            experience: input,
-            memory: memories,
-            wisdom,
-            temporal,
-            self,
-            relationship,
-            curiosity,
-            reasoning,
-            judgement,
-            conversation
-        }
+        
+           intelligenceState
+        
 
     );
 
 if (checkpoint) {
 
-    await EmmaDB.saveCheckpoint(checkpoint);
+  console.log("Workspace:", input.workspace);
+console.log("WorkspaceId:", input.workspaceId);
+
+   const workspaceId =
+    input.workspaceId ??
+    input.conversation?.conversationId;
+
+await EmmaDB.saveCurrentState(
+    workspaceId,
+    intelligenceState
+
+);
 
 }
 
@@ -1909,7 +2154,7 @@ if (checkpoint) {
 
    return {
 
-    checkpoint,
+    currentState: intelligenceState,
 
 
   presence,

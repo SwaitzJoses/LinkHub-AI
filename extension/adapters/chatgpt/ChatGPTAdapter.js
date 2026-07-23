@@ -26,7 +26,7 @@ export default class ChatGPTAdapter {
         return !!document.querySelector(
             "[data-message-author-role]"
         );
-
+console.log("DOM elements found:", elements.length);
     }
 
     // =====================================
@@ -74,21 +74,39 @@ const content =
 
 if (!content) return;
 
+const domId = element.getAttribute("data-message-id");
+
+console.log(
+    "DOM ID:",
+    domId,
+    "Role:",
+    role,
+    "Text:",
+    content.slice(0, 40)
+);
+
 const stableId =
-    element.getAttribute("data-message-id") ??
-    btoa(unescape(encodeURIComponent(`${role}:${content}`)));
+    btoa(
+        unescape(
+            encodeURIComponent(
+                `${role}:${content}`
+            )
+        )
+    );
 
 messages.push({
-
-    id: stableId,
-
+    id: domId || stableId,
     role,
-
     content
-
 });
 
         });
+
+        console.log("================================");
+console.log("Captured:", messages.length);
+console.log("First:", messages[0]?.id);
+console.log("Last :", messages[messages.length - 1]?.id);
+console.log("================================");
 
         return {
 

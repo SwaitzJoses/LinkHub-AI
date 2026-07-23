@@ -80,8 +80,12 @@ class EmmaRuntime {
   }
 
   getEmma() {
-    return this.initialize();
+    return this.emma;
   }
+
+  getOrCreateEmma() {
+    return this.initialize();
+}
 
   // ==================================
   // Context

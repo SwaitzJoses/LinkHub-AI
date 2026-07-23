@@ -10,8 +10,9 @@ export default defineManifest({
   version: "1.0.0",
 
   permissions: [
-    "storage"
-  ],
+  "storage",
+  "downloads"
+],
 
   host_permissions: [
     "https://chatgpt.com/*"
