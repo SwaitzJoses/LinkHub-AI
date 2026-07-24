@@ -1,18 +1,18 @@
 import EmmaRuntime from "../core/EmmaRuntime.js";
 import ChatGPTAdapter from "../adapters/chatgpt/ChatGPTAdapter.js";
-import Emma from "../../src/emma-core/Emma.js";
+
 
 (async () => {
 
     console.log("🧠 Emma Started");
 
-    console.time("Emma Constructor");
+   
 
-    const emma = new Emma();
+  
 
-    console.timeEnd("Emma Constructor");
+    
 
-    const runtime = new EmmaRuntime(emma);
+    const runtime = new EmmaRuntime();
 
     const chatGPT = new ChatGPTAdapter();
 
@@ -25,7 +25,7 @@ import Emma from "../../src/emma-core/Emma.js";
     console.timeEnd("Runtime Start");
 
     // Make available globally
-    window.emma = emma;
+   
     window.runtime = runtime;
 
     console.log("✅ ChatGPT Adapter Loaded");

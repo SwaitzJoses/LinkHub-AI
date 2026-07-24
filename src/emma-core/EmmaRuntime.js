@@ -1,133 +1,177 @@
 import Emma from "./Emma";
 
-class EmmaRuntime {
-  constructor() {
-    this.emma = null;
+export default class EmmaRuntime {
 
-    this.user = null;
-    this.repository = null;
-    this.branch = "main";
-    this.session = null;
+    constructor() {
 
-    this.initialized = false;
-    this.awake = false;
-  }
+        this.emma = new Emma();
 
-  // ==================================
-  // Runtime Lifecycle
-  // ==================================
+        this.adapters = new Map();
 
-  initialize() {
-    if (!this.emma) {
-      console.log("🚀 Initializing Emma Runtime...");
+        this.workspace = {
+            repository: null,
+            branch: null,
+            session: null
+        };
 
-      this.emma = new Emma();
-      this.initialized = true;
-
-      console.log("✅ Emma Runtime Initialized");
     }
 
-    return this.emma;
-  }
+    setWorkspace(workspace) {
 
-  async wake() {
-    const emma = this.initialize();
+        this.workspace = workspace;
 
-    if (this.awake) {
-      return emma;
     }
 
-    console.log("🌅 Waking Emma...");
+    getWorkspace() {
 
-    try {
-      await emma.experience({
-        source: "system",
-        type: "wake",
-        event: "Emma awakened",
-        message: "Emma has entered the active workspace.",
-        importance: 5,
-      });
+        return this.workspace;
 
-      this.awake = true;
-
-      console.log("✨ Emma Awake");
-    } catch (err) {
-      console.error("❌ Emma wake failed", err);
     }
 
-    return emma;
-  }
+    // =====================================
+    // Adapter Registration
+    // =====================================
 
-  shutdown() {
-    console.log("🛑 Emma Runtime Shutdown");
+    registerAdapter(adapter) {
 
-    this.emma = null;
+        if (!adapter?.name) {
+            throw new Error("Adapter must have a name.");
+        }
 
-    this.initialized = false;
-    this.awake = false;
-  }
+        this.adapters.set(adapter.name, adapter);
 
-  // ==================================
-  // Status
-  // ==================================
+    }
 
-  isInitialized() {
-    return this.initialized;
-  }
+    // =====================================
+    // Runtime Startup
+    // =====================================
 
-  isAwake() {
-    return this.awake;
-  }
+    async start() {
 
-  getEmma() {
-    return this.emma;
-  }
+        console.log("🚀 Emma Runtime Starting");
 
-  getOrCreateEmma() {
-    return this.initialize();
+        for (const adapter of this.adapters.values()) {
+
+            try {
+
+                await adapter.initialize();
+
+                console.log(`✅ ${adapter.name} Initialized`);
+
+            } catch (error) {
+
+                console.error(
+                    `❌ ${adapter.name} Failed`,
+                    error
+                );
+
+            }
+
+        }
+
+        console.log("🧠 Emma Runtime Ready (Idle)");
+
+    }
+
+    // =====================================
+    // Adapter Helpers
+    // =====================================
+
+    getAdapter(name) {
+
+        return this.adapters.get(name);
+
+    }
+
+    hasAdapter(name) {
+
+        return this.adapters.has(name);
+
+    }
+
+    getAdapters() {
+
+        return Array.from(
+            this.adapters.values()
+        );
+
+    }
+
+    // =====================================
+    // Capture Only
+    // No Emma Thinking Here
+    // =====================================
+
+    async capture(provider) {
+
+        const adapter =
+            this.getAdapter(provider);
+
+        if (!adapter) {
+
+            throw new Error(
+                `Adapter "${provider}" not found.`
+            );
+
+        }
+
+        if (
+            typeof adapter.captureConversation !== "function"
+        ) {
+
+            throw new Error(
+                `${provider} does not support conversation capture.`
+            );
+
+        }
+
+        return await adapter.captureConversation();
+
+    }
+
+    // =====================================
+    // Checkpoint
+    // Runtime coordinates.
+    // Emma thinks.
+    // =====================================
+
+    async checkpoint(provider) {
+
+        console.log("📦 Starting Checkpoint...");
+
+        const conversation =
+            await this.capture(provider);
+
+        console.log(
+            "📨 Adapter captured:",
+            conversation.messageCount,
+            "messages"
+        );
+
+        console.log(
+            "📨 Last message:",
+            conversation.messages[
+                conversation.messages.length - 1
+            ]
+        );
+
+        console.log(
+            "🗂 Workspace:",
+            this.getWorkspace()
+        );
+
+        const result = conversation;
+
+        console.log("✅ Checkpoint Complete");
+
+        return {
+
+            conversation,
+
+            result
+
+        };
+
+    }
+
 }
-
-  // ==================================
-  // Context
-  // ==================================
-
-  setUser(user) {
-    this.user = user;
-  }
-
-  getUser() {
-    return this.user;
-  }
-
-  setRepository(repository) {
-    this.repository = repository;
-  }
-
-  getRepository() {
-    return this.repository;
-  }
-
-  setBranch(branch) {
-    this.branch = branch;
-  }
-
-  getBranch() {
-    return this.branch;
-  }
-
-  setSession(session) {
-    this.session = session;
-  }
-
-  getSession() {
-    return this.session;
-  }
-
-  clearRepository() {
-    this.repository = null;
-    this.branch = "main";
-    this.session = null;
-  }
-}
-
-export default new EmmaRuntime();

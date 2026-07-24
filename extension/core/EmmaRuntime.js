@@ -1,29 +1,34 @@
+import Emma from "../../src/emma-core/Emma";
+import AISettings from "../../src/emma-core/settings/AISettings";
+
 export default class EmmaRuntime {
 
-  constructor(emma) {
+    constructor() {
 
-    this.emma = emma;
-    this.adapters = new Map();
+        this.emma = new Emma();
 
-    this.workspace = {
-        repository: null,
-        branch: null,
-        session: null
-    };
+        this.adapters = new Map();
 
-}
-setWorkspace(workspace) {
+        this.workspace = {
+            repository: null,
+            branch: null,
+            session: null
+        };
 
-    this.workspace = workspace;
+    }
 
-}
+    setWorkspace(workspace) {
 
+        this.workspace = workspace;
 
-getWorkspace() {
+    }
 
-    return this.workspace;
+    getWorkspace() {
 
-}
+        return this.workspace;
+
+    }
+
     // =====================================
     // Adapter Registration
     // =====================================
@@ -95,7 +100,6 @@ getWorkspace() {
 
     // =====================================
     // Capture Only
-    // No Emma Thinking Here
     // =====================================
 
     async capture(provider) {
@@ -127,55 +131,60 @@ getWorkspace() {
 
     // =====================================
     // Checkpoint
-    // Runtime coordinates.
-    // Emma thinks.
     // =====================================
 
-    async checkpoint(provider) {
+  async checkpoint(provider) {
 
-        console.log("📦 Starting Checkpoint...");
+    console.log("📦 Starting Checkpoint...");
 
-        const conversation =
-            await this.capture(provider);
+    const conversation =
+        await this.capture(provider);
 
-            console.log(
-    "📨 Adapter captured:",
-    conversation.messageCount,
-    "messages"
+    const configured =
+        await AISettings.isConfigured();
+
+    if (!configured) {
+
+       throw new Error(
+    "AI provider not configured. Please configure your AI settings before using Evolve."
 );
-console.log(
-    "📨 Last message:",
-    conversation.messages[conversation.messages.length - 1]
-);
-
-console.log("🗂 Workspace:", this.getWorkspace());
-
-
- const result =
-    await this.emma.experience({
-
-        type: "CHECKPOINT",
-
-        provider,
-
-        conversation,
-
-        workspaceId: conversation.conversationId,
-
-        createdAt: Date.now()
-
-    });
-
-        console.log("✅ Checkpoint Complete");
-
-        return {
-
-            conversation,
-
-            result
-
-        };
 
     }
 
+    console.log(
+        "📨 Adapter captured:",
+        conversation.messageCount,
+        "messages"
+    );
+
+    console.log(
+        "📨 Last message:",
+        conversation.messages[
+            conversation.messages.length - 1
+        ]
+    );
+
+    console.log(
+        "🗂 Workspace:",
+        this.getWorkspace()
+    );
+
+    console.log("➡️ Calling Emma...");
+
+    const result =
+        await this.emma.experience(conversation);
+
+    console.log(
+        "⬅️ Emma returned:",
+        result
+    );
+
+    console.log("✅ Checkpoint Complete");
+
+    return {
+        conversation,
+        result
+    };
+
+}
 }

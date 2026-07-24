@@ -6,138 +6,121 @@
 }
 
 body{
-
-    width:320px;
-
-    background:#0f172a;
-
+    width:250px;
+    background:#040812;
     color:#fff;
-
-    padding:18px;
-
+    padding:14px 12px 10px;
 }
 
-#app{
+/* ================= APP ================= */
 
+#app{
     display:flex;
     flex-direction:column;
-gap:20px;
+    gap:10px;
 
-padding:24px;
+    padding:16px;
 
-    background:#111827;
+    background:#0c1322;
 
-    border:1px solid #1f2937;
+    border-radius:18px;
 
-    border-radius:16px;
-
-    
-
-    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    box-shadow:0 10px 28px rgba(0,0,0,.45);
 
     animation:fadeIn .25s ease;
-
 }
 
 @keyframes fadeIn{
-
     from{
-
         opacity:0;
         transform:translateY(8px);
-
     }
-
     to{
-
         opacity:1;
         transform:translateY(0);
-
     }
-
 }
 
 @keyframes spin{
-
     from{
-
         transform:rotate(0deg);
-
     }
-
     to{
-
         transform:rotate(360deg);
-
     }
-
 }
 
+/* ================= LOGO ================= */
+
+.logo-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin-top:10px;
+    margin-bottom:6px;
+}
+
+#logo{
+    width:165px;
+    height:auto;
+    display:block;
+}
+
+/* ================= TEXT ================= */
+
 h2{
-
     text-align:center;
-
-    font-size:28px;
-
-    font-weight:800;
-
-    margin-bottom:4px;
-
+    font-size:12px;
+    font-weight:700;
 }
 
 p{
-
+    width:100%;
     text-align:center;
-
-    color:#9ca3af;
-
-    line-height:1.5;
-
-    margin-bottom:4px;
-
+    color:#cbd5e1;
+    font-size:12px;
+    line-height:1.35;
 }
 
 #provider{
-
-    color:#22c55e;
-
+    text-align:center;
+    font-size:10px;
     font-weight:600;
-
-    margin-top:6px;
-
-    margin-bottom:18px;
-
+    color:#4ade80;
+    margin-top:2px;
+    margin-bottom:8px;
 }
+
+/* ================= BUTTONS ================= */
 
 button{
 
     width:100%;
 
-    height:52px;
+    height:34px;
 
-    margin:10px 0;
+    margin:5px 0;
 
     border:none;
 
-    border-radius:14px;
+    border-radius:12px;
 
     cursor:pointer;
 
-    color:white;
+    color:#fff;
 
-    font-size:16px;
+    font-size:10px;
 
     font-weight:700;
 
-    letter-spacing:.3px;
-
-    transition:.25s;
+    transition:.2s;
 
 }
 
 button:hover{
 
-    transform:translateY(-2px);
+    transform:translateY(-1px);
 
 }
 
@@ -149,45 +132,52 @@ button:active{
 
 button:disabled{
 
-    opacity:.75;
+    opacity:.7;
 
     cursor:not-allowed;
 
 }
 
+/* Primary */
+
 #captureBtn{
 
-    background:#2563eb;
+    background:#2F6BFF;
 
 }
 
 #captureBtn:hover{
 
-    background:#1d4ed8;
+    background:#3A78FF;
 
 }
 
+/* Secondary */
+
 #analyzeBtn{
 
-    background:#374151;
+    background:#4B5B78;
 
 }
 
 #analyzeBtn:hover{
 
-    background:#4b5563;
+    background:#5B6C8B;
 
 }
 
+/* Tertiary */
+
 #settingsBtn{
 
-    background:#1f2937;
+    background:#334155;
+    
 
 }
 
 #settingsBtn:hover{
 
-    background:#374151;
+    background:#43556F;
 
 }
 
@@ -196,6 +186,8 @@ button:disabled{
     background:#16a34a !important;
 
 }
+
+/* ================= SPINNER ================= */
 
 .spinner{
 
@@ -214,21 +206,25 @@ button:disabled{
 
 }
 
+/* ================= STATUS ================= */
+
 #status{
 
-    margin-top:12px;
+    margin-top:8px;
 
     min-height:18px;
 
     color:#d1d5db;
 
-    font-size:13px;
+    font-size:10px;
 
     text-align:center;
 
+    line-height:1.4;
+
 }
 
-/* ---------------- SETTINGS ---------------- */
+/* ================= SETTINGS ================= */
 
 #settingsView{
 
@@ -236,7 +232,7 @@ button:disabled{
 
     flex-direction:column;
 
-    gap:14px;
+    gap:12px;
 
 }
 
@@ -259,7 +255,7 @@ input{
 
     width:100%;
 
-    height:42px;
+    height:40px;
 
     border:none;
 
@@ -267,11 +263,13 @@ input{
 
     background:#1f2937;
 
-    color:white;
+    color:#fff;
 
     padding:0 12px;
 
     outline:none;
+
+    font-size: 12px;
 
 }
 
@@ -283,25 +281,25 @@ input::placeholder{
 
 #saveSettingsBtn{
 
-    background:#2563eb;
+    background:#2F6BFF;
 
 }
 
 #saveSettingsBtn:hover{
 
-    background:#1d4ed8;
+    background:#3A78FF;
 
 }
 
 #backBtn{
 
-    background:#374151;
+    background:#4B5B78;
 
 }
 
 #backBtn:hover{
 
-    background:#4b5563;
+    background:#5B6C8B;
 
 }
 
@@ -309,22 +307,24 @@ input::placeholder{
 
     text-align:center;
 
-    font-size:13px;
+    font-size:12px;
 
     color:#22c55e;
 
-    min-height:18px;
+    min-height:16px;
 
 }
 
+/* ================= FOOTER ================= */
+
 footer{
 
-    margin-top:10px;
+    margin-top:6px;
 
     text-align:center;
 
-    color:#6b7280;
+    color:#64748b;
 
-    font-size:12px;
+    font-size:11px;
 
 }

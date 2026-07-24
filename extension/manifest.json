@@ -4,15 +4,17 @@
   "description": "Continuity Layer for AI",
   "version": "1.0.0",
 
- "permissions": [
-    "storage",
-    "downloads"
+"permissions": [
+  "storage",
+  "downloads",
+  "activeTab"
 ],
 
-  "host_permissions": [
-    "https://chatgpt.com/*"
-  ],
-
+"host_permissions": [
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://generativelanguage.googleapis.com/*"
+],
   "background": {
     "service_worker": "background.js",
     "type": "module"

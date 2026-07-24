@@ -16,7 +16,82 @@ const apiKeyInput = document.getElementById("apiKeyInput");
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
+// ----------------------------------------------------
+// Validate API Key
+// ----------------------------------------------------
 
+async function validateApiKey(provider, apiKey) {
+
+    try {
+
+        let response;
+
+        switch (provider) {
+
+            case "openai":
+
+                response = await fetch("https://api.openai.com/v1/models", {
+
+                    headers: {
+                        Authorization: `Bearer ${apiKey}`
+                    }
+
+                });
+
+                break;
+
+            case "claude":
+
+                response = await fetch("https://api.anthropic.com/v1/models", {
+
+                    headers: {
+                        "x-api-key": apiKey,
+                        "anthropic-version": "2023-06-01"
+                    }
+
+                });
+
+                break;
+
+            case "gemini":
+
+                response = await fetch(
+
+                    `https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`
+
+                );
+
+                break;
+
+            default:
+
+                return false;
+
+        }
+
+        if (!response.ok) {
+
+    const error = await response.text();
+
+    console.error(error);
+
+    return false;
+
+}
+
+return true;
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        return false;
+
+    }
+
+}
 const MODELS = {
 
     openai: [
@@ -132,6 +207,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
 function startLoading(button, text) {
 
+    if (button.disabled)
+        return;
+
+    status.textContent = "";
+
     captureBtn.disabled = true;
     analyzeBtn.disabled = true;
 
@@ -159,6 +239,8 @@ settingsBtn.addEventListener("click", async () => {
 
     const settings = await AISettings.load();
 
+
+
     providerSelect.value = settings.provider || "openai";
 
 populateModels(
@@ -180,27 +262,67 @@ backBtn.addEventListener("click", () => {
     homeView.style.display = "block";
 
 });
-
+settingsStatus.textContent = "";
 saveSettingsBtn.addEventListener("click", async () => {
+
+    const provider = providerSelect.value;
+
+    const model = modelSelect.value;
+
+    const apiKey = apiKeyInput.value.trim();
+
+    if (!apiKey) {
+
+        settingsStatus.textContent =
+            "❌ API Key required.";
+
+        return;
+
+    }
+
+    settingsStatus.textContent =
+        "Validating API Key...";
+
+    saveSettingsBtn.disabled = true;
+
+    // 👇 THIS IS THE CORRECT PLACE
+    const valid =
+        await validateApiKey(provider, apiKey);
+
+    saveSettingsBtn.disabled = false;
+
+    saveSettingsBtn.textContent = "Save Settings";
+
+    if (!valid) {
+
+        settingsStatus.textContent =
+            "❌ Invalid or unauthorized API Key.";
+
+        return;
+
+    }
 
     await AISettings.save({
 
-        provider: providerSelect.value,
-        model: modelSelect.value,
-        apiKey: apiKeyInput.value.trim()
+        provider,
+        model,
+        apiKey
 
     });
 
-   settingsStatus.textContent = "✅ Settings Saved";
+    settingsStatus.textContent =
+    "✅ Settings Saved";
 
 setTimeout(() => {
 
     settingsStatus.textContent = "";
 
     settingsView.style.display = "none";
+
     homeView.style.display = "block";
 
-}, 700);
+},700);
+
 });
 
 // ----------------------------------------------------
@@ -208,6 +330,19 @@ setTimeout(() => {
 // ----------------------------------------------------
 
 captureBtn.addEventListener("click", async () => {
+
+      console.log("Capture clicked");
+
+    const configured = await AISettings.isConfigured();
+
+    if (!configured) {
+
+        status.textContent =
+            "⚠️ Please configure AI Settings to Capture.";
+
+        return;
+
+    }
 
     startLoading(captureBtn, "CAPTURING...");
     status.textContent = "Capturing conversation...";
@@ -250,9 +385,22 @@ captureBtn.addEventListener("click", async () => {
 // Analyze
 // ----------------------------------------------------
 
+
+
 analyzeBtn.addEventListener("click", async () => {
 
-  
+    console.log("Analyze clicked");
+
+  const configured = await AISettings.isConfigured();
+
+if (!configured) {
+
+    status.textContent =
+        "⚠️ Please configure AI Settings to Analyze.";
+
+    return;
+
+}
 
     try {
 
@@ -274,7 +422,9 @@ status.textContent = "Select intelligence files...";
 
                 const files = [...input.files];
 
-                if (files.length === 0) {
+if (files.length === 0) {
+
+    stopLoading(analyzeBtn, "ANALYZE");
 
     status.textContent = "Ready";
 
