@@ -313,30 +313,69 @@ status.textContent = "Select intelligence files...";
                 }
 
                 // Create downloadable report
-                const blob = new Blob(
+               // ================================
+// Download Evolved Intelligence
+// ================================
 
-                    [response.report],
+const intelligenceBlob = new Blob(
 
-                    {
-                        type:
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    }
+    [
+        JSON.stringify(
+            response.evolvedIntelligence,
+            null,
+            2
+        )
+    ],
 
-                );
+    {
+        type: "application/json"
+    }
 
-                const url = URL.createObjectURL(blob);
+);
 
-                await chrome.runtime.sendMessage({
+const intelligenceUrl =
+    URL.createObjectURL(intelligenceBlob);
 
-                    action: "DOWNLOAD_FILE",
+await chrome.runtime.sendMessage({
 
-                    url,
+    action: "DOWNLOAD_FILE",
 
-                    filename: "Analysis.docx"
+    url: intelligenceUrl,
 
-                });
+    filename: "Evolved_Intelligence.json"
 
-                URL.revokeObjectURL(url);
+});
+
+URL.revokeObjectURL(intelligenceUrl);
+
+// ================================
+// Download Report
+// ================================
+
+const reportBlob = new Blob(
+
+    [response.report],
+
+    {
+        type: "text/markdown"
+    }
+
+);
+
+const reportUrl =
+    URL.createObjectURL(reportBlob);
+
+await chrome.runtime.sendMessage({
+
+    action: "DOWNLOAD_FILE",
+
+    url: reportUrl,
+
+    filename: "Intelligence_Report.md"
+
+});
+
+URL.revokeObjectURL(reportUrl);
 
                 stopLoading(analyzeBtn, "ANALYZE");
 
