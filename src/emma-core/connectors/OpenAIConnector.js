@@ -1,45 +1,54 @@
 import OpenAI from "openai";
 
-
 class OpenAIConnector {
 
-  constructor(apiKey){
+    constructor(apiKey, model = "gpt-5.5") {
 
-    this.client = new OpenAI({
+        this.model = model;
 
-       apiKey,
+        this.client = new OpenAI({
 
-    dangerouslyAllowBrowser: true
+            apiKey,
 
+            dangerouslyAllowBrowser: true
 
-    });
-
-    console.log(
-        "🤖 OpenAI Connector Ready"
-    );
-
-}
-
-  async generate(
-    messages = []
-){
-
-    const response =
-
-        await this.client.chat.completions.create({
-
-            model: "gpt-5.5",
-
-            messages,
-
-       
-
-max_completion_tokens: 600
         });
 
-    return response;
+        console.log(
+            "🤖 OpenAI Connector Ready"
+        );
 
-}
+        console.log(
+            "🧠 Model:",
+            this.model
+        );
+
+    }
+
+    async generate(messages = []) {
+
+        if (!Array.isArray(messages)) {
+
+            throw new Error(
+                "Messages must be an array."
+            );
+
+        }
+
+        const response =
+            await this.client.chat.completions.create({
+
+                model: this.model,
+
+                messages,
+
+                max_completion_tokens: 600
+
+            });
+
+        return response;
+
+    }
 
 }
 

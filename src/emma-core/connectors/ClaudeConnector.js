@@ -1,87 +1,86 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-
 class ClaudeConnector {
 
-  constructor(apiKey){
-this.client = new Anthropic({
+    constructor(apiKey, model = "claude-sonnet-4") {
 
-    apiKey
+        this.model = model;
 
-});
+        this.client = new Anthropic({
 
-   console.log(
-    "🤖 Claude Connector Ready"
-);
+            apiKey
 
-}
+        });
 
-async generate(
-    messages = []
-){
+        console.log(
+            "🤖 Claude Connector Ready"
+        );
 
-    const system =
+        console.log(
+            "🧠 Model:",
+            this.model
+        );
 
-        messages.find(
+    }
 
-            m => m.role === "system"
+    async generate(messages = []) {
 
-        )?.content || "";
+        const system =
 
+            messages.find(
+                m => m.role === "system"
+            )?.content || "";
 
-    const user =
+        const user =
 
-        messages
-            .filter(m => m.role !== "system")
-            .map(m => m.content)
-            .join("\n\n");
+            messages
+                .filter(m => m.role !== "system")
+                .map(m => m.content)
+                .join("\n\n");
 
+        const response =
+            await this.client.messages.create({
 
-    const response =
+                model: this.model,
 
-        await this.client.messages.create({
+                max_tokens: 600,
 
-            model: "claude-sonnet-4",
+                system,
 
-            max_tokens: 600,
+                messages: [
 
-            system,
+                    {
 
-            messages: [
+                        role: "user",
+
+                        content: user
+
+                    }
+
+                ]
+
+            });
+
+        return {
+
+            choices: [
 
                 {
 
-                    role: "user",
+                    message: {
 
-                    content: user
+                        content:
+                            response.content[0].text
+
+                    }
 
                 }
 
             ]
 
-        });
+        };
 
-    return {
-
-        choices: [
-
-            {
-
-                message: {
-
-                    content:
-
-                        response.content[0].text
-
-                }
-
-            }
-
-        ]
-
-    };
-
-}
+    }
 
 }
 

@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Emma</title>
+    <title>Evoloz</title>
 
     <link rel="stylesheet" href="./popup.css">
 
@@ -18,15 +18,109 @@
 
     <div id="app">
 
-        <h2>Emma</h2>
+        <!-- ===================================== -->
+        <!-- HOME -->
+        <!-- ===================================== -->
 
-        <p>Continuity Layer for AI</p>
+        <div id="homeView">
 
-        <button id="checkpointBtn">📦 Create Checkpoint</button>
+            <h2>Evoloz</h2>
 
-<p id="status">Ready</p>
+            <p>Never lose your AI work.</p>
+
+            <p id="provider">🟢 Connected</p>
+
+            <button id="captureBtn">
+                CAPTURE
+            </button>
+
+            <button id="analyzeBtn">
+                ANALYZE
+            </button>
+
+            <button id="settingsBtn">
+                ⚙ AI SETTINGS
+            </button>
+
+            <p id="status">Ready</p>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- SETTINGS -->
+        <!-- ===================================== -->
+
+        <div id="settingsView" style="display:none;">
+
+            <h2>AI Settings</h2>
+
+            <p>
+                Bring your own AI provider.
+            </p>
+
+            <label>
+
+                Provider
+
+                <select id="providerSelect">
+
+                    <option value="openai">
+                        OpenAI
+                    </option>
+
+                    <option value="claude">
+                        Claude
+                    </option>
+
+                    <option value="gemini">
+                        Gemini
+                    </option>
+
+                </select>
+
+            </label>
+
+            <label>
+
+                Model
+
+           <select id="modelSelect"></select>
+            </label>
+
+            <label>
+
+                API Key
+
+                <input
+                    id="apiKeyInput"
+                    type="password"
+                    placeholder="Paste your API key">
+
+            </label>
+
+            <button id="saveSettingsBtn">
+
+                SAVE
+
+            </button>
+
+            <button id="backBtn">
+
+                ← BACK
+
+            </button>
+
+            <p id="settingsStatus"></p>
+
+        </div>
 
     </div>
+
+    <footer>
+
+        <small>v1.0.0</small>
+
+    </footer>
 
     <script type="module" src="./popup.js"></script>
 

@@ -1841,204 +1841,31 @@ console.log(
 );
 
 
-const intelligenceState = {
-
-    id: crypto.randomUUID(),
+const intelligenceCheckpoint = {
 
     version: "1.0",
 
-    createdAt: new Date().toISOString(),
-
-    // =====================================================
-    // ENTITY
-    // =====================================================
-
-    entity: {
-
-        id: input.workspaceId ?? input.id ?? "",
-
-        name: input.workspaceName ?? "",
-
-        type: "workspace",
-
-        description: input.description ?? "",
-
-        status: "ACTIVE",
-
-        provider: conversation?.provider ?? "unknown",
-
-        conversationId: conversation?.conversationId ?? "",
-
-        createdAt: this.state.aliveSince,
-
-        lastUpdated: new Date().toISOString()
-
-    },
-
-    // =====================================================
-    // EXPERIENCE
-    // =====================================================
-
-    experience: {
-
-        input,
-
-        attention,
-
-        memories,
-
-        conversation
-
-    },
-
-    // =====================================================
-    // SELF
-    // =====================================================
-
-    self: {
-
-        self,
-
-        relationship,
-
-        narrative,
-
-        belief,
-
-        identityContinuity: continuity
-
-    },
-
-    // =====================================================
-    // WORLD
-    // =====================================================
-
-    world: {
-
-        temporal,
-
-        world,
-
-        social,
-
-        uncertainty
-
-    },
-
-    // =====================================================
-    // PURPOSE
-    // =====================================================
-
-    purpose: {
-
-        purpose,
-
-        values,
-
-        desire,
-
-        intent,
-
-        presence,
-
-        curiosity
-
-    },
-
-    // =====================================================
-    // THINKING
-    // =====================================================
-
-    intelligence: {
-
-        wisdom,
-
-        reasoning,
-
-        reflection,
-
-        meta,
-
-        consciousState,
-
-        imagination
-
-    },
-
-    // =====================================================
-    // DECISION MAKING
-    // =====================================================
-
-    decisions: {
-
-        judgement,
-
-        agency,
-
-        ethics,
-
-        awareness
-
-    },
-
-    // =====================================================
-    // ACTION
-    // =====================================================
-
-    action: {
-
-        action,
-
-        outcome,
-
-        communication
-
-    },
-
-    // =====================================================
-    // EVOLUTION
-    // =====================================================
-
-    evolution: {
-
-        learning,
-
-        evolution,
-
-        integration,
-
-        attentionGrowth,
-
-        balance,
-
-        lifecycle
-
-    },
-
-    // =====================================================
-    // INTERNAL STATE
-    // =====================================================
-
-    state: structuredClone(this.state),
-
-    // =====================================================
-    // METADATA
-    // =====================================================
-
     metadata: {
 
-        schemaVersion: "1.0",
+        createdAt: new Date().toISOString(),
 
-        orchestratorVersion: this.state.version,
+        provider: conversation.provider,
 
-        checkpointType: "UPDATE",
+        conversationId: conversation.conversationId,
 
-        experiencesProcessed: this.state.experiencesProcessed,
+        title: input.title ?? ""
 
-        generatedBy: "EmmaOrchestrator"
+    },
 
-    }
+    conversation: {
 
+        title: input.title ?? "",
+
+        messages: conversation.messages
+
+    },
+
+    intelligence: {}
 };
 
 
@@ -2059,7 +1886,7 @@ const checkpoint =
         ],
 
         
-           intelligenceState
+           intelligenceCheckpoint
         
 
     );
@@ -2075,7 +1902,7 @@ console.log("WorkspaceId:", input.workspaceId);
 
 await EmmaDB.saveCurrentState(
     workspaceId,
-    intelligenceState
+    intelligenceCheckpoint
 
 );
 
@@ -2154,7 +1981,7 @@ await EmmaDB.saveCurrentState(
 
    return {
 
-    currentState: intelligenceState,
+    currentState: intelligenceCheckpoint,
 
 
   presence,

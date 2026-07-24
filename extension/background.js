@@ -1,5 +1,13 @@
 console.log("🧠 Emma Background Ready");
 
+
+
+import AISettings from "../src/emma-core/settings/AISettings.js";
+import LLMAdapter from "../src/emma-core/connectors/LLMAdapter.js";
+import OpenAIConnector from "../src/emma-core/connectors/OpenAIConnector.js";
+import ClaudeConnector from "../src/emma-core/connectors/ClaudeConnector.js";
+import GeminiConnector from "../src/emma-core/connectors/GeminiConnector.js";
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     try {
@@ -49,8 +57,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         tab.id,
                         {
                             action: "CREATE_CHECKPOINT",
-                              title: message.title,
-        notes: message.notes
+                            title: message.title,
+                            notes: message.notes
                         },
                         (response) => {
 
@@ -97,37 +105,136 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         // =====================================
-// DOWNLOAD FILE
-// =====================================
+        // DOWNLOAD FILE
+        // =====================================
 
-if (message.action === "DOWNLOAD_FILE") {
+        if (message.action === "DOWNLOAD_FILE") {
 
-    console.log("💾 Download Request");
+            console.log("💾 Download Request");
 
-    chrome.downloads.download({
+            chrome.downloads.download({
 
-        url: message.url,
+                url: message.url,
 
-        filename: message.filename,
+                filename: message.filename,
 
-        saveAs: true
+                saveAs: true
 
-    }, (downloadId) => {
+            }, (downloadId) => {
 
-        if (chrome.runtime.lastError) {
+                if (chrome.runtime.lastError) {
 
-            sendResponse({
-                ok: false,
-                error: chrome.runtime.lastError.message
+                    sendResponse({
+                        ok: false,
+                        error: chrome.runtime.lastError.message
+                    });
+
+                    return;
+
+                }
+
+                sendResponse({
+                    ok: true,
+                    downloadId
+                });
+
             });
 
-            return;
+            return true;
 
         }
 
+        // =====================================
+        // ANALYZE CHECKPOINTS
+        // =====================================
+
+      if (message.action === "ANALYZE_CHECKPOINTS") {
+
+    (async () => {
+
+      const settings = await AISettings.load();
+
+if (!settings.apiKey) {
+    sendResponse({
+        ok: false,
+        error: "Please configure your AI API key first."
+    });
+    return;
+}
+
+let connector;
+
+switch (settings.provider) {
+
+    case "claude":
+        connector = new ClaudeConnector(
+            settings.apiKey,
+            settings.model
+        );
+        break;
+
+    case "gemini":
+        connector = new GeminiConnector(
+            settings.apiKey,
+            settings.model
+        );
+        break;
+
+    default:
+        connector = new OpenAIConnector(
+            settings.apiKey,
+            settings.model
+        );
+}
+
+const adapter = new LLMAdapter();
+adapter.setProvider(connector);
+
+const messages = [
+
+    {
+        role: "system",
+        content:
+`You are an expert intelligence analyst.
+
+Analyze the uploaded checkpoint(s).
+
+Produce a professional report with:
+
+1. Executive Summary
+2. Key Decisions
+3. Progress
+4. Risks
+5. Recommendations`
+    },
+
+    {
+        role: "user",
+        content: JSON.stringify(message.checkpoints, null, 2)
+    }
+
+];
+
+const result = await adapter.generate(messages);
+
+const report =
+    result.choices?.[0]?.message?.content ||
+    "No report generated.";
+
+sendResponse({
+    ok: true,
+    report
+});
+        // (everything from AISettings.load()
+        // down to sendResponse({ ok: true, report }))
+
+    })().catch(err => {
+
+        console.error(err);
+
         sendResponse({
-            ok: true,
-            downloadId
+            ok: false,
+            error: err.message
         });
 
     });
@@ -135,7 +242,6 @@ if (message.action === "DOWNLOAD_FILE") {
     return true;
 
 }
-
         // =====================================
         // UNKNOWN MESSAGE
         // =====================================
