@@ -6,10 +6,10 @@
 }
 
 body{
-    width:250px;
+    width:200px;
     background:#040812;
     color:#fff;
-    padding:14px 12px 10px;
+    padding-top:10px;
 }
 
 /* ================= APP ================= */
@@ -17,11 +17,12 @@ body{
 #app{
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:5x;
 
-    padding:16px;
+    padding:5px 18px;
 
-    background:#0c1322;
+    /* background:#0c1322; */
+    background: #040812;
 
     border-radius:18px;
 
@@ -57,12 +58,12 @@ body{
     justify-content:center;
     align-items:center;
 
-    margin-top:10px;
-    margin-bottom:6px;
+    /* margin-top:6px; */
+    /* margin-bottom:10px; */
 }
 
 #logo{
-    width:165px;
+    width:100px;
     height:auto;
     display:block;
 }
@@ -79,7 +80,7 @@ p{
     width:100%;
     text-align:center;
     color:#cbd5e1;
-    font-size:12px;
+    font-size:10px;
     line-height:1.35;
 }
 
@@ -88,19 +89,21 @@ p{
     font-size:10px;
     font-weight:600;
     color:#4ade80;
-    margin-top:2px;
-    margin-bottom:8px;
+    /* margin-top:4px;
+    margin-bottom:4px; */
 }
 
 /* ================= BUTTONS ================= */
 
 button{
 
+    display: block;
+
     width:100%;
 
-    height:34px;
+    height:28px;
 
-    margin:5px 0;
+    margin:15px auto;
 
     border:none;
 
@@ -138,34 +141,65 @@ button:disabled{
 
 }
 
-/* Primary */
+/* ==========================================
+   CAPTURE (Premium Secondary)
+========================================== */
 
-#captureBtn{
+#captureBtn {
 
-    background:#2F6BFF;
-
-}
-
-#captureBtn:hover{
-
-    background:#3A78FF;
-
-}
-
-/* Secondary */
-
-#analyzeBtn{
-
-    background:#4B5B78;
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 
 }
 
-#analyzeBtn:hover{
+#captureBtn:hover {
 
-    background:#5B6C8B;
+    background: linear-gradient(135deg, #4A90FF, #2F6EFF);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    cursor: pointer;
 
 }
 
+#captureBtn:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* ==========================================
+   ANALYZE (Hero Feature)
+========================================== */
+
+#analyzeBtn {
+
+    background: linear-gradient(135deg, #7C3AED, #9333EA);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+
+}
+
+#analyzeBtn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.08),
+        0 8px 20px rgba(124,58,237,.35),
+        0 0 24px rgba(168,85,247,.20);
+}
+
+#analyzeBtn:active {
+
+    transform: translateY(0);
+
+}
 /* Tertiary */
 
 #settingsBtn{
@@ -210,9 +244,9 @@ button:disabled{
 
 #status{
 
-    margin-top:8px;
+    /* margin-top:8px; */
 
-    min-height:18px;
+    /* min-height:18px; */
 
     color:#d1d5db;
 
@@ -232,7 +266,7 @@ button:disabled{
 
     flex-direction:column;
 
-    gap:12px;
+    gap:10px;
 
 }
 
@@ -244,7 +278,7 @@ label{
 
     gap:6px;
 
-    font-size:13px;
+    font-size:12px;
 
     color:#d1d5db;
 
@@ -255,7 +289,7 @@ input{
 
     width:100%;
 
-    height:40px;
+    height:30px;
 
     border:none;
 
@@ -311,7 +345,7 @@ input::placeholder{
 
     color:#22c55e;
 
-    min-height:16px;
+    /* min-height:16px; */
 
 }
 
@@ -328,3 +362,16 @@ footer{
     font-size:11px;
 
 }
+
+#BYOAI{
+    color: #f59e0b;
+}
+
+/* #app {
+    border-radius: 16px;
+    background: #0f172a;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 12px 30px rgba(0,0,0,0.35);
+} */

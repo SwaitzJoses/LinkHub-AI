@@ -16,6 +16,12 @@ const apiKeyInput = document.getElementById("apiKeyInput");
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
+
+// ----------------------------------------------------
+// Status Helper
+// ----------------------------------------------------
+
+
 // ----------------------------------------------------
 // Validate API Key
 // ----------------------------------------------------
@@ -189,15 +195,15 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
     if (!provider) return;
 
-    if (url.includes("chatgpt.com")) {
-        provider.textContent = "🟢 ChatGPT";
-    } else if (url.includes("claude.ai")) {
-        provider.textContent = "🟢 Claude";
-    } else if (url.includes("gemini.google.com")) {
-        provider.textContent = "🟢 Gemini";
-    } else {
-        provider.textContent = "⚪ Unsupported";
-    }
+   if (url.includes("chatgpt.com")) {
+    provider.textContent = "● Connected to ChatGPT";
+} else if (url.includes("claude.ai")) {
+    provider.textContent = "● Connected to Claude";
+} else if (url.includes("gemini.google.com")) {
+    provider.textContent = "● Connected to Gemini";
+} else {
+    provider.textContent = "● Unsupported Site";
+}
 
 });
 
