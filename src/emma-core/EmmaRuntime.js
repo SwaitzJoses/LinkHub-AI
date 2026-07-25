@@ -4,7 +4,7 @@ export default class EmmaRuntime {
 
     constructor() {
 
-        this.emma = new Emma();
+       this.emma = null;
 
         this.adapters = new Map();
 

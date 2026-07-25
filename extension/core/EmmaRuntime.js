@@ -171,6 +171,12 @@ export default class EmmaRuntime {
 
     console.log("➡️ Calling Emma...");
 
+    if (!this.emma) {
+
+    this.emma = new Emma();
+
+}
+
     const result =
         await this.emma.experience(conversation);
 

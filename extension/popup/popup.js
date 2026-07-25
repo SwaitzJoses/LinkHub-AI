@@ -339,16 +339,16 @@ captureBtn.addEventListener("click", async () => {
 
       console.log("Capture clicked");
 
-    const configured = await AISettings.isConfigured();
+    // const configured = await AISettings.isConfigured();
 
-    if (!configured) {
+    // if (!configured) {
 
-        status.textContent =
-            "⚠️ Please configure AI Settings to Capture.";
+    //     status.textContent =
+    //         "⚠️ Please configure AI Settings to Capture.";
 
-        return;
+    //     return;
 
-    }
+    // }
 
     startLoading(captureBtn, "CAPTURING...");
     status.textContent = "Capturing conversation...";

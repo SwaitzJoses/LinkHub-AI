@@ -7,7 +7,7 @@
 
 body{
     width:200px;
-    background:#040812;
+    background:#000000;
     color:#fff;
     padding-top:10px;
 }
@@ -22,7 +22,7 @@ body{
     padding:5px 18px;
 
     /* background:#0c1322; */
-    background: #040812;
+    background: #000000;
 
     border-radius:18px;
 
@@ -63,7 +63,7 @@ body{
 }
 
 #logo{
-    width:100px;
+    width:150px;
     height:auto;
     display:block;
 }
@@ -145,26 +145,20 @@ button:disabled{
    CAPTURE (Premium Secondary)
 ========================================== */
 
-#captureBtn {
+#captureBtn{
 
-    background: linear-gradient(135deg, #3B82F6, #2563EB);
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    background:linear-gradient(135deg,#2b2b2b,#1a1a1a);
+    color:#fff;
+    border:1px solid #3d3d3d;
 
 }
 
-#captureBtn:hover {
+#captureBtn:hover{
 
-    background: linear-gradient(135deg, #4A90FF, #2F6EFF);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    cursor: pointer;
+    background:linear-gradient(135deg,#3a3a3a,#262626);
+    box-shadow:0 4px 12px rgba(0,0,0,.35);
 
 }
-
 #captureBtn:active {
 
     transform: translateY(0);
@@ -176,51 +170,68 @@ button:disabled{
    ANALYZE (Hero Feature)
 ========================================== */
 
-#analyzeBtn {
+#analyzeBtn{
 
-    background: linear-gradient(135deg, #7C3AED, #9333EA);
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    transition: all 0.2s ease;
+    background:linear-gradient(135deg,#4a4a4a,#2f2f2f);
+    color:#fff;
+    border:1px solid #5c5c5c;
 
 }
 
-#analyzeBtn:hover {
-    transform: translateY(-2px);
+#analyzeBtn:hover{
+
+    background:linear-gradient(135deg,#5a5a5a,#3d3d3d);
     box-shadow:
-        0 0 0 1px rgba(255,255,255,.08),
-        0 8px 20px rgba(124,58,237,.35),
-        0 0 24px rgba(168,85,247,.20);
-}
-
-#analyzeBtn:active {
-
-    transform: translateY(0);
+        0 0 0 1px rgba(255,255,255,.05),
+        0 8px 20px rgba(0,0,0,.45);
 
 }
 /* Tertiary */
 
 #settingsBtn{
+    background:none;
+    border:none;
+    box-shadow:none;
 
-    background:#334155;
+    color:#a4a3a3;
+    font-size:10px;
+    font-weight:700;
+
     
-
+    margin: 0px !important;;
+    letter-spacing:.5px;
 }
 
 #settingsBtn:hover{
+    color:#ffffff;
+    transform:none;
+}
 
-    background:#43556F;
+#saveSettingsBtn{
+
+    background:#303030;
+    border:1px solid #4a4a4a;
 
 }
 
-.success{
+#saveSettingsBtn:hover{
 
-    background:#16a34a !important;
+    background:#3d3d3d;
 
 }
 
+#backBtn{
+
+    background:#202020;
+    border:1px solid #3b3b3b;
+
+}
+
+#backBtn:hover{
+
+    background:#2d2d2d;
+
+}
 /* ================= SPINNER ================= */
 
 .spinner{
@@ -295,7 +306,7 @@ input{
 
     border-radius:10px;
 
-    background:#1f2937;
+    background:#424242;
 
     color:#fff;
 
@@ -309,41 +320,20 @@ input{
 
 input::placeholder{
 
-    color:#6b7280;
+    color:#8a8a8a;
 
 }
 
-#saveSettingsBtn{
-
-    background:#2F6BFF;
-
-}
-
-#saveSettingsBtn:hover{
-
-    background:#3A78FF;
-
-}
-
-#backBtn{
-
-    background:#4B5B78;
-
-}
-
-#backBtn:hover{
-
-    background:#5B6C8B;
-
-}
 
 #settingsStatus{
 
     text-align:center;
 
-    font-size:12px;
+    font-size:10px;
 
     color:#22c55e;
+
+    margin-bottom: 5px;
 
     /* min-height:16px; */
 
@@ -351,7 +341,7 @@ input::placeholder{
 
 /* ================= FOOTER ================= */
 
-footer{
+/* footer{
 
     margin-top:6px;
 
@@ -361,7 +351,7 @@ footer{
 
     font-size:11px;
 
-}
+} */
 
 #BYOAI{
     color: #f59e0b;

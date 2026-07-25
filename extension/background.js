@@ -31,6 +31,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         if (message.action === "CREATE_CHECKPOINT") {
 
+            console.log("📍 CREATE_CHECKPOINT received");
+
             console.log("📍 Checkpoint Requested");
 
             chrome.tabs.query(

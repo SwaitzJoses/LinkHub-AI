@@ -1,5 +1,10 @@
+console.log("TOP OF CONTENT.JS", performance.now());
+console.time("EmmaRuntime Import");
 import EmmaRuntime from "../core/EmmaRuntime.js";
+console.timeEnd("EmmaRuntime Import");
 import ChatGPTAdapter from "../adapters/chatgpt/ChatGPTAdapter.js";
+import ClaudeAdapter from "../adapters/claude/ClaudeAdapter.js";
+import GeminiAdapter from "../adapters/gemini/GeminiAdapter.js";
 
 
 (async () => {
@@ -14,22 +19,49 @@ import ChatGPTAdapter from "../adapters/chatgpt/ChatGPTAdapter.js";
 
     const runtime = new EmmaRuntime();
 
-    const chatGPT = new ChatGPTAdapter();
+let adapter;
 
-    runtime.registerAdapter(chatGPT);
+const host = window.location.hostname;
 
-    console.time("Runtime Start");
+if (host.includes("chatgpt.com")) {
 
-    await runtime.start();
+    adapter = new ChatGPTAdapter();
 
-    console.timeEnd("Runtime Start");
+}
+else if (host.includes("claude.ai")) {
 
-    // Make available globally
-   
-    window.runtime = runtime;
+    adapter = new ClaudeAdapter();
 
-    console.log("✅ ChatGPT Adapter Loaded");
-    console.log("Conversation:", chatGPT.getConversationId());
+}
+else if (host.includes("gemini.google.com")) {
+
+    adapter = new GeminiAdapter();
+
+}
+else {
+
+    console.warn("Unsupported provider:", host);
+    return;
+
+}
+
+runtime.registerAdapter(adapter);
+
+console.time("Runtime Start");
+
+await runtime.start();
+
+console.timeEnd("Runtime Start");
+
+// Make available globally
+
+// Make available globally
+
+window.runtime = runtime;
+window.adapter = adapter;
+
+console.log(`✅ ${adapter.constructor.name} Loaded`);
+console.log("Conversation:", adapter.getConversationId());
 
 })();
 
@@ -68,7 +100,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("📦 Starting Checkpoint...");
 
 const checkpoint =
-    await window.runtime.checkpoint("ChatGPT");
+    await window.runtime.checkpoint(window.adapter.name);
 
 checkpoint.title = message.title ?? "";
 checkpoint.notes = message.notes ?? "";
