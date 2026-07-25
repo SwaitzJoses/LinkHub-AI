@@ -6,7 +6,7 @@
 }
 
 body{
-    width:200px;
+    width:300px;
     background:#000000;
     color:#fff;
     padding-top:10px;
@@ -26,7 +26,12 @@ body{
 
     border-radius:18px;
 
-    box-shadow:0 10px 28px rgba(0,0,0,.45);
+    border:1px solid rgba(255,255,255,.06);
+
+border-radius:18px;
+
+box-shadow:
+    0 12px 40px rgba(0,0,0,.6);
 
     animation:fadeIn .25s ease;
 }
@@ -58,12 +63,12 @@ body{
     justify-content:center;
     align-items:center;
 
-    /* margin-top:6px; */
+    margin-top:10px;
     /* margin-bottom:10px; */
 }
 
 #logo{
-    width:150px;
+    width:90px;
     height:auto;
     display:block;
 }
@@ -88,7 +93,7 @@ p{
     text-align:center;
     font-size:10px;
     font-weight:600;
-    color:#4ade80;
+    color:#3eb76a;
     /* margin-top:4px;
     margin-bottom:4px; */
 }
@@ -101,7 +106,7 @@ button{
 
     width:100%;
 
-    height:28px;
+    height:30px;
 
     margin:15px auto;
 
@@ -124,6 +129,7 @@ button{
 button:hover{
 
     transform:translateY(-1px);
+    
 
 }
 
@@ -222,14 +228,24 @@ button:disabled{
 
 #backBtn{
 
-    background:#202020;
-    border:1px solid #3b3b3b;
+    background:none;
+    border:none;
+    box-shadow:none;
 
+    color:#9b9b9b;
+
+    font-size:10px;
+    font-weight:500;
+    margin: 0px !important;
+
+    padding: 0px !important;
+
+    /* margin-top:12px; */
 }
 
 #backBtn:hover{
 
-    background:#2d2d2d;
+    color:#ffffff;
 
 }
 /* ================= SPINNER ================= */
@@ -255,7 +271,7 @@ button:disabled{
 
 #status{
 
-    /* margin-top:8px; */
+    margin-bottom:10px;
 
     /* min-height:18px; */
 
