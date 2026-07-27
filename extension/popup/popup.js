@@ -1,10 +1,19 @@
-console.log("🧠 Evoloz Popup Ready");
+
+import {
+    signInWithGoogle,
+    observeUser,
+    logout
+} from "../firebase/auth.js";
+import { createUser } from "../firebase/firestore.js";
 import AISettings from "../../src/emma-core/settings/AISettings.js";
 const captureBtn = document.getElementById("captureBtn");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const status = document.getElementById("status");
 const homeView = document.getElementById("homeView");
 const settingsView = document.getElementById("settingsView");
+
+const authView = document.getElementById("authView");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 
 const settingsBtn = document.getElementById("settingsBtn");
 const backBtn = document.getElementById("backBtn");
@@ -17,6 +26,54 @@ const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 
 
+
+function showAuth() {
+
+    authView.style.display = "block";
+    homeView.style.display = "none";
+    settingsView.style.display = "none";
+
+}
+
+function showHome() {
+
+    authView.style.display = "none";
+    homeView.style.display = "block";
+    settingsView.style.display = "none";
+
+}
+
+
+
+observeUser(async (user) => {
+
+    if (user) {
+
+        await createUser(user);
+
+        showHome();
+
+    } else {
+
+        showAuth();
+
+    }
+
+});
+
+googleLoginBtn.addEventListener("click", async () => {
+
+    try {
+
+        await signInWithGoogle();
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+});
 // ----------------------------------------------------
 // Status Helper
 // ----------------------------------------------------

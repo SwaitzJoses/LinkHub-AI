@@ -8,6 +8,8 @@ import OpenAIConnector from "../src/emma-core/connectors/OpenAIConnector.js";
 import ClaudeConnector from "../src/emma-core/connectors/ClaudeConnector.js";
 import GeminiConnector from "../src/emma-core/connectors/GeminiConnector.js";
 
+import { supabase } from "../src/auth/supabase.js";
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     try {
@@ -24,7 +26,80 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return true;
 
         }
+// =====================================
+// GOOGLE LOGIN
+// =====================================
 
+if (message.action === "GOOGLE_LOGIN") {
+
+    (async () => {
+
+        try {
+
+            const manifest = chrome.runtime.getManifest();
+
+            const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
+
+            authUrl.searchParams.set("client_id", manifest.oauth2.client_id);
+            authUrl.searchParams.set("response_type", "id_token");
+            authUrl.searchParams.set("redirect_uri", chrome.identity.getRedirectURL());
+            authUrl.searchParams.set("scope", manifest.oauth2.scopes.join(" "));
+            authUrl.searchParams.set("prompt", "select_account");
+
+            console.log("Redirect URI:", chrome.identity.getRedirectURL());
+console.log("Auth URL:", authUrl.toString());
+
+            const redirectedTo = await chrome.identity.launchWebAuthFlow({
+                
+                
+                url: authUrl.toString(),
+                interactive: true
+            });
+
+            console.log("Redirect:", redirectedTo);
+
+            const url = new URL(redirectedTo);
+
+            // IMPORTANT: remove the leading '#'
+            const params = new URLSearchParams(url.hash.substring(1));
+
+            const idToken = params.get("id_token");
+
+            console.log("ID Token:", idToken);
+
+            if (!idToken) {
+                throw new Error("No Google ID token returned.");
+            }
+
+            const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: "google",
+                token: idToken
+            });
+
+            if (error) throw error;
+
+            console.log("Supabase Session:", data);
+
+            sendResponse({
+                ok: true,
+                user: data.user
+            });
+
+        } catch (err) {
+
+            console.error(err);
+
+            sendResponse({
+                ok: false,
+                error: err.message
+            });
+
+        }
+
+    })();
+
+    return true;
+}
         // =====================================
         // CREATE CHECKPOINT
         // =====================================

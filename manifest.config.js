@@ -11,13 +11,22 @@ export default defineManifest({
 
   permissions: [
     "storage",
-    "downloads"
+    "downloads",
+     "identity"
   ],
-
+oauth2: {
+  client_id: "191930401350-jh824qn093p63l0l63u7k3s9onbhbcjm.apps.googleusercontent.com",
+  scopes: [
+    "openid",
+    "email",
+    "profile"
+  ]
+},
   host_permissions: [
   "https://chatgpt.com/*",
   "https://claude.ai/*",
-  "https://gemini.google.com/*"
+  "https://gemini.google.com/*",
+   "https://kfljpjdtvtespczktdoc.supabase.co/*"
 ],
 
   background: {
