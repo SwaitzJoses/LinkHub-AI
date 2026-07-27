@@ -30,30 +30,37 @@ export async function createUser(user) {
 
     }
 
-    await setDoc(userRef, {
+ await setDoc(userRef, {
 
-        uid: user.uid,
+    uid: user.uid,
 
-        name: user.displayName,
+    name: user.displayName,
 
-        email: user.email,
+    email: user.email,
 
-        photoURL: user.photoURL,
+    photoURL: user.photoURL,
 
-        plan: "free",
+    plan: "free",
 
-        status: "active",
+    evolvesRemaining: 10,
 
-        provider: "google",
+    subscription: {
+        status: "inactive",
+        provider: null
+    },
 
-        workspaceCount: 0,
+    status: "active",
 
-        checkpointCount: 0,
+    provider: "google",
 
-        joinedAt: serverTimestamp(),
+    workspaceCount: 0,
 
-        lastLogin: serverTimestamp()
+    checkpointCount: 0,
 
-    });
+    joinedAt: serverTimestamp(),
+
+    lastLogin: serverTimestamp()
+
+});
 
 }

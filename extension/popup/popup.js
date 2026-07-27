@@ -6,6 +6,13 @@ import {
 } from "../firebase/auth.js";
 import { createUser } from "../firebase/firestore.js";
 import AISettings from "../../src/emma-core/settings/AISettings.js";
+import { updateStatusCard } from "./status.js";
+import {
+    getCurrentUserData,
+    decreaseEvolve
+} from "../firebase/user.js";
+
+
 const captureBtn = document.getElementById("captureBtn");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const status = document.getElementById("status");
@@ -24,6 +31,9 @@ const apiKeyInput = document.getElementById("apiKeyInput");
 
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 const settingsStatus = document.getElementById("settingsStatus");
+const upgradeBtn =
+    document.getElementById("upgradeBtn");
+
 
 
 
@@ -47,9 +57,17 @@ function showHome() {
 
 observeUser(async (user) => {
 
+    console.log("observeUser:", user);
+
     if (user) {
 
         await createUser(user);
+
+  
+
+const updatedUser = await getCurrentUserData();
+
+updateStatusCard(updatedUser);
 
         showHome();
 
@@ -60,6 +78,18 @@ observeUser(async (user) => {
     }
 
 });
+
+
+upgradeBtn.addEventListener("click",()=>{
+
+    chrome.tabs.create({
+
+        url:"https://evoloz.com/pricing"
+
+    });
+
+});
+
 
 googleLoginBtn.addEventListener("click", async () => {
 
@@ -419,6 +449,41 @@ captureBtn.addEventListener("click", async () => {
         if (!response || !response.ok) {
             throw new Error(response?.error || "Capture failed.");
         }
+
+        const allowed = await decreaseEvolve();
+
+if (!allowed) {
+
+    status.textContent =
+    "🚀 Upgrade to Evoloz Pro";
+
+captureBtn.textContent =
+    "UPGRADE";
+
+analyzeBtn.textContent =
+    "UPGRADE";
+
+captureBtn.onclick = () => {
+
+    chrome.tabs.create({
+
+        url:"https://evoloz.com/pricing"
+
+    });
+
+};
+
+analyzeBtn.onclick = captureBtn.onclick;
+
+return;
+
+    return;
+
+}
+
+const userData = await getCurrentUserData();
+
+updateStatusCard(userData);
 
         stopLoading(captureBtn, "CAPTURE");
 

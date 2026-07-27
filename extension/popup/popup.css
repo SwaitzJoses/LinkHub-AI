@@ -381,4 +381,147 @@ input::placeholder{
         inset 0 1px 0 rgba(255,255,255,0.05),
         0 12px 30px rgba(0,0,0,0.35);
 } */
+.status-card {
 
+    background: linear-gradient(
+        135deg,
+        #F97316,
+        #EA580C
+    );
+
+    border-radius: 14px;
+
+    padding: 10px;
+
+    margin-bottom: 14px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 25px rgba(249,115,22,.35);
+
+    
+
+}
+
+.status-card h3 {
+
+    color: white;
+
+    font-size: 12px;
+
+    margin: 0;
+
+    font-weight: 700;
+
+}
+
+.status-card p {
+
+    color: rgba(255,255,255,.9);
+
+    margin-top: 8px;
+
+}
+
+.status-card{
+
+    transition:.25s;
+
+}
+
+/* ---------------- FREE ---------------- */
+
+.status-card.free{
+
+    background:linear-gradient(
+        135deg,
+        #F97316,
+        #EA580C
+    );
+
+    box-shadow:0 6px 18px rgba(249,115,22,.25);
+
+}
+
+/* -------------- WARNING -------------- */
+
+.status-card.warning{
+
+    background:linear-gradient(
+        135deg,
+        #F59E0B,
+        #D97706
+    );
+
+    box-shadow:0 6px 18px rgba(245,158,11,.30);
+
+}
+
+/* ---------------- PRO ---------------- */
+
+.status-card.pro{
+
+    background:linear-gradient(
+        135deg,
+        #1F2937,
+        #111827
+    );
+
+    box-shadow:0 6px 18px rgba(0,0,0,.40);
+
+}
+
+/* -------------- UPGRADE -------------- */
+
+.status-card.upgrade{
+
+    background:linear-gradient(
+        135deg,
+        #111827,
+        #000000
+    );
+
+    border:2px solid #F97316;
+
+    box-shadow:0 0 25px rgba(249,115,22,.25);
+
+}
+
+
+.upgrade-btn{
+
+    width:100%;
+
+    margin-bottom:18px;
+
+   
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:linear-gradient(
+        135deg,
+        #F97316,
+        #EA580C
+    );
+
+    transition:.2s;
+
+}
+
+.upgrade-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(249,115,22,.35);
+
+}
