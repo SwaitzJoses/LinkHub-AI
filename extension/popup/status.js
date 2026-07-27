@@ -53,10 +53,10 @@ upgradeBtn.style.display = "none";
 
     card.className = "status-card upgrade";
 
-    planText.textContent = "🚀 UPGRADE PRO";
+   planText.textContent = "🚀 UPGRADE PRO";
 
-    evolveText.textContent =
-        "You've used all your free Evolves.";
+evolveText.innerHTML =
+    "You've used all your free Evolves.<br><br>Unlock unlimited Evolves.";
 
     captureBtn.disabled = true;
     analyzeBtn.disabled = true;
