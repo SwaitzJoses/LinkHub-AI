@@ -437,8 +437,8 @@ captureBtn.addEventListener("click", async () => {
 
     // }
 
-    startLoading(captureBtn, "CAPTURING...");
-    status.textContent = "Capturing conversation...";
+    startLoading(captureBtn, "EVOLVING...");
+    status.textContent = "Evolving conversation...";
 
     try {
 
@@ -447,7 +447,7 @@ captureBtn.addEventListener("click", async () => {
         });
 
         if (!response || !response.ok) {
-            throw new Error(response?.error || "Capture failed.");
+            throw new Error(response?.error || "Evolve failed.");
         }
 
         const allowed = await decreaseEvolve();
@@ -485,11 +485,11 @@ const userData = await getCurrentUserData();
 
 updateStatusCard(userData);
 
-        stopLoading(captureBtn, "CAPTURE");
+        stopLoading(captureBtn, "EVOLVED");
 
         captureBtn.classList.add("success");
 
-        status.textContent = "✅ Capture complete.";
+        status.textContent = "✅ Evolve complete.";
 
         console.log(response.checkpoint);
 
@@ -499,7 +499,7 @@ updateStatusCard(userData);
 
     } catch (err) {
 
-        stopLoading(captureBtn, "CAPTURE");
+        stopLoading(captureBtn, "EVOLVE");
 
         console.error(err);
 
