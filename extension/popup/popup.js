@@ -437,8 +437,8 @@ captureBtn.addEventListener("click", async () => {
 
     // }
 
-    startLoading(captureBtn, "EVOLVING...");
-    status.textContent = "Evolving conversation...";
+    startLoading(captureBtn, "CAPTURING...");
+    status.textContent = "Capturing conversation...";
 
     try {
 
@@ -447,7 +447,7 @@ captureBtn.addEventListener("click", async () => {
         });
 
         if (!response || !response.ok) {
-            throw new Error(response?.error || "Evolve failed.");
+            throw new Error(response?.error || "Capture failed.");
         }
 
         const allowed = await decreaseEvolve();
@@ -455,7 +455,7 @@ captureBtn.addEventListener("click", async () => {
 if (!allowed) {
 
     status.textContent =
-    "🚀 Upgrade to Evoloz Pro";
+    "🚀 Upgrade to PIXELLENCE AI Pro";
 
 captureBtn.textContent =
     "UPGRADE";
@@ -485,11 +485,11 @@ const userData = await getCurrentUserData();
 
 updateStatusCard(userData);
 
-        stopLoading(captureBtn, "EVOLVED");
+        stopLoading(captureBtn, "CAPTURED");
 
         captureBtn.classList.add("success");
 
-        status.textContent = "✅ Evolve complete.";
+        status.textContent = "✅ Capture complete.";
 
         console.log(response.checkpoint);
 
@@ -499,7 +499,7 @@ updateStatusCard(userData);
 
     } catch (err) {
 
-        stopLoading(captureBtn, "EVOLVE");
+        stopLoading(captureBtn, "CAPTURE");
 
         console.error(err);
 
@@ -620,7 +620,7 @@ await chrome.runtime.sendMessage({
 
     url: intelligenceUrl,
 
-    filename: "Evolved_Intelligence.json"
+    filename: "Captured_Intelligence.json"
 
 });
 

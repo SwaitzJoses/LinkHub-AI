@@ -64,11 +64,11 @@ box-shadow:
     align-items:center;
 
     margin-top:10px;
-    /* margin-bottom:10px; */
+    margin-bottom:10px;
 }
 
 #logo{
-    width:90px;
+    width:200px;
     height:auto;
     display:block;
 }
@@ -542,4 +542,9 @@ input::placeholder{
 
     box-shadow:0 10px 20px rgba(249,115,22,.35);
 
+}
+
+
+#googleLoginBtn{
+    color: #000000;
 }
