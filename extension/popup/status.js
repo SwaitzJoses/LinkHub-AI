@@ -22,7 +22,7 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
         card.className = "status-card pro";
 
-        planText.textContent = "⭐ PRO";
+        planText.textContent = "PRO";
 
         evolveText.textContent = "UNLIMITED CAPTURES";
 
@@ -70,7 +70,7 @@ upgradeBtn.style.display = "none";
 
     card.className = "status-card upgrade";
 
-   planText.textContent = "🚀 UPGRADE PRO";
+   planText.textContent = "UPGRADE PRO";
 
 evolveText.innerHTML =
     "You've used all your free Captures.<br><br>Unlock unlimited Captures.";

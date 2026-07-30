@@ -9,6 +9,13 @@ export default defineManifest({
 
   version: "1.0.0",
 
+    icons: {
+    "16": "extension/icons/icon16.png",
+    "32": "extension/icons/icon32.png",
+    "48": "extension/icons/icon48.png",
+    "128": "extension/icons/icon128.png"
+  },
+
   permissions: [
     "storage",
     "downloads",
@@ -34,9 +41,14 @@ oauth2: {
     type: "module"
   },
 
-  action: {
-    default_popup: "extension/popup/popup.html"
-  },
+ action: {
+  default_popup: "extension/popup/popup.html",
+  default_icon: {
+    "16": "extension/icons/icon16.png",
+    "32": "extension/icons/icon32.png",
+    "48": "extension/icons/icon48.png"
+  }
+},
 
  content_scripts: [
   {

@@ -68,9 +68,11 @@ box-shadow:
 }
 
 #logo{
-    width:100px;
+    width:120px;
     height:auto;
     display:block;
+    
+
 }
 
 /* ================= TEXT ================= */
@@ -388,7 +390,8 @@ input::placeholder{
 } */
 
 #BYOAI{
-    color: #f59e0b;
+    color: #fbfbfb;
+
 }
 
 /* #app {
@@ -453,8 +456,8 @@ input::placeholder{
 
     background:linear-gradient(
         135deg,
-        #F97316,
-        #EA580C
+        #656565,
+        #4a4a4a
     );
 
     box-shadow:0 6px 18px rgba(249,115,22,.25);
@@ -467,8 +470,8 @@ input::placeholder{
 
     background:linear-gradient(
         135deg,
-        #F59E0B,
-        #D97706
+        #7a7a7a,
+        #424242
     );
 
     box-shadow:0 6px 18px rgba(245,158,11,.30);
@@ -481,8 +484,8 @@ input::placeholder{
 
     background:linear-gradient(
         135deg,
-        #1F2937,
-        #111827
+        #3f3f3f,
+        #353535
     );
 
     box-shadow:0 6px 18px rgba(0,0,0,.40);

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+
+  <!-- White Background -->
+  <rect width="128" height="128" rx="28" fill="white"></rect>
+
+  <!-- Main Evolution Loop -->
+  <path d="M64 24
+       C86 24 104 42 104 64
+       C104 86 86 104 64 104
+       C42 104 24 86 24 64
+       C24 50 32 38 44 31" fill="none" stroke="black" stroke-width="10" stroke-linecap="round"></path>
+
+  <!-- Arrow -->
+  <path d="M40 22
+       L52 22
+       L46 34" fill="none" stroke="black" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+
+  <!-- Intelligence Core -->
+  <circle cx="64" cy="64" r="12" fill="black"></circle>
+
+</svg>

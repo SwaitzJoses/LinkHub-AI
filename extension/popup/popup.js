@@ -53,7 +53,33 @@ function showHome() {
 
 }
 
+// observeUser(async (user) => {
 
+//     console.log("observeUser:", user);
+
+//     if (user) {
+
+//         status.textContent = "Creating user...";
+//         await createUser(user);
+
+//         status.textContent = "Loading profile...";
+//         const updatedUser = await getCurrentUserData();
+
+//         status.textContent = "Getting extension status...";
+//         const bgStatus = await chrome.runtime.sendMessage({
+//             action: "GET_STATUS"
+//         });
+
+//         status.textContent = "Updating UI...";
+//         updateStatusCard(updatedUser, bgStatus);
+
+//         showHome();
+
+//         status.textContent = "Ready";
+
+//     }
+
+// });
 
 observeUser(async (user) => {
 
