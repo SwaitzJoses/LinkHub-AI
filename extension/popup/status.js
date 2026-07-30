@@ -1,4 +1,4 @@
-export function updateStatusCard(userData) {
+export function updateStatusCard(userData, bgStatus = {}) {
 
     const card = document.querySelector(".status-card");
     const planText = document.getElementById("planText");
@@ -24,7 +24,7 @@ export function updateStatusCard(userData) {
 
         planText.textContent = "⭐ PRO";
 
-        evolveText.textContent = "UNLIMITED EVOLVES";
+        evolveText.textContent = "UNLIMITED CAPTURES";
 
         return;
 
@@ -40,8 +40,25 @@ export function updateStatusCard(userData) {
 const analyzeBtn = document.getElementById("analyzeBtn");
 const upgradeBtn = document.getElementById("upgradeBtn");
 
-captureBtn.disabled = false;
-analyzeBtn.disabled = false;
+if (bgStatus.isCapturing) {
+
+    captureBtn.disabled = true;
+
+} else {
+
+    captureBtn.disabled = false;
+
+}
+
+if (bgStatus.isAnalyzing) {
+
+    analyzeBtn.disabled = true;
+
+} else {
+
+    analyzeBtn.disabled = false;
+
+}
 
 upgradeBtn.style.display = "none";
 
@@ -56,7 +73,7 @@ upgradeBtn.style.display = "none";
    planText.textContent = "🚀 UPGRADE PRO";
 
 evolveText.innerHTML =
-    "You've used all your free Evolves.<br><br>Unlock unlimited Evolves.";
+    "You've used all your free Captures.<br><br>Unlock unlimited Captures.";
 
     captureBtn.disabled = true;
     analyzeBtn.disabled = true;
@@ -82,6 +99,6 @@ evolveText.innerHTML =
     planText.textContent = "FREE";
 
     evolveText.textContent =
-        `${remaining} / 10 Evolves Remaining`;
+        `${remaining} / 10 Captures Remaining`;
 
 }

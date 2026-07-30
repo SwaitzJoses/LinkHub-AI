@@ -1,5 +1,10 @@
 console.log("🧠 Emma Background Ready");
 
+console.log("🧠 Emma Background Ready");
+
+let isCapturing = false;
+let isAnalyzing = false;
+
 
 
 import AISettings from "../src/emma-core/settings/AISettings.js";
@@ -17,7 +22,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log("📩 Background Received:", message);
 
         if (!message) {
-
+isAnalyzing = false;
             sendResponse({
                 ok: false,
                 error: "Empty message."
@@ -88,7 +93,7 @@ console.log("Auth URL:", authUrl.toString());
         } catch (err) {
 
             console.error(err);
-
+isAnalyzing = false;
             sendResponse({
                 ok: false,
                 error: err.message
@@ -106,6 +111,8 @@ console.log("Auth URL:", authUrl.toString());
 
         if (message.action === "CREATE_CHECKPOINT") {
 
+            isCapturing = true;
+console.log("🟠 Capture Started");
             console.log("📍 CREATE_CHECKPOINT received");
 
             console.log("📍 Checkpoint Requested");
@@ -120,7 +127,7 @@ console.log("Auth URL:", authUrl.toString());
                     const tab = tabs[0];
 
                     if (!tab || !tab.id) {
-
+isAnalyzing = false;
                         sendResponse({
                             ok: false,
                             error: "No active ChatGPT tab."
@@ -138,21 +145,31 @@ console.log("Auth URL:", authUrl.toString());
                             notes: message.notes
                         },
                         (response) => {
+if (chrome.runtime.lastError) {
 
-                            if (chrome.runtime.lastError) {
+    isCapturing = false;
 
-                                console.error(chrome.runtime.lastError);
+    console.error(chrome.runtime.lastError);
+isAnalyzing = false;
+    sendResponse({
+        ok: false,
+        error: chrome.runtime.lastError.message
+    });
 
-                                sendResponse({
-                                    ok: false,
-                                    error: chrome.runtime.lastError.message
-                                });
+    return;
 
-                                return;
+}
 
-                            }
+                            isCapturing = false;
 
-                            sendResponse(response);
+console.log("🟢 Capture Finished");
+
+
+                            isCapturing = false;
+
+console.log("🟢 Capture Finished");
+
+sendResponse(response);
 
                         }
                     );
@@ -200,7 +217,7 @@ console.log("Auth URL:", authUrl.toString());
             }, (downloadId) => {
 
                 if (chrome.runtime.lastError) {
-
+isAnalyzing = false;
                     sendResponse({
                         ok: false,
                         error: chrome.runtime.lastError.message
@@ -227,11 +244,15 @@ console.log("Auth URL:", authUrl.toString());
 
       if (message.action === "ANALYZE_CHECKPOINTS") {
 
+        isAnalyzing = true;
+console.log("🟠 Analyze Started");
+
     (async () => {
 
       const settings = await AISettings.load();
 
 if (!settings.apiKey) {
+    isAnalyzing = false;
     sendResponse({
         ok: false,
         error: "Please configure your AI API key first."
@@ -333,7 +354,7 @@ try {
 } catch (err) {
 
     console.error("Invalid AI response:", content);
-
+isAnalyzing = false;
     sendResponse({
         ok: false,
         error: "The AI returned an invalid response. Please try again."
@@ -342,14 +363,54 @@ try {
     return;
 }
 
+isAnalyzing = false;
+console.log("🟢 Analyze Finished");
+
+// ================================
+// Download Intelligence
+// ================================
+
+const intelligenceData =
+    JSON.stringify(
+        parsed.evolvedIntelligence,
+        null,
+        2
+    );
+
+const intelligenceUrl =
+    "data:application/json;charset=utf-8," +
+    encodeURIComponent(intelligenceData);
+
+await chrome.downloads.download({
+
+    url: intelligenceUrl,
+
+    filename: "Analyzed_Intelligence.json",
+
+    saveAs: true
+
+});
+
+// ================================
+// Download Report
+// ================================
+
+const reportUrl =
+    "data:text/markdown;charset=utf-8," +
+    encodeURIComponent(parsed.report);
+
+await chrome.downloads.download({
+
+    url: reportUrl,
+
+    filename: "Analyzed_Intelligence_Report.md",
+
+    saveAs: true
+
+});
+
 sendResponse({
-
-    ok: true,
-
-    evolvedIntelligence: parsed.evolvedIntelligence,
-
-    report: parsed.report
-
+    ok: true
 });
         // (everything from AISettings.load()
         // down to sendResponse({ ok: true, report }))
@@ -357,7 +418,7 @@ sendResponse({
     })().catch(err => {
 
         console.error(err);
-
+isAnalyzing = false;
         sendResponse({
             ok: false,
             error: err.message
@@ -368,10 +429,30 @@ sendResponse({
     return true;
 
 }
+
+
+// =====================================
+// GET STATUS
+// =====================================
+
+if (message.action === "GET_STATUS") {
+
+    sendResponse({
+        ok: true,
+        isCapturing,
+        isAnalyzing
+    });
+
+    return true;
+
+}
+
+
+
         // =====================================
         // UNKNOWN MESSAGE
         // =====================================
-
+isAnalyzing = false;
         sendResponse({
             ok: false,
             error: "Unknown message."
@@ -382,7 +463,7 @@ sendResponse({
     catch (err) {
 
         console.error("❌ Background Error:", err);
-
+isAnalyzing = false;
         sendResponse({
             ok: false,
             error: err.message

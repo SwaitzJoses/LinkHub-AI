@@ -38,6 +38,8 @@ export async function decreaseEvolve() {
 
     console.trace("decreaseEvolve called");
 
+    console.log("🔥 decreaseEvolve called");
+
     const user = auth.currentUser;
 
     if (!user) {

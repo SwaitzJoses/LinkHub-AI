@@ -67,18 +67,42 @@ observeUser(async (user) => {
 
 const updatedUser = await getCurrentUserData();
 
-updateStatusCard(updatedUser);
+const bgStatus = await chrome.runtime.sendMessage({
+    action: "GET_STATUS"
+});
 
-        showHome();
+updateStatusCard(updatedUser, bgStatus);
 
-    } else {
-
-        showAuth();
-
+showHome();
     }
 
 });
 
+const bgStatus = await chrome.runtime.sendMessage({
+    action: "GET_STATUS"
+});
+
+console.log("Background Status:", bgStatus);
+
+if (bgStatus.isCapturing) {
+
+   
+
+    startLoading(captureBtn, "CAPTURING...");
+
+    status.textContent = "Capturing conversation...";
+
+}
+
+if (bgStatus.isAnalyzing) {
+
+    analyzeBtn.disabled = true;
+
+    startLoading(analyzeBtn, "ANALYZING...");
+
+    status.textContent = "Analyzing intelligence...";
+
+}
 
 upgradeBtn.addEventListener("click",()=>{
 
@@ -300,9 +324,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
 function startLoading(button, text) {
 
-    if (button.disabled)
-        return;
-
     status.textContent = "";
 
     captureBtn.disabled = true;
@@ -312,7 +333,6 @@ function startLoading(button, text) {
         <span class="spinner"></span>
         <span style="margin-left:8px;">${text}</span>
     `;
-
 }
 
 function stopLoading(button, text) {
