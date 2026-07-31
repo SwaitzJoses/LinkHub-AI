@@ -245,7 +245,7 @@ isAnalyzing = false;
       if (message.action === "ANALYZE_CHECKPOINTS") {
 
         isAnalyzing = true;
-console.log("🟠 Analyze Started");
+console.count("🟠 Analyze Started");
 
     (async () => {
 
@@ -265,6 +265,12 @@ let connector;
 switch (settings.provider) {
 
     case "claude":
+
+    console.log("===== SETTINGS =====");
+console.log(settings);
+console.log("Provider:", settings.provider);
+console.log("Model:", settings.model);
+console.log("====================");
         connector = new ClaudeConnector(
             settings.apiKey,
             settings.model

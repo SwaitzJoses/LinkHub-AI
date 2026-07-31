@@ -134,7 +134,7 @@ upgradeBtn.addEventListener("click",()=>{
 
     chrome.tabs.create({
 
-        url:"https://evoloz.com/pricing"
+        url:"https://pixellence.xyz/#pricing"
 
     });
 
@@ -183,18 +183,23 @@ async function validateApiKey(provider, apiKey) {
 
                 break;
 
-            case "claude":
+case "claude":
 
-                response = await fetch("https://api.anthropic.com/v1/models", {
+    console.log("🚀 NEW CLAUDE CODE RUNNING");
 
-                    headers: {
-                        "x-api-key": apiKey,
-                        "anthropic-version": "2023-06-01"
-                    }
+    response = await fetch("https://api.anthropic.com/v1/models", {
+        method: "GET",
+        headers: {
+            "x-api-key": apiKey.trim(),
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true",
+            "Content-Type": "application/json"
+        }
+    });
 
-                });
+    break;
 
-                break;
+               
 
             case "gemini":
 
@@ -212,11 +217,13 @@ async function validateApiKey(provider, apiKey) {
 
         }
 
-        if (!response.ok) {
+console.log("Status:", response.status);
 
-    const error = await response.text();
+const text = await response.text();
 
-    console.error(error);
+console.log("Response:", text);
+
+if (!response.ok) {
 
     return false;
 
@@ -256,19 +263,19 @@ const MODELS = {
 
     ],
 
-    claude: [
+   claude: [
 
-        {
-            value: "claude-sonnet-4",
-            label: "Claude Sonnet 4"
-        },
+{
+    value: "claude-sonnet-5",
+    label: "Claude Sonnet 5"
+},
 
-        {
-            value: "claude-opus-4",
-            label: "Claude Opus 4"
-        }
+{
+    value: "claude-opus-5",
+    label: "Claude Opus 5"
+}
 
-    ],
+],
 
     gemini: [
 
@@ -641,65 +648,7 @@ if (files.length === 0) {
 // Download Evolved Intelligence
 // ================================
 
-const intelligenceBlob = new Blob(
 
-    [
-        JSON.stringify(
-            response.evolvedIntelligence,
-            null,
-            2
-        )
-    ],
-
-    {
-        type: "application/json"
-    }
-
-);
-
-const intelligenceUrl =
-    URL.createObjectURL(intelligenceBlob);
-
-await chrome.runtime.sendMessage({
-
-    action: "DOWNLOAD_FILE",
-
-    url: intelligenceUrl,
-
-    filename: "Captured_Intelligence.json"
-
-});
-
-URL.revokeObjectURL(intelligenceUrl);
-
-// ================================
-// Download Report
-// ================================
-
-const reportBlob = new Blob(
-
-    [response.report],
-
-    {
-        type: "text/markdown"
-    }
-
-);
-
-const reportUrl =
-    URL.createObjectURL(reportBlob);
-
-await chrome.runtime.sendMessage({
-
-    action: "DOWNLOAD_FILE",
-
-    url: reportUrl,
-
-    filename: "Intelligence_Report.md"
-
-});
-
-URL.revokeObjectURL(reportUrl);
 
                 stopLoading(analyzeBtn, "ANALYZE");
 

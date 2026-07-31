@@ -29,11 +29,16 @@ oauth2: {
     "profile"
   ]
 },
-  host_permissions: [
+host_permissions: [
   "https://chatgpt.com/*",
   "https://claude.ai/*",
   "https://gemini.google.com/*",
-   "https://kfljpjdtvtespczktdoc.supabase.co/*"
+
+  "https://api.openai.com/*",
+  "https://api.anthropic.com/*",
+  "https://generativelanguage.googleapis.com/*",
+
+  "https://kfljpjdtvtespczktdoc.supabase.co/*"
 ],
 
   background: {

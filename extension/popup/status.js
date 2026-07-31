@@ -22,7 +22,7 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
         card.className = "status-card pro";
 
-        planText.textContent = "PRO";
+        planText.textContent = "PRO-";
 
         evolveText.textContent = "UNLIMITED CAPTURES";
 

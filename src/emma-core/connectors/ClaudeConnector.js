@@ -8,7 +8,8 @@ class ClaudeConnector {
 
         this.client = new Anthropic({
 
-            apiKey
+            apiKey,
+            dangerouslyAllowBrowser: true
 
         });
 
@@ -16,10 +17,8 @@ class ClaudeConnector {
             "🤖 Claude Connector Ready"
         );
 
-        console.log(
-            "🧠 Model:",
-            this.model
-        );
+        console.log("🧠 Model from settings:", this.model);
+        console.log("API Key starts with:", apiKey.substring(0, 15));
 
     }
 
@@ -38,28 +37,26 @@ class ClaudeConnector {
                 .map(m => m.content)
                 .join("\n\n");
 
-        const response =
-            await this.client.messages.create({
+   const response =
+    await this.client.messages.create({
 
-                model: this.model,
+        model: this.model,
 
-                max_tokens: 600,
+        max_tokens: 4000,
 
-                system,
+        system,
 
-                messages: [
+        messages: [
+            {
+                role: "user",
+                content: user
+            }
+        ]
 
-                    {
+    });
 
-                        role: "user",
-
-                        content: user
-
-                    }
-
-                ]
-
-            });
+console.log("CLAUDE RESPONSE:");
+console.log(response);
 
         return {
 
@@ -69,8 +66,10 @@ class ClaudeConnector {
 
                     message: {
 
-                        content:
-                            response.content[0].text
+                        content: response.content
+    .filter(block => block.type === "text")
+    .map(block => block.text)
+    .join("\n")
 
                     }
 
