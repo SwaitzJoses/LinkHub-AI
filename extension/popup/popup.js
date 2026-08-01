@@ -26,7 +26,7 @@ const settingsBtn = document.getElementById("settingsBtn");
 const backBtn = document.getElementById("backBtn");
 
 const providerSelect = document.getElementById("providerSelect");
-const modelSelect = document.getElementById("modelSelect");
+
 const apiKeyInput = document.getElementById("apiKeyInput");
 
 const saveSettingsBtn = document.getElementById("saveSettingsBtn");
@@ -163,7 +163,7 @@ googleLoginBtn.addEventListener("click", async () => {
 // Validate API Key
 // ----------------------------------------------------
 
-async function validateApiKey(provider, apiKey) {
+async function discoverBestModel(provider, apiKey) {
 
     try {
 
@@ -171,34 +171,54 @@ async function validateApiKey(provider, apiKey) {
 
         switch (provider) {
 
-            case "openai":
+         case "openai": {
 
-                response = await fetch("https://api.openai.com/v1/models", {
+    response = await fetch("https://api.openai.com/v1/models", {
+        headers: {
+            Authorization: `Bearer ${apiKey}`
+        }
+    });
 
-                    headers: {
-                        Authorization: `Bearer ${apiKey}`
-                    }
+    if (!response.ok) {
+        return { valid: false };
+    }
 
-                });
+    const data = await response.json();
+
+    return {
+        valid: true,
+        models: data.data.map(m => m.id)
+    };
+}
 
                 break;
 
-case "claude":
+case "claude": {
 
     console.log("🚀 NEW CLAUDE CODE RUNNING");
 
-    response = await fetch("https://api.anthropic.com/v1/models", {
-        method: "GET",
+    response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
         headers: {
             "x-api-key": apiKey.trim(),
             "anthropic-version": "2023-06-01",
             "anthropic-dangerous-direct-browser-access": "true",
             "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1,
+            messages: [
+                {
+                    role: "user",
+                    content: "Hello"
+                }
+            ]
+        })
     });
 
     break;
-
+}
                
 
             case "gemini":
@@ -242,92 +262,9 @@ return true;
     }
 
 }
-const MODELS = {
-
-    openai: [
-
-        {
-            value: "gpt-5.5",
-            label: "GPT-5.5"
-        },
-
-        {
-            value: "gpt-5.5-mini",
-            label: "GPT-5.5 Mini"
-        },
-
-        {
-            value: "gpt-4.1",
-            label: "GPT-4.1"
-        }
-
-    ],
-
-   claude: [
-
-{
-    value: "claude-sonnet-5",
-    label: "Claude Sonnet 5"
-},
-
-{
-    value: "claude-opus-5",
-    label: "Claude Opus 5"
-}
-
-],
-
-    gemini: [
-
-        {
-            value: "gemini-2.5-pro",
-            label: "Gemini 2.5 Pro"
-        },
-
-        {
-            value: "gemini-2.5-flash",
-            label: "Gemini 2.5 Flash"
-        }
-
-    ]
-
-};
 
 // Initialize the model dropdown with OpenAI models
-populateModels("openai");
 
-
-function populateModels(provider, selected = null) {
-
-    modelSelect.innerHTML = "";
-
-    const models = MODELS[provider] || [];
-
-    for (const model of models) {
-
-        const option = document.createElement("option");
-
-        option.value = model.value;
-        option.textContent = model.label;
-
-        if (selected === model.value) {
-
-            option.selected = true;
-
-        }
-
-        modelSelect.appendChild(option);
-
-    }
-
-}
-
-
-providerSelect.addEventListener("change", () => {
-
-    populateModels(providerSelect.value);
-
-});
 // ----------------------------------------------------
 // Detect Current AI Provider
 // ----------------------------------------------------
@@ -389,13 +326,7 @@ settingsBtn.addEventListener("click", async () => {
 
     providerSelect.value = settings.provider || "openai";
 
-populateModels(
 
-    providerSelect.value,
-
-    settings.model
-
-);
     apiKeyInput.value = settings.apiKey || "";
 
     settingsStatus.textContent = "";
@@ -413,7 +344,7 @@ saveSettingsBtn.addEventListener("click", async () => {
 
     const provider = providerSelect.value;
 
-    const model = modelSelect.value;
+    let model = null;
 
     const apiKey = apiKeyInput.value.trim();
 
@@ -432,21 +363,53 @@ saveSettingsBtn.addEventListener("click", async () => {
     saveSettingsBtn.disabled = true;
 
     // 👇 THIS IS THE CORRECT PLACE
-    const valid =
-        await validateApiKey(provider, apiKey);
+  const result =
+    await validateApiKey(provider, apiKey);
+
+    console.log("RESULT:", result);
 
     saveSettingsBtn.disabled = false;
 
     saveSettingsBtn.textContent = "Save Settings";
 
-    if (!valid) {
+  if (!result.valid) {
 
-        settingsStatus.textContent =
-            "❌ Invalid or unauthorized API Key.";
+    settingsStatus.textContent =
+        "❌ Invalid or unauthorized API Key.";
 
-        return;
+    return;
+
+}
+
+// Auto-select best OpenAI model
+if (provider === "openai" && result.models) {
+
+    console.log("MODELS:", result.models);
+
+    // Remove existing options
+   if (provider === "openai" && result.models) {
+
+    if (result.models.includes("gpt-5")) {
+
+        model = "gpt-5";
+
+    } else if (result.models.includes("gpt-5-mini")) {
+
+        model = "gpt-5-mini";
+
+    } else if (result.models.includes("gpt-4.1")) {
+
+        model = "gpt-4.1";
+
+    } else {
+
+        model = result.models[0];
 
     }
+
+}
+
+}
 
     await AISettings.save({
 
@@ -508,7 +471,7 @@ captureBtn.addEventListener("click", async () => {
 if (!allowed) {
 
     status.textContent =
-    "🚀 Upgrade to PIXELLENCE AI Pro";
+    "🚀 Upgrade to EVOLOZ Pro";
 
 captureBtn.textContent =
     "UPGRADE";
@@ -572,16 +535,16 @@ analyzeBtn.addEventListener("click", async () => {
 
     console.log("Analyze clicked");
 
-  const configured = await AISettings.isConfigured();
+//   const configured = await AISettings.isConfigured();
 
-if (!configured) {
+// if (!configured) {
 
-    status.textContent =
-        "⚠️ Please configure AI Settings to Analyze.";
+//     status.textContent =
+//         "⚠️ Please configure AI Settings to Analyze.";
 
-    return;
+//     return;
 
-}
+// }
 
     try {
 

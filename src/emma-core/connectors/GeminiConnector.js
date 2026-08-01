@@ -43,7 +43,7 @@ class GeminiConnector {
 
                     temperature: 0.2,
 
-                    maxOutputTokens: 600
+                    maxOutputTokens: 4000
 
                 }
 

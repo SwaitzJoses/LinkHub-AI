@@ -35,16 +35,13 @@ class OpenAIConnector {
 
         }
 
-        const response =
-            await this.client.chat.completions.create({
-
-                model: this.model,
-
-                messages,
-
-                max_completion_tokens: 4000
-
-            });
+        
+            const response = await this.client.chat.completions.create({
+    model: this.model,
+    messages,
+    reasoning_effort: "low",
+    max_completion_tokens: 4000
+});
 
         return response;
 

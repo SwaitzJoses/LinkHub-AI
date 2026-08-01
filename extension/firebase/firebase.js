@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD6z5g1l-OpskzYHm8aYnyVmFtA5m9TlY0",
@@ -7,8 +8,10 @@ const firebaseConfig = {
   projectId: "evoloz",
   storageBucket: "evoloz.firebasestorage.app",
   messagingSenderId: "191930401350",
-  appId: "1:191930401350:web:ab948ed42c1d9167bfc047"
+  appId: "1:191930401350:web:ab948ed42c1d9167bfc047",
 };
 
 export const app = initializeApp(firebaseConfig);
 
+export const auth = getAuth(app);
+export const functions = getFunctions(app);

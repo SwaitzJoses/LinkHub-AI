@@ -101,6 +101,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const checkpoint =
     await window.runtime.checkpoint(window.adapter.name);
+   
 
 checkpoint.title = message.title ?? "";
 checkpoint.notes = message.notes ?? "";

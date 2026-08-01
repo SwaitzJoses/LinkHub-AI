@@ -1,7 +1,5 @@
 console.log("🧠 Emma Background Ready");
 
-console.log("🧠 Emma Background Ready");
-
 let isCapturing = false;
 let isAnalyzing = false;
 
@@ -169,6 +167,9 @@ console.log("🟢 Capture Finished");
 
 console.log("🟢 Capture Finished");
 
+
+console.log(response);
+
 sendResponse(response);
 
                         }
@@ -249,16 +250,31 @@ console.count("🟠 Analyze Started");
 
     (async () => {
 
-      const settings = await AISettings.load();
+//       const settings = await AISettings.load();
+
+// if (!settings.apiKey) {
+//     isAnalyzing = false;
+//     sendResponse({
+//         ok: false,
+//         error: "Please configure your AI API key first."
+//     });
+//     return;
+// }
+
+
+        const settings = await AISettings.load();
 
 if (!settings.apiKey) {
-    isAnalyzing = false;
-    sendResponse({
-        ok: false,
-        error: "Please configure your AI API key first."
-    });
-    return;
+
+    // TODO
+    // Call Firebase Cloud Function here.
+
+} else {
+
+    // Existing BYOAI path
 }
+
+
 
 let connector;
 
@@ -345,6 +361,8 @@ Do not explain anything outside the JSON.`
 ];
 
 const result = await adapter.generate(messages);
+console.log("FULL OPENAI RESPONSE:");
+console.log(result);
 
 const content =
     result.choices?.[0]?.message?.content;
