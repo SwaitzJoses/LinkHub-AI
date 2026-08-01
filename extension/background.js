@@ -10,6 +10,8 @@ import LLMAdapter from "../src/emma-core/connectors/LLMAdapter.js";
 import OpenAIConnector from "../src/emma-core/connectors/OpenAIConnector.js";
 import ClaudeConnector from "../src/emma-core/connectors/ClaudeConnector.js";
 import GeminiConnector from "../src/emma-core/connectors/GeminiConnector.js";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "./firebase/firebase.js";
 
 import { supabase } from "../src/auth/supabase.js";
 
@@ -115,11 +117,11 @@ console.log("🟠 Capture Started");
 
             console.log("📍 Checkpoint Requested");
 
-            chrome.tabs.query(
-                {
-                    active: true,
-                    currentWindow: true
-                },
+           chrome.tabs.query(
+    {
+        active: true,
+        lastFocusedWindow: true
+    },
                 (tabs) => {
 
                     const tab = tabs[0];
@@ -134,7 +136,9 @@ isAnalyzing = false;
                         return;
 
                     }
-
+console.log("TAB ID:", tab.id);
+console.log("TAB URL:", tab.url);
+console.log("TAB:", tab);
                     chrome.tabs.sendMessage(
                         tab.id,
                         {
@@ -360,7 +364,13 @@ Do not explain anything outside the JSON.`
 
 ];
 
-const result = await adapter.generate(messages);
+const analyze = httpsCallable(functions, "analyze");
+
+const response = await analyze({
+    messages
+});
+
+const result = response.data;
 console.log("FULL OPENAI RESPONSE:");
 console.log(result);
 

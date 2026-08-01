@@ -34,6 +34,14 @@ const settingsStatus = document.getElementById("settingsStatus");
 const upgradeBtn =
     document.getElementById("upgradeBtn");
 
+    console.log("captureBtn", captureBtn);
+console.log("analyzeBtn", analyzeBtn);
+console.log("googleLoginBtn", googleLoginBtn);
+console.log("settingsBtn", settingsBtn);
+console.log("backBtn", backBtn);
+console.log("saveSettingsBtn", saveSettingsBtn);
+console.log("upgradeBtn", upgradeBtn);
+
 
 
 
@@ -130,15 +138,17 @@ if (bgStatus.isAnalyzing) {
 
 }
 
-upgradeBtn.addEventListener("click",()=>{
+if (upgradeBtn) {
 
-    chrome.tabs.create({
+    upgradeBtn.addEventListener("click", () => {
 
-        url:"https://pixellence.xyz/#pricing"
+        chrome.tabs.create({
+            url: "https://pixellence.xyz/#pricing"
+        });
 
     });
 
-});
+}
 
 
 googleLoginBtn.addEventListener("click", async () => {
@@ -315,124 +325,43 @@ function stopLoading(button, text) {
 }
 
 
-settingsBtn.addEventListener("click", async () => {
+if (settingsBtn) {
 
-    homeView.style.display = "none";
-    settingsView.style.display = "flex";
+    settingsBtn.addEventListener("click", async () => {
 
-    const settings = await AISettings.load();
+        homeView.style.display = "none";
+        settingsView.style.display = "flex";
 
+        const settings = await AISettings.load();
 
-
-    providerSelect.value = settings.provider || "openai";
-
-
-    apiKeyInput.value = settings.apiKey || "";
-
-    settingsStatus.textContent = "";
-
-});
-
-backBtn.addEventListener("click", () => {
-
-    settingsView.style.display = "none";
-    homeView.style.display = "block";
-
-});
-settingsStatus.textContent = "";
-saveSettingsBtn.addEventListener("click", async () => {
-
-    const provider = providerSelect.value;
-
-    let model = null;
-
-    const apiKey = apiKeyInput.value.trim();
-
-    if (!apiKey) {
-
-        settingsStatus.textContent =
-            "❌ API Key required.";
-
-        return;
-
-    }
-
-    settingsStatus.textContent =
-        "Validating API Key...";
-
-    saveSettingsBtn.disabled = true;
-
-    // 👇 THIS IS THE CORRECT PLACE
-  const result =
-    await validateApiKey(provider, apiKey);
-
-    console.log("RESULT:", result);
-
-    saveSettingsBtn.disabled = false;
-
-    saveSettingsBtn.textContent = "Save Settings";
-
-  if (!result.valid) {
-
-    settingsStatus.textContent =
-        "❌ Invalid or unauthorized API Key.";
-
-    return;
-
-}
-
-// Auto-select best OpenAI model
-if (provider === "openai" && result.models) {
-
-    console.log("MODELS:", result.models);
-
-    // Remove existing options
-   if (provider === "openai" && result.models) {
-
-    if (result.models.includes("gpt-5")) {
-
-        model = "gpt-5";
-
-    } else if (result.models.includes("gpt-5-mini")) {
-
-        model = "gpt-5-mini";
-
-    } else if (result.models.includes("gpt-4.1")) {
-
-        model = "gpt-4.1";
-
-    } else {
-
-        model = result.models[0];
-
-    }
-
-}
-
-}
-
-    await AISettings.save({
-
-        provider,
-        model,
-        apiKey
+        providerSelect.value = settings.provider || "openai";
+        apiKeyInput.value = settings.apiKey || "";
+        settingsStatus.textContent = "";
 
     });
 
-    settingsStatus.textContent =
-    "✅ Settings Saved";
+}
 
-setTimeout(() => {
+if (backBtn) {
 
-    settingsStatus.textContent = "";
+    backBtn.addEventListener("click", () => {
 
-    settingsView.style.display = "none";
+        settingsView.style.display = "none";
+        homeView.style.display = "block";
 
-    homeView.style.display = "block";
+    });
 
-},700);
+}
+settingsStatus.textContent = "";
+if (saveSettingsBtn) {
 
-});
+    saveSettingsBtn.addEventListener("click", async () => {
+
+        // keep all existing code here
+
+    });
+
+}
 
 // ----------------------------------------------------
 // Capture

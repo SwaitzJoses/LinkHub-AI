@@ -39,7 +39,14 @@ exports.analyze = onCall({ secrets: [OPENAI_API_KEY] }, async (request) => {
     throw new HttpsError("resource-exhausted", "No analyses remaining.");
   }
 
-  const checkpoints = request.data?.checkpoints || [];
+  const messages = request.data?.messages;
+
+if (!messages || !Array.isArray(messages)) {
+  throw new HttpsError(
+    "invalid-argument",
+    "Messages are required."
+  );
+}
 
   const client = new OpenAI({
     apiKey: OPENAI_API_KEY.value(),
@@ -55,20 +62,10 @@ exports.analyze = onCall({ secrets: [OPENAI_API_KEY] }, async (request) => {
       },
       {
         role: "user",
-        content: JSON.stringify(checkpoints)
+        content: JSON.stringify(messages)
       }
     ]
   });
 
-  const parsed = JSON.parse(
-    completion.choices?.[0]?.message?.content || "{}"
-  );
-
-  if (user.plan !== "pro") {
-    await userRef.update({
-      evolvesRemaining: admin.firestore.FieldValue.increment(-1),
-    });
-  }
-
-  return parsed;
+return completion;
 });
