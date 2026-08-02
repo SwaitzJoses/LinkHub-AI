@@ -35,9 +35,12 @@ exports.analyze = onCall({ secrets: [OPENAI_API_KEY] }, async (request) => {
 
   const user = snap.data();
 
-  if (user.plan !== "pro" && (user.evolvesRemaining ?? 0) <= 0) {
-    throw new HttpsError("resource-exhausted", "No analyses remaining.");
-  }
+ if ((user.analysesRemaining ?? 0) <= 0) {
+    throw new HttpsError(
+        "resource-exhausted",
+        "No analyses remaining."
+    );
+}
 
   const messages = request.data?.messages;
 

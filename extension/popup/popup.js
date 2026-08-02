@@ -397,6 +397,8 @@ captureBtn.addEventListener("click", async () => {
         }
 
         const allowed = await decreaseCapture();
+        console.log("Calling decreaseCapture...");
+        console.log("decreaseCapture finished");
 
 if (!allowed) {
 
