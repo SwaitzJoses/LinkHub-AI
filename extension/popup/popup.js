@@ -9,7 +9,8 @@ import AISettings from "../../src/emma-core/settings/AISettings.js";
 import { updateStatusCard } from "./status.js";
 import {
     getCurrentUserData,
-    decreaseEvolve
+    decreaseCapture,
+    decreaseAnalysis
 } from "../firebase/user.js";
 
 
@@ -395,7 +396,7 @@ captureBtn.addEventListener("click", async () => {
             throw new Error(response?.error || "Capture failed.");
         }
 
-        const allowed = await decreaseEvolve();
+        const allowed = await decreaseCapture();
 
 if (!allowed) {
 
@@ -442,15 +443,30 @@ updateStatusCard(userData);
             captureBtn.classList.remove("success");
         }, 1000);
 
-    } catch (err) {
+    } 
 
-        stopLoading(captureBtn, "CAPTURE");
+    catch (err) {
 
-        console.error(err);
+    stopLoading(captureBtn, "CAPTURE");
 
-        status.textContent = "❌ " + err.message;
+    console.error(err);
+
+    if (
+        err.message?.includes("Receiving end does not exist") ||
+        err.message?.includes("Could not establish connection")
+    ) {
+
+        status.textContent =
+            "🔄 Refresh the browser page.";
+
+    } else {
+
+        status.textContent =
+            "❌ " + err.message;
 
     }
+
+}
 
 });
 
@@ -498,8 +514,18 @@ status.textContent = "Select intelligence files...";
 if (files.length === 0) {
 
     stopLoading(analyzeBtn, "ANALYZE");
-
     status.textContent = "Ready";
+    return;
+
+}
+
+// Maximum 2 files
+if (files.length > 2) {
+
+    stopLoading(analyzeBtn, "ANALYZE");
+
+    status.textContent =
+        "❌ You can analyze a maximum of 2 intelligence files.";
 
     return;
 
@@ -534,6 +560,23 @@ if (files.length === 0) {
                     throw new Error(response.error);
 
                 }
+
+                const allowed = await decreaseAnalysis();
+
+if (!allowed) {
+
+    stopLoading(analyzeBtn, "ANALYZE");
+
+    status.textContent =
+        "🚀 Upgrade to EVOLOZ Pro";
+
+    return;
+
+}
+
+const userData = await getCurrentUserData();
+
+updateStatusCard(userData);
 
                 // Create downloadable report
                // ================================

@@ -54,6 +54,7 @@ if (!messages || !Array.isArray(messages)) {
 
   const completion = await client.chat.completions.create({
     model: "gpt-5-mini",
+    
     response_format: { type: "json_object" },
     messages: [
       {
@@ -67,5 +68,19 @@ if (!messages || !Array.isArray(messages)) {
     ]
   });
 
-return completion;
+
+
+// 👇 Put these AFTER the API call
+console.log("Model used:", completion.model);
+console.log("Usage:", completion.usage);
+
+console.log({
+    promptTokens: completion.usage.prompt_tokens,
+    completionTokens: completion.usage.completion_tokens,
+    totalTokens: completion.usage.total_tokens
+});
+
+return {
+    choices: completion.choices
+};
 });

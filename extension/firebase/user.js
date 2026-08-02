@@ -15,9 +15,7 @@ export async function getCurrentUserData() {
     const user = auth.currentUser;
 
     if (!user) {
-
         throw new Error("No authenticated user.");
-
     }
 
     const userRef = doc(db, "users", user.uid);
@@ -25,27 +23,22 @@ export async function getCurrentUserData() {
     const snapshot = await getDoc(userRef);
 
     if (!snapshot.exists()) {
-
         throw new Error("User document not found.");
-
     }
 
     return snapshot.data();
-
 }
 
-export async function decreaseEvolve() {
+// =====================================
+// CAPTURE
+// =====================================
 
-    console.trace("decreaseEvolve called");
-
-    console.log("🔥 decreaseEvolve called");
+export async function decreaseCapture() {
 
     const user = auth.currentUser;
 
     if (!user) {
-
         throw new Error("No authenticated user.");
-
     }
 
     const userRef = doc(db, "users", user.uid);
@@ -53,33 +46,51 @@ export async function decreaseEvolve() {
     const snapshot = await getDoc(userRef);
 
     if (!snapshot.exists()) {
-
         throw new Error("User document not found.");
-
     }
 
     const userData = snapshot.data();
 
-    // Pro users have unlimited Evolves
-    if (userData.plan === "pro") {
-
-        return true;
-
-    }
-
-    // No Evolves remaining
-    if (userData.evolvesRemaining <= 0) {
-
+    if ((userData.capturesRemaining ?? 0) <= 0) {
         return false;
-
     }
 
     await updateDoc(userRef, {
-
-        evolvesRemaining: increment(-1)
-
+        capturesRemaining: increment(-1)
     });
 
     return true;
+}
 
+// =====================================
+// ANALYZE
+// =====================================
+
+export async function decreaseAnalysis() {
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        throw new Error("No authenticated user.");
+    }
+
+    const userRef = doc(db, "users", user.uid);
+
+    const snapshot = await getDoc(userRef);
+
+    if (!snapshot.exists()) {
+        throw new Error("User document not found.");
+    }
+
+    const userData = snapshot.data();
+
+    if ((userData.analysesRemaining ?? 0) <= 0) {
+        return false;
+    }
+
+    await updateDoc(userRef, {
+        analysesRemaining: increment(-1)
+    });
+
+    return true;
 }
