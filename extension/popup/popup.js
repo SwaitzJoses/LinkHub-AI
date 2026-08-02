@@ -413,7 +413,7 @@ captureBtn.onclick = () => {
 
     chrome.tabs.create({
 
-        url:"https://evoloz.com/pricing"
+        url:"https://pixellence.xyz/#pricing"
 
     });
 
