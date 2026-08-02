@@ -418,7 +418,7 @@ input::placeholder{
 
     box-shadow: 0 10px 25px rgba(129, 129, 129, 0.35);
 
-    font-size: 9px;
+    font-size: 10px;
 
     
 
@@ -436,13 +436,13 @@ input::placeholder{
 
 }
 
-.status-card p {
+/* .status-card p {
 
     color: rgba(255,255,255,.9);
 
     margin-top: 8px;
 
-}
+} */
 
 .status-card{
 
@@ -556,3 +556,7 @@ input::placeholder{
 #googleLoginBtn{
     color: #000000;
 }
+
+/* #evolveText{
+    padding: 10px;
+} */

@@ -403,27 +403,25 @@ if (!allowed) {
     status.textContent =
     "🚀 Upgrade to EVOLOZ Pro";
 
-captureBtn.textContent =
-    "UPGRADE";
+// captureBtn.textContent =
+//     "UPGRADE";
 
-analyzeBtn.textContent =
-    "UPGRADE";
+// analyzeBtn.textContent =
+//     "UPGRADE";
 
-captureBtn.onclick = () => {
+// captureBtn.onclick = () => {
 
-    chrome.tabs.create({
+//     chrome.tabs.create({
 
-        url:"https://pixellence.xyz/#pricing"
+//         url:"https://pixellence.xyz/#pricing"
 
-    });
+//     });
 
-};
+// };
 
-analyzeBtn.onclick = captureBtn.onclick;
+// analyzeBtn.onclick = captureBtn.onclick;
 
 return;
-
-    return;
 
 }
 
@@ -570,8 +568,10 @@ if (!allowed) {
     status.textContent =
         "🚀 Upgrade to EVOLOZ Pro";
 
-    return;
+    const userData = await getCurrentUserData();
+    updateStatusCard(userData);
 
+    return;
 }
 
 const userData = await getCurrentUserData();

@@ -16,6 +16,7 @@ export async function createUser(user) {
 
     const snapshot = await getDoc(userRef);
 
+    // Existing user
     if (snapshot.exists()) {
 
         await setDoc(
@@ -30,37 +31,52 @@ export async function createUser(user) {
 
     }
 
- await setDoc(userRef, {
+    // New user
+    await setDoc(userRef, {
 
-    uid: user.uid,
+        uid: user.uid,
 
-    name: user.displayName,
+        name: user.displayName,
 
-    email: user.email,
+        email: user.email,
 
-    photoURL: user.photoURL,
+        photoURL: user.photoURL,
 
-    plan: "free",
+        // -----------------------------
+        // Plan
+        // -----------------------------
+        plan: "free",
 
-    evolvesRemaining: 10,
+        // -----------------------------
+        // Usage Limits
+        // -----------------------------
+        capturesRemaining: 10,
 
-    subscription: {
-        status: "inactive",
-        provider: null
-    },
+        analysesRemaining: 5,
 
-    status: "active",
+        // -----------------------------
+        // Subscription
+        // -----------------------------
+        subscription: {
+            status: "inactive",
+            provider: null
+        },
 
-    provider: "google",
+        // -----------------------------
+        // Misc
+        // -----------------------------
+        status: "active",
 
-    workspaceCount: 0,
+        provider: "google",
 
-    checkpointCount: 0,
+        workspaceCount: 0,
 
-    joinedAt: serverTimestamp(),
+        checkpointCount: 0,
 
-    lastLogin: serverTimestamp()
+        joinedAt: serverTimestamp(),
 
-});
+        lastLogin: serverTimestamp()
+
+    });
 
 }

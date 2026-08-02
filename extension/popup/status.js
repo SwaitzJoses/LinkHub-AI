@@ -6,6 +6,10 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
     if (!card || !planText || !evolveText) return;
 
+    const captureBtn = document.getElementById("captureBtn");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const upgradeBtn = document.getElementById("upgradeBtn");
+
     if (!userData) {
 
         planText.textContent = "...";
@@ -14,41 +18,37 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
     }
 
-    const captureBtn = document.getElementById("captureBtn");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const upgradeBtn = document.getElementById("upgradeBtn");
-
-    captureBtn.disabled = !!bgStatus.isCapturing;
-    analyzeBtn.disabled = !!bgStatus.isAnalyzing;
-
-    upgradeBtn.style.display = "none";
-
-    // ============================
-    // PRO
-    // ============================
-
-    if (userData.plan === "pro") {
-
-        card.className = "status-card pro";
-
-        planText.textContent = "PRO";
-
-        evolveText.innerHTML =
-            `Captures: ${userData.capturesRemaining} / 150<br>
-             Analyses: ${userData.analysesRemaining} / 100`;
-
-        return;
-
-    }
-
-    // ============================
-    // FREE
-    // ============================
-
     const captures = userData.capturesRemaining ?? 0;
     const analyses = userData.analysesRemaining ?? 0;
 
-    if (captures <= 2 || analyses <= 1) {
+    const isPro = userData.plan === "pro";
+
+    const maxCaptures = isPro ? 150 : 10;
+    const maxAnalyses = isPro ? 100 : 5;
+
+    // Keep loading states
+    captureBtn.disabled =
+        !!bgStatus.isCapturing || captures <= 0;
+
+    analyzeBtn.disabled =
+        !!bgStatus.isAnalyzing || analyses <= 0;
+
+    // Button text NEVER changes
+    captureBtn.textContent = "CAPTURE";
+    analyzeBtn.textContent = "ANALYZE";
+
+    // Upgrade button
+    upgradeBtn.style.display =
+        (!isPro && (captures <= 0 || analyses <= 0))
+            ? "block"
+            : "none";
+
+    // Card style
+    if (isPro) {
+
+        card.className = "status-card pro";
+
+    } else if (captures <= 2 || analyses <= 1) {
 
         card.className = "status-card warning";
 
@@ -58,29 +58,10 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
     }
 
-    if (captures <= 0 || analyses <= 0) {
-
-        card.className = "status-card upgrade";
-
-        planText.textContent = "UPGRADE PRO";
-
-        evolveText.innerHTML =
-            `Captures: ${captures} / 10<br>
-             Analyses: ${analyses} / 5`;
-
-        captureBtn.disabled = captures <= 0;
-        analyzeBtn.disabled = analyses <= 0;
-
-        upgradeBtn.style.display = "block";
-
-        return;
-
-    }
-
-    planText.textContent = "FREE";
+    planText.textContent = isPro ? "PRO" : "FREE";
 
     evolveText.innerHTML =
-        `Captures: ${captures} / 10<br>
-         Analyses: ${analyses} / 5`;
+        `Captures: ${captures} / ${maxCaptures}<br>
+         Analyses: ${analyses} / ${maxAnalyses}`;
 
 }
