@@ -34,7 +34,9 @@ exports.analyze = onCall({ secrets: [OPENAI_API_KEY] }, async (request) => {
   }
 
   const user = snap.data();
-
+console.log("UID:", uid);
+console.log("Firestore user:", user);
+console.log("analysesRemaining:", user.analysesRemaining);
  if ((user.analysesRemaining ?? 0) <= 0) {
     throw new HttpsError(
         "resource-exhausted",

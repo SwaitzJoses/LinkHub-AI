@@ -13,7 +13,10 @@ import GeminiConnector from "../src/emma-core/connectors/GeminiConnector.js";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./firebase/firebase.js";
 
-import { supabase } from "../src/auth/supabase.js";
+// import { supabase } from "../src/auth/supabase.js";
+import { decreaseCapture } from "./firebase/user.js";
+import { decreaseAnalysis } from "./firebase/user.js";
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -146,7 +149,7 @@ console.log("TAB:", tab);
                             title: message.title,
                             notes: message.notes
                         },
-                        (response) => {
+                        async (response) => {
 if (chrome.runtime.lastError) {
 
     isCapturing = false;
@@ -171,6 +174,22 @@ console.log("🟢 Capture Finished");
 
 console.log("🟢 Capture Finished");
 
+
+if (response?.ok) {
+
+    try {
+
+        await decreaseCapture();
+
+        console.log("✅ Capture quota decreased");
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+}
 
 console.log(response);
 
@@ -399,7 +418,17 @@ isAnalyzing = false;
 
 isAnalyzing = false;
 console.log("🟢 Analyze Finished");
+try {
 
+    const allowed = await decreaseAnalysis();
+
+    console.log("✅ Analysis quota decreased:", allowed);
+
+} catch (err) {
+
+    console.error("Failed to decrease analysis:", err);
+
+}
 // ================================
 // Download Intelligence
 // ================================

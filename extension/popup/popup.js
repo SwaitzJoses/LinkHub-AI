@@ -98,17 +98,20 @@ observeUser(async (user) => {
 
         await createUser(user);
 
-  
+        const updatedUser = await getCurrentUserData();
 
-const updatedUser = await getCurrentUserData();
+        const bgStatus = await chrome.runtime.sendMessage({
+            action: "GET_STATUS"
+        });
 
-const bgStatus = await chrome.runtime.sendMessage({
-    action: "GET_STATUS"
-});
+        updateStatusCard(updatedUser, bgStatus);
 
-updateStatusCard(updatedUser, bgStatus);
+        showHome();
 
-showHome();
+    } else {
+
+        showAuth();
+
     }
 
 });
@@ -396,36 +399,7 @@ captureBtn.addEventListener("click", async () => {
             throw new Error(response?.error || "Capture failed.");
         }
 
-        const allowed = await decreaseCapture();
-        console.log("Calling decreaseCapture...");
-        console.log("decreaseCapture finished");
 
-if (!allowed) {
-
-    status.textContent =
-    "🚀 Upgrade to EVOLOZ Pro";
-
-// captureBtn.textContent =
-//     "UPGRADE";
-
-// analyzeBtn.textContent =
-//     "UPGRADE";
-
-// captureBtn.onclick = () => {
-
-//     chrome.tabs.create({
-
-//         url:"https://pixellence.xyz/#pricing"
-
-//     });
-
-// };
-
-// analyzeBtn.onclick = captureBtn.onclick;
-
-return;
-
-}
 
 const userData = await getCurrentUserData();
 
@@ -561,20 +535,7 @@ if (files.length > 2) {
 
                 }
 
-                const allowed = await decreaseAnalysis();
 
-if (!allowed) {
-
-    stopLoading(analyzeBtn, "ANALYZE");
-
-    status.textContent =
-        "🚀 Upgrade to EVOLOZ Pro";
-
-    const userData = await getCurrentUserData();
-    updateStatusCard(userData);
-
-    return;
-}
 
 const userData = await getCurrentUserData();
 

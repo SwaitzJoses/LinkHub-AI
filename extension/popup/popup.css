@@ -560,3 +560,13 @@ input::placeholder{
 /* #evolveText{
     padding: 10px;
 } */
+
+#googleLoginBtn{
+
+    padding: 10px;
+}
+
+#googleLoginBtn:hover{
+
+  font-weight: 1000;
+}
