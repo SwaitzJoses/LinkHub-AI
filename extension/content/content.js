@@ -1,11 +1,34 @@
 console.log("TOP OF CONTENT.JS", performance.now());
 console.time("EmmaRuntime Import");
+const bridge = document.createElement("script");
+
+bridge.src = chrome.runtime.getURL(
+    "extension/content/pageBridge.js"
+);
+
+bridge.onload = () => bridge.remove();
+
+(document.head || document.documentElement)
+    .appendChild(bridge);
 import EmmaRuntime from "../core/EmmaRuntime.js";
 console.timeEnd("EmmaRuntime Import");
 import ChatGPTAdapter from "../adapters/chatgpt/ChatGPTAdapter.js";
 import ClaudeAdapter from "../adapters/claude/ClaudeAdapter.js";
 import GeminiAdapter from "../adapters/gemini/GeminiAdapter.js";
 
+
+window.addEventListener("message", (event) => {
+
+    if (event.source !== window) return;
+
+    if (event.data?.type !== "EVOLOZ_CHAT_RESULT") return;
+
+    console.log("✅ Full Chat Received");
+
+   
+console.log(event.data.conversation);
+
+});
 
 (async () => {
 

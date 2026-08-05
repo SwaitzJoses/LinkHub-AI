@@ -56,9 +56,32 @@ if (!messages || !Array.isArray(messages)) {
   const client = new OpenAI({
     apiKey: OPENAI_API_KEY.value(),
   });
+const payload = JSON.stringify(messages);
 
+console.log("================================");
+console.log("Messages:", messages.length);
+console.log("Payload characters:", payload.length);
+console.log("Payload KB:", (payload.length / 1024).toFixed(2));
+console.log("================================");
+
+console.log("FIRST MESSAGE");
+console.log(messages[0]);
+
+console.log("LAST MESSAGE");
+console.log(messages[messages.length - 1]);
+
+let biggest = "";
+
+for (const m of messages) {
+    if ((m.content || "").length > biggest.length) {
+        biggest = m.content;
+    }
+}
+
+console.log("Largest message chars:", biggest.length);
+console.log(biggest.substring(0, 1000));
   const completion = await client.chat.completions.create({
-    model: "gpt-5-mini",
+    model: "gpt-5-nano",
     
     response_format: { type: "json_object" },
     messages: [

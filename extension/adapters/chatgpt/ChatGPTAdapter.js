@@ -46,85 +46,89 @@ console.log("DOM elements found:", elements.length);
     // Capture Conversation
     // =====================================
 
-    async captureConversation() {
+async captureConversation() {
 
-        if (!this.isReady()) {
+    window.postMessage({
+        type: "EVOLOZ_FETCH_CHAT"
+    }, "*");
 
-            throw new Error(
-                "ChatGPT conversation not ready."
-            );
+    const conversation = await new Promise((resolve, reject) => {
+
+        const timeout = setTimeout(() => {
+            window.removeEventListener("message", handler);
+            reject(new Error("Timed out waiting for ChatGPT conversation."));
+        }, 10000);
+
+        function handler(event) {
+
+            if (event.source !== window) return;
+            if (event.data?.type !== "EVOLOZ_CHAT_RESULT") return;
+
+            clearTimeout(timeout);
+            window.removeEventListener("message", handler);
+
+            if (!event.data.ok) {
+                reject(new Error(event.data.error));
+                return;
+            }
+
+            resolve(event.data.conversation);
 
         }
 
-        const elements = document.querySelectorAll(
-            "[data-message-author-role]"
-        );
+        window.addEventListener("message", handler);
 
-        const messages = [];
+    });
 
-        elements.forEach((element, index) => {
+    // -----------------------------
+    // Convert ChatGPT mapping -> messages[]
+    // -----------------------------
 
-    const role =
-    element.getAttribute(
-        "data-message-author-role"
-    ) || "assistant";
+    const messages = [];
 
-const content =
-    element.innerText?.trim() || "";
+    for (const node of Object.values(conversation.mapping)) {
 
-if (!content) return;
+        const message = node.message;
 
-const domId = element.getAttribute("data-message-id");
+        if (!message) continue;
 
-console.log(
-    "DOM ID:",
-    domId,
-    "Role:",
-    role,
-    "Text:",
-    content.slice(0, 40)
-);
+        const role = message.author?.role;
 
-const stableId =
-    btoa(
-        unescape(
-            encodeURIComponent(
-                `${role}:${content}`
-            )
-        )
-    );
+        if (!role) continue;
 
-messages.push({
-    id: domId || stableId,
-    role,
-    content
-});
+        const content =
+            message.content?.parts?.join("\n").trim();
+
+        if (!content) continue;
+
+        messages.push({
+
+            id: message.id,
+
+            role,
+
+            content
 
         });
 
-        console.log("================================");
-console.log("Captured:", messages.length);
-console.log("First:", messages[0]?.id);
-console.log("Last :", messages[messages.length - 1]?.id);
-console.log("================================");
-
-        return {
-
-            provider: "ChatGPT",
-
-            conversationId:
-                this.getConversationId(),
-
-            capturedAt:
-                new Date().toISOString(),
-
-            messageCount:
-                messages.length,
-
-            messages
-
-        };
-
     }
+
+    console.log("Captured messages:", messages.length);
+
+    return {
+
+        provider: "ChatGPT",
+
+        conversationId: conversation.conversation_id,
+
+        capturedAt: new Date().toISOString(),
+
+        messageCount: messages.length,
+
+        messages
+
+    };
+
+}
 
 }

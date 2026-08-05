@@ -72,6 +72,7 @@ host_permissions: [
 web_accessible_resources: [
   {
     resources: [
+        "extension/content/pageBridge.js",
       "**/*"
     ],
     matches: [
