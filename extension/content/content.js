@@ -172,15 +172,15 @@ function buildManifest(checkpoint) {
 
         version: "1.0",
 
-        provider: checkpoint.provider,
+        provider: checkpoint.conversation.provider,
 
-        title: checkpoint.title || "",
+        title: checkpoint.conversation.title || "",
 
-        conversationId: checkpoint.conversationId,
+        conversationId: checkpoint.conversation.conversationId,
 
-        capturedAt: checkpoint.capturedAt,
+        capturedAt: checkpoint.conversation.capturedAt,
 
-        messageCount: checkpoint.messageCount
+        messageCount: checkpoint.conversation.messageCount
 
     };
 
@@ -211,18 +211,18 @@ function splitConversation(messages, maxMessages = 100) {
 
 async function exportCheckpoint(checkpoint) {
 
-//     const manifest = buildManifest(checkpoint);
+    const manifest = buildManifest(checkpoint);
 
-// const sections = splitConversation(
-//     checkpoint.messages,
-//     100
-// );
+const sections = splitConversation(
+     checkpoint.conversation.messages,
+    100
+);
 
-// console.log("Manifest:", manifest);
-// console.log("Sections:", sections);
-// console.log("Checkpoint:", checkpoint);
-// console.log("Messages:", checkpoint.messages);
-// console.log("Sections:", sections);
+console.log("Manifest:", manifest);
+console.log("Sections:", sections);
+console.log("Checkpoint:", checkpoint);
+console.log("Messages:", checkpoint.messages);
+console.log("Sections:", sections);
 
     const json = JSON.stringify(checkpoint, null, 2);
 
