@@ -17,6 +17,40 @@ import { functions } from "./firebase/firebase.js";
 import { decreaseCapture } from "./firebase/user.js";
 import { decreaseAnalysis } from "./firebase/user.js";
 
+console.log("🧠 Emma Background Ready");
+
+
+
+// imports...
+
+function buildTranscript(checkpoints) {
+
+    let transcript = "";
+
+    for (const checkpoint of checkpoints) {
+
+        const msgs = checkpoint.conversation?.messages || [];
+
+        for (const m of msgs) {
+
+            const role =
+                m.role === "user"
+                    ? "USER"
+                    : "ASSISTANT";
+
+            let text = m.content || "";
+
+            text = text.replace(/\s+/g, " ").trim();
+
+            transcript += `${role}: ${text}\n\n`;
+
+        }
+
+    }
+
+    return transcript;
+}
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -333,6 +367,13 @@ console.log("====================");
 const adapter = new LLMAdapter();
 adapter.setProvider(connector);
 
+const transcript = buildTranscript(message.checkpoints);
+
+console.log("================================");
+console.log("Transcript characters:", transcript.length);
+console.log("Transcript KB:", (transcript.length / 1024).toFixed(2));
+console.log("================================");
+
 const messages = [
 
     {
@@ -378,7 +419,7 @@ Do not explain anything outside the JSON.`
 
     {
         role: "user",
-        content: JSON.stringify(message.checkpoints, null, 2)
+       content: transcript
     }
 
 ];

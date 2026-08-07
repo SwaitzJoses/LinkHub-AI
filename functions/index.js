@@ -80,20 +80,62 @@ for (const m of messages) {
 
 console.log("Largest message chars:", biggest.length);
 console.log(biggest.substring(0, 1000));
+
+
+// function buildTranscript(messages) {
+
+//     let transcript = "";
+
+//     for (const checkpoint of messages) {
+
+//         const msgs = checkpoint.conversation?.messages || [];
+
+//         for (const m of msgs) {
+
+//             const role =
+//                 m.role === "user"
+//                     ? "USER"
+//                     : "ASSISTANT";
+
+//             let text = m.content || "";
+
+//             // Compress whitespace
+//             text = text.replace(/\s+/g, " ").trim();
+
+//             transcript += `${role}: ${text}\n\n`;
+
+//         }
+
+//     }
+
+//     return transcript;
+
+// }
+
+// console.log(messages);
+
+// const transcript = buildTranscript(messages);
+
+// console.log("================================");
+// console.log("Transcript characters:", transcript.length);
+// console.log("Transcript KB:", (transcript.length / 1024).toFixed(2));
+// console.log("================================");
+
   const completion = await client.chat.completions.create({
     model: "gpt-5-nano",
     
     response_format: { type: "json_object" },
-    messages: [
-      {
-        role: "system",
-        content: "You are the Evoloz Intelligence Engine. Merge checkpoints into one intelligence state. Return ONLY valid JSON with evolvedIntelligence and report."
-      },
-      {
-        role: "user",
-        content: JSON.stringify(messages)
-      }
-    ]
+    // messages: [
+    //   {
+    //     role: "system",
+    //     content: "You are the Evoloz Intelligence Engine. Merge checkpoints into one intelligence state. Return ONLY valid JSON with evolvedIntelligence and report."
+    //   },
+    //   {
+    //     role: "user",
+    //     content: transcript
+    //   }
+    // ]
+    messages
   });
 
 

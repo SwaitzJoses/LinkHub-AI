@@ -124,7 +124,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const checkpoint =
     await window.runtime.checkpoint(window.adapter.name);
-   
+console.log("CHECKPOINT");
+console.dir(checkpoint);
 
 checkpoint.title = message.title ?? "";
 checkpoint.notes = message.notes ?? "";
@@ -161,7 +162,67 @@ sendResponse({
 
 });
 
+
+
+function buildManifest(checkpoint) {
+
+    return {
+
+        format: "evoloz-1.0",
+
+        version: "1.0",
+
+        provider: checkpoint.provider,
+
+        title: checkpoint.title || "",
+
+        conversationId: checkpoint.conversationId,
+
+        capturedAt: checkpoint.capturedAt,
+
+        messageCount: checkpoint.messageCount
+
+    };
+
+}
+
+
+function splitConversation(messages, maxMessages = 100) {
+
+    const sections = [];
+
+    for (let i = 0; i < messages.length; i += maxMessages) {
+
+        sections.push({
+            file: `section-${String(sections.length + 1).padStart(3, "0")}.json`,
+            startMessage: i + 1,
+            endMessage: Math.min(i + maxMessages, messages.length),
+            messages: messages.slice(i, i + maxMessages)
+        });
+
+    }
+
+    return sections;
+
+}
+
+
+
+
 async function exportCheckpoint(checkpoint) {
+
+//     const manifest = buildManifest(checkpoint);
+
+// const sections = splitConversation(
+//     checkpoint.messages,
+//     100
+// );
+
+// console.log("Manifest:", manifest);
+// console.log("Sections:", sections);
+// console.log("Checkpoint:", checkpoint);
+// console.log("Messages:", checkpoint.messages);
+// console.log("Sections:", sections);
 
     const json = JSON.stringify(checkpoint, null, 2);
 

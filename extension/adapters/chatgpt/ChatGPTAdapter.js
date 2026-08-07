@@ -57,7 +57,7 @@ async captureConversation() {
         const timeout = setTimeout(() => {
             window.removeEventListener("message", handler);
             reject(new Error("Timed out waiting for ChatGPT conversation."));
-        }, 10000);
+        }, 30000);
 
         function handler(event) {
 
@@ -115,19 +115,21 @@ async captureConversation() {
 
     console.log("Captured messages:", messages.length);
 
-    return {
+  return {
 
-        provider: "ChatGPT",
+    provider: "ChatGPT",
 
-        conversationId: conversation.conversation_id,
+    conversationId: conversation.conversation_id,
 
-        capturedAt: new Date().toISOString(),
+    capturedAt: new Date().toISOString(),
 
-        messageCount: messages.length,
+    messageCount: messages.length,
 
-        messages
+    title: document.title,
 
-    };
+    messages
+
+};
 
 }
 

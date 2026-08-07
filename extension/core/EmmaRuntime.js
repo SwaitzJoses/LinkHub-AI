@@ -140,16 +140,16 @@ export default class EmmaRuntime {
     const conversation =
         await this.capture(provider);
 
-    const configured =
-        await AISettings.isConfigured();
+//     const configured =
+//         await AISettings.isConfigured();
 
-    if (!configured) {
+//     if (!configured) {
 
-       throw new Error(
-    "AI provider not configured. Please configure your AI settings before using Evolve."
-);
+//        throw new Error(
+//     "AI provider not configured. Please configure your AI settings before using Evolve."
+// );
 
-    }
+//     }
 
     console.log(
         "📨 Adapter captured:",
@@ -169,28 +169,36 @@ export default class EmmaRuntime {
         this.getWorkspace()
     );
 
-    console.log("➡️ Calling Emma...");
 
-    if (!this.emma) {
 
-    this.emma = new Emma();
+    console.log("📦 Capture Complete");
 
-}
+return {
+    conversation
+};
 
-    const result =
-        await this.emma.experience(conversation);
+//     console.log("➡️ Calling Emma...");
 
-    console.log(
-        "⬅️ Emma returned:",
-        result
-    );
+//     if (!this.emma) {
 
-    console.log("✅ Checkpoint Complete");
+//     this.emma = new Emma();
 
-    return {
-        conversation,
-        result
-    };
+// }
+
+//     const result =
+//         await this.emma.experience(conversation);
+
+//     console.log(
+//         "⬅️ Emma returned:",
+//         result
+//     );
+
+//     console.log("✅ Checkpoint Complete");
+
+//     return {
+//         conversation,
+//         result
+//     };
 
 }
 }
