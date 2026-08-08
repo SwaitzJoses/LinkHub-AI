@@ -23,12 +23,12 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
     const isPro = userData.plan === "pro";
 
-    const maxCaptures = isPro ? 150 : 10;
+    const maxCaptures = isPro ? "Unlimited" : 10;
     // // const maxAnalyses = isPro ? 100 : 5; // ANALYZE preserved
 
     // Keep loading states
     captureBtn.disabled =
-        !!bgStatus.isCapturing || captures <= 0;
+    !!bgStatus.isCapturing || (!isPro && captures <= 0);
 
     // analyzeBtn.disabled =
     //     !!bgStatus.isAnalyzing || analyses <= 0; // ANALYZE preserved
@@ -61,7 +61,8 @@ export function updateStatusCard(userData, bgStatus = {}) {
     planText.textContent = isPro ? "PRO" : "FREE";
 
     evolveText.innerHTML =
-        `Captures: ${captures} / ${maxCaptures}<br>
-         `;
+       isPro
+    ? "Captures: Unlimited"
+    : `Captures: ${captures} / 10`
 
 }

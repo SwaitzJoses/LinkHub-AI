@@ -49,15 +49,19 @@ export async function decreaseCapture() {
         throw new Error("User document not found.");
     }
 
-    const userData = snapshot.data();
+  const userData = snapshot.data();
 
-    if ((userData.capturesRemaining ?? 0) <= 0) {
-        return false;
-    }
+if (userData.plan === "pro") {
+    return true;
+}
 
-    await updateDoc(userRef, {
-        capturesRemaining: increment(-1)
-    });
+if ((userData.capturesRemaining ?? 0) <= 0) {
+    return false;
+}
+
+await updateDoc(userRef, {
+    capturesRemaining: increment(-1)
+});
 
     return true;
 }
