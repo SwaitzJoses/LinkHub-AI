@@ -18,17 +18,17 @@
 
             if (url.includes("StreamGenerate")) {
 
-                console.log("🟢 Gemini Stream Detected");
+                // console.log("🟢 Gemini Stream Detected");
 
-                console.log("========== REQUEST BODY ==========");
-                console.log(options?.body);
+                // console.log("========== REQUEST BODY ==========");
+                // console.log(options?.body);
 
                 const clone = response.clone();
 
                 clone.text().then(text => {
 
-                    console.log("========== RESPONSE ==========");
-                    console.log(text);
+                    // console.log("========== RESPONSE ==========");
+                    // console.log(text);
 
                     window.postMessage({
                         source: "gemini-page",
@@ -48,6 +48,6 @@
         return response;
     };
 
-    console.log("✅ Gemini Page Bridge Loaded");
+    // console.log("✅ Gemini Page Bridge Loaded");
 
 })();

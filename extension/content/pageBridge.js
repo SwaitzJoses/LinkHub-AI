@@ -1,6 +1,6 @@
-console.log("✅ Page Bridge Loaded");
+// console.log("✅ Page Bridge Loaded");
 window.addEventListener("message", async (event) => {
-    console.log("📨 Bridge received:", event.data);
+    // console.log("📨 Bridge received:", event.data);
   if (event.source !== window) return;
 
   if (event.data?.type !== "EVOLOZ_FETCH_CHAT") return;

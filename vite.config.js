@@ -13,8 +13,17 @@ export default defineConfig({
     hmr: false
   },
 
-  build: {
-    outDir: "dist",
-    emptyOutDir: true
+ build: {
+  outDir: "dist",
+  emptyOutDir: true,
+
+  minify: "terser",
+
+  terserOptions: {
+    compress: {
+      drop_console: true,
+      drop_debugger: true
+    }
   }
+}
 });
