@@ -41,76 +41,63 @@ isReady() {
     // Capture Conversation
     // =====================================
 
-    async captureConversation() {
+async captureConversation() {
 
-        if (!this.isReady()) {
+    if (!this.isReady()) {
+        throw new Error("Claude conversation not ready.");
+    }
 
-            throw new Error("Claude conversation not ready.");
+    const conversationId = this.getConversationId();
 
+    const organizationId = "476ac40d-dd93-45be-a5b3-141159806e6e";
+
+    const response = await fetch(
+        `/api/organizations/${organizationId}/chat_conversations/${conversationId}?tree=True&rendering_mode=messages&render_all_tools=true&consistency=strong`
+    );
+
+    if (!response.ok) {
+        throw new Error(`Claude API failed: ${response.status}`);
+    }
+
+    const conversation = await response.json();
+
+    console.log("Claude API:", conversation);
+
+    const messages = [];
+
+    for (const message of conversation.chat_messages || []) {
+
+        let content = "";
+
+        if (Array.isArray(message.content)) {
+            content = message.content
+                .filter(part => part.text)
+                .map(part => part.text)
+                .join("\n");
+        }
+        else if (typeof message.content === "string") {
+            content = message.content;
         }
 
-const elements = document.querySelectorAll("[role='article']");
-const messages = [];
+        if (!content.trim()) continue;
 
-elements.forEach((element) => {
-
-    const content = element.innerText?.trim();
-
-    if (!content) return;
-
-    let role = "assistant";
-
-    if (element.querySelector("[data-user-message-bubble]")) {
-
-        role = "user";
-
-    }
-    else if (element.querySelector("[data-is-streaming]")) {
-
-        role = "assistant";
-
+        messages.push({
+            id: message.uuid,
+            role: message.sender === "human" ? "user" : "assistant",
+            content
+        });
     }
 
-    const stableId = btoa(
-        unescape(
-            encodeURIComponent(`${role}:${content}`)
-        )
-    );
+    console.log("================================");
+    console.log("Captured:", messages.length);
+    console.log("================================");
 
-    console.log(
-        "Claude:",
-        role,
-        content.slice(0, 60)
-    );
-
-    messages.push({
-        id: stableId,
-        role,
-        content
-    });
-
-});
-
-        console.log("================================");
-        console.log("Captured:", messages.length);
-        console.log("First:", messages[0]?.id);
-        console.log("Last :", messages[messages.length - 1]?.id);
-        console.log("================================");
-
-        return {
-
-            provider: "Claude",
-
-            conversationId: this.getConversationId(),
-
-            capturedAt: new Date().toISOString(),
-
-            messageCount: messages.length,
-
-            messages
-
-        };
-
-    }
-
+    return {
+        provider: "Claude",
+        conversationId,
+        capturedAt: new Date().toISOString(),
+        messageCount: messages.length,
+        messages
+    };
+}
 }

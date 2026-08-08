@@ -1,15 +1,19 @@
 console.log("TOP OF CONTENT.JS", performance.now());
 console.time("EmmaRuntime Import");
+
+const host = location.hostname;
+
+let bridgeFile = "extension/content/pageBridge.js";
+
+if (host.includes("gemini.google.com")) {
+    bridgeFile = "extension/content/GeminiPageBridge.js";
+}
+
 const bridge = document.createElement("script");
-
-bridge.src = chrome.runtime.getURL(
-    "extension/content/pageBridge.js"
-);
-
+bridge.src = chrome.runtime.getURL(bridgeFile);
 bridge.onload = () => bridge.remove();
 
-(document.head || document.documentElement)
-    .appendChild(bridge);
+(document.head || document.documentElement).appendChild(bridge);
 import EmmaRuntime from "../core/EmmaRuntime.js";
 console.timeEnd("EmmaRuntime Import");
 import ChatGPTAdapter from "../adapters/chatgpt/ChatGPTAdapter.js";

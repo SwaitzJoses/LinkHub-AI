@@ -73,7 +73,7 @@ web_accessible_resources: [
   {
     resources: [
         "extension/content/pageBridge.js",
-      "**/*"
+       "extension/content/GeminiPageBridge.js"
     ],
     matches: [
       "https://chatgpt.com/*",
