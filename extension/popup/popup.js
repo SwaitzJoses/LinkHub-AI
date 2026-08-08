@@ -15,7 +15,7 @@ import {
 
 
 const captureBtn = document.getElementById("captureBtn");
-const analyzeBtn = document.getElementById("analyzeBtn");
+// const analyzeBtn = document.getElementById("analyzeBtn");
 const status = document.getElementById("status");
 const homeView = document.getElementById("homeView");
 const settingsView = document.getElementById("settingsView");
@@ -132,15 +132,12 @@ if (bgStatus.isCapturing) {
 
 }
 
-if (bgStatus.isAnalyzing) {
-
-    analyzeBtn.disabled = true;
-
-    startLoading(analyzeBtn, "ANALYZING...");
-
-    status.textContent = "Analyzing intelligence...";
-
-}
+// ANALYZE TEMPORARILY DISABLED
+// if (bgStatus.isAnalyzing) {
+//     // analyzeBtn.disabled = true;
+//     startLoading(analyzeBtn, "ANALYZING...");
+//     status.textContent = "Analyzing intelligence...";
+// }
 
 if (upgradeBtn) {
 
@@ -311,7 +308,7 @@ function startLoading(button, text) {
     status.textContent = "";
 
     captureBtn.disabled = true;
-    analyzeBtn.disabled = true;
+    // analyzeBtn.disabled = true;
 
     button.innerHTML = `
         <span class="spinner"></span>
@@ -322,7 +319,7 @@ function startLoading(button, text) {
 function stopLoading(button, text) {
 
     captureBtn.disabled = false;
-    analyzeBtn.disabled = false;
+    // analyzeBtn.disabled = false;
 
     button.innerHTML = text;
 
@@ -444,149 +441,150 @@ updateStatusCard(userData);
 
 });
 
-// ----------------------------------------------------
-// Analyze
-// ----------------------------------------------------
-
-
-
-analyzeBtn.addEventListener("click", async () => {
-
-    console.log("Analyze clicked");
-
-//   const configured = await AISettings.isConfigured();
-
-// if (!configured) {
-
-//     status.textContent =
-//         "⚠️ Please configure AI Settings to Analyze.";
-
+// ANALYZE CODE PRESERVED — TEMPORARILY DISABLED
+// // ----------------------------------------------------
+// // Analyze
+// // ----------------------------------------------------
+//
+//
+//
+// analyzeBtn.addEventListener("click", async () => {
+//
+//     console.log("Analyze clicked");
+//
+// //   const configured = await AISettings.isConfigured();
+//
+// // if (!configured) {
+//
+// //     status.textContent =
+// //         "⚠️ Please configure AI Settings to Analyze.";
+//
+// //     return;
+//
+// // }
+//
+//     try {
+//
+//         // Native file picker
+//         const input = document.createElement("input");
+//
+//         input.type = "file";
+//         input.multiple = true;
+//
+//         // later change to ".evoloz" if desired
+//         input.accept = ".json,.evoloz";
+//
+//         input.onchange = async () => {
+//
+//             try {
+//
+//                 startLoading(analyzeBtn, "ANALYZING...");
+// status.textContent = "Select intelligence files...";
+//
+//                 const files = [...input.files];
+//
+// if (files.length === 0) {
+//
+//     stopLoading(analyzeBtn, "ANALYZE");
+//     status.textContent = "Ready";
 //     return;
-
+//
 // }
-
-    try {
-
-        // Native file picker
-        const input = document.createElement("input");
-
-        input.type = "file";
-        input.multiple = true;
-
-        // later change to ".evoloz" if desired
-        input.accept = ".json,.evoloz";
-
-        input.onchange = async () => {
-
-            try {
-
-                startLoading(analyzeBtn, "ANALYZING...");
-status.textContent = "Select intelligence files...";
-
-                const files = [...input.files];
-
-if (files.length === 0) {
-
-    stopLoading(analyzeBtn, "ANALYZE");
-    status.textContent = "Ready";
-    return;
-
-}
-
-// Maximum 2 files
-if (files.length > 2) {
-
-    stopLoading(analyzeBtn, "ANALYZE");
-
-    status.textContent =
-        "❌ You can analyze a maximum of 2 intelligence files.";
-
-    return;
-
-}
-
-                status.textContent =
-                    `Reading ${files.length} file(s)...`;
-
-                // Read every file
-                const checkpoints = [];
-
-                for (const file of files) {
-
-                    const text = await file.text();
-
-                    checkpoints.push(JSON.parse(text));
-
-                }
-
-                status.textContent = "Sending to analyzer...";
-
-                const response = await chrome.runtime.sendMessage({
-
-                    action: "ANALYZE_CHECKPOINTS",
-
-                    checkpoints
-
-                });
-
-                if (!response.ok) {
-
-                    throw new Error(response.error);
-
-                }
-
-
-
-const userData = await getCurrentUserData();
-
-updateStatusCard(userData);
-
-                // Create downloadable report
-               // ================================
-// Download Evolved Intelligence
-// ================================
-
-
-
-                stopLoading(analyzeBtn, "ANALYZE");
-
-                analyzeBtn.classList.add("success");
-
-                status.textContent = "✅ Analysis complete.";
-
-                setTimeout(() => {
-
-                    analyzeBtn.classList.remove("success");
-
-                },1000);
-
-            }
-
-            catch(err){
-
-                stopLoading(analyzeBtn,"ANALYZE");
-
-                console.error(err);
-
-                status.textContent="❌ "+err.message;
-
-            }
-
-        };
-
-        input.click();
-
-    }
-
-    catch(err){
-
-        stopLoading(analyzeBtn,"ANALYZE");
-
-        console.error(err);
-
-        status.textContent="❌ "+err.message;
-
-    }
-
-});
-
+//
+// // Maximum 2 files
+// if (files.length > 2) {
+//
+//     stopLoading(analyzeBtn, "ANALYZE");
+//
+//     status.textContent =
+//         "❌ You can analyze a maximum of 2 intelligence files.";
+//
+//     return;
+//
+// }
+//
+//                 status.textContent =
+//                     `Reading ${files.length} file(s)...`;
+//
+//                 // Read every file
+//                 const checkpoints = [];
+//
+//                 for (const file of files) {
+//
+//                     const text = await file.text();
+//
+//                     checkpoints.push(JSON.parse(text));
+//
+//                 }
+//
+//                 status.textContent = "Sending to analyzer...";
+//
+//                 const response = await chrome.runtime.sendMessage({
+//
+//                     action: "ANALYZE_CHECKPOINTS",
+//
+//                     checkpoints
+//
+//                 });
+//
+//                 if (!response.ok) {
+//
+//                     throw new Error(response.error);
+//
+//                 }
+//
+//
+//
+// const userData = await getCurrentUserData();
+//
+// updateStatusCard(userData);
+//
+//                 // Create downloadable report
+//                // ================================
+// // Download Evolved Intelligence
+// // ================================
+//
+//
+//
+//                 stopLoading(analyzeBtn, "ANALYZE");
+//
+//                 analyzeBtn.classList.add("success");
+//
+//                 status.textContent = "✅ Analysis complete.";
+//
+//                 setTimeout(() => {
+//
+//                     analyzeBtn.classList.remove("success");
+//
+//                 },1000);
+//
+//             }
+//
+//             catch(err){
+//
+//                 stopLoading(analyzeBtn,"ANALYZE");
+//
+//                 console.error(err);
+//
+//                 status.textContent="❌ "+err.message;
+//
+//             }
+//
+//         };
+//
+//         input.click();
+//
+//     }
+//
+//     catch(err){
+//
+//         stopLoading(analyzeBtn,"ANALYZE");
+//
+//         console.error(err);
+//
+//         status.textContent="❌ "+err.message;
+//
+//     }
+//
+// });
+//

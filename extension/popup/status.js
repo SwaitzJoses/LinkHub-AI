@@ -7,7 +7,7 @@ export function updateStatusCard(userData, bgStatus = {}) {
     if (!card || !planText || !evolveText) return;
 
     const captureBtn = document.getElementById("captureBtn");
-    const analyzeBtn = document.getElementById("analyzeBtn");
+    // const analyzeBtn = document.getElementById("analyzeBtn"); // ANALYZE preserved
     const upgradeBtn = document.getElementById("upgradeBtn");
 
     if (!userData) {
@@ -19,27 +19,27 @@ export function updateStatusCard(userData, bgStatus = {}) {
     }
 
     const captures = userData.capturesRemaining ?? 0;
-    const analyses = userData.analysesRemaining ?? 0;
+    // const analyses = userData.analysesRemaining ?? 0; // ANALYZE preserved
 
     const isPro = userData.plan === "pro";
 
     const maxCaptures = isPro ? 150 : 10;
-    const maxAnalyses = isPro ? 100 : 5;
+    // // const maxAnalyses = isPro ? 100 : 5; // ANALYZE preserved
 
     // Keep loading states
     captureBtn.disabled =
         !!bgStatus.isCapturing || captures <= 0;
 
-    analyzeBtn.disabled =
-        !!bgStatus.isAnalyzing || analyses <= 0;
+    // analyzeBtn.disabled =
+    //     !!bgStatus.isAnalyzing || analyses <= 0; // ANALYZE preserved
 
     // Button text NEVER changes
     captureBtn.textContent = "CAPTURE";
-    analyzeBtn.textContent = "ANALYZE";
+    // analyzeBtn.textContent = "ANALYZE"; // ANALYZE preserved
 
     // Upgrade button
     upgradeBtn.style.display =
-        (!isPro && (captures <= 0 || analyses <= 0))
+        (!isPro && captures <= 0)
             ? "block"
             : "none";
 
@@ -48,7 +48,7 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
         card.className = "status-card pro";
 
-    } else if (captures <= 2 || analyses <= 1) {
+    } else if (captures <= 2) {
 
         card.className = "status-card warning";
 
@@ -62,6 +62,6 @@ export function updateStatusCard(userData, bgStatus = {}) {
 
     evolveText.innerHTML =
         `Captures: ${captures} / ${maxCaptures}<br>
-         Analyses: ${analyses} / ${maxAnalyses}`;
+         `;
 
 }
